@@ -1,0 +1,16 @@
+# Top navigation, derived from the WordPress nav menu.
+# Edit freely — this is just a starting point.
+- title: People
+  url: /people/
+- title: Courses
+  url: /courses/
+- title: Timeline of Developments
+  url: /timeline-of-developments/
+- title: Impact on Industry
+  url: /impact-on-industry/
+- title: Software
+  url: /software/
+- title: Awards
+  url: /awards/
+- title: Corporate Partners
+  url: /corporate-partners/

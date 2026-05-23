@@ -11,6 +11,10 @@ baseurl: "/castle-website"
 # Default theme (will swap for an academic theme once basics work)
 theme: minima
 
+# Tell Jekyll to also process pages in the _pages/ folder
+include:
+  - _pages
+
 # Build settings
 markdown: kramdown
 plugins:

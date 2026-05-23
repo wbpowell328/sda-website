@@ -12,6 +12,7 @@ wp-content/
 attachment_urls.txt
 download_failures.txt
 download_attachments.sh
+convert_wp_to_jekyll.pl
 
 # Local planning notes (not part of the website)
 page_inventory.md
