@@ -1,7 +1,7 @@
 ---
-layout: page
+layout: home
 title: "Computational Stochastic Optimization and Learning"
-permalink: /home/
+permalink: /
 date: 2017-07-16 23:57:03
 ---
 
