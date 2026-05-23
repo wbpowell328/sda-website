@@ -12,7 +12,7 @@ date: 2025-10-15 09:53:04
 <!-- /wp:tadv/classic-paragraph -->
 
 <!-- wp:tadv/classic-paragraph -->
-<p><em>Note to all readers: This webpage is designed to facilitate discussion. I am astonished that a question such as "What is a decision" has not been definitely answered at this time (2026).  I welcome comments to anything on this page, but especially my own attempt at a definition, and especially my section on different types of decisions.  Please send thoughts and comments to me at wbpowell328@gmail.com.</em></p>
+<p><em>Note to all readers: This webpage is designed to facilitate discussion. I am astonished that a question such as "What is a decision" has not been definitively answered at this time (2026).  I welcome comments to anything on this page, but especially my own attempt at a definition, and especially my section on different types of decisions.  Please send thoughts and comments to me at wbpowell328@gmail.com.</em></p>
 <p>Decisions are a fundamental human activity, studied and debated throughout our entire history, driven by our endless desire to improve.  As I like to say:  </p>
 <p><img class="alignright size-full wp-image-9088" src="https://castle.princeton.edu/wp-content/uploads/2025/10/If-you-want-to-run-a-better-tan.jpg" alt="" width="1836" height="368" /></p>
 <p>After a career in traditional academic research on models and algorithms for making better decisions in various specialized settings, retirement has allowed me to think more deeply about this topic, and I have been struck by the open questions about decisions.  Specifically:</p>
