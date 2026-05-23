@@ -15,6 +15,16 @@ theme: minima
 include:
   - _pages
 
+# WordPress-converted pages are pure content — don't try to interpret
+# Liquid template syntax ({{ }} / {% %}) in them. This avoids errors when
+# math/code happens to contain curly braces.
+defaults:
+  - scope:
+      path: "_pages"
+    values:
+      layout: page
+      render_with_liquid: false
+
 # Build settings
 markdown: kramdown
 plugins:
