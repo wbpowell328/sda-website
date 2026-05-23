@@ -10,8 +10,8 @@ body {
                "Helvetica Neue", Arial, sans-serif;
   font-size: 16px;
   line-height: 1.55;
-  color: #1f2937;
-  background: #ffffff;
+  color: #2b2419;
+  background: #f5ecd6;  /* parchment */
 }
 
 a { color: #1d4ed8; text-decoration: none; }
@@ -56,13 +56,14 @@ img, video { max-width: 100%; height: auto; }
   padding: 0 1.5rem;
 }
 
-/* ------- Sidebar ------- */
+/* ------- Sidebar (dark) ------- */
 .sidebar {
   flex: 0 0 240px;
-  padding-top: 1.5rem;
-  border-right: 1px solid #e5e7eb;
-  padding-right: 1rem;
+  padding: 1.5rem 0.5rem 1.5rem 1rem;
+  background: #3d2914;            /* dark walnut */
+  color: #f5ecd6;
   min-height: 60vh;
+  border-right: none;
 }
 .sidebar ul {
   list-style: none;
@@ -72,13 +73,14 @@ img, video { max-width: 100%; height: auto; }
 .sidebar li { margin: 0; }
 .sidebar a {
   display: block;
-  padding: 0.45rem 0.75rem;
-  color: #14213d;
+  padding: 0.5rem 0.75rem;
+  color: #f5ecd6;                 /* parchment text on dark */
   border-radius: 4px;
   font-size: 0.97rem;
 }
 .sidebar a:hover {
-  background: #f1f5f9;
+  background: #5a3e1f;            /* lighter walnut on hover */
+  color: #ffffff;
   text-decoration: none;
 }
 
