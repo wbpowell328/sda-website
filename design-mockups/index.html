@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CASTLE Lab — Redesign Mockups</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background: #f5ecd6;
+    color: #2b2419;
+    margin: 0;
+    padding: 3rem 1.5rem;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; }
+  h1 { font-size: 2.2rem; margin: 0 0 0.5rem; color: #3d2914; }
+  .lede { font-size: 1.05rem; color: #5a4a35; margin: 0 0 2.5rem; }
+  .grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .card {
+    background: #fff;
+    border: 1px solid #d8c89c;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 6px rgba(60, 40, 20, 0.08);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 6px 14px rgba(60, 40, 20, 0.15); }
+  .card h2 { margin: 0 0 0.3rem; font-size: 1.25rem; color: #14213d; }
+  .card .tag { display: inline-block; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: #8a6a3a; margin-bottom: 0.75rem; }
+  .card p { margin: 0 0 1rem; font-size: 0.95rem; color: #4b3a25; }
+  .card a.btn {
+    display: inline-block;
+    background: #3d2914;
+    color: #f5ecd6;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.92rem;
+  }
+  .card a.btn:hover { background: #5a3e1f; }
+  footer { margin-top: 3rem; font-size: 0.85rem; color: #7a6240; text-align: center; }
+  footer a { color: #5a3e1f; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>CASTLE Lab — Redesign Previews</h1>
+  <p class="lede"><strong>Direction C (Magazine Showcase) was chosen.</strong> The two previews below show what it will look like across the site. The two earlier alternates (A and B) are kept for reference.</p>
+
+  <h2 style="margin-top:2rem;color:#3d2914;font-size:1.2rem;text-transform:uppercase;letter-spacing:0.08em;border-bottom:2px solid #c9621e;padding-bottom:0.3rem;">Chosen direction — Magazine Showcase</h2>
+  <div class="grid">
+    <div class="card">
+      <div class="tag">Home page</div>
+      <h2>Magazine homepage</h2>
+      <p>Featured front-page card + research highlights grid + recent books + "Latest" cards. This is what the homepage will render.</p>
+      <a class="btn" href="design-c.html">Open home preview</a>
+    </div>
+    <div class="card">
+      <div class="tag">Inner page</div>
+      <h2>Article / content page</h2>
+      <p>How a typical research, books, or about page looks — walnut header, collapsible sidebar with the current section highlighted, serif headings.</p>
+      <a class="btn" href="preview-inner-page.html">Open inner-page preview</a>
+    </div>
+  </div>
+
+  <h2 style="margin-top:3rem;color:#7a6240;font-size:1rem;text-transform:uppercase;letter-spacing:0.08em;border-bottom:1px solid #d8c89c;padding-bottom:0.3rem;">Alternates (not chosen)</h2>
+  <div class="grid">
+    <div class="card" style="opacity:0.7;">
+      <div class="tag">Direction A</div>
+      <h2>Academic Portfolio</h2>
+      <p>Warm, photo-forward. Hero band with your photo + tagline, featured-books strip.</p>
+      <a class="btn" href="design-a.html">Open Mockup A</a>
+    </div>
+    <div class="card" style="opacity:0.7;">
+      <div class="tag">Direction B</div>
+      <h2>Modern Minimalist</h2>
+      <p>Top-bar nav, large serif headlines, three-column grid, quieter palette.</p>
+      <a class="btn" href="design-b.html">Open Mockup B</a>
+    </div>
+  </div>
+
+  <footer>
+    These previews are static HTML — open by double-click, no Jekyll required. The actual Jekyll layouts, CSS, and data live in <code>_layouts/</code>, <code>assets/css/main.css</code>, and <code>_data/home.yml</code> and will produce the same look when the site eventually builds. <br><br>
+    The current live site is unchanged at <a href="https://wbpowell328.github.io/castle-website/">wbpowell328.github.io/castle-website</a>.
+  </footer>
+</div>
+</body>
+</html>

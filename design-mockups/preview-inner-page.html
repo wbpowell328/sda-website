@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sequential Decision Analytics | CASTLE Lab — Inner Page Preview</title>
+<style>
+  /* This mirrors the Jekyll _layouts/default.html + assets/css/main.css.
+     Kept inline so the mockup is self-contained for double-click preview. */
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px; line-height: 1.6; color: #2b2419; background: #f5ecd6;
+  }
+  a { color: #8a3a1a; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img { max-width: 100%; height: auto; display: block; }
+
+  .preview-bar {
+    background: #1a1208; color: #f5ecd6; padding: 0.5rem 1rem;
+    font-size: 0.85rem; display: flex; justify-content: space-between;
+  }
+  .preview-bar a { color: #e0c896; margin-left: 0.75rem; }
+
+  /* Header */
+  .site-header { background: #3d2914; color: #f5ecd6; border-bottom: 4px solid #c9621e; }
+  .site-header-inner {
+    max-width: 1320px; margin: 0 auto; padding: 0.9rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1.5rem; flex-wrap: wrap;
+  }
+  .brand-block { display: flex; align-items: baseline; gap: 0.75rem; }
+  .brand { color: #f5ecd6; font-size: 1.5rem; font-weight: 700; font-family: "Georgia", serif; }
+  .brand-sub { color: #d4b88a; font-size: 0.9rem; }
+  .topnav { display: flex; gap: 1.5rem; font-size: 0.95rem; }
+  .topnav a {
+    color: #d4b88a; padding: 0.3rem 0; border-bottom: 2px solid transparent;
+  }
+  .topnav a:hover { color: #f5ecd6; border-bottom-color: #c9621e; text-decoration: none; }
+  .topnav a.active { color: #f5ecd6; border-bottom-color: #c9621e; }
+
+  /* Layout */
+  .layout {
+    max-width: 1320px; margin: 0 auto;
+    display: grid; grid-template-columns: 240px 1fr;
+    gap: 2rem; padding: 1.5rem;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background: #3d2914; color: #f5ecd6;
+    padding: 1.25rem 1rem; border-radius: 6px;
+    align-self: start; position: sticky; top: 1rem;
+  }
+  .sidebar details { border-bottom: 1px solid #5a3e1f; padding: 0.4rem 0; }
+  .sidebar details:last-child { border-bottom: none; }
+  .sidebar summary {
+    cursor: pointer; font-weight: 600; color: #f5ecd6;
+    padding: 0.35rem 0.5rem; list-style: none;
+    font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center;
+  }
+  .sidebar summary::after { content: "+"; color: #d4b88a; font-size: 1.1rem; }
+  .sidebar details[open] summary::after { content: "−"; }
+  .sidebar summary::-webkit-details-marker { display: none; }
+  .sidebar ul { list-style: none; padding: 0; margin: 0.3rem 0 0.5rem; }
+  .sidebar li a {
+    display: block; padding: 0.35rem 0.75rem 0.35rem 1.25rem;
+    color: #e0c896; border-radius: 3px; font-size: 0.9rem;
+  }
+  .sidebar li a:hover { background: #5a3e1f; color: #fff; text-decoration: none; }
+  .sidebar li a.current { background: #5a3e1f; color: #fff; font-weight: 600; }
+  .sidebar-link {
+    display: block; font-weight: 600;
+    color: #f5ecd6;
+    padding: 0.35rem 0.5rem 0.55rem;
+    font-size: 0.95rem; letter-spacing: 0.02em;
+    border-radius: 3px;
+    border-bottom: 1px solid #5a3e1f;
+    margin-bottom: 0.4rem;
+    text-decoration: none;
+  }
+  .sidebar-link:hover { background: #5a3e1f; color: #fff; text-decoration: none; }
+
+  /* Content */
+  .content { min-width: 0; }
+  .page-title {
+    margin: 0 0 1.25rem; font-size: 2rem; font-weight: 700;
+    color: #3d2914; font-family: "Georgia", serif;
+    border-bottom: 2px solid #c9621e; padding-bottom: 0.4rem;
+  }
+  .content h2 {
+    color: #3d2914; font-family: "Georgia", serif;
+    line-height: 1.3; margin-top: 2rem; font-size: 1.5rem;
+  }
+  .content h3 { color: #3d2914; font-family: "Georgia", serif; font-size: 1.2rem; }
+  .content p { margin: 0 0 1rem; }
+  .content ul, .content ol { padding-left: 1.5rem; }
+  .content blockquote {
+    border-left: 4px solid #c9621e; margin: 1rem 0;
+    padding: 0.5rem 1.25rem; color: #5a4a35; background: #ede0bd;
+  }
+
+  /* Inline figure (for demo) */
+  .content figure { margin: 1.5rem 0; }
+  .content figure img { border-radius: 4px; box-shadow: 0 2px 6px rgba(60, 40, 20, 0.15); }
+  .content figcaption { font-size: 0.88rem; color: #7a6240; margin-top: 0.4rem; text-align: center; }
+
+  /* Footer */
+  .site-footer {
+    background: #1a1208; color: #d4b88a; text-align: center;
+    padding: 1.5rem; font-size: 0.9rem; margin-top: 2.5rem;
+  }
+  .site-footer a { color: #e0c896; }
+  .site-footer p { margin: 0; }
+
+  /* Mock chat bubble for preview only */
+  .mock-bubble {
+    position: fixed; bottom: 20px; right: 20px;
+    width: 60px; height: 60px; border-radius: 50%;
+    background: #3d2914; color: #f5ecd6; border: 3px solid #c9621e;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+    font-size: 1.5rem;
+  }
+
+  @media (max-width: 980px) {
+    .layout { grid-template-columns: 1fr; gap: 1rem; padding: 1rem; }
+    .sidebar { position: static; }
+    .topnav { width: 100%; gap: 1rem; flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<div class="preview-bar">
+  <span><strong>Preview:</strong> What an inner page looks like (e.g. /sda/, /rlso/, /biography/)</span>
+  <span>
+    <a href="index.html">← All mockups</a>
+    <a href="design-c.html">Home preview →</a>
+  </span>
+</div>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <div class="brand-block">
+      <span class="brand">CASTLE Lab</span>
+      <span class="brand-sub">Warren B. Powell &middot; Princeton ORFE</span>
+    </div>
+    <nav class="topnav">
+      <a href="#" class="active">Research</a>
+      <a href="#">Books</a>
+      <a href="#">Teaching</a>
+      <a href="#">About</a>
+    </nav>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar">
+    <a href="#" class="sidebar-link">Ask Professor Powell</a>
+    <details open>
+      <summary>Research</summary>
+      <ul>
+        <li><a href="#" class="current">Sequential decision analytics</a></li>
+        <li><a href="#">Stochastic optimization</a></li>
+        <li><a href="#">Optimal learning</a></li>
+        <li><a href="#">Energy systems (PENSA)</a></li>
+        <li><a href="#">Transportation &amp; logistics</a></li>
+        <li><a href="#">Health applications</a></li>
+        <li><a href="#">The 7 Levels of AI</a></li>
+        <li><a href="#">The jungle of stochastic optimization</a></li>
+      </ul>
+    </details>
+    <details>
+      <summary>Books</summary>
+      <ul>
+        <li><a href="#">RLSO</a></li>
+        <li><a href="#">SDAM</a></li>
+        <li><a href="#">All books</a></li>
+      </ul>
+    </details>
+    <details>
+      <summary>Teaching</summary>
+      <ul>
+        <li><a href="#">ORF 411</a></li>
+        <li><a href="#">ORF 418</a></li>
+        <li><a href="#">ORF 544</a></li>
+      </ul>
+    </details>
+    <details>
+      <summary>About</summary>
+      <ul>
+        <li><a href="#">Biography</a></li>
+        <li><a href="#">Awards</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </details>
+  </nav>
+
+  <main class="content">
+    <h1 class="page-title">Sequential Decision Analytics</h1>
+
+    <p><strong>Sequential decision analytics (SDA)</strong> is the science of making decisions, over time, in the presence of different forms of uncertainty. The decisions may be choices about resources (how much, where, when), pricing, contracts, or actions of an autonomous system. The uncertainty may come from the environment, from imperfect knowledge of the underlying processes, or from the actions of other decision-makers.</p>
+
+    <p>SDA brings together threads from stochastic optimization, optimal control, reinforcement learning, simulation optimization, and online learning under a single modeling framework — one that lets us see clearly which kinds of policies fit which kinds of problems.</p>
+
+    <h2>The universal modeling framework</h2>
+
+    <p>Every sequential decision problem can be modeled with five elements:</p>
+
+    <ul>
+      <li><strong>State variables</strong> — what is known at each point in time</li>
+      <li><strong>Decision variables</strong> — what we choose</li>
+      <li><strong>Exogenous information</strong> — what arrives that we don't control</li>
+      <li><strong>Transition function</strong> — how the system evolves</li>
+      <li><strong>Objective function</strong> — what we're optimizing</li>
+    </ul>
+
+    <figure>
+      <img src="../wp-content/uploads/2019/06/UniversalFramework.jpg" alt="The universal modeling framework">
+      <figcaption>The universal modeling framework: state, decision, information, transition, and objective.</figcaption>
+    </figure>
+
+    <h2>Four classes of policies</h2>
+
+    <p>Within this framework, all policies (methods for making decisions) fall into one of four classes:</p>
+
+    <ol>
+      <li><strong>Policy Function Approximations (PFAs)</strong> — analytic functions of the state</li>
+      <li><strong>Cost Function Approximations (CFAs)</strong> — optimizing modified costs</li>
+      <li><strong>Value Function Approximations (VFAs)</strong> — Bellman / dynamic programming</li>
+      <li><strong>Direct Lookahead Approximations (DLAs)</strong> — approximate the future</li>
+    </ol>
+
+    <blockquote>
+      The choice of policy class is determined by the structure of the problem, not by ideology. Most real applications use hybrids drawing from two or more classes.
+    </blockquote>
+
+    <h2>Where to go from here</h2>
+
+    <ul>
+      <li><a href="#">SDAM book</a> — teach-by-example tour through the framework</li>
+      <li><a href="#">RLSO book</a> — the advanced reference</li>
+      <li><a href="#">Educational resource page</a> — videos, courses, downloads</li>
+      <li><a href="#">Jungle of stochastic optimization</a> — methodology map</li>
+    </ul>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>&copy; 2026 Warren B. Powell &middot; CASTLE Lab &middot; Princeton ORFE &middot; <a href="mailto:wbpowell328@gmail.com">Contact</a></p>
+</footer>
+
+</body>
+</html>

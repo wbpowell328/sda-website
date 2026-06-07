@@ -6,12 +6,10 @@ date: 2017-09-05 17:47:05
 ---
 
 {% raw %}
-<ul>
- 	<li><a href="https://castle.princeton.edu/optimal-learning/">Optimal Learning</a></li>
- 	<li><a href="https://castle.princeton.edu/approximate-dynamic-programming/">Approximate Dynamic Programming</a></li>
- 	<li><a href="https://castle.princeton.edu/machine-learning/">Machine Learning</a></li>
- 	<li><a href="https://castle.princeton.edu/stochastic-optimization/">Stochastic Optimization</a></li>
- 	<li><a href="https://castle.princeton.edu/deterministic-optimization/">Deterministic Optimization</a></li>
- 	<li><a href="https://castle.princeton.edu/queuing-theory/">Queuing Theory</a></li>
-</ul>
+- [Optimal Learning](https://castle.princeton.edu/optimal-learning/)
+- [Approximate Dynamic Programming](https://castle.princeton.edu/approximate-dynamic-programming/)
+- [Machine Learning](https://castle.princeton.edu/machine-learning/)
+- [Stochastic Optimization](https://castle.princeton.edu/stochastic-optimization/)
+- [Deterministic Optimization](https://castle.princeton.edu/deterministic-optimization/)
+- [Queuing Theory](https://castle.princeton.edu/queuing-theory/)
 {% endraw %}

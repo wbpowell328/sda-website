@@ -28,3 +28,37 @@ Thumbs.db
 
 # Claude Code session artifacts
 .claude/
+
+# Chatbot prototype — secrets, deps, and generated/large content
+chatbot/.env
+chatbot/node_modules/
+chatbot/system-prompt.txt
+chatbot/smoke-test-payload.json
+chatbot/knowledge.db
+chatbot/knowledge.db-journal
+chatbot/knowledge.db-shm
+chatbot/knowledge.db-wal
+
+# User-supplied knowledge (large Word docs and their pandoc conversions).
+# Seed knowledge files (00-, 01-, 02-, README.md) are tracked normally;
+# only the user-supplied LinkedIn material is excluded.
+chatbot/knowledge/*.docx
+chatbot/knowledge/LinkedIn*.md
+chatbot/knowledge/archive/
+
+# Local-only scratch files
+Webpage notes.docx
+~$*.docx
+~WRL*.tmp
+Website images/
+Draft webpages/
+_tmp_migration_urls.txt
+bundle-install.log
+
+# Page-conversion backups (kept locally as a safety net, not site content)
+_pages/*.md.original
+
+# Warren's book source material (LaTeX + .docx) — feeds the RAG ingestion
+# script but should NOT be committed to a public repo. The .tex/.docx
+# sources are his IP. Kept locally only; backed up via Dropbox.
+Ask Prof Powell chat material/

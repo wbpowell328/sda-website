@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CASTLE Lab — Direction A: Academic Portfolio</title>
+<style>
+  /* ============================================================
+     Direction A — Academic Portfolio
+     Warm, photo-forward. Walnut header matches sidebar. Hero band
+     with photo + tagline + CTAs. Featured-books strip. Categorized
+     sidebar nav.
+     ============================================================ */
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 17px;
+    line-height: 1.6;
+    color: #2b2419;
+    background: #f5ecd6;
+  }
+  a { color: #8a3a1a; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img { max-width: 100%; height: auto; }
+
+  /* Preview switcher (only in mockups) */
+  .preview-bar {
+    background: #1a1208;
+    color: #f5ecd6;
+    padding: 0.5rem 1rem;
+    font-family: -apple-system, "Segoe UI", sans-serif;
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .preview-bar a { color: #e0c896; margin-left: 0.75rem; }
+  .preview-bar strong { color: #f5ecd6; }
+
+  /* Header */
+  .site-header {
+    background: #3d2914;
+    color: #f5ecd6;
+    border-bottom: 4px solid #c9621e;
+  }
+  .site-header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1.1rem 1.5rem;
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    font-family: -apple-system, "Segoe UI", sans-serif;
+  }
+  .site-title {
+    color: #f5ecd6;
+    font-size: 1.7rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    font-family: "Georgia", serif;
+  }
+  .site-subtitle { color: #d4b88a; font-size: 0.95rem; }
+
+  /* Hero band */
+  .hero {
+    background: linear-gradient(180deg, #ede0bd 0%, #f5ecd6 100%);
+    padding: 2.5rem 1.5rem;
+    border-bottom: 1px solid #d8c89c;
+  }
+  .hero-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  .hero-photo {
+    width: 200px;
+    height: 240px;
+    object-fit: cover;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(60, 40, 20, 0.25);
+    border: 3px solid #fff;
+  }
+  .hero-text h1 {
+    font-size: 2.4rem;
+    margin: 0 0 0.4rem;
+    color: #3d2914;
+    line-height: 1.15;
+  }
+  .hero-text .role {
+    color: #5a4a35;
+    font-size: 1.05rem;
+    margin: 0 0 1rem;
+    font-style: italic;
+  }
+  .hero-text .tagline {
+    font-size: 1.1rem;
+    color: #2b2419;
+    margin: 0 0 1.5rem;
+    max-width: 60ch;
+  }
+  .cta-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  .cta {
+    display: inline-block;
+    padding: 0.65rem 1.2rem;
+    border-radius: 4px;
+    font-size: 0.97rem;
+    font-family: -apple-system, "Segoe UI", sans-serif;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .cta.primary { background: #c9621e; color: #fff; }
+  .cta.primary:hover { background: #a84d12; text-decoration: none; }
+  .cta.secondary {
+    background: transparent;
+    color: #3d2914;
+    border: 2px solid #3d2914;
+  }
+  .cta.secondary:hover { background: #3d2914; color: #f5ecd6; text-decoration: none; }
+
+  /* Featured books strip */
+  .books-strip {
+    background: #ede0bd;
+    padding: 2rem 1.5rem;
+    border-bottom: 1px solid #d8c89c;
+  }
+  .books-strip h2 {
+    max-width: 1280px;
+    margin: 0 auto 1.25rem;
+    font-size: 1.3rem;
+    color: #3d2914;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-family: -apple-system, "Segoe UI", sans-serif;
+    font-weight: 700;
+  }
+  .books-row {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.25rem;
+  }
+  .book-card {
+    background: #fff;
+    border-radius: 4px;
+    padding: 0.75rem;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(60, 40, 20, 0.12);
+    transition: transform 0.2s;
+  }
+  .book-card:hover { transform: translateY(-4px); }
+  .book-card img { height: 160px; object-fit: contain; margin-bottom: 0.5rem; }
+  .book-card .title { font-size: 0.8rem; color: #3d2914; font-weight: 600; line-height: 1.3; font-family: -apple-system, "Segoe UI", sans-serif; }
+
+  /* Two-column body */
+  .layout {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 2.5rem;
+    padding: 2rem 1.5rem 3rem;
+  }
+  .sidebar {
+    background: #3d2914;
+    color: #f5ecd6;
+    padding: 1.25rem 1rem;
+    border-radius: 6px;
+    align-self: start;
+    position: sticky;
+    top: 1rem;
+    font-family: -apple-system, "Segoe UI", sans-serif;
+  }
+  .sidebar h3 {
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #d4b88a;
+    margin: 1.2rem 0 0.4rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid #5a3e1f;
+  }
+  .sidebar h3:first-child { margin-top: 0; }
+  .sidebar ul { list-style: none; padding: 0; margin: 0; }
+  .sidebar li a {
+    display: block;
+    padding: 0.4rem 0.6rem;
+    color: #f5ecd6;
+    border-radius: 3px;
+    font-size: 0.95rem;
+  }
+  .sidebar li a:hover {
+    background: #5a3e1f;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  /* Content area */
+  .content h2 {
+    color: #3d2914;
+    font-size: 1.8rem;
+    margin: 2rem 0 0.75rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 2px solid #c9621e;
+  }
+  .content h2:first-child { margin-top: 0; }
+  .content p { margin: 0 0 1.1rem; }
+  .content ol, .content ul { padding-left: 1.5rem; }
+  .content ol li, .content ul li { margin-bottom: 0.4rem; }
+
+  .pullquote {
+    border-left: 4px solid #c9621e;
+    padding: 0.5rem 1.25rem;
+    margin: 1.25rem 0;
+    background: #ede0bd;
+    font-style: italic;
+    color: #5a4a35;
+  }
+
+  footer.site-footer {
+    background: #1a1208;
+    color: #d4b88a;
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.9rem;
+    font-family: -apple-system, "Segoe UI", sans-serif;
+  }
+  footer.site-footer a { color: #e0c896; }
+
+  @media (max-width: 900px) {
+    .hero-inner { grid-template-columns: 1fr; text-align: center; }
+    .hero-photo { margin: 0 auto; }
+    .cta-row { justify-content: center; }
+    .books-row { grid-template-columns: repeat(3, 1fr); }
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+  }
+</style>
+</head>
+<body>
+
+<div class="preview-bar">
+  <span><strong>Mockup A:</strong> Academic Portfolio</span>
+  <span>
+    <a href="index.html">← All mockups</a>
+    <a href="design-b.html">See B →</a>
+    <a href="design-c.html">See C →</a>
+  </span>
+</div>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <span class="site-title">CASTLE Lab</span>
+    <span class="site-subtitle">Warren B. Powell — Princeton ORFE</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <img src="../wp-content/uploads/2020/03/Warren-Powell-v2-2018-cropped.jpg" alt="Warren Powell" class="hero-photo">
+    <div class="hero-text">
+      <h1>Sequential Decision Analytics</h1>
+      <p class="role">Warren B. Powell &mdash; Professor Emeritus, Princeton ORFE &middot; Chief Innovation Officer, Optimal Dynamics</p>
+      <p class="tagline">A unified framework for modeling and solving sequential decision problems under uncertainty &mdash; spanning energy, transportation, health, finance, and AI.</p>
+      <div class="cta-row">
+        <a href="#" class="cta primary">Read the books</a>
+        <a href="#" class="cta secondary">Browse research</a>
+        <a href="#" class="cta secondary">Contact</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="books-strip">
+  <h2>Featured books</h2>
+  <div class="books-row">
+    <div class="book-card">
+      <img src="../wp-content/uploads/2023/03/Powell-RLSO-WIleyFrontCover.jpg" alt="RLSO">
+      <div class="title">Reinforcement Learning &amp; Stochastic Optimization</div>
+    </div>
+    <div class="book-card">
+      <img src="../wp-content/uploads/2022/11/SDAM-front-cover_Nov232022.jpg" alt="SDAM">
+      <div class="title">Sequential Decision Analytics &amp; Modeling</div>
+    </div>
+    <div class="book-card">
+      <img src="../wp-content/uploads/2024/02/MATO_FrontCover.jpg" alt="MATO">
+      <div class="title">A Modern Approach to Teaching Optimization</div>
+    </div>
+    <div class="book-card">
+      <img src="../wp-content/uploads/2024/11/Optimal-learning-book.jpg" alt="Optimal Learning">
+      <div class="title">Optimal Learning</div>
+    </div>
+    <div class="book-card">
+      <img src="../wp-content/uploads/2024/11/Doing-better-with-better-decisions.jpg" alt="Doing Better">
+      <div class="title">Doing Better with Better Decisions</div>
+    </div>
+  </div>
+</section>
+
+<div class="layout">
+  <nav class="sidebar">
+    <h3>Research</h3>
+    <ul>
+      <li><a href="#">Sequential decision analytics</a></li>
+      <li><a href="#">Stochastic optimization</a></li>
+      <li><a href="#">Optimal learning</a></li>
+      <li><a href="#">Energy systems (PENSA)</a></li>
+      <li><a href="#">Transportation &amp; logistics</a></li>
+      <li><a href="#">Health applications</a></li>
+    </ul>
+    <h3>Books</h3>
+    <ul>
+      <li><a href="#">RLSO</a></li>
+      <li><a href="#">SDAM</a></li>
+      <li><a href="#">Optimal Learning</a></li>
+      <li><a href="#">Modern Approach to Optimization</a></li>
+    </ul>
+    <h3>Teaching</h3>
+    <ul>
+      <li><a href="#">ORF 411 — Operations Research</a></li>
+      <li><a href="#">ORF 418 — Optimal Learning</a></li>
+      <li><a href="#">ORF 544 — Stochastic Optimization</a></li>
+      <li><a href="#">Course materials</a></li>
+    </ul>
+    <h3>About</h3>
+    <ul>
+      <li><a href="#">Biography</a></li>
+      <li><a href="#">Awards</a></li>
+      <li><a href="#">People &amp; alumni</a></li>
+      <li><a href="#">Industry partners</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <h2>What we do</h2>
+    <p>Since its establishment in 1990, <strong>CASTLE Lab</strong> has worked on a wide range of problems that share a common characteristic: making decisions (sometimes very complex decisions) over time as new information is arriving. This means decisions have to be made recognizing that their impact is uncertain.</p>
+    <p>Using a unique laboratory-industry partnership, the primary focus of our work has been modeling, followed by the development of algorithms to make effective decisions under uncertainty. This led to the universal modeling framework which focuses on optimizing over policies (methods for making decisions). Any policy falls in one of four classes which are chosen based on a number of characteristics.</p>
+
+    <div class="pullquote">
+      We start every problem by answering three questions: what are the performance metrics, what types of decisions are being made, and what are the sources of uncertainty?
+    </div>
+
+    <h2>Laboratories &amp; focus areas</h2>
+    <ul>
+      <li><strong>PENSA</strong> &mdash; Princeton Laboratory for Energy Systems Analysis. Energy storage, stochastic unit commitment, bidding, pricing.</li>
+      <li><strong>Transportation &amp; Logistics</strong> &mdash; Stochastic fleet management in trucking, rail, and air; real-time dispatching, routing, spare parts.</li>
+      <li><strong>Optimal Learning</strong> &mdash; Collecting information when observations, simulations, and experiments are expensive.</li>
+      <li><strong>Health sciences</strong> &mdash; Drug discovery, drug delivery, blood management, dosage decisions, health policy.</li>
+    </ul>
+
+    <h2>Get started</h2>
+    <p>I have created an <a href="#">educational resource page for sequential decision analytics</a> containing introductions to the field, optimal learning, video lectures, downloadable books, courses, and LinkedIn writings.</p>
+    <p>If you have any questions, <a href="mailto:wbpowell328@gmail.com">please contact me</a>.</p>
+  </main>
+</div>
+
+<footer class="site-footer">
+  &copy; 2026 Warren B. Powell &middot; CASTLE Lab &middot; Princeton ORFE
+</footer>
+
+</body>
+</html>

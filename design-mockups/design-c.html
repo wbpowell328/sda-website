@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CASTLE Lab — Direction C: Magazine Showcase</title>
+<style>
+  /* ============================================================
+     Direction C — Magazine / Research Showcase
+     Featured front-page card + grid of secondary cards. Heavy
+     imagery. Card-based design. Brown/parchment retained.
+     ============================================================ */
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #2b2419;
+    background: #f5ecd6;
+  }
+  a { color: #8a3a1a; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img { max-width: 100%; height: auto; display: block; }
+
+  .preview-bar {
+    background: #1a1208;
+    color: #f5ecd6;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .preview-bar a { color: #e0c896; margin-left: 0.75rem; }
+
+  .site-header {
+    background: #3d2914;
+    color: #f5ecd6;
+    border-bottom: 4px solid #c9621e;
+  }
+  .site-header-inner {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0.9rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+  .brand {
+    color: #f5ecd6;
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: "Georgia", serif;
+    letter-spacing: 0.5px;
+  }
+  .brand:hover { text-decoration: none; opacity: 0.9; }
+  .brand-sub { color: #d4b88a; font-size: 0.9rem; margin-left: 0.75rem; }
+  .topnav { display: flex; gap: 1.5rem; font-size: 0.95rem; }
+  .topnav a {
+    color: #d4b88a;
+    padding: 0.3rem 0;
+    border-bottom: 2px solid transparent;
+  }
+  .topnav a:hover {
+    color: #f5ecd6;
+    border-bottom-color: #c9621e;
+    text-decoration: none;
+  }
+
+  /* Main layout */
+  .layout {
+    max-width: 1320px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 2rem;
+    padding: 1.5rem;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background: #3d2914;
+    color: #f5ecd6;
+    padding: 1.25rem 1rem;
+    border-radius: 6px;
+    align-self: start;
+    position: sticky;
+    top: 1rem;
+  }
+  .sidebar details {
+    border-bottom: 1px solid #5a3e1f;
+    padding: 0.4rem 0;
+  }
+  .sidebar details:last-child { border-bottom: none; }
+  .sidebar summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: #f5ecd6;
+    padding: 0.35rem 0.5rem;
+    list-style: none;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .sidebar summary::after {
+    content: "+";
+    color: #d4b88a;
+    font-weight: 400;
+    font-size: 1.1rem;
+  }
+  .sidebar details[open] summary::after { content: "−"; }
+  .sidebar summary::-webkit-details-marker { display: none; }
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.3rem 0 0.5rem;
+  }
+  .sidebar li a {
+    display: block;
+    padding: 0.35rem 0.75rem 0.35rem 1.25rem;
+    color: #e0c896;
+    border-radius: 3px;
+    font-size: 0.9rem;
+  }
+  .sidebar li a:hover {
+    background: #5a3e1f;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  main { min-width: 0; }
+
+  /* Plain top-level sidebar link — looks like a section header but goes
+     straight to the page rather than expanding a nested list. */
+  .sidebar-link {
+    display: block;
+    font-weight: 600;
+    color: #f5ecd6;
+    padding: 0.35rem 0.5rem 0.55rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+    border-radius: 3px;
+    border-bottom: 1px solid #5a3e1f;
+    margin-bottom: 0.4rem;
+    text-decoration: none;
+  }
+  .sidebar-link:hover { background: #5a3e1f; color: #fff; text-decoration: none; }
+  .castle-chat-hero-mockup {
+    background: #fff;
+    border: 1px solid #d8c89c;
+    border-radius: 12px;
+    padding: 1.1rem 1.25rem;
+    box-shadow: 0 2px 10px rgba(60, 40, 20, 0.06);
+    margin-bottom: 1.5rem;
+  }
+  .cm-header {
+    display: flex; align-items: baseline; gap: 0.6rem;
+    flex-wrap: wrap; margin-bottom: 0.85rem;
+  }
+  .cm-icon { color: #c9621e; font-size: 1.05rem; line-height: 1; }
+  .cm-title { font-weight: 700; font-size: 1.02rem; color: #3d2914; }
+  .cm-sub { color: #7a6240; font-size: 0.9rem; }
+  .cm-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.85rem; }
+  .cm-pill {
+    background: #faf5e6; border: 1px solid #e5d8b5; color: #3d2914;
+    border-radius: 999px; padding: 0.4rem 0.9rem; font-size: 0.86rem;
+    line-height: 1.2;
+  }
+  .cm-input-row { display: flex; gap: 0.5rem; align-items: stretch; }
+  .cm-input {
+    flex: 1; border: 1px solid #d8c89c; border-radius: 8px;
+    padding: 0.7rem 0.85rem; font-size: 0.95rem;
+    background: #fbf9f4; color: #9a8a70;
+  }
+  .cm-send {
+    flex: 0 0 auto; width: 42px;
+    background: #c9621e; color: #fff;
+    border-radius: 8px; font-size: 1.1rem; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* Lab intro band */
+  .home-intro {
+    background: #ede0bd;
+    border-left: 4px solid #c9621e;
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .home-intro-eyebrow {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #8a6a3a;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .home-intro-body {
+    margin: 0;
+    font-size: 1.08rem;
+    line-height: 1.6;
+    color: #3d2914;
+    font-family: "Georgia", serif;
+  }
+  .home-intro-body strong { color: #3d2914; }
+
+  /* Featured hero card */
+  .featured {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    background: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(60, 40, 20, 0.12);
+    margin-bottom: 1.25rem;
+  }
+  .featured-img {
+    background: #ede0bd;
+    overflow: hidden;
+  }
+  .featured-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    min-height: 180px;
+    max-height: 220px;
+  }
+  .featured-body {
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .featured-body .kicker {
+    display: inline-block;
+    background: #c9621e;
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.15rem 0.55rem;
+    border-radius: 3px;
+    margin-bottom: 0.5rem;
+    width: fit-content;
+  }
+  .featured-body h2 {
+    font-family: "Georgia", serif;
+    font-size: 1.35rem;
+    line-height: 1.2;
+    color: #3d2914;
+    margin: 0 0 0.4rem;
+  }
+  .featured-body p {
+    color: #4b3a25;
+    margin: 0 0 0.6rem;
+    font-size: 0.93rem;
+    line-height: 1.5;
+  }
+  .featured-body .read-more {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #c9621e;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* Section heading */
+  .section-h {
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid #c9621e;
+    font-family: "Georgia", serif;
+    font-size: 1.25rem;
+    color: #3d2914;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  /* Card grid */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+  .card {
+    background: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(60, 40, 20, 0.1);
+    transition: transform 0.15s, box-shadow 0.15s;
+    display: flex;
+    flex-direction: column;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(60, 40, 20, 0.18);
+  }
+  .card-img {
+    height: 160px;
+    overflow: hidden;
+    background: #ede0bd;
+  }
+  .card-img img { width: 100%; height: 100%; object-fit: cover; }
+  .card-body {
+    padding: 1rem 1.1rem 1.2rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .card-body .kicker {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #8a6a3a;
+    margin-bottom: 0.4rem;
+  }
+  .card-body h3 {
+    font-family: "Georgia", serif;
+    font-size: 1.1rem;
+    line-height: 1.3;
+    margin: 0 0 0.5rem;
+    color: #3d2914;
+  }
+  .card-body p {
+    font-size: 0.9rem;
+    color: #5a4a35;
+    margin: 0 0 0.75rem;
+    flex: 1;
+  }
+  .card-body .meta {
+    font-size: 0.8rem;
+    color: #8a6a3a;
+  }
+
+  /* Two-up cards (books split) */
+  .two-up {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+  .two-up .card { flex-direction: row; }
+  .two-up .card-img { flex: 0 0 130px; height: auto; }
+  .two-up .card-img img { object-fit: contain; padding: 0.75rem; background: #fff; }
+
+  footer.site-footer {
+    background: #1a1208;
+    color: #d4b88a;
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.9rem;
+    margin-top: 2rem;
+  }
+  footer.site-footer a { color: #e0c896; }
+
+  @media (max-width: 980px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+    .featured { grid-template-columns: 1fr; }
+    .featured-img img { min-height: 160px; max-height: 180px; }
+    .card-grid { grid-template-columns: repeat(2, 1fr); }
+    .two-up { grid-template-columns: 1fr; }
+    .topnav { display: none; }
+  }
+  @media (max-width: 600px) {
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="preview-bar">
+  <span><strong>Mockup C:</strong> Magazine Showcase</span>
+  <span>
+    <a href="index.html">← All mockups</a>
+    <a href="design-a.html">See A →</a>
+    <a href="design-b.html">See B →</a>
+  </span>
+</div>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <div>
+      <span class="brand">CASTLE Lab</span>
+      <span class="brand-sub">Warren B. Powell &middot; Princeton ORFE</span>
+    </div>
+    <nav class="topnav">
+      <a href="#">Research</a>
+      <a href="#">Books</a>
+      <a href="#">Teaching</a>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar">
+    <a href="#" class="sidebar-link">Ask Professor Powell</a>
+    <details open>
+      <summary>Research</summary>
+      <ul>
+        <li><a href="#">Sequential decision analytics</a></li>
+        <li><a href="#">Stochastic optimization</a></li>
+        <li><a href="#">Optimal learning</a></li>
+        <li><a href="#">Energy systems (PENSA)</a></li>
+        <li><a href="#">Transportation &amp; logistics</a></li>
+        <li><a href="#">Health applications</a></li>
+        <li><a href="#">7 levels of AI</a></li>
+      </ul>
+    </details>
+    <details>
+      <summary>Books</summary>
+      <ul>
+        <li><a href="#">RLSO</a></li>
+        <li><a href="#">SDAM</a></li>
+        <li><a href="#">Optimal Learning</a></li>
+        <li><a href="#">Modern Approach to Optimization</a></li>
+        <li><a href="#">Doing Better with Better Decisions</a></li>
+      </ul>
+    </details>
+    <details>
+      <summary>Teaching</summary>
+      <ul>
+        <li><a href="#">ORF 411</a></li>
+        <li><a href="#">ORF 418 — Optimal Learning</a></li>
+        <li><a href="#">ORF 544 — Stochastic Optimization</a></li>
+        <li><a href="#">Course materials</a></li>
+        <li><a href="#">How to teach optimization</a></li>
+      </ul>
+    </details>
+    <details>
+      <summary>About</summary>
+      <ul>
+        <li><a href="#">Biography</a></li>
+        <li><a href="#">Awards</a></li>
+        <li><a href="#">People &amp; alumni</a></li>
+        <li><a href="#">Industry partners</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </details>
+  </nav>
+
+  <main>
+    <!-- Lab intro -->
+    <section class="home-intro">
+      <div class="home-intro-eyebrow">CASTLE Lab — Princeton ORFE</div>
+      <p class="home-intro-body"><strong>CASTLE Lab</strong> specializes in the study of <strong>sequential decision problems</strong> &mdash; settings that blend the flow of information and decisions over time, where each choice must be made knowing that its impact is uncertain. Our work spans energy, transportation, health, finance, and the foundations of AI, unified by a single modeling framework that organizes them all.</p>
+    </section>
+
+    <!-- Latest -->
+    <h2 class="section-h">Latest</h2>
+    <div class="card-grid">
+      <article class="card">
+        <div class="card-body">
+          <div class="kicker">LinkedIn series</div>
+          <h3>The 7 Levels of AI</h3>
+          <p>A framework for understanding the spectrum from rules to learning-based decision systems.</p>
+          <div class="meta">Multi-part series</div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-body">
+          <div class="kicker">Article</div>
+          <h3>Modernize optimization teaching</h3>
+          <p>An ORMS Today piece on rethinking how we teach the field.</p>
+          <div class="meta">ORMS Today</div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-body">
+          <div class="kicker">Essay</div>
+          <h3><a href="https://tinyurl.com/whatisadecision" target="_blank" style="color:inherit;text-decoration:none;">What is a decision? (&hellip; and how do we make them)</a></h3>
+          <p>Exploring what counts as a decision and how we make them &mdash; a webpage designed to facilitate discussion. Feedback welcome.</p>
+          <div class="meta">Discussion piece</div>
+        </div>
+      </article>
+    </div>
+
+    <!-- Books grid -->
+    <h2 class="section-h">Recent books</h2>
+    <div class="two-up">
+      <article class="card">
+        <a href="https://tinyurl.com/BridgingDecisionProblems/" target="_blank"><div class="card-img"><img src="../wp-content/uploads/2025/12/Bridging-Vol-I-cover.jpg" alt=""></div></a>
+        <div class="card-body">
+          <h3>Framing Decision Problems (Bridging Decision Problems, Vol. I)</h3>
+          <p>The foundational step before modeling &mdash; a series of questions in English that becomes the basis of a mathematical model.</p>
+          <div class="meta">New &mdash; free PDF available</div>
+        </div>
+      </article>
+      <article class="card">
+        <a href="#"><div class="card-img"><img src="../wp-content/uploads/2023/03/Powell-RLSO-WIleyFrontCover.jpg" alt=""></div></a>
+        <div class="card-body">
+          <h3>Reinforcement Learning &amp; Stochastic Optimization</h3>
+          <p>A unified framework for sequential decisions &mdash; the advanced reference.</p>
+          <div class="meta">Wiley, 2022</div>
+        </div>
+      </article>
+      <article class="card">
+        <a href="#"><div class="card-img"><img src="../wp-content/uploads/2022/11/SDAM-front-cover_Nov232022.jpg" alt=""></div></a>
+        <div class="card-body">
+          <h3>Sequential Decision Analytics &amp; Modeling</h3>
+          <p>A teach-by-example tour through how to model and solve a wide range of sequential decision problems.</p>
+          <div class="meta">2022</div>
+        </div>
+      </article>
+      <article class="card">
+        <a href="#"><div class="card-img"><img src="../wp-content/uploads/2024/11/Optimal-learning-book.jpg" alt=""></div></a>
+        <div class="card-body">
+          <h3>Optimal Learning</h3>
+          <p>How to collect information when observations and experiments are expensive.</p>
+          <div class="meta">Wiley</div>
+        </div>
+      </article>
+    </div>
+
+    <!-- Videos -->
+    <h2 class="section-h">Videos on sequential decision problems</h2>
+    <div class="card-grid">
+      <article class="card">
+        <div class="card-body">
+          <h3><a href="https://tinyurl.com/PowellFramingVideo/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;">Framing Decision Problems</a></h3>
+          <p>An introduction to the three elements of decision problems &mdash; metrics, decisions, and uncertainties.</p>
+          <div class="meta"><a href="https://tinyurl.com/PowellFramingVideo/" target="_blank" rel="noopener">Watch video &rarr;</a></div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-body">
+          <h3><a href="https://tinyurl.com/HowToTeachOptimization/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;">How to Teach Optimization</a></h3>
+          <p>Highlights that the vast majority of decision problems (including linear programs) are sequential decision problems &mdash; which means we are looking to find the best policy.</p>
+          <div class="meta"><a href="https://tinyurl.com/HowToTeachOptimization/" target="_blank" rel="noopener">Watch video &rarr;</a></div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-body">
+          <h3><a href="https://tinyurl.com/PowellvideoSDAhealth/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;">Sequential Decision Problems: Energy applications</a></h3>
+          <p>Illustrates the universal modeling framework using energy applications.</p>
+          <div class="meta"><a href="https://tinyurl.com/PowellvideoSDAhealth/" target="_blank" rel="noopener">Watch video &rarr;</a></div>
+        </div>
+      </article>
+    </div>
+
+    <!-- Research focus -->
+    <h2 class="section-h">Research highlights</h2>
+    <div class="card-grid">
+      <article class="card">
+        <div class="card-body">
+          <div class="kicker">Methodology</div>
+          <h3>The universal modeling framework</h3>
+          <p>One framework spanning stochastic optimization, RL, optimal control, and online learning.</p>
+          <div class="meta">Research overview</div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-body">
+          <div class="kicker">Energy</div>
+          <h3>Energy storage &amp; PENSA</h3>
+          <p>Stochastic unit commitment, bidding, pricing, and storage policies for energy systems.</p>
+          <div class="meta">Application lab</div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-body">
+          <div class="kicker">Public safety</div>
+          <h3>Storm &amp; wildfire response</h3>
+          <p>Sequential decisions for resource allocation under deeply uncertain conditions.</p>
+          <div class="meta">Recent work</div>
+        </div>
+      </article>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  &copy; 2026 Warren B. Powell &middot; CASTLE Lab &middot; Princeton ORFE &middot; <a href="mailto:wbpowell328@gmail.com">Contact</a>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ask Professor Powell — Testing</title>
+<meta name="robots" content="noindex,nofollow">
+
+<!-- MathJax — renders LaTeX math in chatbot responses.
+     mathjax-macros.js defines window.CASTLE_MATH_MACROS (~300 macros from
+     00-OUU_Wiley.tex, e.g. \mubar, \sigmatilde, \Acal). It MUST load before
+     window.MathJax is assigned, hence the non-async script tag below. -->
+<script src="mathjax-macros.js"></script>
+<script>
+  window.MathJax = {
+    loader: { load: ['[tex]/noerrors'] },
+    tex: {
+      packages: { '[+]': ['noerrors'] },
+      inlineMath:  [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      macros: window.CASTLE_MATH_MACROS || {},
+    },
+    svg: { fontCache: 'global' },
+    options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] },
+  };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    line-height: 1.6;
+    color: #2b2419;
+    background: #f5ecd6;
+  }
+  header.site-header {
+    background: #3d2914;
+    color: #f5ecd6;
+    border-bottom: 4px solid #c9621e;
+    padding: 1rem 1.5rem;
+  }
+  header .inner {
+    max-width: 880px;
+    margin: 0 auto;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  header .brand {
+    font-family: "Georgia", serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #f5ecd6;
+  }
+  header .sub { color: #d4b88a; font-size: 0.92rem; }
+  main {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+  h1 {
+    font-family: "Georgia", serif;
+    font-size: 1.9rem;
+    color: #3d2914;
+    border-bottom: 2px solid #c9621e;
+    padding-bottom: 0.4rem;
+    margin: 0 0 1rem;
+  }
+  .testing-banner {
+    background: #ede0bd;
+    border-left: 4px solid #c9621e;
+    padding: 0.85rem 1.25rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+  }
+  .testing-banner strong { color: #3d2914; }
+  p { margin: 0 0 1rem; }
+  a { color: #8a3a1a; }
+  footer {
+    background: #1a1208;
+    color: #d4b88a;
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.88rem;
+  }
+  footer a { color: #e0c896; }
+  footer p { margin: 0; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <span class="brand">Sequential Decision Analytics</span>
+    <span class="sub">Warren B. Powell &middot; Princeton University</span>
+  </div>
+</header>
+
+<main>
+  <h1>Ask Professor Powell</h1>
+
+  <p>
+    The &ldquo;Ask Professor Powell&rdquo; chatbot will answer questions based
+    on material in his books, LinkedIn posts, and a number of his webpages
+    (these are cited in the response). This resource is intended to provide
+    quick feedback, but the answers are <strong>not a replacement for the
+    material in the original text</strong>. Please verify any information
+    from the original source before you use it in your work or a publication
+    (do not cite this chatbot as a source).
+  </p>
+
+  <p style="font-size: 0.85rem; color: #7a6240;">
+    <em>Conversations are logged so Professor Powell can review feedback and
+    improve the assistant. Don&rsquo;t share anything you want kept private.</em>
+  </p>
+
+  <div id="castle-chat-inline"></div>
+</main>
+
+<footer>
+  <p>
+    &copy; 2026 Warren B. Powell
+  </p>
+</footer>
+
+<script>
+  // Talk to this same origin — the chatbot server serves this page.
+  window.CASTLE_CHAT_API = "/chat";
+</script>
+<script src="widget.js" defer></script>
+
+</body>
+</html>

@@ -6,16 +6,14 @@ date: 2017-09-06 08:05:18
 ---
 
 {% raw %}
-<ul>
- 	<li><a href="https://castle.princeton.edu/energy-systems-analysis/"><strong>Energy systems analysis</strong></a></li>
- 	<li><a href="https://castle.princeton.edu/dynamic-fleet-management-trucking-rail-air/"><strong>Dynamic fleet management (trucking, rail, air)</strong></a></li>
- 	<li><a href="https://castle.princeton.edu/military-airlift/"><strong>Military airlift</strong></a></li>
- 	<li><a href="https://castle.princeton.edu/health-and-medical-applications/"><strong>Health and medical applications</strong></a></li>
- 	<li><a href="https://castle.princeton.edu/vehicle-routing-and-scheduling-problems/"><strong>Vehicle routing and scheduling problems</strong></a></li>
- 	<li><a href="https://castle.princeton.edu/service-network-design/"><strong>Service network design</strong></a></li>
- 	<li><a href="https://castle.princeton.edu/machine-scheduling/"><strong>Machine scheduling</strong></a></li>
- 	<li><a href="https://castle.princeton.edu/physical-distribution/"><strong>Physical distribution</strong></a></li>
- 	<li><a href="https://castle.princeton.edu/traffic-and-public-transportation/"><strong>Traffic and public transportation</strong></a></li>
- 	<li><a href="https://castle.princeton.edu/freight-demand-estimation/"><strong>Freight demand estimation</strong></a></li>
-</ul>
+- [**Energy systems analysis**](https://castle.princeton.edu/energy-systems-analysis/)
+- [**Dynamic fleet management (trucking, rail, air)**](https://castle.princeton.edu/dynamic-fleet-management-trucking-rail-air/)
+- [**Military airlift**](https://castle.princeton.edu/military-airlift/)
+- [**Health and medical applications**](https://castle.princeton.edu/health-and-medical-applications/)
+- [**Vehicle routing and scheduling problems**](https://castle.princeton.edu/vehicle-routing-and-scheduling-problems/)
+- [**Service network design**](https://castle.princeton.edu/service-network-design/)
+- [**Machine scheduling**](https://castle.princeton.edu/machine-scheduling/)
+- [**Physical distribution**](https://castle.princeton.edu/physical-distribution/)
+- [**Traffic and public transportation**](https://castle.princeton.edu/traffic-and-public-transportation/)
+- [**Freight demand estimation**](https://castle.princeton.edu/freight-demand-estimation/)
 {% endraw %}

@@ -1,4 +1,98 @@
 ---
 layout: default
 ---
-{{ content }}
+{% assign h = site.data.home %}
+
+<!-- Lab intro -->
+{% if h.intro %}
+<section class="home-intro">
+  {% if h.intro.eyebrow %}<div class="home-intro-eyebrow">{{ h.intro.eyebrow }}</div>{% endif %}
+  <p class="home-intro-body">{{ h.intro.body }}</p>
+</section>
+{% endif %}
+
+<!-- Latest -->
+{% if h.latest %}
+<h2 class="section-h">Latest</h2>
+<div class="card-grid">
+  {% for item in h.latest %}
+    <article class="card">
+      {% if item.image %}
+        <a href="{{ item.url | relative_url }}" class="card-img">
+          <img src="{{ item.image | relative_url }}" alt="">
+        </a>
+      {% endif %}
+      <div class="card-body">
+        {% if item.kicker %}<div class="kicker">{{ item.kicker }}</div>{% endif %}
+        <h3><a href="{{ item.url | relative_url }}">{{ item.title }}</a></h3>
+        <p>{{ item.description }}</p>
+        {% if item.meta %}<div class="meta">{{ item.meta }}</div>{% endif %}
+      </div>
+    </article>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- Recent books -->
+{% if h.books %}
+<h2 class="section-h">Recent books</h2>
+<div class="two-up">
+  {% for item in h.books %}
+    <article class="card">
+      <a href="{{ item.url | relative_url }}" class="card-img">
+        <img src="{{ item.image | relative_url }}" alt="">
+      </a>
+      <div class="card-body">
+        <h3><a href="{{ item.url | relative_url }}">{{ item.title }}</a></h3>
+        <p>{{ item.description }}</p>
+        {% if item.meta %}<div class="meta">{{ item.meta }}</div>{% endif %}
+      </div>
+    </article>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- Videos on sequential decision problems -->
+{% if h.videos %}
+<h2 class="section-h">Videos on sequential decision problems</h2>
+<div class="card-grid">
+  {% for item in h.videos %}
+    <article class="card">
+      <div class="card-body">
+        <h3><a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a></h3>
+        <p>{{ item.description }}</p>
+        <div class="meta"><a href="{{ item.url }}" target="_blank" rel="noopener">Watch video &rarr;</a></div>
+      </div>
+    </article>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- Research highlights -->
+{% if h.research_highlights %}
+<h2 class="section-h">Research highlights</h2>
+<div class="card-grid">
+  {% for item in h.research_highlights %}
+    <article class="card">
+      {% if item.image %}
+        <a href="{{ item.url | relative_url }}" class="card-img">
+          <img src="{{ item.image | relative_url }}" alt="">
+        </a>
+      {% endif %}
+      <div class="card-body">
+        {% if item.kicker %}<div class="kicker">{{ item.kicker }}</div>{% endif %}
+        <h3><a href="{{ item.url | relative_url }}">{{ item.title }}</a></h3>
+        <p>{{ item.description }}</p>
+        {% if item.meta %}<div class="meta">{{ item.meta }}</div>{% endif %}
+      </div>
+    </article>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- Body content from home.md (the "What we do" prose) -->
+{% if content and content != "" %}
+<section class="home-prose">
+  {{ content }}
+</section>
+{% endif %}

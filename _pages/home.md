@@ -1,47 +1,40 @@
 ---
-layout: home
-title: "Computational Stochastic Optimization and Learning"
+layout: page
+title: "Sequential Decision Analytics"
 permalink: /
 date: 2017-07-16 23:57:03
 ---
 
 {% raw %}
-As of Sept 1, 2020, I have retired from Princeton University.  I am now the Chief Innovation Officer of <a href="http://optimaldynamics.com">Optimal Dynamics</a> which licensed my library for truckload trucking and dynamic resource allocation.
+<img src="/sda-website/assets/images/home/left-bridge.png" alt="Pen-and-ink drawing of the left half of an arched stone bridge under construction, supported by wooden scaffolding" width="220" align="left" style="max-width: 100%; height: auto; margin-right: 1rem; margin-bottom: 0.5rem;" />
+<img src="/sda-website/assets/images/home/right-bridge.png" alt="Pen-and-ink drawing of the right half of an arched stone bridge under construction, supported by wooden scaffolding" width="200" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<p style="text-align: center;">The challenge of using computers requires bridging complex problems and mathematical modeling. When these problems involve making decisions over time (which covers a vast range of applications), the research literature has fragmented into over a dozen different communities, each with their own notation, modeling styles, and algorithms illustrated using carefully chosen examples.</p>
 
-In 2021 I received the <a href="https://tinyurl.com/powellherman">Robert Herman Lifetime Achievement Award</a> from the Informs Society for Transportation Science and Logistics. In 2022 I won the Saul Gass Expository Writing Award by Informs (across all subdivisions).
+<p style="text-align: center;">Traditional approaches for optimizing systems are limited to narrow classes of (typically complex) applications. Combining decisions and uncertainty invariably leads to sophisticated tools with arcane mathematics, as evidenced by the almost universal lack of general purpose software packages.</p>
 
-Warren Powell
-Professor Emeritus, Princeton University
+<p style="text-align: center;">We pursue these problems using the principle of "model first, then solve" which is guided by the overarching philosophy:</p>
 
-<hr />
+<p style="font-style: italic; font-weight: bold; font-size: 1.25rem; text-align: center; line-height: 1.6; margin: 1.5rem auto; max-width: 720px; color: #5a3e1f;">
+If you want to run a better {anything} you have to make better decisions.
+</p>
 
-<strong>CASTLE</strong> works to advance the development of modern analytics for solving a wide range of applications that involve decisions under uncertainty.
+Our approach, motivated by decades of working on complex, real-world problems, starts in English with a process of *framing* problems by posing three questions:
 
-Some recent books:
-<ul>
- 	<li><a href="https://tinyurl.com/RLandSO/">Reinforcement Learning and Stochastic Optimization: A unified framework for sequential decisions</a> - This is an advanced book for people who are looking to develop models and algorithms.</li>
- 	<li><a href="https://tinyurl.com/sdamodeling/">Sequential Decision Analytics and Modeling</a> - This book uses a teach-by-example style to illustrate how to model and solve a wide range of sequential decision problems.</li>
- 	<li><a href="https://tinyurl.com/TeachingOpt/">A Modern Approach to Teaching an Introduction to Optimization</a> - This short book is written primarily for instructors, and outlines how to teach an introduction to optimization, starting with simpler sequential decision problems before progressing to topics such as linear, integer and nonlinear programming.</li>
-</ul>
-I have created an educational resource page for sequential decision analytics (<a href="https://tinyurl.com/sdalinks/">click here</a>), which contains:
-<ul>
- 	<li> Introduction to the field of sequential decision problems</li>
- 	<li>Introduction to Optimal Learning</li>
- 	<li>Some video introductions</li>
- 	<li>Downloadable books</li>
- 	<li>Courses and teaching materials</li>
- 	<li>Educational webpages about sequential decision analytics</li>
- 	<li>LinkedIn posts on sequential decision analytics</li>
-</ul>
-<h2>Laboratories and Areas of Focus</h2>
-Surrounding the core activities in methodology are laboratories focusing on major areas of application.
-<ul>
- 	<li><a href="/energysystems">PENSA - The Princeton Laboratory for Energy Systems Analysis</a> - PENSA addresses a variety of stochastic optimization problems in energy systems, including energy storage, stochastic unit commitment, bidding, and pricing.  We document <a href="/energystorage/">our work on energy storage</a>.</li>
- 	<li><a href="https://tinyurl.com/powelltransportation">Transportation and logistics Laboratory</a> - Our work in transportation and logistics dates to 1981, and spans stochastic fleet management in trucking, rail and air, real-time dispatching, routing and scheduling, and spare parts management, to name a few. Our work has been adopted by a <a href="/impact-on-industry/">broad cross section of the industry</a>.</li>
- 	<li><a href="/optimallearning">Optimal learning</a> - This research addresses the challenges of collecting information, when information (observations, simulations, laboratory and field experiments) are expensive.</li>
- 	<li>Health sciences - Projects in health have included drug discovery, drug delivery, blood management, dosage decisions, personal health, and health policy.</li>
-</ul>
-I hope you find the material interesting, and perhaps useful. If you have any questions, <a href="mailto:wbpowell328@gmail.com">please contact me</a>.
+1. What are the performance metrics?
+2. What types of decisions are being made (and who makes them)?
+3. What are the sources of uncertainty?
 
-<a href="/biography/">Warren Powell</a>
+These questions help to clarify *thinking* about problems, which is all that is needed for most decisions. For applications that warrant more careful analysis, the questions lay the foundation for the **Universal Modeling Framework** which can represent any sequential decision problem as a mathematical model.
+
+The framework spans *any* method for making decisions (called "policies"), from simple rules to large-scale deterministic integer programs, since these all fall in the four classes of policies. We also identify 12 categories of uncertainty that may come in a range of styles and time scales. The process of developing these tools has been dramatically streamlined in recent years with the emergence of large language models.
+
+Start with **Sequential decision problems** in the menu on the left. I also suggest skimming **Motivating applications** since these were the problems that motivated the universal modeling framework. Then work through **Modeling** which starts with basic questions such as **What is a decision.** Click on **Policies** to learn about all four classes of policies, and finish with **Teaching materials** which describes courses and self-taught weekly seminars.
+
+Be sure to try out the **"Ask Professor Powell"** chatbot at the top, which has been trained with all my books, 1,000 pages of LinkedIn posts and a number of webpages.
+
+The thoughts on this website are based on a lifetime of research using computers to make decisions. I hope you find it useful. Please share!
+
+Warren Powell  
+Professor (emeritus), Princeton University  
+Chief Innovation Officer, Optimal Dynamics
 {% endraw %}

@@ -1,0 +1,92 @@
+﻿# Homepage content blocks for the magazine layout.
+# Edit any field and Jekyll will pick it up on next build.
+
+intro:
+  eyebrow: CASTLE Lab — Princeton ORFE
+  body: >-
+    <strong>CASTLE Lab</strong> specializes in the study of
+    <strong>sequential decision problems</strong> &mdash; settings that
+    blend the flow of information and decisions over time, where each
+    choice must be made knowing that its impact is uncertain. Our work
+    spans energy, transportation, health, finance, and the foundations
+    of AI, unified by a single modeling framework that organizes them all.
+
+videos:
+  - title: Framing Decision Problems
+    description: >-
+      An introduction to the three elements of decision problems &mdash;
+      metrics, decisions, and uncertainties.
+    url: https://tinyurl.com/PowellFramingVideo/
+  - title: How to Teach Optimization
+    description: >-
+      Highlights that the vast majority of decision problems (including
+      linear programs) are sequential decision problems &mdash; which
+      means we are looking to find the best policy.
+    url: https://tinyurl.com/HowToTeachOptimization/
+  - title: "Sequential Decision Problems: Energy applications"
+    description: >-
+      Illustrates the universal modeling framework using energy
+      applications.
+    url: https://tinyurl.com/PowellvideoSDAhealth/
+
+research_highlights:
+  - kicker: Methodology
+    title: The universal modeling framework
+    description: One framework spanning stochastic optimization, RL, optimal control, and online learning.
+    url: /computational-stochastic-optimization/
+    meta: Research overview
+  - kicker: Energy
+    title: Energy storage & PENSA
+    description: Stochastic unit commitment, bidding, pricing, and storage policies for energy systems.
+    url: /energystorage/
+    meta: Application lab
+  - kicker: Public safety
+    title: Storm & wildfire response
+    description: Sequential decisions for resource allocation under deeply uncertain conditions.
+    url: /applications/
+    meta: Recent work
+
+books:
+  - title: "Framing Decision Problems (Bridging Decision Problems, Vol. I)"
+    description: >-
+      The foundational step before modeling — a series of questions in
+      English that becomes the basis of a mathematical model.
+    image: /wp-content/uploads/2025/12/Bridging-Vol-I-cover.jpg
+    url: https://tinyurl.com/BridgingDecisionProblems/
+    meta: New — free PDF available
+  - title: Reinforcement Learning & Stochastic Optimization
+    description: A unified framework for sequential decisions — the advanced reference.
+    image: /wp-content/uploads/2023/03/Powell-RLSO-WIleyFrontCover.jpg
+    url: /rlso/
+    meta: Wiley, 2022
+  - title: Sequential Decision Analytics & Modeling
+    description: >-
+      A teach-by-example tour through how to model and solve a wide
+      range of sequential decision problems.
+    image: /wp-content/uploads/2022/11/SDAM-front-cover_Nov232022.jpg
+    url: /sdamodeling/
+    meta: 2022
+  - title: Optimal Learning
+    description: How to collect information when observations and experiments are expensive.
+    image: /wp-content/uploads/2024/11/Optimal-learning-book.jpg
+    url: /optimal-learning-2/
+    meta: Wiley
+
+latest:
+  - kicker: LinkedIn series
+    title: The 7 Levels of AI
+    description: A framework for understanding the spectrum from rules to learning-based decision systems.
+    url: /the-7-levels-of-ai/
+    meta: Multi-part series
+  - kicker: Article
+    title: Modernize optimization teaching
+    description: An ORMS Today piece on rethinking how we teach the field.
+    url: /howtoteachoptimization/
+    meta: ORMS Today
+  - kicker: Essay
+    title: "What is a decision? (… and how do we make them)"
+    description: >-
+      Exploring what counts as a decision and how we make them — a
+      webpage designed to facilitate discussion. Feedback welcome.
+    url: /whatisadecision/
+    meta: Discussion piece

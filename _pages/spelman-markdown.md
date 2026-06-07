@@ -5,6 +5,7 @@ permalink: /spelman-markdown/
 date: 2022-05-29 19:56:50
 ---
 
+{% raw %}
 Warren B Powell  
 Professor Emeritus, Princeton University (1981-2020) and Princeton '1977
 
@@ -47,3 +48,4 @@ Of course we all immediately make the connection to flying buttresses used in Go
 <br clear="all" />
 
 Perhaps someone can provide the notes justifying the Frank Gehry building that houses the Lewis Library, sitting right next to Fine Hall. Ouch!
+{% endraw %}

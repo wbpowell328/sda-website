@@ -1,16 +1,85 @@
-# Top navigation, derived from the WordPress nav menu.
-# Edit freely — this is just a starting point.
-- title: People
-  url: /people/
-- title: Courses
-  url: /courses/
-- title: Timeline of Developments
-  url: /timeline-of-developments/
-- title: Impact on Industry
-  url: /impact-on-industry/
-- title: Software
-  url: /software/
-- title: Awards
-  url: /awards/
-- title: Corporate Partners
-  url: /corporate-partners/
+﻿# Sidebar nav driven by the outline in
+# https://docs.google.com/document/d/1UyK1X0Gbx_4Bcb7sGLu5qaCPPeCS6lr3S466vy6bZeg/
+#
+# Entry types the layout understands:
+#   - title + url + (cta: true)          → top-level standalone CTA link
+#   - title + url                        → top-level standalone link (plain)
+#   - title + url + external: true       → opens in new tab
+#   - section + items                    → collapsible group
+#     each item is one of:
+#       - title + url                    → clickable nav link (relative URL)
+#       - title + url + external: true   → external link, opens in new tab
+#       - title + placeholder: true      → grayed-out, non-clickable ("coming soon")
+#       - subheader                      → small bold label inside an items list
+
+- title: Home
+  url: /
+
+- title: Ask Professor Powell
+  url: /ask-professor-powell/
+
+- section: Sequential decision problems
+  items:
+    - title: Overview
+      url: /sequential-decision-problems/
+    - title: Application settings
+      url: /application-settings/
+    - title: The SDP communities
+      url: /sdp-communities/
+    - title: Optimal Learning
+      url: /optimal-learning/
+
+- section: Modeling
+  items:
+    - title: Overview
+      url: /modeling/
+    - title: What is a decision?
+      url: /whatisadecision/
+    - title: Framing decision problems
+      url: /framingproblems/
+    - title: The universal modeling framework
+      url: /universal-modeling-framework/
+    - title: State variables
+      url: /statevariables/
+    - title: Modeling uncertainty
+      url: /modeling-uncertainty/
+
+- section: Policies
+  items:
+    - title: Overview
+      url: /policies/
+    - title: Policy function approximations
+      url: /policy-function-approximations/
+    - title: Cost function approximations
+      url: /cost-function-approximations/
+    - title: Value function approximations
+      url: /value-function-approximations/
+    - title: Direct lookahead approximations
+      url: /direct-lookahead-approximations/
+
+- section: Teaching materials
+  items:
+    - title: Courses
+      url: /teaching-courses/
+    - title: Books
+      url: /teaching-books/
+    - title: Videos
+      url: /teaching-videos/
+
+- title: Motivating applications
+  url: /motivating-applications/
+
+- section: About
+  items:
+    - title: People
+      url: /people/
+    - title: Timeline of developments
+      url: /timeline-of-developments/
+    - title: Awards
+      url: /awards/
+    - title: Sponsors
+      url: /corporate-partners/
+
+- title: Follow me on LinkedIn
+  url: https://www.linkedin.com/in/warrenbpowell
+  external: true

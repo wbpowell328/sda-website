@@ -1,0 +1,31 @@
+# Keeps the Render-hosted chatbot warm so first-time visitors don't see
+# a 30-second cold start. Render's free tier sleeps after 15 minutes of
+# no traffic; this workflow pings every 10 minutes to reset that timer.
+#
+# Cost: this is well within GitHub Actions' free monthly minutes for
+# public repos. Each run takes a few seconds; 144 runs/day; ~70 min/month.
+#
+# Manual trigger: from the Actions tab on GitHub, click this workflow
+# and use "Run workflow" to fire a single ping on demand.
+
+name: Keep chatbot warm
+
+on:
+  schedule:
+    # Every 10 minutes. GitHub uses UTC; the first '*/10' is the minutes field.
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render chatbot
+        run: |
+          echo "Pinging chatbot at $(date -u)…"
+          # -s silent, -S show errors, -o /dev/null discard body,
+          # -w write the HTTP status code, --max-time 60 give Render's
+          # cold-start headroom but bail if anything is truly hung.
+          curl -sS -o /dev/null -w "HTTP %{http_code} in %{time_total}s\n" \
+            --max-time 60 \
+            https://castle-chatbot.onrender.com/

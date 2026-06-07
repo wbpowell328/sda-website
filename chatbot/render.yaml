@@ -1,0 +1,38 @@
+# Render service config for the CASTLE chatbot.
+# After creating a private GitHub repo with this folder's contents,
+# create a "Blueprint" in Render pointed at the repo to provision
+# this service. Or use the dashboard's "New Web Service" flow and
+# Render will read this file automatically.
+
+services:
+  - type: web
+    name: castle-chatbot
+    runtime: node
+    plan: free               # 512MB RAM, sleeps after 15min idle, 750h/mo
+    region: oregon            # change if you prefer a different region
+    branch: main
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: ANTHROPIC_API_KEY
+        sync: false           # paste in Render dashboard — NOT in this file
+      - key: VOYAGE_API_KEY
+        sync: false           # paste in Render dashboard — NOT in this file
+      - key: TURSO_DATABASE_URL
+        sync: false           # paste in Render dashboard
+      - key: TURSO_AUTH_TOKEN
+        sync: false           # paste in Render dashboard
+      - key: ADMIN_PASSWORD
+        sync: false           # paste in Render dashboard
+      - key: IP_HASH_SALT
+        sync: false           # paste any random string in Render dashboard
+      - key: CLAUDE_MODEL
+        value: claude-haiku-4-5-20251001
+      - key: CHAT_RATE_LIMIT
+        value: "30"           # max chat requests per IP per hour
+      - key: RAG_K
+        value: "8"

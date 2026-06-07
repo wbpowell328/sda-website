@@ -1,0 +1,14 @@
+# Local-only files — never deploy these.
+.env
+node_modules/
+*.log
+
+# Source material is private. Re-ingest locally and commit knowledge.db.
+knowledge/
+
+# Local-only scripts and outputs.
+ingest.js
+build-context.js
+system-prompt.txt
+demo.html
+smoke-test-payload.json

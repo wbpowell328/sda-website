@@ -1,10 +1,10 @@
-# CASTLE Lab website
+﻿# CASTLE Lab website
 
 Source for the CASTLE Lab website ([castle.princeton.edu](https://castle.princeton.edu)),
 maintained by Warren B. Powell. Built with [Jekyll](https://jekyllrb.com/) and
 hosted on [GitHub Pages](https://pages.github.com/).
 
-Preview build: <https://wbpowell328.github.io/castle-website/>
+Preview build: <https://wbpowell328.github.io/sda-website/>
 
 ## Editing
 

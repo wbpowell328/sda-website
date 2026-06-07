@@ -6,10 +6,12 @@ date: 2025-12-07 10:56:40
 ---
 
 {% raw %}
-<!-- wp:tadv/classic-paragraph -->
-<p>Warren B. Powell<br />Professor Emeritus, Princeton University<br />Chief Innovation Officer, Optimal Dynamics<br />Executive-in-Residence, Rutgers University</p>
-<p>Start in English<br />12 classes of uncertainty<br />Definition of risk</p>
-<!-- /wp:tadv/classic-paragraph -->
+Warren B. Powell
+Professor Emeritus, Princeton University
+Chief Innovation Officer, Optimal Dynamics
+Executive-in-Residence, Rutgers University
 
-<!-- wp:tadv/classic-paragraph /-->
+Start in English
+12 classes of uncertainty
+Definition of risk
 {% endraw %}

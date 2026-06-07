@@ -1,12 +1,12 @@
-title: CASTLE Lab
+﻿title: Sequential Decision Analytics
 description: >-
   Warren B. Powell — Sequential Decision Analytics, Reinforcement Learning,
   Stochastic Optimization. Princeton ORFE.
 author: Warren B. Powell
 
-# URL settings for GitHub Pages preview at https://wbpowell328.github.io/castle-website/
+# URL settings for GitHub Pages preview at https://wbpowell328.github.io/sda-website/
 url: "https://wbpowell328.github.io"
-baseurl: "/castle-website"
+baseurl: "/sda-website"
 
 # No parent theme — we ship our own layouts in _layouts/ and CSS in
 # assets/css/main.css. Plugins below still work.
@@ -27,6 +27,13 @@ defaults:
 
 # Build settings
 markdown: kramdown
+kramdown:
+  # Use kramdown's mathjax engine: wraps $$...$$ math in <script type="math/tex">
+  # tags whose contents are NOT processed by Markdown (so | doesn't become a
+  # table, _ doesn't become italic, \{ doesn't get eaten as an escape, etc.).
+  # The default.html layout has a tiny MathJax-v3 shim that converts those
+  # legacy script tags into \( \) / \[ \] delimiters before MathJax processes.
+  math_engine: mathjax
 plugins:
   - jekyll-feed
   - jekyll-sitemap
@@ -45,3 +52,7 @@ exclude:
   - download_attachments.sh
   - page_inventory.md
   - drop_list.md
+  - chatbot/
+  - design-mockups/
+  - "Website images/"
+  - "Webpage notes.docx"

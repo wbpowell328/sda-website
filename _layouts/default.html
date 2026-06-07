@@ -8,28 +8,135 @@
   <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
   {% feed_meta %}
   {% seo title=false %}
+
+  <!-- Google Analytics 4 — property "CASTLE website", stream "Main website" -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-W5YKX4DTGL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-W5YKX4DTGL');
+  </script>
+
+  <!-- MathJax v3 with shim for kramdown's mathjax engine.
+       Kramdown wraps $$...$$ math in <script type="math/tex">…</script> tags
+       (the legacy MathJax-v2 marker). Our pageReady hook converts these to
+       \(…\) / \[…\] delimiters in the DOM before MathJax renders, so MathJax v3
+       (which doesn't natively recognize the legacy tags) can pick them up.
+
+       mathjax-macros.js defines window.CASTLE_MATH_MACROS (~300 macros from
+       00-OUU_Wiley.tex). MUST load before window.MathJax is assigned. -->
+  <script src="{{ '/assets/js/mathjax-macros.js' | relative_url }}"></script>
+  <script>
+    window.MathJax = {
+      loader: { load: ['[tex]/noerrors'] },
+      tex: {
+        packages: { '[+]': ['noerrors'] },
+        inlineMath:  [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        macros: window.CASTLE_MATH_MACROS || {},
+      },
+      svg: { fontCache: 'global' },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] },
+      startup: {
+        pageReady: function () {
+          document.querySelectorAll('script[type^="math/tex"]').forEach(function (s) {
+            var display = (s.getAttribute('type') || '').indexOf('mode=display') >= 0;
+            var open = display ? '\\[' : '\\(';
+            var close = display ? '\\]' : '\\)';
+            var text = document.createTextNode(open + s.textContent + close);
+            s.parentNode.replaceChild(text, s);
+          });
+          return MathJax.startup.defaultPageReady();
+        },
+      },
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 
 <header class="site-header">
   <div class="site-header-inner">
-    <a href="{{ '/' | relative_url }}" class="site-title">{{ site.title }}</a>
-    <span class="site-subtitle">Warren B. Powell &mdash; Princeton ORFE</span>
+    <div class="brand-block">
+      <a href="{{ '/' | relative_url }}" class="brand">Sequential Decision Analytics</a>
+      <span class="brand-sub">Warren B. Powell &middot; Princeton University</span>
+    </div>
+    <nav class="topnav" aria-label="Primary">
+      {% for section in site.data.nav %}
+        <a href="{{ section.items[0].url | relative_url }}">{{ section.section }}</a>
+      {% endfor %}
+    </nav>
   </div>
 </header>
 
 <div class="layout">
   <nav class="sidebar" aria-label="Site navigation">
-    <ul>
-      <li><a href="{{ '/' | relative_url }}">Home</a></li>
-      {% for item in site.data.nav %}
-        <li><a href="{{ item.url | relative_url }}">{{ item.title }}</a></li>
-      {% endfor %}
-    </ul>
+    {%- comment -%}
+      First pass: find the section whose items contain the current page URL.
+      We use the *first* match (guard with `current_section == nil`) so that
+      a URL listed in multiple sections opens the section it appears in first
+      — not the last one wins. This is also overridden by the JS at the bottom
+      of this layout which restores the user's saved open/closed state from
+      localStorage.
+    {%- endcomment -%}
+    {% assign current_section = nil %}
+    {% for entry in site.data.nav %}
+      {% if current_section == nil and entry.section %}
+        {% for it in entry.items %}
+          {% if current_section == nil and it.url and it.url == page.url %}
+            {% assign current_section = entry.section %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+
+    {% for entry in site.data.nav %}
+      {% if entry.section %}
+        {% assign sect_open = false %}
+        {% if current_section %}
+          {% if entry.section == current_section %}{% assign sect_open = true %}{% endif %}
+        {% else %}
+          {% if entry.open %}{% assign sect_open = true %}{% endif %}
+        {% endif %}
+        {%- comment -%}
+          name="sidebar-sections" gives all section <details> elements native
+          accordion behavior: opening one auto-closes the others. Combined with
+          the first-match auto-open logic above, this means:
+            - Click a link inside the currently-open section → it stays open.
+            - Click a link inside a different section's items → that section
+              opens, the previous one closes.
+          Supported in Chrome 120+, Safari 17+, Firefox 119+.
+        {%- endcomment -%}
+        <details name="sidebar-sections" {% if sect_open %}open{% endif %}>
+          <summary>{{ entry.section }}</summary>
+          <ul>
+            {% for item in entry.items %}
+              {% if item.subheader %}
+                <li class="sidebar-subheader">{{ item.subheader }}</li>
+              {% elsif item.placeholder %}
+                <li><span class="sidebar-placeholder" title="Page coming soon">{{ item.title }}</span></li>
+              {% elsif item.external %}
+                <li><a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a></li>
+              {% else %}
+                <li><a href="{{ item.url | relative_url }}">{{ item.title }}</a></li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </details>
+      {% elsif entry.cta %}
+        <a href="{{ entry.url | relative_url }}" class="sidebar-cta">{{ entry.title }}</a>
+      {% elsif entry.external %}
+        <a href="{{ entry.url }}" target="_blank" rel="noopener" class="sidebar-link">{{ entry.title }}</a>
+      {% else %}
+        <a href="{{ entry.url | relative_url }}" class="sidebar-link">{{ entry.title }}</a>
+      {% endif %}
+    {% endfor %}
   </nav>
 
   <main class="content">
-    {% if page.title and page.url != "/" %}
+    {% if page.title and page.url != "/" and page.layout != "home" %}
       <h1 class="page-title">{{ page.title }}</h1>
     {% endif %}
     {{ content }}
@@ -37,8 +144,41 @@
 </div>
 
 <footer class="site-footer">
-  <p>&copy; {{ site.time | date: "%Y" }} {{ site.author }}. Built with <a href="https://jekyllrb.com/">Jekyll</a>, hosted on <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+  <p>&copy; {{ site.time | date: "%Y" }} {{ site.author }} &middot;
+    <a href="https://www.linkedin.com/in/warrenbpowell" target="_blank" rel="noopener noreferrer">Contact me on LinkedIn</a></p>
 </footer>
+
+<!-- Chat widget — activates on pages that include a #castle-chat-inline
+     mount point. On localhost it talks to the local Node proxy
+     (npm start in chatbot/); in production it talks to the Render-hosted
+     chatbot service. -->
+<script>
+  var __host = window.location.hostname;
+  var __isLocal = (__host === "localhost" || __host === "127.0.0.1");
+  window.CASTLE_CHAT_API = __isLocal
+    ? "http://localhost:3000/chat"
+    : "https://castle-chatbot.onrender.com/chat";
+
+  // Pre-warm the Render-hosted chatbot in production so a visitor's first
+  // chatbot click doesn't trigger a cold-start (~30s on Render free tier).
+  // Fires a fire-and-forget GET against the chatbot host shortly after page
+  // load. Skipped on localhost (no cold-start there anyway).
+  if (!__isLocal) {
+    window.addEventListener("load", function () {
+      setTimeout(function () {
+        try {
+          fetch("https://castle-chatbot.onrender.com/", {
+            method: "GET",
+            mode: "no-cors",
+            cache: "no-store",
+            keepalive: true
+          }).catch(function () { /* swallow — best-effort wake-up */ });
+        } catch (e) { /* ignore */ }
+      }, 500);
+    });
+  }
+</script>
+<script src="{{ '/assets/js/chatbot-widget.js' | relative_url }}" defer></script>
 
 </body>
 </html>

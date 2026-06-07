@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CASTLE Chatbot — Demo</title>
+<style>
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background: #f5ecd6;
+    color: #2b2419;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    background: #3d2914;
+    color: #f5ecd6;
+    padding: 1rem 1.5rem;
+    border-bottom: 4px solid #c9621e;
+  }
+  header h1 { margin: 0; font-size: 1.4rem; }
+  header p { margin: 0.25rem 0 0; color: #d4b88a; font-size: 0.92rem; }
+  main {
+    flex: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    width: 100%;
+  }
+  main p { line-height: 1.6; }
+  code { background: #ede0bd; padding: 0.1em 0.3em; border-radius: 3px; font-size: 0.92em; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>CASTLE Chatbot — Demo Page</h1>
+  <p>Local prototype. Click the chat bubble in the bottom-right corner to talk to Claude.</p>
+</header>
+
+<main>
+  <h2>What this is</h2>
+  <p>
+    This page hosts the chatbot widget so you can test it end-to-end without
+    touching the main Jekyll site. The widget code is in
+    <code>chatbot/widget.html</code> and is included below.
+  </p>
+
+  <h2>Try asking</h2>
+  <ul>
+    <li>"What books has Warren written?"</li>
+    <li>"What is sequential decision analytics?"</li>
+    <li>"Where can I find his courses?"</li>
+    <li>"Who is Warren Powell?"</li>
+  </ul>
+
+  <h2>What's happening under the hood</h2>
+  <p>
+    Your browser sends a POST to <code>http://localhost:3000/chat</code>. The
+    Node server (running on your laptop) attaches your knowledge base as a system
+    prompt and forwards the conversation to the Claude API. The response streams
+    back token by token. The Anthropic API key never leaves your laptop.
+  </p>
+</main>
+
+<!-- Chatbot widget — same snippet that will eventually go into _layouts/default.html -->
+<div id="castle-chat-root"></div>
+<script>
+  // Override the default API endpoint if the widget is served from somewhere
+  // other than localhost:3000.
+  window.CASTLE_CHAT_API = "http://localhost:3000/chat";
+</script>
+<script src="widget.js" defer></script>
+
+</body>
+</html>
