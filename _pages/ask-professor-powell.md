@@ -15,9 +15,7 @@ queries in most major languages and will attempt to respond in the same language
 used to pose the question, but the responses are based in Professor Powell's
 writings which are in English.
 
-<p style="font-size: 0.85rem; color: #7a6240;"><em>Conversations are logged so Professor Powell can review feedback and improve the assistant. Don't share anything you want kept private.</em></p>
+<p style="font-size: 0.85rem; color: #7a6240; margin-bottom: 0;"><em>Conversations are logged so Professor Powell can review feedback and improve the assistant. Don't share anything you want kept private.</em></p>
 
-<br clear="all" />
-
-<div id="castle-chat-inline"></div>
+<div id="castle-chat-inline" style="clear: both; margin-top: 0.2in;"></div>
 {% endraw %}
