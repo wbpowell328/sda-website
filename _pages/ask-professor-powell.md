@@ -4,7 +4,7 @@ permalink: /ask-professor-powell/
 ---
 
 {% raw %}
-<img src="/sda-website/assets/images/c3po-transparent.png" alt="C-3PO golden droid statue" width="160" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/sda-website/assets/images/c3po-transparent.png" alt="C-3PO golden droid statue" width="96" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem; margin-top: -0.1in;" />
 The "Ask Professor Powell" chatbot will answer questions based on material in
 his books, LinkedIn posts, and a number of his webpages (these are cited in
 the response). This resource is intended to provide quick feedback, but the
