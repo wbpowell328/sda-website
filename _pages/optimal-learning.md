@@ -23,6 +23,7 @@ This page is organized as follows:
 - [**KG vs. UCB and the problem of tuning**](#kg-vs-ucb) — a direct head-to-head comparison and why tuning is harder than it looks.
 - [**A video application of UCB and KG**](#video) — a real-world mutual-fund cash-management problem.
 - [**The Knowledge Gradient — the original research**](/sda-website/knowledgegradient/) — the Test of Time Award paper, the research lineage, and Peter Frazier's open-source software.
+- [**The business case for optimal learning**](/sda-website/optimal-learning-business-case/) — the breadth of applications, and what they imply about the size of this market.
 
 ## Classes of optimal learning problems {#classes}
 
