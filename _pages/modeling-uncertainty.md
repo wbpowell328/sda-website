@@ -10,7 +10,14 @@ The literature on sequential decision problems (also known as dynamic programs, 
 
 In most real applications, a good policy for making decisions that works well under realistic conditions (which means accurately capturing uncertainty) is widely preferred over an optimal policy for a problem using a stylized model of uncertainty.
 
-## The 12 categories of uncertainty
+## Jump to a section
+
+- [The 12 categories of uncertainty](#categories)
+- [Modeling uncertainty](#modeling)
+- [Simulating the information process](#simulating)
+- [The flavors of uncertainty](#flavors)
+
+## The 12 categories of uncertainty {#categories}
 
 Chapter 10 of *Reinforcement Learning and Stochastic Optimization* identifies 12 ways that exogenous information can affect the behavior of a sequential decision problem:
 
@@ -33,7 +40,7 @@ The way to use these 12 categories is as a *guide* to identifying the forms of u
 
 A simple problem such as playing chess would have only one of these, while complex problems such as supply chain management or public health would have one or more sources in all 12 categories.
 
-## Modeling uncertainty
+## Modeling uncertainty {#modeling}
 
 There is considerable confusion about how to capture the effect of uncertainty on a sequential decision problem. The biggest problem is that people often focus on how to make decisions. We are going to insist on our **"model first, then solve"** philosophy — which means we focus first on modeling how the system evolves over time, leaving to later the design of the policy.
 
@@ -45,13 +52,13 @@ $$W_{t+1,i}(S_t, x_t) = \text{the information from class } i \in \mathcal{I}^{\i
 
 The information $W_{t+1,i}(S_t, x_t)$ may change performance metrics, any of the parameters in our policy $X^\pi(S_t  \mid  \theta)$, or any other parameters that affect the system in the future (these enter through the state transition model).
 
-## Simulating the information process
+## Simulating the information process {#simulating}
 
 If we wish to evaluate a policy $X^\pi(S_t  \mid  \theta)$, we need to be able to simulate the system. We can do this in the field — meaning we simply observe the information processes $W_{t+1,i}(S_t, x_t)$ as they happen, which avoids any need to model the process. The downside is that this is very slow, and we have to live with our mistakes.
 
 The alternative is to create mathematical models that allow us to sample $W_{t+1,i}(S_t, x_t)$. Stochastic models for many systems can be quite subtle and complex. It is tempting to think that all models of uncertainty can be done with normal distributions and Poisson processes (which are popular in textbooks), but those will not take you very far in real-world stochastic models.
 
-## The flavors of uncertainty
+## The flavors of uncertainty {#flavors}
 
 The evolution of the information processes $W_{t+1,i}(S_t, x_t)$ for the different information classes $i \in \mathcal{I}^{\inf}$ can come in a range of styles, such as:
 

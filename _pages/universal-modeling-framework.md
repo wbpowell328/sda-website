@@ -15,7 +15,14 @@ The problem with the many communities of stochastic optimization is that they fo
 
 We start by illustrating how deterministic optimization problems are modeled. We then show how we extend this approach to sequential decision problems by focusing on finding effective (but typically not optimal) policies.
 
-## Deterministic optimization
+## Jump to a section
+
+- [Deterministic optimization](#deterministic-optimization)
+- [Modeling sequential decision problems](#modeling-sequential-decision-problems)
+- [What remains to finish a model](#what-remains-to-finish-a-model)
+- [What comes next?](#what-comes-next)
+
+## Deterministic optimization {#deterministic-optimization}
 
 Deterministic optimization models consist of three elements:
 
@@ -31,7 +38,7 @@ This modeling framework has been very successful, but it fails to capture the dy
 
 Despite these limitations, the deterministic modeling framework follows a style that we strictly adhere to: **model first, then solve**. This means that before we determine the best value of $x$, you need to create a model, and *then* choose an algorithm to find the optimal solution.
 
-## Modeling sequential decision problems
+## Modeling sequential decision problems {#modeling-sequential-decision-problems}
 
 We apply the "model first, then solve" philosophy used in deterministic optimization — with the exception that we are searching for good **policies** $X^\pi(S_t)$, which are functions that determine the decisions $x_t$.
 
@@ -49,7 +56,7 @@ These five elements make up the **Universal Modeling Framework (UMF)**, and we c
 
 The UMF lays the foundation for our entire approach for modeling and solving sequential decision problems, just as the prototypical framework for deterministic optimization lays the foundation for optimizing deterministic models.
 
-## What remains to finish a model
+## What remains to finish a model {#what-remains-to-finish-a-model}
 
 1. **Framing** — this is where we answer three questions (in English):
    1. What are the performance metrics? This forms the basis for how we evaluate the performance of a policy.
@@ -66,7 +73,7 @@ The UMF lays the foundation for our entire approach for modeling and solving seq
    4. Any information now that might be needed to compute (a), (b), and (c) in the future.
 4. **Create the state transition model** $S^M(S_t, x_t, W_{t+1})$.
 
-## What comes next?
+## What comes next? {#what-comes-next}
 
 While the universal modeling framework is quite general, it is just a model. To work in the real world, we have to address a few more issues:
 

@@ -6,7 +6,15 @@ date: 2026-05-30
 ---
 
 {% raw %}
-## The framing process
+## Jump to a section
+
+- [The framing process](#the-framing-process)
+- [Performance metrics](#performance-metrics)
+- [Handling risk](#handling-risk)
+- [Decisions](#decisions)
+- [Uncertainties](#uncertainties)
+
+## The framing process {#the-framing-process}
 
 The framing step starts with answering three questions, in English:
 
@@ -16,7 +24,7 @@ The framing step starts with answering three questions, in English:
 
 These three questions do not answer all the questions that will come up, but they are an important start. Most important is that they do not bias a problem toward any form of analytics, since typically all forms are required for complex problems.
 
-## Performance metrics
+## Performance metrics {#performance-metrics}
 
 Decisions are evaluated using performance metrics, which come in many flavors, such as:
 
@@ -32,7 +40,7 @@ Metrics need to be prioritized. An effective way to do this is to sort them into
 
 <img src="/sda-website/assets/images/framing-decision-problems/metrics-pyramid.png" alt="A pyramid of performance metrics: Unit cost at the top; Labor hours per unit, Inventory, and Downtime at the middle level; and Equipment (productivity / yield / maintenance expense / downtime), Personnel (cost per hour / training expense / turnover), and Facility (depreciation / maintenance / utilization) at the base" style="display: block; margin: 1.5rem auto; max-width: 80%; height: auto;" />
 
-## Handling risk
+## Handling risk {#handling-risk}
 
 There are two ways we can evaluate any performance metric:
 
@@ -41,7 +49,7 @@ There are two ways we can evaluate any performance metric:
 
 Risk metrics can be included in the objective function (usually with a scaling factor) or handled as a constraint.
 
-## Decisions
+## Decisions {#decisions}
 
 Decisions are how we change a process — whether it is an initial design decision, or operational decisions that are made over time. Decisions can be obvious (routing trucks, ordering inventory, prescribing a medication), but often they are not.
 
@@ -51,7 +59,7 @@ There are many settings in practice where we behave as if we were on autopilot, 
 
 A complete discussion of decisions is on the [What is a decision?](/sda-website/whatisadecision/) page.
 
-## Uncertainties
+## Uncertainties {#uncertainties}
 
 *Uncertainty* is a word we use to describe information that will arrive to the system in the future that affects its performance in some way. Since the information has not arrived yet, we don't know what the information will contain — which means it is uncertain.
 

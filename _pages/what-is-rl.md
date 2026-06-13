@@ -20,7 +20,15 @@ I next contrast the descriptions of "reinforcement learning" from three expert s
 
 I then offer an alternative strategy, which is to describe the field in terms of a problem class (sequential decision problems) and a set of methods (four classes of policies) which I summarize at the end.  Today, I think that my framework is broader than what currently passes for reinforcement learning, but "reinforcement learning" continues to evolve.  
 
-## **A little history**
+## Jump to a section
+
+- [A little history](#history)
+- [A growing field](#growing-field)
+- [Perspectives of reinforcement learning](#perspectives)
+- [Sequential decision problems](#sdp)
+- [Designing policies](#designing-policies)
+
+## **A little history** {#history}
 
 The first use of value function approximations to help overcome the "curse of dimensionality" in dynamic programming occurred in 1959 with a paper coauthored by Richard Bellman (the father of dynamic programming),  but after this paper this line of research died in operations research until the late 1980's.  
 
@@ -35,7 +43,7 @@ where $$r(s^n,a^n)$$ is the reward from being in a state $$s^n$$ and taking an a
 
 Over time, researchers found that Q-learning did not always work (in fact, it often does not work, a statement that applies to virtually every method for solving sequential decision problems). The second edition of Sutton and Barto's classic book *Reinforcement Learning* (which appeared in 2018) now includes parameterized policies, upper confidence bounding, Q-learning, and a class of lookahead policies known as Monte Carlo tree search.  Below I provide a brief sketch of four classes of policies, and these methods span all four classes.  I claim these four classes are universal, which means *any* method proposed to solve a sequential decision problem will fall in these four (meta) classes. 
 
-## A growing field
+## A growing field {#growing-field}
 
 Over the past decade, the set of activities that fall under "reinforcement learning" has simply exploded.  This used to be a pocket community inside computer science doing what others called "approximate dynamic programming" (or "adaptive dynamic programming" or "neuro-dynamic programming").  Not any more.  
 
@@ -47,7 +55,7 @@ Not surprisingly, the scope of problems has expanded far beyond the problems fam
 
 It is specifically the massive popularity of "reinforcement learning" that forces us to ask the question: what does it mean?  The challenge of defining the term can be attributed to the vast diversity of problems that fall within the framework of RL problems.  It should not be surprising that we are not going to be able to solve the universe of RL problems with a single method, opening up the question: just what are RL problems, and what are RL methods? 
 
-## Perspectives of reinforcement learning
+## Perspectives of reinforcement learning {#perspectives}
 
 What is meant by the term "reinforcement learning" has been evolving over the years (the same evolution has been happening in sister communities under the broad heading of "stochastic optimization").  Below I use three of the most popular sources: Rich Sutton and Andy Barto (who introduced the term), Ben van Roy (an early pioneer and well-known RL researcher), and Dimitri Bertsekas, widely known for his books on dynamic programming and optimal control (also neuro-dynamic programming, approximate dynamic programming, as well as reinforcement learning).  Finally, while there are many resources on the internet (such as this page), I have also included the Wikipedia page on reinforcement learning.  I then contrast these perspectives with the approach used in my new book, and close with some comments on the evolution of "reinforcement learning."
 
@@ -130,7 +138,7 @@ Ultimately, I think it will be more appropriate to adopt a broader name for a fi
 
 Below I provide a brief introduction to modeling sequential decision problems (which requires optimizing over policies), and then designing policies.  As I watch the evolution of the work taking place under "reinforcement learning," my belief is that eventually the RL community will have to recognize the space of sequential decision problems (some might say that this has already happened), and all four classes of policies (this requires more time).  
 
-## Sequential decision problems
+## Sequential decision problems {#sdp}
 
 Sequential decision problems describe any setting where we intermingle making decisions and then making observations that affect the performance of the decision. *Any* sequential decision problem can be written as the sequence 
 
@@ -167,7 +175,7 @@ Recognizing that objective functions can come in different styles, I claim that 
 
 A key feature of this canonical framework is searching over policies (which are forms of functions). This is comparable to the challenge faced in machine learning where the search is for the best statistical model (which is also a function). The most common mistake is to assume that the starting point for designing policies is Bellman's equation.  This is simply not true.  In the next section I describe the four classes of policies that spans every method for making decisions.
 
-## **Designing policies**
+## **Designing policies** {#designing-policies}
 
 The core challenge of sequential decision problems is the design of policies (modeling uncertainty is also a nice challenge).  There are two broad classes for designing policies:
 

@@ -10,7 +10,16 @@ The class of policies that have received the most attention in the research lite
 
 Let's back up. It all starts by deriving Bellman's equation.
 
-## Bellman's optimality equation
+## Jump to a section
+
+- [Bellman's optimality equation](#bellmans-equation)
+- [A brief history of approximating Bellman's equation](#brief-history)
+- [Approximating value functions](#approximating-vfs)
+- [How well does it work?](#how-well)
+- [Let the reader beware](#reader-beware)
+- [For more information](#more-info)
+
+## Bellman's optimality equation {#bellmans-equation}
 
 We start by writing our objective function to maximize total contributions (we could minimize total costs) over all policies:
 
@@ -48,7 +57,7 @@ In practice, the state $S_t$, decision $x_t$, and exogenous information $W_{t+1}
 
 Even Bellman realized this problem in the 1950s, and subsequently launched a career doing theory, which formed the basis of decades of research by many who followed his lead.
 
-## A brief history of approximating Bellman's equation
+## A brief history of approximating Bellman's equation {#brief-history}
 
 The elegance of Bellman's equation, and its computational challenges, provided the basis for generations of researchers interested in solving problems. This motivated several lines of research:
 
@@ -58,7 +67,7 @@ The elegance of Bellman's equation, and its computational challenges, provided t
 
 By now there is a substantial body of research that has evolved primarily under the headings of *reinforcement learning* and *approximate dynamic programming*. A good reference is chapters 14 through 18 of *Reinforcement Learning and Stochastic Optimization*.
 
-## Approximating value functions
+## Approximating value functions {#approximating-vfs}
 
 There is by now an extensive literature on methods for approximating value functions. We provide here just a brief peek into one of the most popular classes of algorithms presented in textbooks.
 
@@ -82,7 +91,7 @@ $$\bar V_t^n(S_t^n) = (1 - \alpha_n)\, \bar V_t^{n-1}(S_t^n) + \alpha_n\, \hat v
 
 This is one of a number of updating strategies. We may be just updating the value at a single discrete state $S_t^n$, or we may be updating some parametric approximation that affects values across the entire state space.
 
-## How well does it work?
+## How well does it work? {#how-well}
 
 Despite the vast number of papers demonstrating successful applications, the consensus that emerged in the post-2010 period could be best described as:
 
@@ -98,7 +107,7 @@ The state variables for real problems are rich and varied — multidimensional (
 
 Our experience is that Bellman's equation can be quite useful for problems that exhibit special structure. This is not limited to small problems. In fact, our most prominent successes have been with **high-dimensional spatial resource allocation problems**. We have successfully implemented models based on value function approximations at a major railroad, and throughout the truckload trucking industry.
 
-## Let the reader beware
+## Let the reader beware {#reader-beware}
 
 While there are many papers with successful numerical experiments demonstrating various flavors of approximating Bellman's equation, it is important to be aware of the following:
 
@@ -108,7 +117,7 @@ While there are many papers with successful numerical experiments demonstrating 
 
 The only real test of a method is when teams other than the one who developed a method choose it over competing methods, and implement it under real-world conditions.
 
-## For more information
+## For more information {#more-info}
 
 We are not going to attempt to communicate the richness and complexities of approximate value functions on this website. If you think you have a problem that is particularly well suited to using Bellman's equation, we recommend Chapters 14–18 of *Reinforcement Learning and Stochastic Optimization*:
 

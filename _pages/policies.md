@@ -12,7 +12,15 @@ If your decision variable is $x_t$ (always use lowercase for decision variables)
 
 If you prefer to use action $a_t$, you would write the policy as $A^\pi(S_t)$, and so on.
 
-## The four classes of policies
+## Jump to a section
+
+- [The four classes of policies](#four-classes)
+- [Hybrids](#hybrids)
+- [Simulating policies](#simulating-policies)
+- [Evaluating policies](#evaluating-policies)
+- [Optimizing over policies](#optimizing-over-policies)
+
+## The four classes of policies {#four-classes}
 
 There are two general strategies for creating policies, each of which can be divided into two classes — creating four classes of policies.
 
@@ -54,7 +62,7 @@ These four classes of policies span **any** method for making decisions — incl
 
 The first two classes (PFAs and CFAs) are the simplest, along with deterministic DLAs. These three are by far the most widely used in practice. By contrast, VFA-based policies have attracted the most attention from the academic community, followed by stochastic lookahead.
 
-## Hybrids
+## Hybrids {#hybrids}
 
 The four classes provide the foundation for a rich array of **hybrid policies**, such as:
 
@@ -64,7 +72,7 @@ The four classes provide the foundation for a rich array of **hybrid policies**,
 - **VFA policy using PFA** — distribution planning using VFAs to value inventory at each warehouse, but using rules (PFAs) to force deliveries to specific locations.
 - **VFA with CFA** — start with a VFA-based policy with a linear model, then tune the parameters of the linear VFA to get the best results using a simulator.
 
-## Simulating policies
+## Simulating policies {#simulating-policies}
 
 There are two primary ways of simulating policies:
 
@@ -79,7 +87,7 @@ There are two primary ways of simulating policies:
    - **Sample paths from a mathematical model.** For many problems, recreating the properties of the exogenous information process may be the most difficult part of designing a simulator.
 2. **Field implementations** — use a policy in the field and evaluate its performance over time based on actual experience. Watching a process evolve in the field avoids the inevitable approximations of simulators, but it is slow (it takes a week to simulate a week) and requires experimenting in the field, where mistakes can be expensive.
 
-## Evaluating policies
+## Evaluating policies {#evaluating-policies}
 
 With deterministic optimization, we typically have a single objective function (say, total cost) and we are interested in the optimal solution. Evaluating a policy for a sequential decision problem is invariably more complex. In practice, we typically need to pay attention to:
 
@@ -92,7 +100,7 @@ With deterministic optimization, we typically have a single objective function (
 7. **Complexity / ease of development** — is there a risk that a methodology simply will not work?
 8. **Data requirements.**
 
-## Optimizing over policies
+## Optimizing over policies {#optimizing-over-policies}
 
 When we are using deterministic optimization, we want to find the best *decision*, possibly by solving a problem that looks like:
 

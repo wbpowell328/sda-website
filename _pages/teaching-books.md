@@ -6,9 +6,18 @@ date: 2026-05-31
 ---
 
 {% raw %}
+## Jump to a book
+
+- [Reinforcement Learning and Stochastic Optimization](#rlso)
+- [Sequential Decision Analytics and Modeling](#sdam)
+- [Bridging Decision Problems (monograph series)](#bridging)
+- [A Modern Approach to Teaching Optimization](#mato)
+- [Optimal Learning](#optimal-learning)
+- [The Decision Factory](#decision-factory)
+
 <img src="/sda-website/assets/images/teaching-books/rlso-cover.png" alt="Reinforcement Learning and Stochastic Optimization book cover" width="180" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 
-## Reinforcement Learning and Stochastic Optimization
+## Reinforcement Learning and Stochastic Optimization {#rlso}
 
 W. B. Powell, *Reinforcement Learning and Stochastic Optimization: A unified framework for sequential decisions (RLSO)*, 1100 pages, John Wiley and Sons, 2022.
 
@@ -28,7 +37,7 @@ This is a graduate-level book aimed at readers who are interested in writing the
 
 <img src="/sda-website/assets/images/teaching-books/sdam-cover.jpg" alt="Sequential Decision Analytics and Modeling book cover" width="180" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 
-## Sequential Decision Analytics and Modeling
+## Sequential Decision Analytics and Modeling {#sdam}
 
 W. B. Powell, *Sequential Decision Analytics and Modeling (SDAM)*, 2nd edition, Kindle and PDF, 2025.
 
@@ -40,7 +49,7 @@ SDAM is recommended as a starting point for readers interested in an introductio
 
 <img src="/sda-website/assets/images/teaching-books/bridging-vol-i-cover.jpg" alt="Bridging Decision Problems, Volume I: Framing the Problem cover" width="180" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 
-## Bridging Decision Problems (monograph series)
+## Bridging Decision Problems (monograph series) {#bridging}
 
 **Volume I: Framing the Problem.** Kindle Direct Publishing, January 2026.
 
@@ -63,7 +72,7 @@ These questions are supported by a dozen different applications in chapter 2, an
 
 <img src="/sda-website/assets/images/teaching-books/mato-cover.jpg" alt="A Modern Approach to Teaching Optimization book cover" width="180" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 
-## A Modern Approach to Teaching Optimization
+## A Modern Approach to Teaching Optimization {#mato}
 
 W. B. Powell, *A Modern Approach to Teaching Optimization*, Boston–Delft: NOW Publishers, 2024.
 
@@ -75,7 +84,7 @@ This book is designed for instructors. It is intended to provide an outline for 
 
 <img src="/sda-website/assets/images/teaching-books/optimal-learning-cover.jpg" alt="Optimal Learning book cover" width="180" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 
-## Optimal Learning
+## Optimal Learning {#optimal-learning}
 
 W. B. Powell and I. O. Ryzhov, *Optimal Learning*, John Wiley and Sons, New York, 2012.
 
@@ -89,7 +98,7 @@ I taught this course at Princeton University from 2008 through 2019 to undergrad
 
 <img src="/sda-website/assets/images/teaching-books/decision-factory-cover.png" alt="Cover of 'The Decision Factory: A Novel About Decisions Under Uncertainty,' first edition, by Adam DeJans Jr. and John Brandon Elam, with a foreword by Warren B. Powell" width="180" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 
-## The Decision Factory
+## The Decision Factory {#decision-factory}
 
 Adam DeJans Jr. and John Brandon Elam, *The Decision Factory: A Novel About Decisions Under Uncertainty* (with a foreword by W. B. Powell), First Edition.
 
