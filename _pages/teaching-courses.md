@@ -14,6 +14,7 @@ This page outlines a series of courses and seminars, some of which were taught a
 - [**Reinforcement Learning and Stochastic Optimization (RLSO)**](#rlso) — a graduate-level course for students who want to learn how to model real-world sequential decision problems and develop implementable algorithms.
 - [**RLSO as a weekly seminar series**](#rlso-seminar) — how the RLSO course could be self-taught as a weekly seminar series.
 - [**Optimal Learning**](#optimal-learning) — I taught this course for 10 years at Princeton at the undergraduate level.
+- [**Designing an introductory optimization course**](/sda-website/teachingoptimization/) — an outline for an introductory optimization course for undergraduates and masters students, organized around the book *A Modern Approach to Teaching Optimization*.
 
 ## Framing Decision Problems {#framing}
 
