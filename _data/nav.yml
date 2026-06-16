@@ -72,6 +72,8 @@
       url: /motivating-applications/
     - title: The 7 levels of AI
       url: /the-7-levels-of-ai/
+    - title: RL vs SDA
+      url: /rlvssda/
 
 - section: About
   items:
