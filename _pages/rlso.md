@@ -85,7 +85,7 @@ Below I briefly summarize each chapter. Individual chapters can be downloaded by
 
 ## The roots of the book {#roots}
 
-This book used my 2011 book, [*Approximate Dynamic Programming: Solving the Curses of Dimensionality*](http://adp.princeton.edu), as a starting point. Chapter 3 on online learning evolved from chapter 8 in ADP on approximating value functions. The modeling chapter 5 from ADP is now chapter 9 (with major modifications) in RLSO. Chapter 14 in RLSO is based on the old chapter 3 on Markov decision processes, but now includes a section on optimal control and examples of dynamic programs that can be solved exactly. Chapter 15 is an entirely new chapter on backward approximate dynamic programming. Chapters 16–18 are based directly on the chapters in the ADP book for approximating value functions (they are now labeled as "Forward approximate dynamic programming"). Everything else is completely new.
+This book used my 2011 book, *Approximate Dynamic Programming: Solving the Curses of Dimensionality*, as a starting point. Chapter 3 on online learning evolved from chapter 8 in ADP on approximating value functions. The modeling chapter 5 from ADP is now chapter 9 (with major modifications) in RLSO. Chapter 14 in RLSO is based on the old chapter 3 on Markov decision processes, but now includes a section on optimal control and examples of dynamic programs that can be solved exactly. Chapter 15 is an entirely new chapter on backward approximate dynamic programming. Chapters 16–18 are based directly on the chapters in the ADP book for approximating value functions (they are now labeled as "Forward approximate dynamic programming"). Everything else is completely new.
 
 Warren Powell — wbpowell328@gmail.com
 {% endraw %}
