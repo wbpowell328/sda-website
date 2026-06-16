@@ -19,6 +19,7 @@ Below we list a series of communities roughly in the order that they emerged. So
 - [Decision analysis](#decision-analysis)
 - [Stochastic search](#stochastic-search)
 - [Monte Carlo simulation](#monte-carlo)
+- [Reinforcement Learning vs Sequential Decision Analytics](#rl-vs-sda)
 
 ## Markov decision processes {#mdp}
 
@@ -115,4 +116,8 @@ These problems are so rich that a number of different communities have evolved t
 The most powerful tool that cuts across all the communities that study sequential decision problems is the Monte Carlo simulation community. So it should not be surprising that the simulation community would have its own variation of sequential decision problem.
 
 This problem arose in the 1960s when people would use simulation to evaluate the performance of a complex system such as a manufacturing process. Not surprisingly, people would create simulation models to test out different designs, which required a certain amount of trial-and-error. This problem became known as the *ranking and selection* problem. As computers matured, people began testing multiple designs in parallel, which bypassed the original challenge when simulations had to be run in sequence.
+
+## Reinforcement Learning vs Sequential Decision Analytics {#rl-vs-sda}
+
+A detailed comparison of reinforcement learning (in the tradition of Sutton and Barto) with the sequential decision analytics framework — including where the two overlap, where they diverge, and how the four classes of policies bridge the two — is on [its own page](/sda-website/rlvssda/).
 {% endraw %}
