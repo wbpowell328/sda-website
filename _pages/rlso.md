@@ -15,7 +15,6 @@ This page is organized as follows:
 
 - [**Purchasing**](#purchasing)
 - [**Audience**](#audience)
-- [**Tutorial**](#tutorial) — a four-part video introduction
 - [**Major book themes and features**](#themes)
 - [**Chapter summaries**](#chapters)
 - [**The roots of the book**](#roots)
@@ -29,15 +28,6 @@ The book is available from [Amazon](https://tinyurl.com/RLSOAmazon) (at a contin
 ## Audience {#audience}
 
 The book requires little more than a good course in probability and statistics / machine learning (and supporting linear algebra). There are occasional forays that draw on linear programming. The presentation is designed for people who want to plan sequential decision problems, with an emphasis on modeling and computation. Applications are drawn from numerous topics in engineering (electrical, civil, mechanical, chemical), physical sciences, computer science, social sciences, economics and finance, operations research and industrial engineering, business applications, and statistics / machine learning.
-
-## Tutorial {#tutorial}
-
-A four-part video tutorial (recorded March 13, 2022, based on my presentation at the Informs Optimization Society conference):
-
-- [**Part I:** Introduction and the universal framework](https://tinyurl.com/SDAPartI)
-- [**Part II:** An energy storage example, bridging machine learning to sequential decisions, and an introduction to the four classes of policies](https://tinyurl.com/SDAPartII)
-- [**Part III:** The first three classes of policies — Policy function approximations (PFAs), cost function approximations (CFAs), and value function approximations (VFAs)](https://tinyurl.com/SDAPartIII)
-- [**Part IV:** The fourth class, direct lookahead approximations (DLAs), followed by a discussion of how different communities in the "jungle of stochastic optimization" have been evolving to adopt all four classes of policies, ending with a pitch for courses (and even a new academic field) on sequential decision analytics](https://tinyurl.com/SDAPartIV)
 
 ## Major book themes and features {#themes}
 
