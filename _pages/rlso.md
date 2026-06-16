@@ -6,8 +6,6 @@ date: 2026-06-04
 ---
 
 {% raw %}
-Warren B. Powell, Professor Emeritus, Princeton University
-
 **Citation:** Warren B. Powell, *Reinforcement Learning and Stochastic Optimization: A unified framework for sequential decisions*, John Wiley and Sons, Hoboken, 2022 (1,100 pages).
 
 <img src="/sda-website/assets/images/rlso/rlso-cover.jpg" alt="Cover of Warren B. Powell's book 'Reinforcement Learning and Stochastic Optimization: A unified framework for sequential decisions,' John Wiley and Sons, 2022" width="240" align="right" style="max-width: 100%; height: auto; margin-left: 1.5rem; margin-bottom: 1rem;" />
