@@ -66,8 +66,12 @@
     - title: Videos
       url: /teaching-videos/
 
-- title: Extra materials
-  url: /extra-materials/
+- section: Extra materials
+  items:
+    - title: Motivating applications
+      url: /motivating-applications/
+    - title: The 7 levels of AI
+      url: /the-7-levels-of-ai/
 
 - section: About
   items:
