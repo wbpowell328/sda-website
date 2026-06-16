@@ -6,11 +6,6 @@ date: 2024-11-25 12:42:29
 ---
 
 {% raw %}
-Warren B. Powell
-Professor Emeritus, Princeton University
-
-Revised March 19, 2026
-
 Spanish translation: [https://tinyurl.com/7levelsofAISpanish](https://tinyurl.com/7levelsofAISpanish)
 
 New: I decided it was time (March, 2026) to recognize the power of modern large language models (widely referred to as "AI") when combined with decision-making tools.  I have long made the point that LLMs cannot "make" decisions (that is, choose the best from a set of choices according to some set of metrics) - decision-making requires the analytics that fall broadly under the umbrella of "optimization."  But LLMs can perform a variety of functions that make optimization models much more useful in the real world.
