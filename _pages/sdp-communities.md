@@ -47,7 +47,7 @@ Reinforcement learning was developed by Sutton and Barto as a set of algorithmic
 
 In the first edition of Sutton and Barto's book, "reinforcement learning" referred to a class of algorithms. In the second edition, the field had expanded to embrace a much wider variety of methods, and as a result "reinforcement learning" started to be associated with the problem class *sequential decision problems*.
 
-A more in-depth discussion of the evolution of reinforcement learning is in development.
+[An in-depth discussion of the evolution of reinforcement learning is available here.](/sda-website/what-is-rl/)
 
 ## Optimal control {#optimal-control}
 
