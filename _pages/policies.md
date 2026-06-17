@@ -127,9 +127,36 @@ In both statistics / machine learning and sequential decisions, the search over 
 
 While it is important to understand all four classes of policies, the next step is actually choosing a policy. It is important to realize that problem-solving is an iterative process, and this applies to choosing policies. This process is illustrated in the graphic below.
 
-<img src="/sda-website/assets/images/policies/choosing-policies-ladders.png" alt="Two side-by-side ladders — labeled 'The decision-making policy' and 'Model realism' — connected by arrows that move back and forth between rungs, with a vertical 'Simple → Complex' arrow on the right. The graphic illustrates that choosing a policy is iterative: as the realism of the model increases, the sophistication of the policy increases, and vice versa." width="780" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
+<img src="/sda-website/assets/images/policies/choosing-policies-ladders.png" alt="Two side-by-side ladders — labeled 'The decision-making policy' and 'Model realism' — connected by arrows that move back and forth between rungs, with a vertical 'Simple → Complex' arrow on the right. Choosing a policy is iterative: as the realism of the model increases, the sophistication of the policy increases, and vice versa." width="780" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
 
-It is helpful to organize policies into four categories, from most useful to least useful. These are summarized in the graphic below.
+There are problems for which one type of policy is obvious. For example, if we are driving on a long trip, Google Maps is going to use a deterministic lookahead policy by planning a trip to the destination. This plan, a deterministic lookahead, is updated periodically as traffic conditions change. We would never use any of the other three classes of policies.
 
-<img src="/sda-website/assets/images/policies/choosing-policies-categories.png" alt="A 4-row table grouping the four classes of policies into popularity categories. Category 1 (most popular): PFAs (rules/analytical functions), CFAs (parameterized deterministic optimization), and deterministic DLAs — 'By far the most widely used in practice; the choice among the three tends to be obvious from the structure of the problem.' Category 2 — stochastic lookahead with discrete actions (decision trees, value-of-information policies): 'Popular in the decision analysis and Bayesian optimization communities.' Category 3 — stochastic lookahead using Bellman (policies based on VFAs / approximate dynamic programming): 'A very powerful strategy for a very small number of specialized problems.' Category 4 — stochastic lookahead with vectors (two-stage stochastic programming): 'This is how deterministic optimizers handle uncertainty. Almost no-one uses it in practice.'" width="780" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
+There are other problems where the choice of policy is not obvious, and may be dependent on the specific characteristics of the data. Below is a simple energy system designed to draw energy from a wind farm, where wind is being forecasted using rolling forecasts that are updated through the day.
+
+<img src="/sda-website/assets/images/policies/choosing-policies-energy-system.png" alt="A schematic of a small energy system: time series of wind energy and grid prices on the left feed into a battery storage and a wind farm + power grid; output flows to a building load shown as a demand (load) time series on the right" width="780" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
+
+We created five variations of this problem, changing characteristics such as the accuracy of the forecasts and the volatility of the wind farms. We then created five policies, one from each of the four classes plus a hybrid. The number in the table is a score capturing the performance. The yellow squares indicate the policy that worked best for each dataset. We were able to make each of the five policies work best for one of the problems.
+
+<img src="/sda-website/assets/images/policies/choosing-policies-results-table.png" alt="A 5-row table of energy-system problems (A through E) tested against five policies (PFA, CFA, VFA, DLA, DLA/CFA). The best policy per row is highlighted in yellow: Problem A — PFA (0.959); Problem B — CFA (0.752); Problem C — VFA (0.914); Problem D — DLA (0.997); Problem E — DLA/CFA hybrid (0.934). Each of the five policies wins on at least one variation of the problem." width="780" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
+
+The four classes of policies are not equally useful. There has been a strong bias in the academic research community toward the more complex policies which depend on Bellman's equation (VFAs) and stochastic lookaheads (stochastic-DLAs). In practice, people are much more likely to use the simpler policies.
+
+It helps to list the policies based on usefulness. We start by dividing our four classes of policies into six types, where we divide category 4 based on whether the lookahead model is deterministic or stochastic. We then divide the stochastic lookahead policies into two subtypes, depending on whether actions are discrete scalars or any form of vector, giving us six types of policies:
+
+1. **Policy function approximations (PFAs)** — Simple rules, analytical functions.
+2. **Cost function approximations (CFAs)** — Parameterized deterministic optimization models (typically static).
+3. **Policies based on value function approximations (VFAs)** — Policies that use an approximation of the value of landing in a downstream state.
+4. **Policies based on direct lookahead approximations (DLAs)** — These should be divided into two subclasses:
+   - **4a) DLAs using deterministic lookaheads (Det-DLA)** — These may be parameterized.
+   - **4b) DLAs using stochastic lookaheads (Stoch-DLA)**
+     - **4b.i)** Stochastic DLAs with discrete, scalar decisions.
+     - **4b.ii)** Stochastic DLAs with vector decisions.
+
+We now organize these six types of policies into four categories based on how useful they are:
+
+<img src="/sda-website/assets/images/policies/choosing-policies-categories.png" alt="A 4-row table grouping the six types of policies into popularity categories. Category 1 (most popular): PFAs (rules/analytical functions), CFAs (parameterized deterministic optimization), and deterministic DLAs — 'By far the most widely used in practice; the choice among the three tends to be obvious from the structure of the problem.' Category 2 — stochastic lookahead with discrete actions (decision trees, value-of-information policies): 'Popular in the decision analysis and Bayesian optimization communities.' Category 3 — stochastic lookahead using Bellman (policies based on VFAs / approximate dynamic programming): 'A very powerful strategy for a very small number of specialized problems.' Category 4 — stochastic lookahead with vectors (two-stage stochastic programming): 'This is how deterministic optimizers handle uncertainty. Almost no-one uses it in practice.'" width="780" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
+
+It is always best to start with the simplest policy that makes sense for a particular application. But always remember:
+
+*The price of simplicity is tunable parameters... and tuning is hard!*
 {% endraw %}
