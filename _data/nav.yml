@@ -30,6 +30,8 @@
       url: /optimal-learning/
     - title: Reinforcement learning vs. SDA
       url: /rlvssda/
+    - title: What is Reinforcement Learning?
+      url: /what-is-rl/
 
 - section: Modeling
   items:
