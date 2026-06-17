@@ -101,6 +101,10 @@ With deterministic optimization, we typically have a single objective function (
 7. **Complexity / ease of development** — is there a risk that a methodology simply will not work?
 8. **Data requirements.**
 
+All of these attributes matter, to the point that senior managers have announced "I don't care about optimality." While the first objective does matter, so do the others, although it very much depends on the context.
+
+Given the competing issues involved in identifying the policy that works for a particular situation, it should be apparent that modeling the problem, and in particular identifying decisions, is more important than finding the policy that produces the best performance on average. Sadly, this is where the academic research literature has placed the most emphasis, a habit that was probably inherited from deterministic optimization.
+
 ## Optimizing over policies {#optimizing-over-policies}
 
 When we are using deterministic optimization, we want to find the best *decision*, possibly by solving a problem that looks like:
