@@ -160,7 +160,7 @@ app.post('/chat', chatLimiter, async (req, res) => {
     const cleanMessages = messages.map(m => ({ role: m.role, content: m.content }));
     const stream = client.messages.stream({
       model: MODEL,
-      max_tokens: 1024,
+      max_tokens: 4096,
       system: systemBlocks,
       messages: cleanMessages,
     });
