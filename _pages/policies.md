@@ -19,6 +19,7 @@ If you prefer to use action $a_t$, you would write the policy as $A^\pi(S_t)$, a
 - [Simulating policies](#simulating-policies)
 - [Evaluating policies](#evaluating-policies)
 - [Optimizing over policies](#optimizing-over-policies)
+- [Choosing policies](#choosing-policies)
 
 ## The four classes of policies {#four-classes}
 
@@ -121,4 +122,14 @@ The transition from optimizing over *decisions* $x_t$ to optimizing over *polici
 $$\min_{f \in \mathcal{F}}\; \min_{\theta \in \Theta^f}\; \sum_{n=1}^N \big( y^n - f(x^n \mid \theta) \big)^2.$$
 
 In both statistics / machine learning and sequential decisions, the search over functions $f \in \mathcal{F}$ is typically ad hoc. Just as we do with our four classes of policies, the machine learning community picks a class of functions (such as linear models or neural networks), then chooses specific instances within that class, before using the training dataset to do the tuning.
+
+## Choosing policies {#choosing-policies}
+
+While it is important to understand all four classes of policies, the next step is actually choosing a policy. It is important to realize that problem-solving is an iterative process, and this applies to choosing policies. This process is illustrated in the graphic below.
+
+<img src="/sda-website/assets/images/policies/choosing-policies-ladders.png" alt="Two side-by-side ladders — labeled 'The decision-making policy' and 'Model realism' — connected by arrows that move back and forth between rungs, with a vertical 'Simple → Complex' arrow on the right. The graphic illustrates that choosing a policy is iterative: as the realism of the model increases, the sophistication of the policy increases, and vice versa." width="780" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
+
+It is helpful to organize policies into four categories, from most useful to least useful. These are summarized in the graphic below.
+
+<img src="/sda-website/assets/images/policies/choosing-policies-categories.png" alt="A 4-row table grouping the four classes of policies into popularity categories. Category 1 (most popular): PFAs (rules/analytical functions), CFAs (parameterized deterministic optimization), and deterministic DLAs — 'By far the most widely used in practice; the choice among the three tends to be obvious from the structure of the problem.' Category 2 — stochastic lookahead with discrete actions (decision trees, value-of-information policies): 'Popular in the decision analysis and Bayesian optimization communities.' Category 3 — stochastic lookahead using Bellman (policies based on VFAs / approximate dynamic programming): 'A very powerful strategy for a very small number of specialized problems.' Category 4 — stochastic lookahead with vectors (two-stage stochastic programming): 'This is how deterministic optimizers handle uncertainty. Almost no-one uses it in practice.'" width="780" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
 {% endraw %}
