@@ -18,8 +18,7 @@ The discussion is divided into the following topics (this is a developing webpag
 
 ## Topic 1: The evolution of the field of reinforcement learning - From Sutton and Barto (1994), to Sutton and Barto (2018), to\... the universal framework?
 
-![](/sda-website/assets/images/rlvssda/EvolutionofRL_background-1-300x112.jpg)
-
+<img src="/sda-website/assets/images/rlvssda/EvolutionofRL_background-1-300x112.jpg" alt="A horizontal timeline graphic with arrows tracing the evolution of the reinforcement-learning field from Sutton and Barto's 1998 first edition through their 2018 second edition, suggesting a possible convergence toward a universal framework" width="300" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 The field of reinforcement learning is undergoing rapid evolution, as have the other fields that deal with sequential decision problems.  In 1998, the first edition of Sutton and Barto's *Reinforcement Learning: An introduction* appeared, focusing almost entirely on algorithms for approximating value functions.
 
 In 2018, Sutton and Barto published the second edition of their book.  This time, it covered a variety of algorithms, raising the question: just what is "reinforcement learning"?  Is it a method? or a problem? 
@@ -36,8 +35,7 @@ For this reason, I view my book as the natural endpoint for reinforcement learni
 
 ## Topic 2: Differences between Sutton and Barto's *Reinforcement Learning: An introduction (RL)* and my *Reinforcement Learning and Stochastic Optimization: A universal framework for sequential decisions (RLSO)*
 
-![](/sda-website/assets/images/rlvssda/RLvsRLSO-300x188.jpg)
-
+<img src="/sda-website/assets/images/rlvssda/RLvsRLSO-300x188.jpg" alt="Two book covers side by side: Sutton and Barto's Reinforcement Learning: An Introduction (RL, 2018 second edition) on the left and Warren B. Powell's Reinforcement Learning and Stochastic Optimization (RLSO, 2022) on the right" width="300" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 It is time to clarify the differences between "reinforcement learning" (as represented by Sutton and Barto's *Reinforcement Learning: An introduction*) and the emerging field of sequential decision analytics, as captured by my book *Reinforcement Learning and Stochastic Optimization: A unified framework for sequential decisions.  *Below, I use "RL" to refer to Sutton and Barto's "Reinforcement Learning" and "RLSO" to refer to my "Reinforcement Learning and Stochastic Optimization."  For more on RLSO, [click here.](https://tinyurl.com/RLandSO/) 
 
 - RLSO presents a universal framework for *any* sequential decision problem, where:  
@@ -102,7 +100,7 @@ All of these policies are represented in Sutton and Barto's *Reinforcement Learn
 
 The graphic below illustrates the adoption of each of the eight most important fields of the four classes of policies (wider lines means earlier adoption).
 
-<figure style="max-width: 900px; margin: 1.5rem auto; text-align: center;">
+<figure style="max-width: 630px; margin: 1.5rem auto; text-align: center;">
   <img src="/sda-website/assets/images/rlvssda/JungleofstochasticoptimizationV2.jpg" alt="Evolution of policies for different fields" style="width: 100%; height: auto;" />
   <figcaption style="font-style: italic; color: #5a4a35; margin-top: 0.5rem;">Evolution of policies for different fields</figcaption>
 </figure>
@@ -111,7 +109,7 @@ The graphic below illustrates the adoption of each of the eight most important f
 
 I am constantly being asked: how to choose which class of policy to use? The graphic below lists five types of policies (one each from the first four classes, and then I split the four class into two types: deterministic lookahead and stochastic lookahead). 
 
-![](/sda-website/assets/images/rlvssda/Policies-which-are-most-useful-1024x374.jpg)
+<img src="/sda-website/assets/images/rlvssda/choosing-policies.jpg" alt="A 4-row table grouping the four classes of policies into popularity categories. Category 1 (most popular): PFAs (rules/analytical functions), CFAs (parameterized deterministic optimization), and deterministic DLAs — note: 'By far the most widely used in practice; the choice among the three tends to be obvious from the structure of the problem.' Category 2 — stochastic lookahead with discrete actions (decision trees, value-of-information policies): 'Popular in the decision analysis and Bayesian optimization communities.' Category 3 — stochastic lookahead using Bellman (policies based on VFAs / approximate dynamic programming): 'A very powerful strategy for a very small number of specialized problems.' Category 4 — stochastic lookahead with vectors (two-stage stochastic programming): 'This is how deterministic optimizers handle uncertainty. Almost no-one uses it in practice.'" width="720" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
 
 The academic literature has been heavily biased first toward policies based on approximating Bellman's equation, and second toward policies based on some form of stochastic lookahead (think of Monte Carlo tree search or stochastic programming).  However, in practice I have found that the five types of policies can be organized into three categories, sorted from the ones that are most widely used to the policies that are least used:
 
