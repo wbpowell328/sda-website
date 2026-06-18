@@ -5,11 +5,17 @@ when you run `npm run build-context`.
 
 ## What lives here
 
-The chatbot ships with three seed files:
+The chatbot ships with these seed files:
 
 - `00-about-warren.md` — bio, role, awards, research focus
 - `01-books.md` — book summaries and when-to-recommend notes
 - `02-site-map.md` — every page path on the site with a one-line description
+- `03-key-concepts.md` — the four classes of policies, universal modeling framework, etc.
+- `99-warrens-notes.md` — Warren's living document of corrections and editorial
+  guidance. Treated as authoritative voice-of-the-author guidance: takes
+  precedence over book/page content when there is a conflict. Editable as a
+  Word doc at `Draft webpages/Chatbot notes.docx`; ask Claude to "update
+  chatbot notes" to re-ingest after editing.
 
 ## Adding your LinkedIn writings
 
