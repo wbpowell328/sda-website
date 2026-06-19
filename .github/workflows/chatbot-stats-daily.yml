@@ -1,0 +1,49 @@
+# Daily snapshot of chatbot usage stats.
+#
+# Downloads https://castle-chatbot.onrender.com/admin/stats.csv (Basic Auth)
+# and commits it to chatbot/stats/chatbot-stats.csv. The CSV always contains
+# the full per-day history from day one, so each commit is just yesterday's
+# row being appended (plus any same-day updates).
+#
+# Requires repo secret CHATBOT_ADMIN_PASSWORD (the same password used to log
+# into /admin/conversations).
+#
+# Schedule: 11:00 UTC daily. That's 6am ET in winter (EST) and 7am ET in
+# summer (EDT). GitHub Actions cron is UTC-only and doesn't observe DST.
+name: Daily chatbot stats snapshot
+
+on:
+  schedule:
+    - cron: '0 11 * * *'
+  workflow_dispatch:  # allow manual trigger from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download stats CSV from chatbot
+        env:
+          ADMIN_PASSWORD: ${{ secrets.CHATBOT_ADMIN_PASSWORD }}
+        run: |
+          mkdir -p chatbot/stats
+          curl -fsSL --retry 3 --retry-delay 5 \
+               -u "admin:${ADMIN_PASSWORD}" \
+               -o chatbot/stats/chatbot-stats.csv \
+               https://castle-chatbot.onrender.com/admin/stats.csv
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [[ -n "$(git status --porcelain chatbot/stats/chatbot-stats.csv)" ]]; then
+            git add chatbot/stats/chatbot-stats.csv
+            git commit -m "stats: daily chatbot snapshot $(date -u +%Y-%m-%d)"
+            git push
+          else
+            echo "No change in stats — nothing to commit."
+          fi
