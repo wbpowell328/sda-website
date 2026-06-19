@@ -101,6 +101,32 @@ export async function recentConversations({ limit = 200 } = {}) {
   }));
 }
 
+// Per-day breakdown of usage, for tracking growth over time.
+// Returns one row per calendar day on which there was activity.
+export async function dailyStats() {
+  if (!ready || !client) return [];
+  const r = await client.execute(`
+    SELECT
+      date(created_at, 'unixepoch') AS day,
+      COUNT(*) AS messages,
+      COUNT(DISTINCT session_id) AS sessions,
+      COUNT(DISTINCT ip_hash) AS unique_ips,
+      COALESCE(SUM(input_tokens), 0) AS input_tokens,
+      COALESCE(SUM(output_tokens), 0) AS output_tokens
+    FROM conversations
+    GROUP BY day
+    ORDER BY day
+  `);
+  return r.rows.map(row => ({
+    day: row.day,
+    messages: Number(row.messages || 0),
+    sessions: Number(row.sessions || 0),
+    uniqueIps: Number(row.unique_ips || 0),
+    inputTokens: Number(row.input_tokens || 0),
+    outputTokens: Number(row.output_tokens || 0),
+  }));
+}
+
 export async function stats() {
   if (!ready || !client) return null;
   const r = await client.execute(`

@@ -2,7 +2,7 @@
 // Protected by HTTP Basic Auth using the ADMIN_PASSWORD env var.
 
 import express from 'express';
-import { recentConversations, stats, loggerEnabled } from './logger.js';
+import { recentConversations, stats, dailyStats, loggerEnabled } from './logger.js';
 
 const router = express.Router();
 
@@ -41,6 +41,24 @@ function requireAdmin(req, res, next) {
   }
   next();
 }
+
+// Downloadable CSV of per-day chatbot usage for tracking growth in Excel.
+// Columns: date, messages, sessions, unique_ips, input_tokens, output_tokens, cost_usd.
+// Same cost formula as the admin page summary: $0.80 / 1M input + $4.00 / 1M output.
+router.get('/admin/stats.csv', requireAdmin, async (req, res) => {
+  if (!loggerEnabled()) {
+    return res.status(503).send('Logger not configured.');
+  }
+  const rows = await dailyStats();
+  const header = 'date,messages,sessions,unique_ips,input_tokens,output_tokens,cost_usd\n';
+  const body = rows.map(r => {
+    const cost = ((r.inputTokens * 0.80 + r.outputTokens * 4.00) / 1_000_000).toFixed(4);
+    return [r.day, r.messages, r.sessions, r.uniqueIps, r.inputTokens, r.outputTokens, cost].join(',');
+  }).join('\n');
+  res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+  res.setHeader('Content-Disposition', 'attachment; filename="chatbot-stats.csv"');
+  res.send(header + body + (body ? '\n' : ''));
+});
 
 router.get('/admin/conversations', requireAdmin, async (req, res) => {
   if (!loggerEnabled()) {
@@ -129,6 +147,11 @@ router.get('/admin/conversations', requireAdmin, async (req, res) => {
     <div class="stat"><div class="label">Input tokens</div><div class="value">${(s?.totalInputTokens ?? 0).toLocaleString()}</div></div>
     <div class="stat"><div class="label">Output tokens</div><div class="value">${(s?.totalOutputTokens ?? 0).toLocaleString()}</div></div>
     <div class="stat"><div class="label">Cost (~$)</div><div class="value">$${totalCost}</div></div>
+  </div>
+
+  <div style="margin: 1rem 0;">
+    <a href="/admin/stats.csv" download style="display: inline-block; padding: 0.5rem 1rem; background: #5a3e1f; color: #f5ede0; text-decoration: none; border-radius: 4px; font-weight: 600;">⬇ Download daily stats (CSV)</a>
+    <span style="margin-left: 0.75rem; color: #8a7a6a; font-size: 0.9rem;">One row per day. Open in Excel to chart growth over time.</span>
   </div>
 
   ${sessionList.length === 0 ? '<div class="empty">No conversations logged yet.</div>' :
