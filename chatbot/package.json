@@ -1,7 +1,7 @@
 {
   "name": "castle-chatbot",
   "version": "0.1.0",
-  "description": "Local Claude-powered chatbot for Warren Powell's Sequential Decision Analytics website",
+  "description": "Local Claude-powered chatbot for the CASTLE Lab website",
   "type": "module",
   "private": true,
   "scripts": {
