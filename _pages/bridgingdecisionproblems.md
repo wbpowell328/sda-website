@@ -22,7 +22,7 @@ Professor Emeritus, Princeton University
 
 Volume I addresses the first step, framing the problem, which involves answering a series of questions in English that form the basis of a mathematical model that can be implemented on the computer. This webpage is a very brief overview of the framing process. At the bottom is a link to a new book that describes this process in much more detail (but no math).
 
-[Volume I is now available on Kindle](https://tinyurl.com/PowellFramingAmazon/), or [download the PDF](https://tinyurl.com/PowellFramingBook/).
+[Volume I is now available on Kindle](https://tinyurl.com/PowellFramingAmazon/), or [download the PDF](/sda-website/assets/papers/bridging-vol-i-framing.pdf).
 
 <br clear="all" />
 
@@ -110,9 +110,9 @@ A slightly longer description is provided [here](https://tinyurl.com/FourClasses
 
 ## References {#references}
 
-This new process of framing the problem is described in detail in a new monograph. The book is available for purchase on [Kindle](https://tinyurl.com/PowellFramingAmazon/), and the [PDF can be downloaded for free](https://tinyurl.com/PowellFramingBook/). For an earlier preview, the table of contents and preface are available:
+This new process of framing the problem is described in detail in a new monograph. The book is available for purchase on [Kindle](https://tinyurl.com/PowellFramingAmazon/), and the [PDF can be downloaded for free](/sda-website/assets/papers/bridging-vol-i-framing.pdf). For an earlier preview, the table of contents and preface are available:
 
-- [*Framing Decision Problems: Bridging Problems and Models* — Volume I — TOC and Preface (August 18, 2025)](https://tinyurl.com/PowellBridgingBook)
+- [*Framing Decision Problems: Bridging Problems and Models* — Volume I — TOC and Preface (August 18, 2025)](/sda-website/assets/papers/bridging-vol-i-toc-preface.pdf)
 
 [Please feel free to leave comments here.](https://tinyurl.com/PowellFramingComments/)
 
