@@ -19,7 +19,7 @@ Sequential decision problems arise in virtually every form of human processes: t
 
 I also recommend as a companion my new monograph *Framing the Problem*, which is addressed very briefly at the beginning of each application chapter. Copies can be obtained from:
 
-- [Kindle edition (just $5)](https://tinyurl.com/PowellFramingAmazon/), or [download the PDF here](https://tinyurl.com/PowellFramingBook/).
+- [Kindle edition (just $5)](https://tinyurl.com/PowellFramingAmazon/), or [download the PDF here](/sda-website/assets/papers/bridging-vol-i-framing.pdf).
 
 <br clear="all" />
 
