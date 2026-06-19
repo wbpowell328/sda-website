@@ -117,7 +117,7 @@ The course will present a unified framework for stochastic optimization that cut
 
 - [Week 1 — Introduction and overview](/sda-website/assets/papers/2019/02/ORF-544-Week-1-Introduction-and-overview.pdf)
 - [Week 2 — Adaptive learning](/sda-website/assets/papers/2019/02/ORF-544-Week-2-Adaptive-learning-1.pdf)
-- [Week 3 — Derivative-based stochastic optimization](/sda-website/assets/papers/2019/02/ORF-544-Week-3-Derivative-based-stochastic-optimization.pdf) · [Stochastic-based stochastic search for nonconvex problems](https://castle.princeton.edu/wp-content/uploads/2019/02/Ghadimi-Stochastic-optimization-for-nonconvex-problems-Feb-25.pdf)
+- [Week 3 — Derivative-based stochastic optimization](/sda-website/assets/papers/2019/02/ORF-544-Week-3-Derivative-based-stochastic-optimization.pdf) · [Stochastic-based stochastic search for nonconvex problems](/sda-website/assets/papers/2019/02/Ghadimi-Stochastic-optimization-for-nonconvex-problems-Feb-25.pdf)
 - [Week 4 — Derivative-free stochastic optimization Part I: PFAs and CFAs](/sda-website/assets/papers/2019/03/ORF-544-Week-4-Derivative-free-stochastic-optimization.pdf)
 - [Week 5 — Derivative-free stochastic optimization Part II: VFAs and DLAs](/sda-website/assets/papers/2019/03/ORF-544-Week-5-Derivative-free-stochastic-optimization-VFA-and-DLA.pdf)
 - [Week 6 — Notation and the unified modeling framework](/sda-website/assets/papers/2019/03/ORF-544-Week-6-Modeling-The-unified-framework-1.pdf)
@@ -162,7 +162,7 @@ Below is a sketch of what I recommend could be covered each week.
 
 [Course syllabus](http://tinyurl.com/orf418syllabus).
 
-**Course text:** [*Optimal Learning*, 2nd edition, updated March 11, 2018](https://castle.princeton.edu/wp-content/uploads/2019/02/Powell-OptimalLearningWileyMarch112018.pdf).
+**Course text:** [*Optimal Learning*, 2nd edition, updated March 11, 2018](/sda-website/assets/papers/2019/02/Powell-OptimalLearningWileyMarch112018.pdf).
 
 [Notation notes (designed to help with notation)](https://www.overleaf.com/read/dxytdmrgkkgm). · [Tutorial article aimed at experimental scientists](https://arxiv.org/abs/2004.05417).
 

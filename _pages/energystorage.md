@@ -66,7 +66,7 @@ Link to paper:
 
 The same idea was applied to the paper below, but using a different parameterization. This work was motivated by a real application in Brazil:
 
-[Vinicius Pinheiro, W. B. Powell, "Reinforcement learning for electricity dispatch in grids with high intermittent generation and energy storage systems: a case study for the Brazilian grid," *International Journal of Energy Research*](https://castle.princeton.edu/wp-content/uploads/2020/11/Pinheiro-2020-Reinforcement-learning-for-electric.pdf)
+[Vinicius Pinheiro, W. B. Powell, "Reinforcement learning for electricity dispatch in grids with high intermittent generation and energy storage systems: a case study for the Brazilian grid," *International Journal of Energy Research*](/sda-website/assets/papers/2020/11/Pinheiro-2020-Reinforcement-learning-for-electric.pdf)
 
 ## Stationary storage with stochastic grid prices {#stationary-storage}
 
@@ -74,7 +74,7 @@ The same idea was applied to the paper below, but using a different parameteriza
 
 **Stochastic model**: This paper uses a hidden state semi-Markov model to more accurately capture *crossing times*. Crossing times have been largely overlooked in the wind modeling literature. The backward ADP approach is complicated when using a hidden-state model. This work is reported in
 
-[J. Durante, Raj Patel, W. B. Powell, "A Two-Level Markov Model for Replicating Crossing Time Distributions for Simulations of Renewables in Power Systems," *SIAM J. Uncertainty Quantification*, Vol 6, No. 2, pp. 595–626, 2018. DOI: 10.1137/17M1120555](https://castle.princeton.edu/wp-content/uploads/2020/11/Durante-Scenario-generation-methods-that-replicate-crossing-times-SIAM-JUQ.pdf)
+[J. Durante, Raj Patel, W. B. Powell, "A Two-Level Markov Model for Replicating Crossing Time Distributions for Simulations of Renewables in Power Systems," *SIAM J. Uncertainty Quantification*, Vol 6, No. 2, pp. 595–626, 2018. DOI: 10.1137/17M1120555](/sda-website/assets/papers/2020/11/Durante-Scenario-generation-methods-that-replicate-crossing-times-SIAM-JUQ.pdf)
 
 **Policy class**: Backward approximate dynamic programming, which is a process of randomly choosing a set of states at a time $t$ (stepping backward in time), observing the value of being in the state, and using this set of sampled states and values to fit an updated value function approximation (around the post-decision state), before stepping to time $t-1$. I only started using this strategy recently, and have been surprised at how well it has worked across a number of problem settings, spanning energy storage, clinical trials, and allocation of aid to African countries.
 
@@ -86,7 +86,7 @@ A link to a Python library, including a modest user's manual, [is available on G
 
 A related paper developed the idea of using regularization for SDDP algorithms (this is approximate dynamic programming using Benders cuts), tested in the context of energy storage, is:
 
-[Tsvetan Asamov, W. B. Powell, "Regularized Decomposition of High-Dimensional Multistage Stochastic Programs with Markov Uncertainty," *SIAM J. Optimization*, Vol. 28, No. 1, pp. 575–595, 2018.](https://castle.princeton.edu/wp-content/uploads/2020/11/Asamov-Regularized-decomposition-of-high-dimensional-multistage-stochastic-programs-with-Markov-uncertainty.pdf)
+[Tsvetan Asamov, W. B. Powell, "Regularized Decomposition of High-Dimensional Multistage Stochastic Programs with Markov Uncertainty," *SIAM J. Optimization*, Vol. 28, No. 1, pp. 575–595, 2018.](/sda-website/assets/papers/2020/11/Asamov-Regularized-decomposition-of-high-dimensional-multistage-stochastic-programs-with-Markov-uncertainty.pdf)
 
 ## Benchmarking ADP-based policies for grid-level storage with many devices {#benchmarking-adp}
 
@@ -96,7 +96,7 @@ A related paper developed the idea of using regularization for SDDP algorithms (
 
 Link to paper:
 
-[Daniel Salas, W. B. Powell, "Benchmarking a Scalable Approximate Dynamic Programming Algorithm for Stochastic Control of Grid-Level Storage," *Informs J. on Computing*, Vol. 30, No. 1, pp. 106–123, 2018.](https://castle.princeton.edu/wp-content/uploads/2020/11/Salas-Benchmarking-a-Scalable-Approximate-Dynamic-JOC-2018.pdf)
+[Daniel Salas, W. B. Powell, "Benchmarking a Scalable Approximate Dynamic Programming Algorithm for Stochastic Control of Grid-Level Storage," *Informs J. on Computing*, Vol. 30, No. 1, pp. 106–123, 2018.](/sda-website/assets/papers/2020/11/Salas-Benchmarking-a-Scalable-Approximate-Dynamic-JOC-2018.pdf)
 
 ## Co-optimization of storage for frequency regulation and battery arbitrage {#frequency-regulation}
 
@@ -110,9 +110,9 @@ This is one of the hardest storage problems I have ever worked on. There are 43,
 
 Link to papers:
 
-[Bolong (Harvey) Cheng, W. B. Powell, "Co-optimizing Battery Storage for Frequency Regulation and Energy Arbitrage using Multiscale Dynamic Programming," *IEEE Transactions on the Smart Grid*, Vol. 9, No. 3, pp. 1997–2005, 2018.](https://castle.princeton.edu/wp-content/uploads/2020/11/Cheng-MultiscaleOptimization_IEEE_final.pdf)
+[Bolong (Harvey) Cheng, W. B. Powell, "Co-optimizing Battery Storage for Frequency Regulation and Energy Arbitrage using Multiscale Dynamic Programming," *IEEE Transactions on the Smart Grid*, Vol. 9, No. 3, pp. 1997–2005, 2018.](/sda-website/assets/papers/2020/11/Cheng-MultiscaleOptimization_IEEE_final.pdf)
 
-[Bolong (Harvey) Cheng, Tsvetan Asamov, W. B. Powell, "Low-Rank Value Function Approximation for Co-Optimization of Battery Storage," *IEEE Transactions on Power Systems*, Vol. 9, No. 6, pp. 6590–6598, 2018.](https://castle.princeton.edu/wp-content/uploads/2020/11/Cheng-Low-rank-value-function-approximation-for-co-optimization-of-battery-storage.pdf)
+[Bolong (Harvey) Cheng, Tsvetan Asamov, W. B. Powell, "Low-Rank Value Function Approximation for Co-Optimization of Battery Storage," *IEEE Transactions on Power Systems*, Vol. 9, No. 6, pp. 6590–6598, 2018.](/sda-website/assets/papers/2020/11/Cheng-Low-rank-value-function-approximation-for-co-optimization-of-battery-storage.pdf)
 
 ## Tuning a parameterized policy for energy storage in a time-dependent environment {#parameterized-policy-tuning}
 
@@ -124,7 +124,7 @@ In this work, we represented each element of $\theta_t$ using a spline with five
 
 Link to paper:
 
-[S. Moazeni, W. B. Powell, B. Defourny, B. Bouzaiene-Ayari, "Parallel Non-Stationary Direct Policy Search for Risk-Averse Stochastic Optimization," *Informs J. on Computing*, Vol. 29, No. 2, pp. 332–349, 2017.](https://castle.princeton.edu/wp-content/uploads/2020/11/Moazeni-Parallel-Nonstationary-direct-policy-search-for-risk-averse-stochastic-optimization-JOC-April-2017.pdf)
+[S. Moazeni, W. B. Powell, B. Defourny, B. Bouzaiene-Ayari, "Parallel Non-Stationary Direct Policy Search for Risk-Averse Stochastic Optimization," *Informs J. on Computing*, Vol. 29, No. 2, pp. 332–349, 2017.](/sda-website/assets/papers/2020/11/Moazeni-Parallel-Nonstationary-direct-policy-search-for-risk-averse-stochastic-optimization-JOC-April-2017.pdf)
 
 ## Bidding battery storage in an hour-ahead market {#hour-ahead-bidding}
 
@@ -136,11 +136,11 @@ We have since used this idea in other settings with considerable success. It mak
 
 Link to paper:
 
-[D. Jiang, W. B. Powell, "Optimal Hour-Ahead Bidding in the Real-Time Electricity Market with Battery Storage Using Approximate Dynamic Programming," *Informs J. on Computing*, Vol. 27, No. 3, pp. 525–543, 2015.](https://castle.princeton.edu/wp-content/uploads/2020/11/Jiang-OptimalHourAheadBidding_JOC_Oct2015.pdf) [Online supplement](https://castle.princeton.edu/wp-content/uploads/2020/11/Jiang-OptimalHourAheadBidding_JOC_OnlineSupplement_Oct2015.pdf)
+[D. Jiang, W. B. Powell, "Optimal Hour-Ahead Bidding in the Real-Time Electricity Market with Battery Storage Using Approximate Dynamic Programming," *Informs J. on Computing*, Vol. 27, No. 3, pp. 525–543, 2015.](/sda-website/assets/papers/2020/11/Jiang-OptimalHourAheadBidding_JOC_Oct2015.pdf) [Online supplement](/sda-website/assets/papers/2020/11/Jiang-OptimalHourAheadBidding_JOC_OnlineSupplement_Oct2015.pdf)
 
 Convergence proof:
 
-[Daniel Jiang, W. B. Powell, "An Approximate Dynamic Programming Algorithm for Monotone Value Functions," *Operations Research*, Nov 2015. DOI: 10.1287/opre.2015.1425](https://castle.princeton.edu/wp-content/uploads/2020/11/Jiang-ADPforMonotoneValueFunctions_OR_Nov042015.pdf)
+[Daniel Jiang, W. B. Powell, "An Approximate Dynamic Programming Algorithm for Monotone Value Functions," *Operations Research*, Nov 2015. DOI: 10.1287/opre.2015.1425](/sda-website/assets/papers/2020/11/Jiang-ADPforMonotoneValueFunctions_OR_Nov042015.pdf)
 
 ## Exploring different approximation strategies for basic energy storage problems {#approximation-strategies}
 
@@ -150,7 +150,7 @@ Convergence proof:
 
 Link to paper:
 
-[Daniel Jiang, Thuy Pham, Warren B. Powell, Daniel Salas, Warren Scott, "A Comparison of Approximate Dynamic Programming Techniques on Benchmark Energy Storage Problems: Does Anything Work?," IEEE Symposium Series on Computational Intelligence, Workshop on Approximate Dynamic Programming and Reinforcement Learning, Orlando, FL, December 2014.](https://castle.princeton.edu/wp-content/uploads/2020/11/Jiang-ComparisonofADP_DoesAnythingWorkADPRLSept2014.pdf)
+[Daniel Jiang, Thuy Pham, Warren B. Powell, Daniel Salas, Warren Scott, "A Comparison of Approximate Dynamic Programming Techniques on Benchmark Energy Storage Problems: Does Anything Work?," IEEE Symposium Series on Computational Intelligence, Workshop on Approximate Dynamic Programming and Reinforcement Learning, Orlando, FL, December 2014.](/sda-website/assets/papers/2020/11/Jiang-ComparisonofADP_DoesAnythingWorkADPRLSept2014.pdf)
 
 ## Managing a high-dimensional grid using a single storage device {#high-dim-grid}
 
@@ -170,7 +170,7 @@ Link to paper:
 
 Link to paper:
 
-[Moazeni, Somayeh, W. B. Powell, A. H. Hajimiragha, "Mean-Conditional Value-at-Risk Optimal Energy Storage Operation in the Presence of Transaction Costs," *IEEE Transactions on Power Systems*, Vol. 30, No. 3, pp. 1222–1232, 2015.](https://castle.princeton.edu/wp-content/uploads/2020/11/Moazeni-Mean-conditional-value-at-risk-optimal-energy-storage-operation-IEEE-July-20-2014.pdf)
+[Moazeni, Somayeh, W. B. Powell, A. H. Hajimiragha, "Mean-Conditional Value-at-Risk Optimal Energy Storage Operation in the Presence of Transaction Costs," *IEEE Transactions on Power Systems*, Vol. 30, No. 3, pp. 1222–1232, 2015.](/sda-website/assets/papers/2020/11/Moazeni-Mean-conditional-value-at-risk-optimal-energy-storage-operation-IEEE-July-20-2014.pdf)
 
 ## Approximate dynamic programming for a hydro-electric storage problem {#hydro-electric}
 
@@ -180,7 +180,7 @@ Link to paper:
 
 Link to paper:
 
-[Powell, W. B., George, A., A. Lamont, J. Stewart, "SMART: A Stochastic Multiscale Model for the Analysis of Energy Resources, Technology and Policy," *Informs J. on Computing*, Vol. 24, No. 4, pp. 665–682, 2012.](https://castle.princeton.edu/wp-content/uploads/2020/11/Powell-SMART_JOC_April2011.pdf) [Online supplement](https://castle.princeton.edu/wp-content/uploads/2020/11/Powell-SMART_JOC_April2011_online_supplement.pdf)
+[Powell, W. B., George, A., A. Lamont, J. Stewart, "SMART: A Stochastic Multiscale Model for the Analysis of Energy Resources, Technology and Policy," *Informs J. on Computing*, Vol. 24, No. 4, pp. 665–682, 2012.](/sda-website/assets/papers/2020/11/Powell-SMART_JOC_April2011.pdf) [Online supplement](/sda-website/assets/papers/2020/11/Powell-SMART_JOC_April2011_online_supplement.pdf)
 
 ## Optimal hour-ahead commitments using energy storage {#hour-ahead-commitments}
 
@@ -190,7 +190,7 @@ Link to paper:
 
 Link to paper:
 
-[Jae Ho Kim, W. B. Powell, "Optimal Energy Commitments with Storage and Intermittent Supply," *Operations Research*, Vol. 59, No. 6, pp. 1347–1360, 2011.](https://castle.princeton.edu/wp-content/uploads/2020/11/Kim-Powell-Optimal-Energy-Commitments-with-Storage-and-Intermittent-Supply.pdf)
+[Jae Ho Kim, W. B. Powell, "Optimal Energy Commitments with Storage and Intermittent Supply," *Operations Research*, Vol. 59, No. 6, pp. 1347–1360, 2011.](/sda-website/assets/papers/2020/11/Kim-Powell-Optimal-Energy-Commitments-with-Storage-and-Intermittent-Supply.pdf)
 
 ## Modeling off-shore wind investments on the PJM grid {#offshore-wind}
 
@@ -200,7 +200,7 @@ Link to paper:
 
 Link to paper:
 
-[Hugo P. Simao, W. B. Powell, C. Archer, W. Kempton, "The challenge of integrating offshore wind power in the US electric grid. Part II: Simulation of electricity market operations," *Renewable Energy*, Vol. 103, pp. 418–431, 2017.](https://castle.princeton.edu/wp-content/uploads/2020/11/Simao-The-challenge-of-integrating-offshore-wind-Part-II-Simulation-of-electricity-market-operations.pdf)
+[Hugo P. Simao, W. B. Powell, C. Archer, W. Kempton, "The challenge of integrating offshore wind power in the US electric grid. Part II: Simulation of electricity market operations," *Renewable Energy*, Vol. 103, pp. 418–431, 2017.](/sda-website/assets/papers/2020/11/Simao-The-challenge-of-integrating-offshore-wind-Part-II-Simulation-of-electricity-market-operations.pdf)
 
 ## Comparison of least squares policy iteration (LSPI) to policy search {#lspi-vs-policy-search}
 
@@ -212,7 +212,7 @@ The policy was very low-dimensional, simplifying the policy search problem.
 
 Link to paper:
 
-[S. Moazeni, W. R. Scott, W. B. Powell, "Least Squares Policy Iteration with Instrumental Variables vs. Direct Policy Search: Comparison Against Optimal Benchmarks Using Energy Storage," *INFOR: Information Systems and Operational Research*, Vol. 58, No. 1, pp. 141–166, 2020.](https://castle.princeton.edu/wp-content/uploads/2020/11/Moazeni-Least-squares-policy-iteration-with-instrumental-variables-vs-direct-policy-search-comparison-against-optimal-benchmarks-using-energy-storage.pdf)
+[S. Moazeni, W. R. Scott, W. B. Powell, "Least Squares Policy Iteration with Instrumental Variables vs. Direct Policy Search: Comparison Against Optimal Benchmarks Using Energy Storage," *INFOR: Information Systems and Operational Research*, Vol. 58, No. 1, pp. 141–166, 2020.](/sda-website/assets/papers/2020/11/Moazeni-Least-squares-policy-iteration-with-instrumental-variables-vs-direct-policy-search-comparison-against-optimal-benchmarks-using-energy-storage.pdf)
 
 ## Optimal energy investments including storage {#energy-investments}
 
@@ -222,17 +222,17 @@ Link to paper:
 
 Link to paper:
 
-[J. Khazaei, W. B. Powell, "SMART-Invest — A stochastic, dynamic planning model for optimizing investments in wind, solar, and storage in the presence of fossil fuels: The case of the PJM Electricity Market," *Energy Systems*, Vol. 9, No. 2, pp. 277–303, 2018.](https://castle.princeton.edu/wp-content/uploads/2020/11/Khazaei-SMART-Invest-Stochastic-dynamic-planning-model.pdf)
+[J. Khazaei, W. B. Powell, "SMART-Invest — A stochastic, dynamic planning model for optimizing investments in wind, solar, and storage in the presence of fossil fuels: The case of the PJM Electricity Market," *Energy Systems*, Vol. 9, No. 2, pp. 277–303, 2018.](/sda-website/assets/papers/2020/11/Khazaei-SMART-Invest-Stochastic-dynamic-planning-model.pdf)
 
 ## Demonstrating that all four classes of policies may work best for energy storage {#four-classes-demonstrated}
 
-**Narrative**: The two papers cited below are exercises in showing that all four classes of policies may be useful. The first paper to do this was the work with Stephan Meisel who created five different energy storage problems, where the first four were tuned for each of the four classes of policies. The fifth used a hybrid (a parameterized direct lookahead). The senior thesis by [Madhumitha Shridharan](https://castle.princeton.edu/wp-content/uploads/2020/11/shridharan_madhumitha_thesis-May-5-2020.pdf) included work with backward ADP, a strategy we only discovered more recently.
+**Narrative**: The two papers cited below are exercises in showing that all four classes of policies may be useful. The first paper to do this was the work with Stephan Meisel who created five different energy storage problems, where the first four were tuned for each of the four classes of policies. The fifth used a hybrid (a parameterized direct lookahead). The senior thesis by [Madhumitha Shridharan](/sda-website/assets/papers/2020/11/shridharan_madhumitha_thesis-May-5-2020.pdf) included work with backward ADP, a strategy we only discovered more recently.
 
 **Policy class**: All four classes of policies, plus a hybrid, were used in this work.
 
 Links to papers:
 
-[W. B. Powell, S. Meisel, "Tutorial on Stochastic Optimization in Energy Part II: An Energy Storage Illustration," *IEEE Trans. on Power Systems*, Vol. 31, No. 2, pp. 1468–1475, 2016.](https://castle.princeton.edu/Papers/Powell%20Meisel%20-%20Tutorial%20on%20stochastic%20optimization%20in%20energy%20Part%20II%20Energy%20storage%20illustration%20March%202016.pdf)
+W. B. Powell, S. Meisel, "Tutorial on Stochastic Optimization in Energy Part II: An Energy Storage Illustration," *IEEE Trans. on Power Systems*, Vol. 31, No. 2, pp. 1468–1475, 2016.
 
-[Madhumitha Shridharan, "The Little Wind Farm that Could: A Comparative Analysis of Lookahead Policies for Energy Storage Problems," Undergraduate senior thesis (supervised by Warren Powell), Department of Operations Research and Financial Engineering, Princeton University, May 2020.](https://castle.princeton.edu/wp-content/uploads/2020/11/shridharan_madhumitha_thesis-May-5-2020.pdf)
+[Madhumitha Shridharan, "The Little Wind Farm that Could: A Comparative Analysis of Lookahead Policies for Energy Storage Problems," Undergraduate senior thesis (supervised by Warren Powell), Department of Operations Research and Financial Engineering, Princeton University, May 2020.](/sda-website/assets/papers/2020/11/shridharan_madhumitha_thesis-May-5-2020.pdf)
 {% endraw %}

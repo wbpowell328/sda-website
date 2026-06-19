@@ -14,9 +14,9 @@ Additional material (spreadsheet exercises, datasets) are provided below.
 
 Chapter 2:
 
-[Chapter2_asset_selling_policy](https://castle.princeton.edu/wp-content/uploads/2022/02/Chapter2_asset_selling_policy.xlsx)
+[Chapter2_asset_selling_policy](/sda-website/assets/papers/2022/02/Chapter2_asset_selling_policy.xlsx)
 
 Chapter 8:
 
-[Chapter8_electricity_prices](https://castle.princeton.edu/wp-content/uploads/2022/02/Chapter8_electricity_prices.xlsx)
+[Chapter8_electricity_prices](/sda-website/assets/papers/2022/02/Chapter8_electricity_prices.xlsx)
 {% endraw %}
