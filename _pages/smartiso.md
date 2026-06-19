@@ -72,8 +72,8 @@ We performed a careful study of off-shore wind integration with Willett Kempton 
 
 Papers describing the offshore wind study:
 
-- [Part I: Methodology for forecasting offshore wind](https://castle.princeton.edu/energysystems/Papers/MAOWIT_forecasting_paper_v13.pdf)
-- [Part II: Description of SMART-ISO, and results of the offshore wind study](https://castle.princeton.edu/energysystems/Papers/Simao-MAOWIT_SmartISO_v16_April292015.pdf)
+- Part I: Methodology for forecasting offshore wind
+- Part II: Description of SMART-ISO, and results of the offshore wind study
 
 <img src="/sda-website/assets/images/smartiso/wind-buildout-blocks.jpg" alt="A 2x2 grid of stacked-area charts showing simulated offshore wind levels by buildout block for four weeks: January 13-19, April 19-25, July, and October 14-20, 2010. Each chart stacks five buildout levels in different colors against hour-of-week on the x-axis" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" />
 
@@ -115,5 +115,5 @@ We modeled the following types of uncertainty:
 
 ## Documentation {#documentation}
 
-A summary of SMART-ISO (no equations) is given in [Hugo P. Simao, W. B. Powell, C. Archer, W. Kempton, "The challenge of integrating offshore wind power in the US electric grid. Part II: Simulation of the PJM market operation."](https://castle.princeton.edu/energysystems/Papers/Simao-MAOWIT_SmartISO_v16_April292015.pdf)
+A summary of SMART-ISO (no equations) is given in Hugo P. Simao, W. B. Powell, C. Archer, W. Kempton, "The challenge of integrating offshore wind power in the US electric grid. Part II: Simulation of the PJM market operation."
 {% endraw %}

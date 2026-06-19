@@ -15,8 +15,8 @@ Any research laboratory likes to highlight awards that it has received as a meas
 - Awarded *Docteur honoris causa* by the University of Quebec at Montreal, November 17, 2013.
 - Winner, 2011, Best Paper Prize at IEEE Symposium Series on Computational Intelligence, Paris, France, for "Bayesian Active Learning with Basis Functions," (coauthored with Ilya Ryzhov).
 - Awarded *Docteur honoris causa* by the University of Quebec at Montreal, November 17, 2013, in recognition of lifetime contributions to stochastic optimization and applications in transportation, logistics and energy.
-- Winner, 2010 Best Paper Prize from the Society for Transportation Science and Logistics for "Approximate Dynamic Programming Algorithm for Large Scale Fleet Management: A Case Application." [Click here to view the paper](http://castle.princeton.edu/Papers/Simao_et_al_SchneiderNational.pdf).
-- Winner, 2009 Daniel H. Wagner Prize for Excellence in Operations Research Practice. (with H. P. Simao, Abraham George, Jeff Day, Ted Gifford, John Nienow). [Click here for more information.](https://castle.princeton.edu/wagner/)
+- Winner, 2010 Best Paper Prize from the Society for Transportation Science and Logistics for "Approximate Dynamic Programming Algorithm for Large Scale Fleet Management: A Case Application." [Click here to view the paper](/sda-website/assets/papers/2020/12/Simao_Interfaces_SchneiderNationalOctober2010.pdf).
+- Winner, 2009 Daniel H. Wagner Prize for Excellence in Operations Research Practice. (with H. P. Simao, Abraham George, Jeff Day, Ted Gifford, John Nienow). [Click here for more information.](/sda-website/wagner/)
 - Best paper prize at ICPR Americas conference, June, 2008, for: Simao, H. P. and W. B. Powell, "Approximate Dynamic Programming for Managing High Value Spare Parts."
 - Finalist, Franz Edelman Award from The Institute of Management Science, 1991, with Yellow Freight System.
 - Second place, Franz Edelman Award from The Institute of Management Science, 1987, with North American Van Lines.
@@ -28,7 +28,7 @@ Lauren A. Hannah \*10
 :   Finalist, Nicholson Student paper prize, "Stochastic Search with an Observable State Variable." Presented at Informs Annual Meeting, November, 2010.
 
 Diana Negoescu '09 and Peter Frazier \*09
-:   Honorable mention, "Doing Good with Good OR" competition, Informs, 2009. Presented at Informs Annual Meeting, October, 2009. ([click here for more information](https://castle.princeton.edu/drug-discovery/))
+:   Honorable mention, "Doing Good with Good OR" competition, Informs, 2009. Presented at Informs Annual Meeting, October, 2009. ([click here for more information](/sda-website/drug-discovery/))
 
 Peter Frazier \*09
 :   Honorable mention, Informs Computing Society Student Paper Prize, won by Peter Frazier for "The Knowledge Gradient Policy for Correlated Normal Beliefs," Presented at Informs Annual Meeting, October, 2009.

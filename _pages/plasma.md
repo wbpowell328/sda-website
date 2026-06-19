@@ -10,35 +10,35 @@ date: 2017-09-07 09:33:35
 
 Princeton Locomotive And Shop MAnagement System
 
-[Winner, Best paper prize, Society for Transportation Science and Logistics, 2015](https://castle.princeton.edu/html/Papers/Bouazaiene-Ayari_PLASMA_TransportationScience_Online_August042014.pdf)
+Winner, Best paper prize, Society for Transportation Science and Logistics, 2015.
 
-![](https://castle.princeton.edu/wp-content/uploads/2022/05/NSlocomotive-300x231.jpg)
+![](/sda-website/assets/images/plasma/NSlocomotive-300x231.jpg)
 
-PLASMA is a planning system developed at [CASTLE Laboratory at Princeton University](http://www.castle.princeton.edu/) for locomotive planning and management. The system has been primarily supported by Norfolk Southern, where it is currently used for strategic planning (fleet size and mix), and operational planning (including shop routing). PLASMA is based on the modeling and algorithmic technology of [approximate dynamic programming](http://adp.princeton.edu/), which can be viewed as a form of "optimizing simulator." Rather than formulating the problem as a single, large (deterministic) optimization problem, PLASMA uses feedback learning to solve the problem as a sequence of smaller problems, closely mimicing how humans solve problems. It is a highly intuitive, yet mathematically rigorous, modeling and algorithmic strategy.
+PLASMA is a planning system developed at CASTLE Laboratory at Princeton University for locomotive planning and management. The system has been primarily supported by Norfolk Southern, where it is currently used for strategic planning (fleet size and mix), and operational planning (including shop routing). PLASMA is based on the modeling and algorithmic technology of approximate dynamic programming, which can be viewed as a form of "optimizing simulator." Rather than formulating the problem as a single, large (deterministic) optimization problem, PLASMA uses feedback learning to solve the problem as a sequence of smaller problems, closely mimicing how humans solve problems. It is a highly intuitive, yet mathematically rigorous, modeling and algorithmic strategy.
 
 ADP technology allows PLASMA to capture a very high level of detail about locomotives, trains and operations. Each locomotive is modeled individually. It can handle shop routing, foreign power, requirement of specialized equipment and consist breakups. Arrivals and departures are modeled down to the minute. With these capabilities, we have been able to accurately calibrate the model against historical operating statistics at NS.
 
-PLASMA can be run on deterministic data (which is how NS has used the system), but it also can model uncertainty in transit times, yard delays, train schedules, and equipment failures, creating robust policies that handle uncertainty well ([see the Transportation Science article provided below](https://castle.princeton.edu/plasma/#papers))
+PLASMA can be run on deterministic data (which is how NS has used the system), but it also can model uncertainty in transit times, yard delays, train schedules, and equipment failures, creating robust policies that handle uncertainty well ([see the Transportation Science article provided below](/sda-website/plasma/#papers))
 
 PLASMA is the model engine within a larger information system called LARS developed at Norfolk Southern. LARS handles all of the information flows and displays required to run the model.
 
-[Features](https://castle.princeton.edu/plasma/#features)
+[Features](/sda-website/plasma/#features)
 
-[Papers and a presentation](https://castle.princeton.edu/plasma/#papers)
+[Papers and a presentation](/sda-website/plasma/#papers)
 
-[The ADP technology](https://castle.princeton.edu/plasma/#adp)
+[The ADP technology](/sda-website/plasma/#adp)
 
-[Myths about approximate dynamic programming](http://castle.princeton.edu/html/plasma.html#myths)
+[Myths about approximate dynamic programming](#myths)
 
-[Software architecture](https://castle.princeton.edu/plasma/#architecture)
+[Software architecture](/sda-website/plasma/#architecture)
 
-[Calibration and validation](https://castle.princeton.edu/plasma/#calibration)
+[Calibration and validation](/sda-website/plasma/#calibration)
 
-[Experiments with uncertainty](https://castle.princeton.edu/plasma/#experiments)
+[Experiments with uncertainty](/sda-website/plasma/#experiments)
 
-[History of the project](https://castle.princeton.edu/plasma/#history)
+[History of the project](/sda-website/plasma/#history)
 
-[The project team](https://castle.princeton.edu/plasma/#team)
+[The project team](/sda-website/plasma/#team)
 
 **Features**
 
@@ -60,19 +60,19 @@ A partial list of features (designed primarily for NS, but some are motivated by
 
 Technical paper (to appear in Transportation Science):
 
-[Belgacem Bouzaiene-Ayari, C. Cheng, S. Das, R. Fiorillo, W.B. Powell, "From Single Commodity to Multiattribute Models for Locomotive Optimization: A Comparison of Integer Programming and Approximate Dynamic Programming," Transportation Science,  Appeared online, August 4, 2014.  http://dx.doi.org/10.1287/trsc.2014.0536 (c)Informs.](http://castle.princeton.edu/Papers/Bouazaiene-Ayari_PLASMA_TransportationScience_Online_August042014.pdf) This is an in-depth technical article that describes the mathematics and algorithm in considerable detail. Winner, TSL Best Paper Prize, 2015.
+Belgacem Bouzaiene-Ayari, C. Cheng, S. Das, R. Fiorillo, W.B. Powell, "From Single Commodity to Multiattribute Models for Locomotive Optimization: A Comparison of Integer Programming and Approximate Dynamic Programming," *Transportation Science*, appeared online August 4, 2014. [DOI: 10.1287/trsc.2014.0536](https://doi.org/10.1287/trsc.2014.0536) (c) Informs. This is an in-depth technical article that describes the mathematics and algorithm in considerable detail. Winner, TSL Best Paper Prize, 2015.
 
 Non-technical summary (to appear in Interfaces):
 
-[W.B. Powell, B. Bouzaiene-Ayari, Clark Cheng, Sourav Das, Ricardo Fiorillo, Coleman Lawrence, "Locomotive Planning at Norfolk Southern: An Optimizing Simulator Using Approximate Dynamic Programming," Interfaces, Vol. 44, No. 6, pp. 567-578., 2014. (c)Informs.](http://castle.princeton.edu/Papers/Powell%20-%20Locomotive%20Planning%20at%20Norfolk%20Southern_Interfaces_Sept022014.pdf) This is an equation-free summary of the implementation of PLASMA at Norfolk Southern.
+W.B. Powell, B. Bouzaiene-Ayari, Clark Cheng, Sourav Das, Ricardo Fiorillo, Coleman Lawrence, "Locomotive Planning at Norfolk Southern: An Optimizing Simulator Using Approximate Dynamic Programming," *Interfaces*, Vol. 44, No. 6, pp. 567-578, 2014. (c) Informs. This is an equation-free summary of the implementation of PLASMA at Norfolk Southern.
 
 A powerpoint presentation on PLASMA:
 
-[PLASMA: Approximate Dynamic Programming for Locomotive Planning, June, 2012](http://castle.princeton.edu/Presentations/Powell_PLASMApresentationJune2012.pptx)
+PLASMA: Approximate Dynamic Programming for Locomotive Planning, June 2012 (presentation).
 
 **The ADP technology**
 
-![](https://castle.princeton.edu/wp-content/uploads/2022/05/plasmaADPsubproblem-300x172.jpg)
+![](/sda-website/assets/images/plasma/plasmaADPsubproblem-300x172.jpg)
 
 It is important to plan the flows of locomotives over time. We have to make sure we reposition power to handle trains in the future, and we have to make sure that locomotives make it to shop appointments on time.
 
@@ -84,7 +84,7 @@ PLASMA uses a novel hierarchy of value functions to capture the value of individ
 
 These problems can be solved exactly using Cplex in a few seconds. This made it possible to solve hundreds of these problems over time while adaptively learning the value function approximation.
 
-![](https://castle.princeton.edu/wp-content/uploads/2022/05/plasmaADPsubproblemovertime-300x188.jpg)
+![](/sda-website/assets/images/plasma/plasmaADPsubproblemovertime-300x188.jpg)
 
 PLASMA simulates this dispatch policy over time. This is then repeated 50 to 80 times to learn the value function approximations. As a result, PLASMA is able to simulate activities for days or even weeks into the future. For strategic planning, we typically run the model over a month. For operational planning, we typically simulate over a week.
 
@@ -102,7 +102,7 @@ We first began using ADP as a decomposition method to solve large **deterministi
 
 **Myth 2: Stochastic optimization problems are "hard" and "just for academics."**
 
-[As we show below](http://castle.princeton.edu/html/plasma.html#uncertainty), using ADP for stochastic versions of the locomotive problem is not only intuitively simple, it produces much more realistic results which more closely match what locomotive planners actually do. It is not rocket science to realize that you need to hold extra locomotives in a yard to deal with the potential of late arrivals, added trains or locomotive failures. What is hard is writing rules to manage these extra locomotives that adapt to time of day, day of week and situations around the railroad. PLASMA handles all of this using simple nonlinear functions that put more value on holding locomotives. [Click here](http://castle.princeton.edu/html/plasma.html#uncertainty) for a short summary of how PLASMA handles uncertainty.
+[As we show below](#experiments), using ADP for stochastic versions of the locomotive problem is not only intuitively simple, it produces much more realistic results which more closely match what locomotive planners actually do. It is not rocket science to realize that you need to hold extra locomotives in a yard to deal with the potential of late arrivals, added trains or locomotive failures. What is hard is writing rules to manage these extra locomotives that adapt to time of day, day of week and situations around the railroad. PLASMA handles all of this using simple nonlinear functions that put more value on holding locomotives. [Click here](#experiments) for a short summary of how PLASMA handles uncertainty.
 
 **Architecture**
 
@@ -114,13 +114,13 @@ The software architecture is designed so the model can be run in three different
 
 The concept is that all three models are running on basically the same model. The strategic and tactical systems iteratively simulate the locomotive assignment problem shown above, adaptively learning the value function approximations. The real-time system only solves one locomotive assignment problem, corresponding to the "here and now" problem.
 
-PLASMA is built around the DRMS modeling library which is designed to handle discrete resource allocation problems. The same library was used to solve the tactical car distribution problem at NS, and has been used in other transportation applications ([click here](http://www.castle.princeton.edu/html/wagner.htm) for an application in truckload trucking). The goal is a streamlined software architecture that simplifies long-term software maintenance.
+PLASMA is built around the DRMS modeling library which is designed to handle discrete resource allocation problems. The same library was used to solve the tactical car distribution problem at NS, and has been used in other transportation applications ([click here](/sda-website/wagner/) for an application in truckload trucking). The goal is a streamlined software architecture that simplifies long-term software maintenance.
 
 PLASMA is imbedded in an information system developed at NS for the project called LARS. LARS handles all aspects of information retrieval and display for the user. LARS is the "car" that makes the PLASMA "engine" useful.
 
 **Calibration and validation**
 
-![](https://castle.princeton.edu/wp-content/uploads/2022/05/pilotview-300x166.jpg)
+![](/sda-website/assets/images/plasma/pilotview-300x166.jpg)
 
 Model calibration began with a careful analysis of individual assignments. Pilotview is a powerful diagnostic tool for discrete resource allocation problems. It is possible to see individual locomotive to train assignments, including the assignments we chose to make, the assignments we considered but did not choose, and the assignments which were ruled out as infeasible.
 
@@ -128,7 +128,7 @@ The user can drill down on specific locomotives, trains and assignments for more
 
 A key feature of the ADP decomposition strategy is that the smaller subproblems are diagnosable - if we do not understand the solution, it is generally fairly easy to identify whether the problem is data, the model (how the problem is represented, including various costs), or the algorithm (an issue that largely disappeared when we made the switch to solving subproblems optimally rather than the heuristic used in the first version of the code).
 
-![](https://castle.princeton.edu/wp-content/uploads/2022/05/plasmacalibration-300x224.jpg)
+![](/sda-website/assets/images/plasma/plasmacalibration-300x224.jpg)
 
 Thousands of man-hours were devoted to calibrating the model. This involved cleaning the data by NS, tuning the model (a joint project between Princeton and NS), and refining the algorithm at Princeton.
 
@@ -136,7 +136,7 @@ While the team looked carefully at detailed assignments and measured a variety o
 
 The graph at the right shows train delay as a functio of fleet size. The square shows historical train delay at the correct fleet size. At the same time, it allows senior management to make judgments about the tradeoff between fleet size and train delay.
 
-![](https://castle.princeton.edu/wp-content/uploads/2022/05/PLASMAtrainspeedstudy-300x230.jpg)
+![](/sda-website/assets/images/plasma/PLASMAtrainspeedstudy-300x230.jpg)
 
 A study was undertaken to test the ability of the system to model the effect of train speed on the train delay curves. A real question is whether the model would respond in a stable, predictive manner.
 
@@ -146,7 +146,7 @@ Similar studies have been conducted to understand shop routing, the management o
 
 **Experiments with uncertainty**
 
-![](https://castle.princeton.edu/wp-content/uploads/2022/05/StochvsDetvfa-300x174.jpg)
+![](/sda-website/assets/images/plasma/StochvsDetvfa-300x174.jpg)
 
 We ran experiments where we trained value functions first on deterministic travel times, and then using travel times sampled from probability distribution derived from history. The results are shown to the right for a particular yard, at a particular point in time.
 
@@ -156,13 +156,13 @@ When we model uncertainty, we show much higher values up to around 5 or 6 locomo
 
 Some what to our surprise when we developed this graph, the marginal value of locomotives is higher throughout the entire range. We believe this reflects the fact that under uncertainty, all locomotives are more valuable. Even if you do not need a locomotive now, you may need it later at the same yard, or at a downstream yard.
 
-![](https://castle.princeton.edu/wp-content/uploads/2022/05/StochvsDetvfaInventories-300x182.jpg)
+![](/sda-website/assets/images/plasma/StochvsDetvfaInventories-300x182.jpg)
 
 In simulations, if we are training under uncertainty, the model is more likely to hold onto power at a yard. However, the system will reposition power if another yard shows a higher marginal value. When VFAs are trained under uncertainty, the system is more likely to hold power, but adapts to the needs of the railroad. The graph to the right shows the inventories under stochastic and deterministic training over the course of a week. It shows that inventories are higher with stochastic training, as we would expect. But also notice that inventories are not the same over the week, reflecting the variation in demands on the fleet.
 
 We compared the performance of stochastically and deterministically trained VFAs in a simulation which captured randomness in transit times. As we would expect, transit times are lower and more stable with the stochastically trained VFAs.
 
-![stochvaDetvfa](http://castle.princeton.edu/html/images/StochvsDetvfa.jpg)
+![stochvaDetvfa](/sda-website/assets/images/plasma/StochvsDetvfa-300x174.jpg)
 
 There has been a widespread misimpression that "stochastic models" are "complicated" and "academic." We believe that the stochastically trained VFAs behave more like real railroads. Yard managers are known for wanting to hold onto power because of uncertainty. PLASMA has the same behavior when the VFAs are trained in the presence of uncertainty. The difference is that we hold onto power at the right time, and at the right locations. But instead of a fixed policy for holding onto power, we adapt as conditions warrant. If an inbound train is delayed, we release power in order to move trains on time. Instead of using hard rules on holding locomotive inventories, value function approximations can be thought of a soft rule.
 
