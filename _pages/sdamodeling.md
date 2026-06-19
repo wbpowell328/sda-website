@@ -15,7 +15,7 @@ Sequential decision problems arise in virtually every form of human processes: t
 
 *Sequential Decision Analytics and Modeling* uses a teach-by-example style to illustrate a universal framework for modeling sequential decision problems. The universal framework applies to *any* sequential decision problem, from active learning problems up through complex resource allocation problems. Chapters are accompanied by Python modules that have implemented the models, but the book should be of value even to people not interested in writing code.
 
-- [Click here for a free copy of the 2nd edition](https://tinyurl.com/PowellSDAMbook).
+- [Click here for a free copy of the 2nd edition](/sda-website/assets/papers/sdam-2nd-edition.pdf).
 
 I also recommend as a companion my new monograph *Framing the Problem*, which is addressed very briefly at the beginning of each application chapter. Copies can be obtained from:
 
