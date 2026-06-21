@@ -106,5 +106,7 @@ Adam DeJans Jr. and John Brandon Elam, *The Decision Factory: A Novel About Deci
 
 *The Decision Factory* is an outstanding illustration of how day-to-day decision making can be translated into the Universal Modeling Framework. This represents a widely overlooked step in stochastic optimization which is the framing of a problem into the core elements of metrics, decisions, and uncertainties.
 
+For a review of *The Decision Factory*, [click here](https://pubsonline.informs.org/do/10.1287/LYTX.2026.02.05/full/).
+
 *The Decision Factory* is available [on Amazon here](https://a.co/d/03rBmtZH).
 {% endraw %}
