@@ -452,11 +452,21 @@ A summary of major developments in CASTLE Labs over its history.
   </div>
 
   <div class="tl-event tl-left">
-    <div class="tl-year">2023</div>
+    <div class="tl-year">2024</div>
     <button class="tl-card" aria-expanded="false" type="button">
       <div class="tl-headline"><em>A Modern Approach to Teaching Optimization</em><span class="tl-toggle">▼</span></div>
       <div class="tl-detail">
         <p>Posted <a href="/sda-website/teachingoptimization/"><em>A Modern Approach to Teaching Optimization</em></a> which presents a fundamentally new approach for teaching an introduction to optimization course for undergraduates or masters.</p>
+      </div>
+    </button>
+  </div>
+
+  <div class="tl-event tl-right">
+    <div class="tl-year">2026</div>
+    <button class="tl-card" aria-expanded="false" type="button">
+      <div class="tl-headline">New monograph series: <em>Bridging Decision Problems</em><span class="tl-toggle">▼</span></div>
+      <div class="tl-detail">
+        <p>New monograph series: <em>Bridging Decision Problems</em>. Volume I, <em>Framing the Problem</em> appears. It lays the foundation for modeling any sequential decision problem by identifying metrics, decisions and uncertainties, using no mathematics.</p>
       </div>
     </button>
   </div>
