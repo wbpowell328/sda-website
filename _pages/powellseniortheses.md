@@ -6,7 +6,7 @@ date: 2025-06-03 15:42:06
 ---
 
 {% raw %}
-Below is the list of the 202 senior theses I supervised from 1993-2020.  I did not record my theses early in my career - I was so focused on publications that I didn't recognize the significant effort that went into this important dimension of the Princeton undergraduate education.  There are also four junior independent work papers listed.
+Over his career, Professor Powell supervised 202 senior theses, the most of any research-active faculty member in the history of Princeton University. The vast majority, and virtually all since 2000, were on sequential decision problems. The experience of supervising these talented students contributed in a significant way to my appreciation of the breadth of this problem class. It also helped me develop a style of teaching this to a broader audience.
 
 From 2008 to 2019, I also supervised 42 summer interns, primarily on energy projects.
 
@@ -14,7 +14,7 @@ From 2008 to 2019, I also supervised 42 summer interns, primarily on energy proj
 
 Kara Dowling (2020), A Multi-agent Stochastic Control Model for Adversarial Planning in Naval Operations
 
-Madhumitha  Shridharan (2020), The Little Wind Farm That Could: A Comparative Analysis of Lookahead Policies for Energy Storage Problems
+Madhumitha  Shridharan (2020), The Little Wind Farm That Could: A Comparative Analysis of Lookahead Policies for Energy Storage Problems
 
 ## 2019 (9)
 
@@ -22,7 +22,7 @@ Emma Corless (2019), Conquering an Empire of Pain: An Optimal Learning Strategy 
 
 Sadie McGirr (2019), Optimal learning for optimal rowing: Minimizing race energy expenditure
 
-Greg Kernisan (2019), Making "Dependable Engines": From Policy Search to Stochastic Lookaheads in Dynamic Supply Chain Planning 
+Greg Kernisan (2019), Making "Dependable Engines": From Policy Search to Stochastic Lookaheads in Dynamic Supply Chain Planning 
 
 Stephanie Ward (2019), Optimizing Energy Storage Locations in the Presence of Offshore Wind using Stochastic Dual Dynamic Programming
 
@@ -122,7 +122,7 @@ Daniel H. Elkind (2013), Prediction Markets and Strategic Behavior: A Simulation
 
 Kelly R. Funderburk (2013), Exploring Alternative Treatment for Bacterial Meningitis through Optimal Dosing Strategy: Responding to Rising Antibiotic Resistance
 
-Shreyashi Ghosh (2013), The Future of Solar:  An Analysis of New Jersey's Market for  Solar Renewable Energy Credits (SRECs)
+Shreyashi Ghosh (2013), The Future of Solar:  An Analysis of New Jersey's Market for  Solar Renewable Energy Credits (SRECs)
 
 Taman Narayan (2013), Modeling Government Contracting: A Principal-Agent Approach with Imperfect Monitoring and Constrained Rewards, Certificate Program in Applied and Computational Mathematics, Economics Department.
 
@@ -206,7 +206,7 @@ Yu, Vanessa (2010) Optimal Information Collection and Intervention Strategy for 
 
 Zhou, Jessica (2010) 20 Percent Wind Generation and the Energy Markets
 
-## 2009 (5): 
+## 2009 (5): 
 
 Negoescu, Diana, (2009) Optimal Learning for Drug Design in Ewing's Sarcoma
 
@@ -306,7 +306,7 @@ Caragine, Dana (2002): Mathematical Models for the Marketing Trade: The Developm
 
 Fleming, Heather L. (2002): Modeling the Spread of HIV/AIDS and the Allocation of Financial Resources for Prevention Methods in Zimbabwe.
 
-Colburn, Edward (2002): The Optimization of Pricing Decisions Over a Dynamic Shipping Network Using Stochastic Gradient Algorithms.  
+Colburn, Edward (2002): The Optimization of Pricing Decisions Over a Dynamic Shipping Network Using Stochastic Gradient Algorithms.  
 
 ## 2001 (7):
 
@@ -336,7 +336,7 @@ Mattamana, Alan (2000): The Chemistry of Human Processes.
 
 White, Kevin A. (2000): A Report From the Flight Deck: An Empirical Analysis of the Fractional Jet Ownership Industry.
 
-## 1999 (3): 
+## 1999 (3): 
 
 Todd, Ian H. (1999): A Multiple Path Theme Park Ride System.
 
