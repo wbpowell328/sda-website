@@ -404,7 +404,7 @@ A summary of major developments in CASTLE Labs over its history.
     <button class="tl-card" aria-expanded="false" type="button">
       <div class="tl-headline">"Jungle of Stochastic Optimization" — unified framework<span class="tl-toggle">▼</span></div>
       <div class="tl-detail">
-        <p>Wrote "Jungle of Stochastic Optimization" for the Informs TutORial series. First time the four classes of policies were presented formally for solving stochastic optimization problems. Follow-on papers in 2016 (also for the TutORials series) and 2019 (for European J. of Operational Research) established the unified framework for sequential decision problems. This field came to be known as "sequential decision analytics"; see the <a href="https://tinyurl.com/sdafieldyoutube/">video tutorial</a> and <a href="https://tinyurl.com/sdalinks/">a webpage for educational resources</a>.</p>
+        <p>Wrote "Jungle of Stochastic Optimization" for the Informs TutORial series. First time the four classes of policies were presented formally for solving stochastic optimization problems. Follow-on papers in 2016 (also for the TutORials series) and 2019 (for European J. of Operational Research) established the unified framework for sequential decision problems. This field came to be known as "sequential decision analytics"; see the <a href="/sda-website/howtoteachoptimizationvideo/">video tutorial</a> and <a href="https://tinyurl.com/sdalinks/">a webpage for educational resources</a>.</p>
       </div>
     </button>
   </div>
