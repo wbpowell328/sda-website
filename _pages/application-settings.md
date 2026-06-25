@@ -6,6 +6,17 @@ date: 2026-05-30
 ---
 
 {% raw %}
+Sequential decision problems arise in virtually any of the rich array of human activities. Here we highlight this diversity, identify major types of decisions, and then provide a sample of the specific applications that motivated our own work in sequential decision problems.
+
+## Jump to the following section
+
+- [A sample of human activities](#human-activities)
+- [Types of decisions](#types-of-decisions)
+- [A diverse set of problems](#diverse)
+- [Motivating applications](#motivating-applications)
+
+## A sample of human activities {#human-activities}
+
 Consider any list of fields of activities that involve people, and you can find a rich array of decisions. For example:
 
 - Engineering, including any engineering discipline, spanning both laboratory testing and field implementation
@@ -21,25 +32,19 @@ Consider any list of fields of activities that involve people, and you can find 
 
 Pick any setting, and you will find people trying to invent new materials and products, create software, develop new drugs, and improve a wide range of processes.
 
+## Types of decisions {#types-of-decisions}
+
 We can describe decisions as coming in three broad flavors depending on whether they are acting on physical, financial, or informational resources.
 
 <img src="/sda-website/assets/images/application-settings/three-decision-categories.png" alt="Three columns showing Physical decisions, Financial decisions, and Informational decisions, each with example activities" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" />
 
-## Jump to a section
-
-- [Physical decisions](#physical)
-- [Financial decisions](#financial)
-- [Informational decisions](#informational)
-- [A diverse set of problems](#diverse)
-- [Motivating applications](#motivating-applications)
-
-## Physical decisions {#physical}
+<p id="physical"><strong>Physical decisions</strong></p>
 
 Without question the category of managing physical resources offers the richest class of applications for making decisions. Physical resources include people, machines, facilities, chemicals, a countless variety of inventories, trucks (tractors and trailers), trains (locomotives and cars), aircraft, and all the random assorted equipment that comes into play in each of these environments. Decisions control buying, selling, moving, and any of a range of modifications (repairs, setups, education / training).
 
 The most common source of uncertainty in the management of physical resources is serving customer demands and requests that arrive randomly over time, sometimes with some advance notification. However, other sources of uncertainty involve the time required to perform a task, the quality of the task, and the usual flow of breakdowns and maintenance requests.
 
-## Financial decisions {#financial}
+<p id="financial"><strong>Financial decisions</strong></p>
 
 The management of financial resources covers the entire world of investments, whether in financial investments (stocks, certificates, funds), funding major purchases, hedging against currency shifts, and managing loans. The decision made by Ford to arrange a massive leveraged loan package saved the company from bankruptcy during the 2008 financial meltdown.
 
@@ -47,7 +52,7 @@ The most visible financial decisions involve trades (buying and selling investme
 
 Uncertainty is the reason that finance is even a field, so it should not be surprising that finance has raised the art of making decisions under uncertainty to a high art. Investment firms and large banks have to show that they have the financial reserves to handle a wide range of events, where the most complex dimension is handling correlations.
 
-## Informational decisions {#informational}
+<p id="informational"><strong>Informational decisions</strong></p>
 
 "Information" represents parameters, values, and the choice of functions in the form of rules, terms of a contract, and even methods for making decisions (where we have to choose the method). We might have to design the terms of a contract for purchasing an aircraft, or specify the conditions under which a contract can be exercised or cancelled.
 
