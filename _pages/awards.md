@@ -10,6 +10,7 @@ Any research laboratory likes to highlight awards that it has received as a meas
 
 ## General Awards
 
+- [**The 2022 Saul Gass Expository Writing Award**](/sda-website/gassaward/), given annually to an author whose publications in operations research and management science have set an exemplary standard of exposition. The award recognizes the impact a body of work has had in advancing OR methodology and its application, and that this impact is due not only to mathematical and computational excellence, but also to expository excellence.
 - The Robert Herman Lifetime Achievement Award, 2021. The Robert Herman Lifetime Achievement Award is awarded at most every second year by the INFORMS Transportation Science and Logistics Society to an individual who throughout his or her professional career has made fundamental and sustained contributions to transportation science and logistics, and has influenced the field through her or his writings, teaching, service, and nurturing of younger professionals.
 - Winner, 2015 Best Paper Prize from the Society for Transportation Science and Logistics (coauthored with Belgacem Bouzaiene-Ayari, Clark Cheng, Ricardo Fiorello, Sourav Das).  Awarded at Informs annual meeting, Philadelphia, November, 2015.
 - Awarded *Docteur honoris causa* by the University of Quebec at Montreal, November 17, 2013.
