@@ -209,9 +209,9 @@ The project was initiated by Roger Baugher, but the first version of the system,
 
 The team which handled the final implementation at NS included:
 
-J. Coleman Lawrence - The locomotive manager during the final phase of the implementation. The project would not have happened without Coleman's support.
+J. Coleman Lawrence - The locomotive manager during the final phase of the implementation.
 
-Clark Cheng - Clark heads the operations research group at NS.
+Clark Cheng - Clark headed the operations research group at NS for many years. Clark played the central leadership role that kept this project going, through multiple locomotive managers.
 
 Ricardo Fiorillo - Project manager for the larger LARS project, in which PLASMA is imbedded.
 
