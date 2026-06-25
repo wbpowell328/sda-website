@@ -39,7 +39,7 @@ PLASMA is the model engine within a larger information system called LARS develo
 
 [The project team](/sda-website/plasma/#team)
 
-**Features**
+## Features {#features}
 
 A partial list of features (designed primarily for NS, but some are motivated by a project with BNSF):
 
@@ -55,13 +55,13 @@ A partial list of features (designed primarily for NS, but some are motivated by
 - The strategic model will recommend the correct fleet size and mix given a projected train schedule. The user is allowed to vary the overall fleet size (letting the model choose the mix), or you may simulate a specified fleet size and mix.
 - If desired, the model can capture uncertainty in transit times and yard delays, as well as other forms of uncertainty. PLASMA will create *robust* policies that handle uncertainty efficiently by holding power in yards where they provide the greatest value. These policies are adapted (by PLASMA) to reflect the degree of uncertainty, as well as the relative size of the fleet.
 
-**Papers**
+## Papers {#papers}
 
 - Belgacem Bouzaiene-Ayari, C. Cheng, S. Das, R. Fiorillo, W.B. Powell, "From Single Commodity to Multiattribute Models for Locomotive Optimization: A Comparison of Integer Programming and Approximate Dynamic Programming," *Transportation Science*, appeared online August 4, 2014. [DOI: 10.1287/trsc.2014.0536](https://doi.org/10.1287/trsc.2014.0536) (c) Informs. — *An in-depth technical article that describes the mathematics and algorithm in considerable detail. Winner, TSL Best Paper Prize, 2015.*
 - W.B. Powell, B. Bouzaiene-Ayari, Clark Cheng, Sourav Das, Ricardo Fiorillo, Coleman Lawrence, "Locomotive Planning at Norfolk Southern: An Optimizing Simulator Using Approximate Dynamic Programming," *Interfaces*, Vol. 44, No. 6, pp. 567–578, 2014. (c) Informs. — *An equation-free summary of the implementation of PLASMA at Norfolk Southern.*
 - *PLASMA: Approximate Dynamic Programming for Locomotive Planning*, June 2012 (powerpoint presentation).
 
-**The ADP technology**
+## The ADP technology {#adp}
 
 <img src="/sda-website/assets/images/plasma/plasmaADPsubproblem.jpg" alt="Diagram of the ADP subproblem in PLASMA: assigning locomotives to a single train using value functions" width="400" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 It is important to plan the flows of locomotives over time. We have to make sure we reposition power to handle trains in the future, and we have to make sure that locomotives make it to shop appointments on time.
@@ -85,7 +85,7 @@ When used as an operational planning system, each forward pass starts from a sna
 
 <br clear="all" />
 
-**Myths about approximate dynamic programming**
+## Myths about approximate dynamic programming {#myths}
 
 We would like to put to rest two popular myths about approximate dynamic programming.
 
@@ -97,7 +97,7 @@ We first began using ADP as a decomposition method to solve large **deterministi
 
 [As we show below](#experiments), using ADP for stochastic versions of the locomotive problem is not only intuitively simple, it produces much more realistic results which more closely match what locomotive planners actually do. It is not rocket science to realize that you need to hold extra locomotives in a yard to deal with the potential of late arrivals, added trains or locomotive failures. What is hard is writing rules to manage these extra locomotives that adapt to time of day, day of week and situations around the railroad. PLASMA handles all of this using simple nonlinear functions that put more value on holding locomotives. [Click here](#experiments) for a short summary of how PLASMA handles uncertainty.
 
-**Architecture**
+## Architecture {#architecture}
 
 The software architecture is designed so the model can be run in three different modes:
 
@@ -111,7 +111,7 @@ PLASMA is built around the DRMS modeling library which is designed to handle dis
 
 PLASMA is imbedded in an information system developed at NS for the project called LARS. LARS handles all aspects of information retrieval and display for the user. LARS is the "car" that makes the PLASMA "engine" useful.
 
-**Calibration and validation**
+## Calibration and validation {#calibration}
 
 <img src="/sda-website/assets/images/plasma/pilotview.jpg" alt="Pilotview diagnostic tool showing locomotive-to-train assignment details" width="700" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" />
 
@@ -139,7 +139,7 @@ Similar studies have been conducted to understand shop routing, the management o
 
 <br clear="all" />
 
-**Experiments with uncertainty**
+## Experiments with uncertainty {#experiments}
 
 <img src="/sda-website/assets/images/plasma/StochvsDetvfa.jpg" alt="Chart comparing value function approximations trained under deterministic vs stochastic travel times" width="440" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 We ran experiments where we trained value functions first on deterministic travel times, and then using travel times sampled from probability distribution derived from history. The results are shown to the right for a particular yard, at a particular point in time.
@@ -164,7 +164,7 @@ There has been a widespread misimpression that "stochastic models" are "complica
 
 <br clear="all" />
 
-**History of the project**
+## History of the project {#history}
 
 The development effort behind PLASMA was started in 1996 with support from Norfolk Southern Railroad, and, starting in 1998, the Burlington Northern Sante Fe Railroad (the model at the time was dubbed "LRM" for locomotive routing model"). These railroads are quite different. NS is an eastern railroad with relatively short movements. BNSF is a western railroad with many trains that move from the midwest to the west coast, making numerous stops along the way which sometimes require adding or dropping power. The BNSF project focused more on shop routing, and while the project did not end in a successful implementation due to IT integration issues, the model developed some very sophisticated shop routing logic as a result.
 
@@ -189,7 +189,7 @@ The strategic planning system was put into production in 2008 and has earned the
 
 The tactical system was put into production in 2010. Unlike the strategic planning system, the tactical system depends on an accurate snapshot of the status of each locomotive, and a good train plan (schedule of trains to move over the next week). The system highlighted issues with data quality that spawned a major re-engineering of the systems that support this data. This project is ongoing.
 
-**The project team**
+## The project team {#team}
 
 The project has benefitted from the contributions of a number of people over the years. The model was developed at Princeton University. Norfolk Southern provided the primary support for the project, although BNSF supported development of a version of the system duing the period 1998-2001. The participation of Brian Roth and Dave Ferguson at BNSF during this period is warmly acknowledged.
 
