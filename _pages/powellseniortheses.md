@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "Warren Powell's senior theses"
-permalink: /warren-powells-senior-theses/
+permalink: /powellseniortheses/
 date: 2025-06-03 15:42:06
 ---
 
