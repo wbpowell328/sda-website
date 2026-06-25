@@ -14,6 +14,8 @@ Computer scientists have long used games and stylized control problems to test o
 
 Our work started by optimizing a fleet of trucks, before transitioning to fleets of locomotives. We have worked on optimal learning in drug discovery and materials science before we tackled optimizing the grid for PJM Interconnections. We did extensive research on a wide range of energy storage problems before starting a company, Optimal Dynamics, to take the research to the entire truckload industry.
 
+This page is designed to communicate the vast diversity of applications that can be described as sequential decision problems.
+
 <br clear="all" />
 
 ## Jump to the following section
