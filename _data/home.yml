@@ -69,7 +69,7 @@ books:
   - title: Optimal Learning
     description: How to collect information when observations and experiments are expensive.
     image: /wp-content/uploads/2024/11/Optimal-learning-book.jpg
-    url: /optimal-learning-2/
+    url: /optimal-learning/
     meta: Wiley
 
 latest:
