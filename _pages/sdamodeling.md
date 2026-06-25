@@ -57,5 +57,4 @@ You may contact Dennis at [dennis.janka@h-ka.de](mailto:dennis.janka@h-ka.de) if
 
 ## Supplementary material
 
-There is additional material, such as spreadsheets and datasets, on the [supplementary material page](/sda-website/sdamodelingsupplements/).
 {% endraw %}
