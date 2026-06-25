@@ -63,7 +63,7 @@ A partial list of features (designed primarily for NS, but some are motivated by
 
 **The ADP technology**
 
-<img src="/sda-website/assets/images/plasma/plasmaADPsubproblem.jpg" alt="Diagram of the ADP subproblem in PLASMA: assigning locomotives to a single train using value functions" width="310" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/sda-website/assets/images/plasma/plasmaADPsubproblem.jpg" alt="Diagram of the ADP subproblem in PLASMA: assigning locomotives to a single train using value functions" width="400" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 It is important to plan the flows of locomotives over time. We have to make sure we reposition power to handle trains in the future, and we have to make sure that locomotives make it to shop appointments on time.
 
 Even if we assume we know the future perfectly, solving the locomotive optimization problem over horizons of more than 3 days, capturing all the features above, proved to be well beyond the capability of modern solvers, even with access to parallel processing.
@@ -76,7 +76,7 @@ These problems can be solved exactly using Cplex in a few seconds. This made it 
 
 <br clear="all" />
 
-<img src="/sda-website/assets/images/plasma/plasmaADPsubproblemovertime.jpg" alt="Diagram showing the ADP subproblem applied repeatedly over multiple time periods" width="350" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/sda-website/assets/images/plasma/plasmaADPsubproblemovertime.jpg" alt="Diagram showing the ADP subproblem applied repeatedly over multiple time periods" width="420" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 PLASMA simulates this dispatch policy over time. This is then repeated 50 to 80 times to learn the value function approximations. As a result, PLASMA is able to simulate activities for days or even weeks into the future. For strategic planning, we typically run the model over a month. For operational planning, we typically simulate over a week.
 
 As we simulate forward, we can use a single future, representing a deterministic model. Or, we can sample different realizations of train delays, yard delays, train tonnages, train schedules and equipment failures. The basic running of the model does not change between stochastic and deterministic versions.
@@ -113,7 +113,7 @@ PLASMA is imbedded in an information system developed at NS for the project call
 
 **Calibration and validation**
 
-<img src="/sda-website/assets/images/plasma/pilotview.jpg" alt="Pilotview diagnostic tool showing locomotive-to-train assignment details" width="350" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" />
+<img src="/sda-website/assets/images/plasma/pilotview.jpg" alt="Pilotview diagnostic tool showing locomotive-to-train assignment details" width="700" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" />
 
 Model calibration began with a careful analysis of individual assignments. Pilotview is a powerful diagnostic tool for discrete resource allocation problems. It is possible to see individual locomotive to train assignments, including the assignments we chose to make, the assignments we considered but did not choose, and the assignments which were ruled out as infeasible.
 
