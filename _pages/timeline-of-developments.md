@@ -424,7 +424,7 @@ A summary of major developments in CASTLE Labs over its history.
     <button class="tl-card" aria-expanded="false" type="button">
       <div class="tl-headline">10+ years of energy storage research compiled<span class="tl-toggle">▼</span></div>
       <div class="tl-detail">
-        <p><a href="https://tinyurl.com/sdalinks/">Compiled 10+ years of research into energy storage</a>, which is the first to fully research all four classes of policies in the context of a wide range of storage applications, including the first formal model to properly handle rolling forecasts.</p>
+        <p><a href="/sda-website/energystorage/">Compiled 10+ years of research into energy storage</a>, which is the first to fully research all four classes of policies in the context of a wide range of storage applications, including the first formal model to properly handle rolling forecasts.</p>
       </div>
     </button>
   </div>
@@ -446,7 +446,7 @@ A summary of major developments in CASTLE Labs over its history.
     <button class="tl-card" aria-expanded="false" type="button">
       <div class="tl-headline"><em>Sequential Decision Analytics and Modeling</em> published<span class="tl-toggle">▼</span></div>
       <div class="tl-detail">
-        <p>Published <a href="https://tinyurl.com/sdamodeling/"><em>Sequential Decision Analytics and Modeling: Modeling with Python</em></a>. This is an introductory book first used in an undergraduate course at Princeton, which uses a teach-by-example style.</p>
+        <p>Published <a href="/sda-website/sdamodeling/"><em>Sequential Decision Analytics and Modeling: Modeling with Python</em></a>. This is an introductory book first used in an undergraduate course at Princeton, which uses a teach-by-example style.</p>
       </div>
     </button>
   </div>
