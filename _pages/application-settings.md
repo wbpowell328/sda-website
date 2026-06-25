@@ -6,7 +6,15 @@ date: 2026-05-30
 ---
 
 {% raw %}
-Sequential decision problems arise in virtually any of the rich array of human activities. Here we highlight this diversity, identify major types of decisions, and then provide a sample of the specific applications that motivated our own work in sequential decision problems.
+<img src="/sda-website/assets/images/motivating-applications/chess-board.png" alt="A chess board in the middle of a game, with black and white pieces in mid-position on a wooden board" width="240" align="left" style="max-width: 100%; height: auto; margin-right: 1rem; margin-bottom: 0.5rem;" />
+<img src="/sda-website/assets/images/motivating-applications/amazon-warehouse.png" alt="A wide-angle photo of the interior of a large Amazon fulfillment center, with workers in orange vests pushing wheeled carts down long aisles of merchandise" width="260" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+You can tell a lot about the methods developed by an optimization community by the problems they use to illustrate their models and algorithms.
+
+Computer scientists have long used games and stylized control problems to test out their advances in reinforcement learning.
+
+Our work started by optimizing a fleet of trucks, before transitioning to fleets of locomotives. We have worked on optimal learning in drug discovery and materials science before we tackled optimizing the grid for PJM Interconnections. We did extensive research on a wide range of energy storage problems before starting a company, Optimal Dynamics, to take the research to the entire truckload industry.
+
+<br clear="all" />
 
 ## Jump to the following section
 
@@ -69,17 +77,7 @@ Given the diversity of sequential decision problems, we put the highest priority
 
 ## Motivating applications {#motivating-applications}
 
-<img src="/sda-website/assets/images/motivating-applications/chess-board.png" alt="A chess board in the middle of a game, with black and white pieces in mid-position on a wooden board" width="240" align="left" style="max-width: 100%; height: auto; margin-right: 1rem; margin-bottom: 0.5rem;" />
-<img src="/sda-website/assets/images/motivating-applications/amazon-warehouse.png" alt="A wide-angle photo of the interior of a large Amazon fulfillment center, with workers in orange vests pushing wheeled carts down long aisles of merchandise" width="260" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
-You can tell a lot about the methods developed by an optimization community by the problems they use to illustrate their models and algorithms.
-
-Computer scientists have long used games and stylized control problems to test out their advances in reinforcement learning.
-
-Our work started by optimizing a fleet of trucks, before transitioning to fleets of locomotives. We have worked on optimal learning in drug discovery and materials science before we tackled optimizing the grid for PJM Interconnections. We did extensive research on a wide range of energy storage problems before starting a company, Optimal Dynamics, to take the research to the entire truckload industry.
-
 It is hard to emphasize the importance of a rich set of motivating applications if you are going to work on general methodology. This is the only way to avoid falling into the trap of creating what appears to be a general strategy for solving stochastic optimization problems, and then illustrating it on a single class of problems.
-
-<br clear="all" />
 
 Click on a project below to jump to a brief description:
 
