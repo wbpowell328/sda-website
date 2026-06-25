@@ -48,4 +48,6 @@ We continue this discussion under the headings:
 - [Application settings](/sda-website/application-settings/)
 - [The communities of sequential decision problems](/sda-website/sdp-communities/)
 - [Optimal learning](/sda-website/optimal-learning/)
+- [Reinforcement Learning vs. SDA](/sda-website/rlvssda/)
+- [What is Reinforcement Learning?](/sda-website/what-is-rl/)
 {% endraw %}
