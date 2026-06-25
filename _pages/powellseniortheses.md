@@ -8,7 +8,7 @@ date: 2025-06-03 15:42:06
 {% raw %}
 Over his career, Professor Powell supervised 202 senior theses, the most of any research-active faculty member in the history of Princeton University. The vast majority, and virtually all since 2000, were on sequential decision problems. The experience of supervising these talented students contributed in a significant way to my appreciation of the breadth of this problem class. It also helped me develop a style of teaching this to a broader audience.
 
-From 2008 to 2019, I also supervised 42 summer interns, primarily on energy projects.
+From 2008 to 2019, I also supervised 42 summer interns, primarily on energy projects. In the summer of 2019 he supervised seven students who wrote the first version of the python modules for his successful book *Sequential Decision Analytics and Modeling*.
 
 ## 2020 (2)
 
