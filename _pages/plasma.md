@@ -58,17 +58,9 @@ A partial list of features (designed primarily for NS, but some are motivated by
 
 **Papers**
 
-Technical paper (to appear in Transportation Science):
-
-Belgacem Bouzaiene-Ayari, C. Cheng, S. Das, R. Fiorillo, W.B. Powell, "From Single Commodity to Multiattribute Models for Locomotive Optimization: A Comparison of Integer Programming and Approximate Dynamic Programming," *Transportation Science*, appeared online August 4, 2014. [DOI: 10.1287/trsc.2014.0536](https://doi.org/10.1287/trsc.2014.0536) (c) Informs. This is an in-depth technical article that describes the mathematics and algorithm in considerable detail. Winner, TSL Best Paper Prize, 2015.
-
-Non-technical summary (to appear in Interfaces):
-
-W.B. Powell, B. Bouzaiene-Ayari, Clark Cheng, Sourav Das, Ricardo Fiorillo, Coleman Lawrence, "Locomotive Planning at Norfolk Southern: An Optimizing Simulator Using Approximate Dynamic Programming," *Interfaces*, Vol. 44, No. 6, pp. 567-578, 2014. (c) Informs. This is an equation-free summary of the implementation of PLASMA at Norfolk Southern.
-
-A powerpoint presentation on PLASMA:
-
-PLASMA: Approximate Dynamic Programming for Locomotive Planning, June 2012 (presentation).
+- Belgacem Bouzaiene-Ayari, C. Cheng, S. Das, R. Fiorillo, W.B. Powell, "From Single Commodity to Multiattribute Models for Locomotive Optimization: A Comparison of Integer Programming and Approximate Dynamic Programming," *Transportation Science*, appeared online August 4, 2014. [DOI: 10.1287/trsc.2014.0536](https://doi.org/10.1287/trsc.2014.0536) (c) Informs. — *An in-depth technical article that describes the mathematics and algorithm in considerable detail. Winner, TSL Best Paper Prize, 2015.*
+- W.B. Powell, B. Bouzaiene-Ayari, Clark Cheng, Sourav Das, Ricardo Fiorillo, Coleman Lawrence, "Locomotive Planning at Norfolk Southern: An Optimizing Simulator Using Approximate Dynamic Programming," *Interfaces*, Vol. 44, No. 6, pp. 567–578, 2014. (c) Informs. — *An equation-free summary of the implementation of PLASMA at Norfolk Southern.*
+- *PLASMA: Approximate Dynamic Programming for Locomotive Planning*, June 2012 (powerpoint presentation).
 
 **The ADP technology**
 

@@ -29,7 +29,11 @@ Considerable attention was put into capturing a host of real-world details so th
 
 - Use of relays to help get drivers home.
 
-A paper published in Interfaces describing the project with no mathematics is available [here](/sda-website/assets/papers/2020/12/Simao_Interfaces_SchneiderNationalOctober2010.pdf). This paper also summarizes a number of projects undertaken at Schneider producing millions of dollars in benefits. A longer, more technical paper, published in Transportation Science in 2009, won the 2010 Best Paper Prize from the Society for Transportation Science and Logistics.
+A paper published in *Interfaces* describing the project with no mathematics is available below. It also summarizes a number of projects undertaken at Schneider producing millions of dollars in benefits.
+
+- [Simao, H.P., A. George, W.B. Powell, T. Gifford, J. Day, J. Nienow, *Approximate Dynamic Programming Captures Fleet Operations for Schneider National*, **Interfaces**, October 2010 — download PDF](/sda-website/assets/papers/2020/12/Simao_Interfaces_SchneiderNationalOctober2010.pdf).
+
+A longer, more technical paper, published in *Transportation Science* in 2009, won the 2010 Best Paper Prize from the Society for Transportation Science and Logistics.
 
 Press releases and articles on the project can be found at:
 
