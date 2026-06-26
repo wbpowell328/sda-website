@@ -322,7 +322,7 @@ A summary of major developments in CASTLE Labs over its history.
     <button class="tl-card" aria-expanded="false" type="button">
       <div class="tl-headline">Knowledge gradient introduced — Peter Frazier<span class="tl-toggle">▼</span></div>
       <div class="tl-detail">
-        <p>Peter Frazier introduces the "knowledge gradient," launching a new direction in optimal learning.</p>
+        <p>Peter Frazier introduces the "<a href="/sda-website/optimal-learning/#kg-offline">knowledge gradient</a>," launching a new direction in optimal learning.</p>
       </div>
     </button>
   </div>
