@@ -1,4 +1,4 @@
-﻿---
+---
 layout: page
 title: "What is a decision?"
 permalink: /whatisadecision/
@@ -283,10 +283,9 @@ Value-of-information studies are arguably the most subtle from a modeling perspe
 - Running the simulations to evaluate the value of the new sources of information.  
 - Tuning policies always requires simulating them over time in the presence of whatever dynamic information processes are involved.  There are two ways of performing these simulations: 
 
-&nbsp;
 
-- - In a computer-based simulator - Here the challenge is to create samples of the exogenous information processes (prices, treatment outcomes, demands).  We can draw samples from history or generate them from a mathematical model.  Simulators can be quite sophisticated and may require substantial efforts to develop and calibrate.
-  - In the real world - This involves implementing a policy in the field and observing actual performance.  This avoids the need to develop models, but it is quite slow (it takes a day to simulate a day), and incurs the risk that you are implementing poor decisions in the field.  Also, tuning a decision-making policy in the field is difficult, but may be unavoidable.  This is a topic that desperately needs more research. The "great thinkers" in the history of decision-making.
+  - In a computer-based simulator - Here the challenge is to create samples of the exogenous information processes (prices, treatment outcomes, demands).  We can draw samples from history or generate them from a mathematical model.  Simulators can be quite sophisticated and may require substantial efforts to develop and calibrate.
+  - In the real world - This involves implementing a policy in the field and observing actual performance.  This avoids the need to develop models, but it is quite slow (it takes a day to simulate a day), and incurs the risk that you are implementing poor decisions in the field.  Also, tuning a decision-making policy in the field is difficult, but may be unavoidable.  This is a topic that desperately needs more research.
 
 ## The "great thinkers" in the history of decision-making {#great-thinkers}
 
