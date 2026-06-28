@@ -127,7 +127,7 @@ Based on the architecture of the locomotive optimization model, this model used 
 ### Drug discovery (2008–2012) {#drug-discovery}
 
 <img src="/sda-website/assets/images/motivating-applications/drug-discovery.png" alt="A diagram showing a list of candidate atoms (H, F, Cl, Br, I, Me) being attached at positions X and Y on a base molecular scaffold, illustrating combinatorial substituent selection in drug discovery" width="360" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
-Building on our work in optimal learning, we became involved in the process of drug discovery, which motivated the use of the recently developed **knowledge gradient algorithm** (by Peter Frazier), which we adapted to problems where beliefs were represented using a linear model. This work was the basis of the senior thesis of Diana Negoescu; the work won an honorable mention in the **Doing Good with Good OR** competition in 2009.
+Building on our work in optimal learning, we became involved in the process of drug discovery, which motivated the use of the recently developed **knowledge gradient algorithm** (by Peter Frazier), which we adapted to problems where beliefs were represented using a linear model. This work was the basis of the senior thesis of Diana Negoescu; the work won an honorable mention in the **Doing Good with Good OR** competition in 2009. For more on the knowledge gradient used to solve this problem, click [here](/sda-website/knowledgegradient/).
 
 <br clear="all" />
 
