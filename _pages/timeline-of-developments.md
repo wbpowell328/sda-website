@@ -350,7 +350,7 @@ A summary of major developments in CASTLE Labs over its history.
   <div class="tl-event tl-right">
     <div class="tl-year">2009</div>
     <button class="tl-card" aria-expanded="false" type="button">
-      <div class="tl-headline">Daniel Wagner Prize from Informs<span class="tl-toggle">▼</span></div>
+      <div class="tl-headline">Approximate Dynamic Programming optimizes truckload fleet operations at Schneider National, wins Daniel Wagner prize.<span class="tl-toggle">▼</span></div>
       <div class="tl-detail">
         <p><a href="/sda-website/schneider/">Winner, Daniel Wagner Prize</a> from Informs for the first application of approximate dynamic programming for truckload fleet management for Schneider National. Now called SMART-TL, this is the first system to be able to estimate the marginal value of drivers and loads while handling all driver work rules and home constraints. SMART-TL would be licensed to Optimal Dynamics, founded in 2017 to bring this technology to the truckload industry.</p>
       </div>
