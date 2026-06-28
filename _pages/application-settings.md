@@ -110,10 +110,10 @@ This project modeled each individual driver in the first time period at a high l
 
 <br clear="all" />
 
-### Locomotive optimization for Norfolk Southern Railway (1996–2008) {#norfolk-southern}
+### [Locomotive optimization for Norfolk Southern Railway (1996–2008)](/sda-website/plasma/) {#norfolk-southern}
 
 <img src="/sda-website/assets/images/motivating-applications/norfolk-southern-locomotive.jpg" alt="Front view of a Norfolk Southern locomotive number 9533 emerging from a snowy forest, with the railroad's white-horse logo on the front" width="340" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
-This was our first production implementation of a locomotive planning model based on a formal representation as a dynamic program solved using approximate dynamic programming. The use of ADP allowed us to reduce an intractably large deterministic optimization model to a sequence of much smaller integer programs that could be solved with CPLEX. The model (developed by Belgacem Bouzaiene-Ayari) was called **PLASMA** (Princeton Locomotive and Shop Management system) and is still running in 2026.
+This was our first production implementation of a locomotive planning model based on a formal representation as a dynamic program solved using approximate dynamic programming. The use of ADP allowed us to reduce an intractably large deterministic optimization model to a sequence of much smaller integer programs that could be solved with CPLEX. The model (developed by Belgacem Bouzaiene-Ayari) was called **PLASMA** (Princeton Locomotive and Shop Management system) and is still running in 2026. A complete discussion of PLASMA is given [here](/sda-website/plasma/).
 
 <br clear="all" />
 
