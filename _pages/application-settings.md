@@ -155,7 +155,7 @@ Over a 10-year period I supervised research into a wide range of energy storage 
 ### Modeling wind and prices (2010–2015) {#wind-prices}
 
 <img src="/sda-website/assets/images/motivating-applications/wind-rolling-forecasts.png" alt="A line graph over 24 hours showing a single 'Forecast made at midnight' (blue), the 'Actual' wind realization (black), and a fan of 'Rolling forecasts, updated each hour' (multicolored) — illustrating how forecasts shift each hour relative to the actual observed wind" width="380" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
-Energy poses complex stochastic prices to capture the volatility of electricity prices and the dynamics of rolling forecasts of wind. Combine these issues with the correlations over space and time on multiple time scales, and you get an appreciation of the difficulty of stochastic modeling. This is described in considerable depth in **chapter 10 of *Reinforcement Learning and Stochastic Optimization*** ([free PDF](https://tinyurl.com/RLandSO/)).
+Energy poses complex stochastic prices to capture the volatility of electricity prices and the dynamics of rolling forecasts of wind. Combine these issues with the correlations over space and time on multiple time scales, and you get an appreciation of the difficulty of stochastic modeling. This is described in considerable depth in **chapter 10 of *[Reinforcement Learning and Stochastic Optimization](https://tinyurl.com/RLandSO/)***.
 
 <br clear="all" />
 
