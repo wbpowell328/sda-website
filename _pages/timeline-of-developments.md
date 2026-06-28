@@ -340,9 +340,9 @@ A summary of major developments in CASTLE Labs over its history.
   <div class="tl-event tl-left">
     <div class="tl-year">2008</div>
     <button class="tl-card" aria-expanded="false" type="button">
-      <div class="tl-headline">PENSA Laboratory established — stochastic optimization in energy<span class="tl-toggle">▼</span></div>
+      <div class="tl-headline">PENSA laboratory (Princeton laboratory for ENergy Systems Analysis) performs wide range of energy storage research<span class="tl-toggle">▼</span></div>
       <div class="tl-detail">
-        <p><a href="/sda-website/energystorage/">PENSA Laboratory</a> (Princeton laboratory for ENergy Systems Analysis) was established to study stochastic optimization problems in energy, with a major grant from SAP.</p>
+        <p>PENSA developed an array of solution methods for a wide range of energy storage problems using the universal modeling framework, drawing on all four classes of policies to handle the diverse characteristics of energy storage problems. <a href="/sda-website/energystorage/">The complete list of publications is available here.</a></p>
       </div>
     </button>
   </div>
