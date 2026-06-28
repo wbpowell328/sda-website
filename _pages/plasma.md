@@ -107,7 +107,7 @@ The software architecture is designed so the model can be run in three different
 
 The concept is that all three models are running on basically the same model. The strategic and tactical systems iteratively simulate the locomotive assignment problem shown above, adaptively learning the value function approximations. The real-time system only solves one locomotive assignment problem, corresponding to the "here and now" problem.
 
-PLASMA is built around the DRMS modeling library which is designed to handle discrete resource allocation problems. The same library was used to solve the tactical car distribution problem at NS, and has been used in other transportation applications ([click here](/sda-website/wagner/) for an application in truckload trucking). The goal is a streamlined software architecture that simplifies long-term software maintenance.
+PLASMA is built around the DRMS modeling library which is designed to handle discrete resource allocation problems. The same library was used to solve the tactical car distribution problem at NS, and has been used in other transportation applications ([click here](/sda-website/schneider/) for an application in truckload trucking). The goal is a streamlined software architecture that simplifies long-term software maintenance.
 
 PLASMA is imbedded in an information system developed at NS for the project called LARS. LARS handles all aspects of information retrieval and display for the user. LARS is the "car" that makes the PLASMA "engine" useful.
 

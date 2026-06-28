@@ -117,10 +117,10 @@ This was our first production implementation of a locomotive planning model base
 
 <br clear="all" />
 
-### [ADP-based truckload fleet simulator for Schneider National (2004–2008)](/sda-website/wagner/) {#schneider}
+### [ADP-based truckload fleet simulator for Schneider National (2004–2008)](/sda-website/schneider/) {#schneider}
 
 <img src="/sda-website/assets/images/motivating-applications/schneider-fleet-simulator.png" alt="A map of the continental United States overlaid with hundreds of glowing dots representing truckload driver locations, with an orange Schneider National tractor-trailer in the upper-left corner" width="380" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
-Based on the architecture of the locomotive optimization model, this model used approximate dynamic programming as an "optimizing simulator" to simulate the dispatching of drivers over a month. The goal was to study a wide range of policy decisions such as domiciling strategies and changes in work rules. The model, developed by Hugo Simao, won the **Daniel H. Wagner Prize for Excellence in Operations Research Practice** in 2009. This model was later licensed to Optimal Dynamics and still forms the foundation of their planning tools. For a complete discussion of the project for Schneider National, click [here](/sda-website/wagner/).
+Based on the architecture of the locomotive optimization model, this model used approximate dynamic programming as an "optimizing simulator" to simulate the dispatching of drivers over a month. The goal was to study a wide range of policy decisions such as domiciling strategies and changes in work rules. The model, developed by Hugo Simao, won the **Daniel H. Wagner Prize for Excellence in Operations Research Practice** in 2009. This model was later licensed to Optimal Dynamics and still forms the foundation of their planning tools. For a complete discussion of the project for Schneider National, click [here](/sda-website/schneider/).
 
 <br clear="all" />
 

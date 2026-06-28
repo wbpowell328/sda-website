@@ -49,7 +49,7 @@ SuperSPIN was eventually marketed to the rest of the industry, influencing the e
 
 ### Real-time Optimization for Truckload Trucking {#truckload}
 
-We have worked extensively in real-time driver scheduling. [MicroMAP](/sda-website/micromap/) was the first real-time model to handle driver assignments at high detail while capturing future impacts. It has been installed at 20 of the nation's largest carriers, including J.B. Hunt and Swift. We also completed a strategic fleet planning system for **Schneider National**, allowing them to model operations at a high level of detail and save tens of millions of dollars annually. [More information here.](/sda-website/wagner/)
+We have worked extensively in real-time driver scheduling. [MicroMAP](/sda-website/micromap/) was the first real-time model to handle driver assignments at high detail while capturing future impacts. It has been installed at 20 of the nation's largest carriers, including J.B. Hunt and Swift. We also completed a strategic fleet planning system for **Schneider National**, allowing them to model operations at a high level of detail and save tens of millions of dollars annually. [More information here.](/sda-website/schneider/)
 
 ------------------------------------------------------------------------
 

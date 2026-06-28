@@ -18,7 +18,7 @@ Any research laboratory likes to highlight awards that it has received as a meas
 - Winner, 2011, Best Paper Prize at IEEE Symposium Series on Computational Intelligence, Paris, France, for "Bayesian Active Learning with Basis Functions," (coauthored with Ilya Ryzhov).
 - Awarded *Docteur honoris causa* by the University of Quebec at Montreal, November 17, 2013, in recognition of lifetime contributions to stochastic optimization and applications in transportation, logistics and energy.
 - Winner, 2010 Best Paper Prize from the Society for Transportation Science and Logistics for "Approximate Dynamic Programming Algorithm for Large Scale Fleet Management: A Case Application." [Click here to view the paper](/sda-website/assets/papers/2020/12/Simao_Interfaces_SchneiderNationalOctober2010.pdf).
-- Winner, 2009 Daniel H. Wagner Prize for Excellence in Operations Research Practice. (with H. P. Simao, Abraham George, Jeff Day, Ted Gifford, John Nienow). [Click here for more information.](/sda-website/wagner/)
+- Winner, 2009 Daniel H. Wagner Prize for Excellence in Operations Research Practice. (with H. P. Simao, Abraham George, Jeff Day, Ted Gifford, John Nienow). [Click here for more information.](/sda-website/schneider/)
 - Best paper prize at ICPR Americas conference, June, 2008, for: Simao, H. P. and W. B. Powell, "Approximate Dynamic Programming for Managing High Value Spare Parts."
 - Finalist, Franz Edelman Award from The Institute of Management Science, 1991, with Yellow Freight System.
 - Second place, Franz Edelman Award from The Institute of Management Science, 1987, with North American Van Lines.
