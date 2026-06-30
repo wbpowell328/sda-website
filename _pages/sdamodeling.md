@@ -54,7 +54,4 @@ These modules were originally developed by a group of students, reviewed by a st
 - Complete rewrite of the code for the `AssetSelling`, `MedicalDecisionDiabetes`, and `StochasticShortestPath_static` modules, and a Jupyter Notebook for each of the problems that walks the user from creating a model and policy through tuning policies and interpreting the results.
 
 You may contact Dennis at [dennis.janka@h-ka.de](mailto:dennis.janka@h-ka.de) if you have questions or suggestions about the software library. I am grateful to anyone willing to make contributions to this resource.
-
-## Supplementary material
-
 {% endraw %}
