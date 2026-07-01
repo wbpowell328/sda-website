@@ -248,6 +248,29 @@
       background: #ede0bd;
       transition: background 0.6s;
     }
+    .castle-msg-toolbar {
+      align-self: flex-start;
+      max-width: 85%;
+      display: flex;
+      gap: 0.4rem;
+      margin-top: -0.2rem;
+    }
+    .castle-msg-action {
+      background: #faf5e6;
+      border: 1px solid #e5d8b5;
+      border-radius: 6px;
+      padding: 0.2rem 0.6rem;
+      color: #7a6240;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-family: inherit;
+      line-height: 1.3;
+      transition: background 0.12s, color 0.12s, border-color 0.12s;
+    }
+    .castle-msg-action:hover:not(:disabled) {
+      background: #ede0bd; color: #3d2914; border-color: #c9a86b;
+    }
+    .castle-msg-action:disabled { opacity: 0.75; cursor: default; }
     .castle-sources {
       align-self: flex-start;
       max-width: 85%;
@@ -410,6 +433,8 @@
   }
 
   async function renderMarkdown(bubble, text) {
+    // Stash raw markdown on the bubble for the Copy / Print actions.
+    bubble._castleMarkdown = text;
     const marked = await loadMarked();
     if (!marked) { bubble.textContent = text; return; }
 
@@ -510,6 +535,132 @@
     nodes.forEach(processText);
   }
 
+  // Add a Copy / Print toolbar under the assistant message. Returns the
+  // toolbar element so callers can chain further inserts after it.
+  function addAssistantToolbar(bubble) {
+    const bar = document.createElement('div');
+    bar.className = 'castle-msg-toolbar';
+    bar.innerHTML = `
+      <button type="button" class="castle-msg-action" data-action="copy" title="Copy this answer to the clipboard (formatting preserved)">📋 Copy</button>
+      <button type="button" class="castle-msg-action" data-action="print" title="Open a printable view — use browser Print to save as PDF">🖨 Print / Save</button>
+    `;
+    bar.addEventListener('click', (e) => {
+      const btn = e.target.closest('.castle-msg-action');
+      if (!btn) return;
+      const action = btn.dataset.action;
+      if (action === 'copy') copyBubble(bubble, btn);
+      else if (action === 'print') printBubble(bubble);
+    });
+    messagesEl.insertBefore(bar, bubble.nextSibling);
+    return bar;
+  }
+
+  function flashButton(btn, text) {
+    const orig = btn.textContent;
+    btn.textContent = text;
+    btn.disabled = true;
+    setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 1500);
+  }
+
+  // Find the user question paired with an assistant bubble by walking back
+  // through previous element siblings until we hit a .castle-msg.user.
+  function findPairedQuestion(bubble) {
+    let node = bubble.previousElementSibling;
+    while (node) {
+      if (node.classList && node.classList.contains('castle-msg') && node.classList.contains('user')) {
+        return node.textContent || '';
+      }
+      node = node.previousElementSibling;
+    }
+    return '';
+  }
+
+  function escapeHtmlText(s) {
+    return String(s).replace(/[&<>"']/g, ch => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[ch]);
+  }
+
+  // Build the HTML + plain-text export for a Q&A pair. Used by both Copy and
+  // Print so the two paths produce identical content.
+  async function buildQAExport(bubble) {
+    const question = findPairedQuestion(bubble);
+    const answerMd = bubble._castleMarkdown || bubble.innerText || '';
+    const marked   = await loadMarked();
+    const answerHtml = marked ? marked.parse(answerMd) : answerMd.replace(/\n/g, '<br>');
+
+    const html =
+      '<div style="font-family: Georgia, \'Times New Roman\', serif; line-height: 1.55; color: #222;">' +
+        (question
+          ? '<p><strong>Question:</strong></p>' +
+            '<p style="margin-left: 1rem;">' + escapeHtmlText(question).replace(/\n/g, '<br>') + '</p>'
+          : '') +
+        '<p><strong>Answer:</strong></p>' +
+        '<div>' + answerHtml + '</div>' +
+      '</div>';
+
+    const text =
+      (question ? 'Question:\n' + question + '\n\n' : '') +
+      'Answer:\n' + answerMd;
+
+    return { html, text };
+  }
+
+  async function copyBubble(bubble, btn) {
+    const { html: wrappedHtml, text: md } = await buildQAExport(bubble);
+    try {
+      if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+        const item = new ClipboardItem({
+          'text/html':  new Blob([wrappedHtml], { type: 'text/html' }),
+          'text/plain': new Blob([md],           { type: 'text/plain' }),
+        });
+        await navigator.clipboard.write([item]);
+      } else if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(md);
+      } else {
+        throw new Error('Clipboard API not available');
+      }
+      flashButton(btn, '✓ Copied');
+    } catch (err) {
+      console.error('Copy failed:', err);
+      flashButton(btn, 'Copy failed');
+    }
+  }
+
+  async function printBubble(bubble) {
+    const { html: bodyHtml } = await buildQAExport(bubble);
+    const win = window.open('', '_blank', 'width=760,height=800');
+    if (!win) {
+      alert('The print window was blocked. Please allow pop-ups for this page.');
+      return;
+    }
+    const doc = win.document;
+    doc.open();
+    doc.write(
+      '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">' +
+      '<title>Ask Professor Powell — Answer</title>' +
+      '<style>' +
+        'body{font-family:Georgia,"Times New Roman",serif;line-height:1.55;max-width:720px;margin:2rem auto;padding:0 1.5rem;color:#222;}' +
+        'h1,h2,h3,h4{color:#3d2914;font-family:Georgia,serif;}' +
+        'a{color:#8a3a1a;}' +
+        'blockquote{border-left:3px solid #c9621e;padding:.15rem .6rem;color:#5a4a35;font-style:italic;margin:.5rem 0;}' +
+        'code{background:#ede0bd;padding:.05em .3em;border-radius:3px;font-size:.9em;}' +
+        'pre{background:#f5efdd;padding:.6rem;border-radius:4px;overflow-x:auto;font-size:.88em;}' +
+        'ul,ol{padding-left:1.4rem;}li{margin:.2rem 0;}' +
+        '.hdr{color:#7a6240;font-size:.85rem;border-bottom:1px solid #ddd;padding-bottom:.5rem;margin-bottom:1rem;}' +
+        '.ftr{color:#7a6240;font-size:.78rem;border-top:1px solid #ddd;padding-top:.5rem;margin-top:1.5rem;}' +
+        '@media print{body{max-width:none;margin:.5in;}}' +
+      '</style>' +
+      '</head><body>' +
+      '<div class="hdr">Ask Professor Powell &middot; CASTLE Lab &middot; ' + new Date().toLocaleDateString() + '</div>' +
+      '<div>' + bodyHtml + '</div>' +
+      '<div class="ftr">Generated by the chatbot at castle-chatbot.onrender.com. Verify against the original source before citing.</div>' +
+      '<script>window.onload=function(){setTimeout(function(){window.print();},300);};</script>' +
+      '</body></html>'
+    );
+    doc.close();
+  }
+
   // Render a collapsible "Sources" panel under the assistant message.
   function renderSources(bubble, citations) {
     // Stash citations on the bubble so subsequent re-renders (during streaming)
@@ -535,9 +686,14 @@
       ol.appendChild(li);
     }
     det.appendChild(ol);
-    // Place the Sources panel immediately after its assistant bubble so it
-    // travels with the Q&A pair under the reverse-chronological layout.
-    messagesEl.insertBefore(det, bubble.nextSibling);
+    // Place the Sources panel immediately after its assistant bubble (or the
+    // Copy/Print toolbar, if one has already been inserted) so it travels
+    // with the Q&A pair under the reverse-chronological layout.
+    const anchor = (bubble.nextSibling && bubble.nextSibling.classList
+      && bubble.nextSibling.classList.contains('castle-msg-toolbar'))
+      ? bubble.nextSibling
+      : bubble;
+    messagesEl.insertBefore(det, anchor.nextSibling);
   }
 
   function escapeHtml(s) {
@@ -558,6 +714,7 @@
         }
         // Render markdown then typeset math sequentially.
         renderMarkdown(bubble, m.content).then(() => typesetMath(bubble));
+        addAssistantToolbar(bubble);
         if (Array.isArray(m.citations) && m.citations.length > 0) {
           renderSources(bubble, m.citations);
         }
@@ -634,6 +791,7 @@
       }
 
       assistantBubble.classList.remove('streaming');
+      addAssistantToolbar(assistantBubble);
       if (Array.isArray(lastCitations) && lastCitations.length > 0) {
         renderSources(assistantBubble, lastCitations);
       }
