@@ -6,7 +6,6 @@ date: 2025-10-15 09:53:04
 ---
 
 {% raw %}
-*Note to all readers: This webpage is designed to facilitate discussion. I am astonished that a question such as "What is a decision" has not been definitively answered at this time (2026).  I welcome comments to anything on this page, but especially my own attempt at a definition, and especially my section on different types of decisions.  Please send thoughts and comments to me at wbpowell328@gmail.com.*
 
 Decisions are a fundamental human activity, studied and debated throughout our entire history, driven by our endless desire to improve.  As I like to say:  
 
