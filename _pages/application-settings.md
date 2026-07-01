@@ -29,16 +29,17 @@ This page is designed to communicate the vast diversity of applications that can
 
 Consider any list of fields of activities that involve people, and you can find a rich array of decisions. For example:
 
-- Engineering, including any engineering discipline, spanning both laboratory testing and field implementation
-- Physical and biological sciences
-- Computer science and mathematics
-- Public health, covering the treating of diseases and other health conditions
-- Medical systems, spanning medical decision making to hospital care
-- Economics and finance
-- Energy systems
-- Supply chain management, manufacturing and freight transportation
-- Personal and public transportation
-- E-commerce
+- **Sports** – How to perform better personally, how your team should perform better, improving the performance of your fantasy football team.
+- **Finance** – Trading a stock portfolio, determining when to sell a stock.
+- **Health** – This is a big topic. Some samples are:
+  - *Personal health* – Taking a medication, designing a diet.
+  - *Public health* – Designing public information campaigns, distributing naloxone kits, enforcing mask mandates.
+  - *Medical decision making* – What drug to use, what dosage.
+  - *Clinical trials* – Which drugs to send through clinical trials (and for which disease), what population to target, where to set up clinics.
+- **Business** – This is another big umbrella, but it is any business setting where you want to cut costs, increase sales, improve profit margins, improve customer service, or improve the performance of a manufacturing process.
+- **Laboratory research** – You are trying to design a new drug, create a stronger material, bake a fluffier cake.
+- **E-commerce** – How much to bid for ad space on Google or Facebook, how to price a product, what URL to display to attract the most clicks.
+- **Supply chain management** – Designing inventory replenishment policies, choosing forecasting methods, selecting suppliers, implementing demand management strategies (including pricing).
 
 Pick any setting, and you will find people trying to invent new materials and products, create software, develop new drugs, and improve a wide range of processes.
 
