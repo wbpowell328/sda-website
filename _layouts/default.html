@@ -178,7 +178,17 @@
     });
   }
 </script>
-<script src="{{ '/assets/js/chatbot-widget.js' | relative_url }}" defer></script>
+<!-- Loaded directly from the chatbot service so there is only one copy
+     of widget.js to maintain (the one served by castle-chatbot.onrender.com).
+     On localhost the Node proxy serves it from chatbot/public/widget.js. -->
+<script>
+  document.write(
+    '<script src="' + (__isLocal
+      ? 'http://localhost:3000/widget.js'
+      : 'https://castle-chatbot.onrender.com/widget.js')
+    + '" defer><\/script>'
+  );
+</script>
 
 </body>
 </html>
