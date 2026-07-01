@@ -1,7 +1,7 @@
 ---
 layout: page
-title: "What is a decision?"
-permalink: /whatisadecision/
+title: "Decisions, decisions"
+permalink: /decisionsdecisions/
 date: 2025-10-15 09:53:04
 ---
 

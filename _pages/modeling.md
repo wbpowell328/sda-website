@@ -39,7 +39,7 @@ Note that these four steps do not cover all dimensions of real projects, especia
 
 This part of the website will take you through the following steps:
 
-- [**What is a decision?**](/sda-website/whatisadecision/) — we address the problem of identifying decisions, starting by defining what we mean by "decisions."
+- [**What is a decision?**](/sda-website/decisionsdecisions/) — we address the problem of identifying decisions, starting by defining what we mean by "decisions."
 - [**Framing decision problems**](/sda-website/framingproblems/) — we identify the problem of choosing metrics, decisions, and uncertainties.
 - [**The universal modeling framework**](/sda-website/universal-modeling-framework/) — we introduce the universal modeling framework that is the basis for how we think about sequential decision problems.
 - [**State variables**](/sda-website/statevariables/) — "state variables" capture all the information we need to model our system. We show how to identify this information from the components of the model.

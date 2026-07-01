@@ -37,8 +37,8 @@
   items:
     - title: Overview
       url: /modeling/
-    - title: What is a decision?
-      url: /whatisadecision/
+    - title: Decisions, decisions
+      url: /decisionsdecisions/
     - title: Framing decision problems
       url: /framingproblems/
     - title: The universal modeling framework

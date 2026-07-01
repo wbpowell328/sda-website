@@ -57,7 +57,7 @@ In the 1970s, a popular set of commercials promoting V8 tomato juice focused on 
 
 There are many settings in practice where we behave as if we were on autopilot, and do not realize that we could have made different choices.
 
-A complete discussion of decisions is on the [What is a decision?](/sda-website/whatisadecision/) page.
+A complete discussion of decisions is on the [Decisions, decisions](/sda-website/decisionsdecisions/) page.
 
 ## Uncertainties {#uncertainties}
 
