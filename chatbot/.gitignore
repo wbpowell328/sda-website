@@ -9,6 +9,5 @@ knowledge/
 # Local-only scripts and outputs.
 ingest.js
 build-context.js
-system-prompt.txt
 demo.html
 smoke-test-payload.json

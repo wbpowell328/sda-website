@@ -29,12 +29,11 @@ Thumbs.db
 # Claude Code session artifacts
 .claude/
 
-# Chatbot prototype — secrets, deps, and generated/large content
+# Chatbot — secrets and deps. system-prompt.txt and knowledge.db ARE
+# committed (Render needs them at deploy time).
 chatbot/.env
 chatbot/node_modules/
-chatbot/system-prompt.txt
 chatbot/smoke-test-payload.json
-chatbot/knowledge.db
 chatbot/knowledge.db-journal
 chatbot/knowledge.db-shm
 chatbot/knowledge.db-wal
