@@ -562,16 +562,52 @@
     setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 1500);
   }
 
-  async function copyBubble(bubble, btn) {
-    const md = bubble._castleMarkdown || bubble.innerText || '';
-    // Re-render markdown to clean HTML (without MathJax SVG — Word etc. can't
-    // read those). The original $...$ / $$...$$ stays as literal text.
-    const marked = await loadMarked();
-    const bodyHtml = marked ? marked.parse(md) : md.replace(/\n/g, '<br>');
-    const wrappedHtml =
+  // Find the user question paired with an assistant bubble by walking back
+  // through previous element siblings until we hit a .castle-msg.user.
+  function findPairedQuestion(bubble) {
+    let node = bubble.previousElementSibling;
+    while (node) {
+      if (node.classList && node.classList.contains('castle-msg') && node.classList.contains('user')) {
+        return node.textContent || '';
+      }
+      node = node.previousElementSibling;
+    }
+    return '';
+  }
+
+  function escapeHtmlText(s) {
+    return String(s).replace(/[&<>"']/g, ch => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[ch]);
+  }
+
+  // Build the HTML + plain-text export for a Q&A pair. Used by both Copy and
+  // Print so the two paths produce identical content.
+  async function buildQAExport(bubble) {
+    const question = findPairedQuestion(bubble);
+    const answerMd = bubble._castleMarkdown || bubble.innerText || '';
+    const marked   = await loadMarked();
+    const answerHtml = marked ? marked.parse(answerMd) : answerMd.replace(/\n/g, '<br>');
+
+    const html =
       '<div style="font-family: Georgia, \'Times New Roman\', serif; line-height: 1.55; color: #222;">' +
-      bodyHtml +
+        (question
+          ? '<p><strong>Question:</strong></p>' +
+            '<p style="margin-left: 1rem;">' + escapeHtmlText(question).replace(/\n/g, '<br>') + '</p>'
+          : '') +
+        '<p><strong>Answer:</strong></p>' +
+        '<div>' + answerHtml + '</div>' +
       '</div>';
+
+    const text =
+      (question ? 'Question:\n' + question + '\n\n' : '') +
+      'Answer:\n' + answerMd;
+
+    return { html, text };
+  }
+
+  async function copyBubble(bubble, btn) {
+    const { html: wrappedHtml, text: md } = await buildQAExport(bubble);
     try {
       if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
         const item = new ClipboardItem({
@@ -592,9 +628,7 @@
   }
 
   async function printBubble(bubble) {
-    const md = bubble._castleMarkdown || bubble.innerText || '';
-    const marked = await loadMarked();
-    const bodyHtml = marked ? marked.parse(md) : md.replace(/\n/g, '<br>');
+    const { html: bodyHtml } = await buildQAExport(bubble);
     const win = window.open('', '_blank', 'width=760,height=800');
     if (!win) {
       alert('The print window was blocked. Please allow pop-ups for this page.');
