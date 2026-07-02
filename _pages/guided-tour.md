@@ -32,7 +32,7 @@ These applications should help illustrate the diversity of sequential decision p
 
 We now investigate **Modeling** where we start with a brief introduction to modeling sequential decision problems:
 
-**[Overview](/sda-website/modeling/)**
+**[Modeling overview](/sda-website/modeling/)**
 
 The next stop is a big one. It is called **[Decisions, decisions](/sda-website/decisionsdecisions/)**, and it starts by highlighting the importance of decisions, and the surprising question of defining a decision, which appears to have been overlooked since the time of the Greek philosophers:
 
