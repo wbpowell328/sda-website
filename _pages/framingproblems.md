@@ -6,6 +6,8 @@ date: 2026-05-30
 ---
 
 {% raw %}
+Framing a decision problem is the most important step — it sets the stage for any decision problem by identifying metrics, decisions and uncertainties. Most important is that it is all in English — no math, which is how any model should start. In fact, it can be argued that the framing process should not be done by people trained in analytics since their training introduces an unavoidable bias into what questions they ask.
+
 ## Jump to a section
 
 - [The framing process](#the-framing-process)
