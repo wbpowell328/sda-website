@@ -54,9 +54,11 @@ The information $W_{t+1,i}(S_t, x_t)$ may change performance metrics, any of the
 
 ## Simulating the information process {#simulating}
 
-If we wish to evaluate a policy $X^\pi(S_t  \mid  \theta)$, we need to be able to simulate the system. We can do this in the field — meaning we simply observe the information processes $W_{t+1,i}(S_t, x_t)$ as they happen, which avoids any need to model the process. The downside is that this is very slow, and we have to live with our mistakes.
+If we wish to evaluate a policy $X^\pi(S_t \mid \theta_t)$ we need to be able to simulate the system, which means we need to be able to simulate the exogenous information process $(W_1, \ldots, W_t, \ldots, W_T)$. There are three ways to do this:
 
-The alternative is to create mathematical models that allow us to sample $W_{t+1,i}(S_t, x_t)$. Stochastic models for many systems can be quite subtle and complex. It is tempting to think that all models of uncertainty can be done with normal distributions and Poisson processes (which are popular in textbooks), but those will not take you very far in real-world stochastic models.
+1. Use historical data, which is a process known as backtesting. This is popular in finance where it is possible to use historical prices. However, you have to have a problem where decisions do not affect the exogenous information process.
+2. Test a policy in the field, which is a process we call "Learning While Doing." This is the most precise way to test a policy, but it is slow (it takes a day to simulate a day) and you have to live with your mistakes.
+3. When neither of the above works, you need to simulate the information process from a mathematical model. This can easily be the most difficult part of the modeling process. While generating random variables is not in itself difficult, what is hard is accurately recreating the behaviors that can happen in the field. The most difficult characteristic of a stochastic process is replicating correlations, whether it is across time (which is very common), across space, or between different information processes.
 
 ## The flavors of uncertainty {#flavors}
 
