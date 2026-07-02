@@ -119,7 +119,7 @@ The only real test of a method is when teams other than the one who developed a 
 
 ## For more information {#more-info}
 
-We are not going to attempt to communicate the richness and complexities of approximate value functions on this website. If you think you have a problem that is particularly well suited to using Bellman's equation, we recommend Chapters 14–18 of *Reinforcement Learning and Stochastic Optimization*:
+We are not going to attempt to communicate the richness and complexities of approximate value functions on this website. If you think you have a problem that is particularly well suited to using Bellman's equation, we recommend Chapters 14–18 of [*Reinforcement Learning and Stochastic Optimization*](/sda-website/rlso/):
 
 - **Chapter 14 — Exact dynamic programming** — presents classical results for problems, using discrete states or continuous optimal-control problems, that can be solved exactly using Bellman's equation.
 - **Chapter 15 — Backward approximate dynamic programming** — describes the technique of stepping backward in time, using linear models to approximate the value functions. Encouraging numerical results are reported.
