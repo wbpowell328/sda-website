@@ -26,12 +26,10 @@
       url: /application-settings/
     - title: The SDP communities
       url: /sdp-communities/
-    - title: Optimal Learning
-      url: /optimal-learning/
-    - title: Reinforcement learning vs. SDA
-      url: /rlvssda/
     - title: What is Reinforcement Learning?
       url: /what-is-rl/
+    - title: Optimal Learning
+      url: /optimal-learning/
 
 - section: Modeling
   items:

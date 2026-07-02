@@ -23,6 +23,7 @@ I then offer an alternative strategy, which is to describe the field in terms of
 - [Perspectives of reinforcement learning](#perspectives)
 - [Sequential decision problems](#sdp)
 - [Designing policies](#designing-policies)
+- [Reinforcement learning vs. SDA](#rl-vs-sda)
 
 ## **A little history** {#history}
 
@@ -194,4 +195,8 @@ Here is my major claim: ***These four classes of policies (PFAs, CFAs, VFAs and 
 This is a major point of departure from the other books on reinforcement learning, which have started to describe an ever-broadening library of methods, without recognizing that each method belongs to one of these four classes of policies.
 
 My most complete description of the four classes of policies (including a number of hybrids formed of policies from two, three or even all four classes) is Chapter 11 of my new book *[Reinforcement Learning and Stochastic Optimization](https://tinyurl.com/RLandSO/).* Chapter 11 can be downloaded from the [RLSO webpage](https://tinyurl.com/RLandSO/).
+
+## Reinforcement learning vs. SDA {#rl-vs-sda}
+
+For a deeper comparison of reinforcement learning and sequential decision analytics — including a brief history of the field, the differences between Sutton and Barto's *Reinforcement Learning: An Introduction* and my *Reinforcement Learning and Stochastic Optimization*, the path from Q-learning to the four classes of policies, and my choices of notation — see the [Reinforcement learning versus sequential decision analytics](/sda-website/rlvssda/) page.
 {% endraw %}
