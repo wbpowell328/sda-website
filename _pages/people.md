@@ -6,12 +6,12 @@ date: 2026-06-04
 ---
 
 {% raw %}
-<img src="/sda-website/assets/images/people/warren-powell-headshot.png" alt="Headshot of Warren B. Powell — silver-grey hair, navy blazer, light blue shirt, smiling, photographed against a plain background" width="208" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
-Warren B. Powell taught at Princeton University for 39 years, where he was a founding member of the Department of Operations Research and Financial Engineering. In 1990 he founded CASTLE Laboratory, which he directed until his retirement in 2020. He also founded PENSA, the Princeton Laboratory for Energy Systems Analysis, in 2008 until 2014 when he merged it into CASTLE. See his [biographic summary](/sda-website/biography/) for the full story.
+<img src="/assets/images/people/warren-powell-headshot.png" alt="Headshot of Warren B. Powell — silver-grey hair, navy blazer, light blue shirt, smiling, photographed against a plain background" width="208" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+Warren B. Powell taught at Princeton University for 39 years, where he was a founding member of the Department of Operations Research and Financial Engineering. In 1990 he founded CASTLE Laboratory, which he directed until his retirement in 2020. He also founded PENSA, the Princeton Laboratory for Energy Systems Analysis, in 2008 until 2014 when he merged it into CASTLE. See his [biographic summary](/biography/) for the full story.
 
 <br clear="right" />
 
-<img src="/sda-website/assets/images/people/hugo-simao-2026.png" alt="Headshot of Hugo Simao — bald, glasses, grey-green collared shirt, smiling, photographed against a transparent background" width="208" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/people/hugo-simao-2026.png" alt="Headshot of Hugo Simao — bald, glasses, grey-green collared shirt, smiling, photographed against a transparent background" width="208" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 Special recognition is due to my first Ph.D. student, **Hugo Simao**, who returned in 1990 as the first full-time staff member of CASTLE Lab, where he stayed until his retirement 30 years later. Hugo anchored the lab, providing the skill and leadership that could only come from his steady presence, incredible modeling and software skills. Hugo played the central role on projects with Yellow Freight System, Air Products and Chemicals, Schneider National (producing the software that launched Optimal Dynamics), and the development of the energy planning model, SMART-ISO. Just as important was his ability to teach and nurture students getting used to serious experimental work.
 
 I also need to highlight the work of **Belgacem Bouzaiene-Ayari**, who joined the lab in 1996 as a senior staff member. He handled a number of important projects, but two that really stand out are the development of our locomotive planning model (**PLASMA**) for Norfolk Southern Railway, and writing **Pilotview**, a powerful graphics package that was central to our ability to understand and debug these complex models.
@@ -38,14 +38,14 @@ The contributions of this talented group of students were central to the progres
 
 *"Take care of your students, and the research will take care of itself."*
 
-<a href="/sda-website/assets/images/people/academic-family-tree.jpg" target="_blank" rel="noopener" title="Click to open the full-resolution chart in a new tab"><img src="/sda-website/assets/images/people/academic-family-tree.jpg" alt="Warren B. Powell's academic family tree, 1981–2020. A wide poster-style chart organized into columns — Ph.D. academic and research labs, post-docs, professional staff, Ph.D. industry, current Ph.D., and MSE — listing every student and post-doc by name with their first position. Bordered along the bottom by 213 undergraduate senior theses, and centered with the Princeton shield and the quote 'Take care of your students, and the research will take care of itself.'" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto; border: 1px solid #ccc;" /></a>
+<a href="/assets/images/people/academic-family-tree.jpg" target="_blank" rel="noopener" title="Click to open the full-resolution chart in a new tab"><img src="/assets/images/people/academic-family-tree.jpg" alt="Warren B. Powell's academic family tree, 1981–2020. A wide poster-style chart organized into columns — Ph.D. academic and research labs, post-docs, professional staff, Ph.D. industry, current Ph.D., and MSE — listing every student and post-doc by name with their first position. Bordered along the bottom by 213 undergraduate senior theses, and centered with the Princeton shield and the quote 'Take care of your students, and the research will take care of itself.'" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto; border: 1px solid #ccc;" /></a>
 ## My last semester {#last-semester}
 
 As my understanding of sequential decision problems matured, the interest in my work among the students grew steadily. I was supervising 27 grads, undergrads, staff and post-docs in my last semester, when I decided to retire early to get away from a poisonous environment in my department.
 
 At no time did I ever run out of good problems to motivate new research. It is simply impossible to run out of research opportunities when you are working on sequential decision problems.
 
-<img src="/sda-website/assets/images/people/last-semester-group-photo.png" alt="Group photo from March 2019 (Warren Powell's last active semester) showing roughly two dozen graduate students, undergraduates, staff and post-docs seated and standing in three rows in front of a wood-paneled wall" style="display: block; margin: 1.5rem auto; max-width: 85%; height: auto;" />
+<img src="/assets/images/people/last-semester-group-photo.png" alt="Group photo from March 2019 (Warren Powell's last active semester) showing roughly two dozen graduate students, undergraduates, staff and post-docs seated and standing in three rows in front of a wood-paneled wall" style="display: block; margin: 1.5rem auto; max-width: 85%; height: auto;" />
 
 ## Post-doctoral placement (15, 11 academic) {#post-docs}
 

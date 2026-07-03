@@ -6,18 +6,18 @@ date: 2026-06-04
 ---
 
 {% raw %}
-<img src="/sda-website/assets/images/teaching-optimization/mato-cover.jpg" alt="Cover of 'A Modern Approach to Teaching an Introduction to Optimization' by Warren B. Powell, NOW Publishing, 2024 — orange cover with a graph diagram" width="197" align="right" style="max-width: 100%; height: auto; margin-left: 1.5rem; margin-bottom: 1rem;" />
+<img src="/assets/images/teaching-optimization/mato-cover.jpg" alt="Cover of 'A Modern Approach to Teaching an Introduction to Optimization' by Warren B. Powell, NOW Publishing, 2024 — orange cover with a graph diagram" width="197" align="right" style="max-width: 100%; height: auto; margin-left: 1.5rem; margin-bottom: 1rem;" />
 
 **Warren B. Powell, *A Modern Approach to Teaching an Introduction to Optimization*, NOW Publishing, 2024 (120 pages).**
 
-- [Download free PDF here](/sda-website/assets/papers/mato.pdf).
+- [Download free PDF here](/assets/papers/mato.pdf).
 - Print version available from [NOW Publishing](https://tinyurl.com/PowellMATONOW) or [Amazon](https://tinyurl.com/PowellMATOAmazon).
 
 The book outlines a new approach to teaching "optimization," which I view as the "science of making good decisions." It covers a much wider range of decision problems than traditional courses on optimization. It is not a standalone book for students. Instead, it provides a roadmap for instructors to teach "optimization" more as a "science of decision making" spanning both static and sequential decision problems.
 
 In addition to instructors, the book should also be interesting to anyone who has already taken a course in optimization, as it will give you a different (and much broader) way of thinking about how to use what you have already learned.
 
-Many of the topics on sequential decision problems are based on material that is available in my book *[Sequential Decision Analytics and Modeling](/sda-website/sdamodeling/)*. These problems cover the decisions that arise most often in practice. For material that covers classical static linear, integer and nonlinear programming, instructors can use whatever book they may already be using. In my presentation, I present these more familiar optimization problems in two ways: the familiar static version, and then as a policy for a sequential decision problem (which I think represents most actual applications of these methods).
+Many of the topics on sequential decision problems are based on material that is available in my book *[Sequential Decision Analytics and Modeling](/sdamodeling/)*. These problems cover the decisions that arise most often in practice. For material that covers classical static linear, integer and nonlinear programming, instructors can use whatever book they may already be using. In my presentation, I present these more familiar optimization problems in two ways: the familiar static version, and then as a policy for a sequential decision problem (which I think represents most actual applications of these methods).
 
 <br clear="all" />
 
@@ -43,7 +43,7 @@ It will also be useful to anyone who has already taken a course in optimization 
 
 ## Additional readings {#additional-readings}
 
-<img src="/sda-website/assets/images/teaching-optimization/orms-modernize-optimization.jpg" alt="Cover of OR/MS Today, June 2024 issue, featuring the article 'Modernize optimization' by Warren B. Powell" width="225" align="right" style="max-width: 100%; height: auto; margin-left: 1.5rem; margin-bottom: 1rem;" />
+<img src="/assets/images/teaching-optimization/orms-modernize-optimization.jpg" alt="Cover of OR/MS Today, June 2024 issue, featuring the article 'Modernize optimization' by Warren B. Powell" width="225" align="right" style="max-width: 100%; height: auto; margin-left: 1.5rem; margin-bottom: 1rem;" />
 
 - This book is part of a theme describing a new way of thinking about optimization. This theme is summarized in an article I wrote for the Informs newsletter, *OR/MS Today*, which appeared in June 2024. It can be [downloaded here](https://tinyurl.com/PowellORMS2024/).
 - I wrote an article for my Princeton colleagues proposing the idea that the science of how to make good decisions should be taught broadly, much as statistics / data analytics is taught today. I identify three classes of undergraduates: softer domains (sociology, psychology, politics, non-math-track economics), hard science domains (chemistry, physics, math-track economics, physical engineering), and the analytical departments (computer science, operations research, information theory). [You can access the article here](https://tinyurl.com/PowellTeachingDecisions/).

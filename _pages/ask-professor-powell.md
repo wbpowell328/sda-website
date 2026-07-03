@@ -4,7 +4,7 @@ permalink: /ask-professor-powell/
 ---
 
 {% raw %}
-<img src="/sda-website/assets/images/c3po-transparent.png" alt="C-3PO golden droid statue" width="96" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem; margin-top: -0.1in;" />
+<img src="/assets/images/c3po-transparent.png" alt="C-3PO golden droid statue" width="96" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem; margin-top: -0.1in;" />
 The "Ask Professor Powell" chatbot is trained on Professor Powell's books,
 1000+ pages of LinkedIn posts, and the information on this website (these are
 cited in each response). The chatbot is **not a replacement for the original

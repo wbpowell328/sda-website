@@ -8,7 +8,7 @@ date: 2026-05-30
 {% raw %}
 Human processes (in fact the evolution of all living things) evolve through an alternation of decisions and information that can be depicted using:
 
-<img src="/sda-website/assets/images/sequential-decision-problems/decisions-info-arrows.png" alt="A sequence of arrows alternating between Decisions and Information" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" />
+<img src="/assets/images/sequential-decision-problems/decisions-info-arrows.png" alt="A sequence of arrows alternating between Decisions and Information" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" />
 
 We can write this mathematically as
 
@@ -22,7 +22,7 @@ where
 
 This view is from the perspective of a single decision-making agent; if there is more than one decision-maker, we model each one separately, along with the interactions between them.
 
-<img src="/sda-website/assets/images/sequential-decision-problems/applications-collage.jpg" alt="A collage of application areas: trucking, financial markets, robotics, healthcare, energy, e-commerce, aviation, manufacturing" width="468" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/sequential-decision-problems/applications-collage.jpg" alt="A collage of application areas: trucking, financial markets, robotics, healthcare, energy, e-commerce, aviation, manufacturing" width="468" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 We are typically evaluating our performance using one or more metrics. Decisions are made with some method we call a *policy*, which depends on the information in the state variable $S_t$. This leads to the final challenge of designing a policy that works well over time, according to the relevant performance metrics.
 
 These simple elements form the foundation of a vast range of application settings. Our ultimate goal is to provide a general framework for improving the performance of any system, according to any metric — guided by the core observation:
@@ -33,7 +33,7 @@ These simple elements form the foundation of a vast range of application setting
 If you want to run a better {anything} you have to make better decisions.
 </p>
 
-<img src="/sda-website/assets/images/sequential-decision-problems/modeling-books-mosaic.jpg" alt="A mosaic of book covers spanning reinforcement learning, optimal control, stochastic programming, decision analysis, approximate dynamic programming, and related fields" width="468" align="left" style="max-width: 100%; height: auto; margin-right: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/sequential-decision-problems/modeling-books-mosaic.jpg" alt="A mosaic of book covers spanning reinforcement learning, optimal control, stochastic programming, decision analysis, approximate dynamic programming, and related fields" width="468" align="left" style="max-width: 100%; height: auto; margin-right: 1rem; margin-bottom: 0.5rem;" />
 The academic research literature has historically approached these problems using a wide range of modeling and algorithmic approaches. The books shown here use eight different notational systems, many with fundamentally different modeling approaches leading to different algorithmic strategies, often motivated by the problem settings from different fields.
 
 In this webpage we approach sequential decision problems using a single universal modeling framework that can be used to model *any* sequential decision problem. We use a **"model first, then solve"** philosophy, which contrasts with almost all books dealing with making decisions under uncertainty.
@@ -45,9 +45,9 @@ We further divide modeling into two steps:
 
 We continue this discussion under the headings:
 
-- [Application settings](/sda-website/application-settings/)
-- [The communities of sequential decision problems](/sda-website/sdp-communities/)
-- [Optimal learning](/sda-website/optimal-learning/)
-- [Reinforcement Learning vs. SDA](/sda-website/rlvssda/)
-- [What is Reinforcement Learning?](/sda-website/what-is-rl/)
+- [Application settings](/application-settings/)
+- [The communities of sequential decision problems](/sdp-communities/)
+- [Optimal learning](/optimal-learning/)
+- [Reinforcement Learning vs. SDA](/rlvssda/)
+- [What is Reinforcement Learning?](/what-is-rl/)
 {% endraw %}

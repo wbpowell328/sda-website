@@ -10,15 +10,15 @@ Any research laboratory likes to highlight awards that it has received as a meas
 
 ## General Awards
 
-- [**Informs Journal on Computing Test of Time Award**](/sda-website/knowledgegradient/) for the paper "A Knowledge-Gradient Policy for Correlated Normal Beliefs," awarded by the *Informs Journal on Computing*, November 2025.
-- [**The 2022 Saul Gass Expository Writing Award**](/sda-website/gassaward/), given annually to an author whose publications in operations research and management science have set an exemplary standard of exposition. The award recognizes the impact a body of work has had in advancing OR methodology and its application, and that this impact is due not only to mathematical and computational excellence, but also to expository excellence.
+- [**Informs Journal on Computing Test of Time Award**](/knowledgegradient/) for the paper "A Knowledge-Gradient Policy for Correlated Normal Beliefs," awarded by the *Informs Journal on Computing*, November 2025.
+- [**The 2022 Saul Gass Expository Writing Award**](/gassaward/), given annually to an author whose publications in operations research and management science have set an exemplary standard of exposition. The award recognizes the impact a body of work has had in advancing OR methodology and its application, and that this impact is due not only to mathematical and computational excellence, but also to expository excellence.
 - [**The Robert Herman Lifetime Achievement Award**](https://tinyurl.com/PowellHerman/), 2021. The Robert Herman Lifetime Achievement Award is awarded at most every second year by the INFORMS Transportation Science and Logistics Society to an individual who throughout his or her professional career has made fundamental and sustained contributions to transportation science and logistics, and has influenced the field through her or his writings, teaching, service, and nurturing of younger professionals.
 - Winner, 2015 Best Paper Prize from the Society for Transportation Science and Logistics (coauthored with Belgacem Bouzaiene-Ayari, Clark Cheng, Ricardo Fiorello, Sourav Das).  Awarded at Informs annual meeting, Philadelphia, November, 2015.
 - Awarded *Docteur honoris causa* by the University of Quebec at Montreal, November 17, 2013.
 - Winner, 2011, Best Paper Prize at IEEE Symposium Series on Computational Intelligence, Paris, France, for "Bayesian Active Learning with Basis Functions," (coauthored with Ilya Ryzhov).
 - Awarded *Docteur honoris causa* by the University of Quebec at Montreal, November 17, 2013, in recognition of lifetime contributions to stochastic optimization and applications in transportation, logistics and energy.
-- Winner, 2010 Best Paper Prize from the Society for Transportation Science and Logistics for "Approximate Dynamic Programming Algorithm for Large Scale Fleet Management: A Case Application." [Click here to view the paper](/sda-website/assets/papers/2020/12/Simao_Interfaces_SchneiderNationalOctober2010.pdf).
-- Winner, 2009 Daniel H. Wagner Prize for Excellence in Operations Research Practice. (with H. P. Simao, Abraham George, Jeff Day, Ted Gifford, John Nienow). [Click here for more information.](/sda-website/schneider/)
+- Winner, 2010 Best Paper Prize from the Society for Transportation Science and Logistics for "Approximate Dynamic Programming Algorithm for Large Scale Fleet Management: A Case Application." [Click here to view the paper](/assets/papers/2020/12/Simao_Interfaces_SchneiderNationalOctober2010.pdf).
+- Winner, 2009 Daniel H. Wagner Prize for Excellence in Operations Research Practice. (with H. P. Simao, Abraham George, Jeff Day, Ted Gifford, John Nienow). [Click here for more information.](/schneider/)
 - Best paper prize at ICPR Americas conference, June, 2008, for: Simao, H. P. and W. B. Powell, "Approximate Dynamic Programming for Managing High Value Spare Parts."
 - Finalist, Franz Edelman Award from The Institute of Management Science, 1991, with Yellow Freight System.
 - Second place, Franz Edelman Award from The Institute of Management Science, 1987, with North American Van Lines.
@@ -30,7 +30,7 @@ Lauren A. Hannah \*10
 :   Finalist, Nicholson Student paper prize, "Stochastic Search with an Observable State Variable." Presented at Informs Annual Meeting, November, 2010.
 
 Diana Negoescu '09 and Peter Frazier \*09
-:   Honorable mention, "Doing Good with Good OR" competition, Informs, 2009. Presented at Informs Annual Meeting, October, 2009. ([click here for more information](/sda-website/drug-discovery/))
+:   Honorable mention, "Doing Good with Good OR" competition, Informs, 2009. Presented at Informs Annual Meeting, October, 2009. ([click here for more information](/drug-discovery/))
 
 Peter Frazier \*09
 :   Honorable mention, Informs Computing Society Student Paper Prize, won by Peter Frazier for "The Knowledge Gradient Policy for Correlated Normal Beliefs," Presented at Informs Annual Meeting, October, 2009.

@@ -103,7 +103,7 @@ Sutton and Barto summarized the problems with the approximation strategy outline
 2. **Bootstrapping**, where $\hat v_t^n$ is based on a value function approximation that introduces both biases and sampling errors.
 3. **Off-policy learning**, which is often used to ensure proper exploration of the state space.
 
-The state variables for real problems are rich and varied — multidimensional (often high-dimensional), typically with a mixture of discrete and continuous elements. It is not just that we cannot use Bellman's core equation (which depends on discrete states); we have found that approximating the value function $V_t(S_t)$ can be exceptionally difficult. See [State variables](/sda-website/statevariables/) for a discussion of the richness of state variables.
+The state variables for real problems are rich and varied — multidimensional (often high-dimensional), typically with a mixture of discrete and continuous elements. It is not just that we cannot use Bellman's core equation (which depends on discrete states); we have found that approximating the value function $V_t(S_t)$ can be exceptionally difficult. See [State variables](/statevariables/) for a discussion of the richness of state variables.
 
 Our experience is that Bellman's equation can be quite useful for problems that exhibit special structure. This is not limited to small problems. In fact, our most prominent successes have been with **high-dimensional spatial resource allocation problems**. We have successfully implemented models based on value function approximations at a major railroad, and throughout the truckload trucking industry.
 
@@ -119,7 +119,7 @@ The only real test of a method is when teams other than the one who developed a 
 
 ## For more information {#more-info}
 
-We are not going to attempt to communicate the richness and complexities of approximate value functions on this website. If you think you have a problem that is particularly well suited to using Bellman's equation, we recommend Chapters 14–18 of [*Reinforcement Learning and Stochastic Optimization*](/sda-website/rlso/):
+We are not going to attempt to communicate the richness and complexities of approximate value functions on this website. If you think you have a problem that is particularly well suited to using Bellman's equation, we recommend Chapters 14–18 of [*Reinforcement Learning and Stochastic Optimization*](/rlso/):
 
 - **Chapter 14 — Exact dynamic programming** — presents classical results for problems, using discrete states or continuous optimal-control problems, that can be solved exactly using Bellman's equation.
 - **Chapter 15 — Backward approximate dynamic programming** — describes the technique of stepping backward in time, using linear models to approximate the value functions. Encouraging numerical results are reported.

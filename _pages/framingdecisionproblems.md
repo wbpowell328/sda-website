@@ -34,6 +34,6 @@ The universal modeling framework is very high level.  It is comparable to the c
 
 [Part 5: Teaching materials](https://tinyurl.com/PowellFramingVideoPart5/) - I review a series of books, starting with two that have no mathematics, a teach-by-example book that illustrates the entire modeling process, and finally an advanced book for people who actually want to write software. 
 
-<img src="/sda-website/assets/images/teaching-books/bridging-vol-i-cover.jpg" alt="Cover of Bridging Decision Problems Volume I: Framing the Problem" width="200" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/teaching-books/bridging-vol-i-cover.jpg" alt="Cover of Bridging Decision Problems Volume I: Framing the Problem" width="200" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 [A nontechnical book on framing decision problems is available on Amazon in the Kindle format here](https://tinyurl.com/PowellFramingAmazon/). I also recommend [The Decision Factory](https://tinyurl.com/TheDecisionFactory/) (available on Amazon) by Adam DeJans and John Elam.
 {% endraw %}

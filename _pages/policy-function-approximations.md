@@ -66,7 +66,7 @@ Note that this is technically nonlinear — specifically piecewise linear — pa
 
 A final form of nonlinear policy is (of course) a **neural network**, depicted below.
 
-<img src="/sda-website/assets/images/policy-function-approximations/neural-network-diagram.png" alt="A neural network diagram: state variable S_t flows in on the left, passes through several hidden layers of interconnected nodes, and produces a decision vector (x_t1, x_t2, x_t3) on the right" width="540" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
+<img src="/assets/images/policy-function-approximations/neural-network-diagram.png" alt="A neural network diagram: state variable S_t flows in on the left, passes through several hidden layers of interconnected nodes, and produces a decision vector (x_t1, x_t2, x_t3) on the right" width="540" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
 
 The modern (and very deep) neural networks can handle very high-dimensional state variables as input, and can produce high-dimensional vector outputs. This model was used by Amazon to plan inventories for 10,000 products — meaning $x_t$ had 10,000 dimensions — while the inputs $S_t$ consisted of any information that might be relevant in the planning of any of the 10,000 products.
 {% endraw %}

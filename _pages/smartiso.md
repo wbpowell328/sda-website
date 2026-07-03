@@ -22,7 +22,7 @@ This summary is organized under the following headings:
 
 ## Overview of SMART-ISO {#overview}
 
-<img src="/sda-website/assets/images/smartiso/smartiso-dashboard.jpg" alt="A graphical view of SMART-ISO showing the PJM transmission grid in green over the eastern United States, with colored circles of varying sizes marking nodes — pink, green, gray, and red — overlaid on cyan transmission lines" width="400" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/smartiso/smartiso-dashboard.jpg" alt="A graphical view of SMART-ISO showing the PJM transmission grid in green over the eastern United States, with colored circles of varying sizes marking nodes — pink, green, gray, and red — overlaid on cyan transmission lines" width="400" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 SMART-ISO was intended to be a highly detailed simulator of the PJM power grid, with special care given to the flow of information and the handling of uncertainty. SMART-ISO is much more than a "stochastic unit commitment model" which has received so much attention in the literature and the energy modeling community. It simulates day-ahead and hour-ahead commitment and generation decisions, in addition to real-time economic dispatch at 5-minute intervals.
 
 SMART-ISO was intended as a simulator for performing a wide range of policy studies. It might also be used as a test environment for models and algorithms that might be used in production. It used the full PJM power grid of over 9,000 buses and 14,000 transmission lines in 2010.
@@ -37,7 +37,7 @@ We invested considerable effort into calibrating SMART-ISO against historical st
 
 ### Pattern of LMPs
 
-<img src="/sda-website/assets/images/smartiso/it-sced-timeline.jpg" alt="Timeline diagram of PJM's IT-SCED hour-ahead planning process. Shows that at 1:45–2:00 'everything is locked in,' followed by the 2:00–2:30 window in which the planner commits to generators whose notification times tau-1, tau-2, tau-3 fall within that window — illustrated for three turbines" width="460" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/smartiso/it-sced-timeline.jpg" alt="Timeline diagram of PJM's IT-SCED hour-ahead planning process. Shows that at 1:45–2:00 'everything is locked in,' followed by the 2:00–2:30 window in which the planner commits to generators whose notification times tau-1, tau-2, tau-3 fall within that window — illustrated for three turbines" width="460" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 The model carefully captures how PJM handles the "hour-ahead" planning process. The logic, shown to the right, closely matches the PJM IT-SCED logic. IT-SCED is run 15 minutes before and after the hour. The 1:15 run, for example, models the system from 1:30 to 3:30. We look at when each generator is planned to be turned on in this interval, and subtract off the notification time (plus ramp-up time). If this time falls within the interval 1:30 to 2:00, the generator is turned on.
 
 When we introduced this logic, we found that it more accurately reproduced historical LMPs. In particular, look at the latest results for July, and compare to the previous results for July.
@@ -46,9 +46,9 @@ When we introduced this logic, we found that it more accurately reproduced histo
 
 **Actual vs. simulated LMPs using the new logic that closely matches PJM's IT-SCED process:**
 
-<img src="/sda-website/assets/images/smartiso/lmp-january-2010.jpg" alt="Line graph titled 'PJM Average Real-time LMPs - 13-19 Jan 2010' showing two overlapping series — Simulated (blue) and Historical (red) — across 168 hours of the week, both ranging mostly between $20 and $80 per MWh with occasional spikes above $100" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" />
+<img src="/assets/images/smartiso/lmp-january-2010.jpg" alt="Line graph titled 'PJM Average Real-time LMPs - 13-19 Jan 2010' showing two overlapping series — Simulated (blue) and Historical (red) — across 168 hours of the week, both ranging mostly between $20 and $80 per MWh with occasional spikes above $100" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" />
 
-<img src="/sda-website/assets/images/smartiso/lmp-april-2010.jpg" alt="Line graph titled 'PJM Average Real-time LMPs - 19-25 Apr 2010' showing two overlapping series — Simulated (blue) and Historical (red) — across 168 hours of the week, both ranging mostly between $15 and $80 per MWh" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" />
+<img src="/assets/images/smartiso/lmp-april-2010.jpg" alt="Line graph titled 'PJM Average Real-time LMPs - 19-25 Apr 2010' showing two overlapping series — Simulated (blue) and Historical (red) — across 168 hours of the week, both ranging mostly between $15 and $80 per MWh" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" />
 
 ### Generation patterns
 
@@ -58,7 +58,7 @@ On the right is the distribution of generation from the model, where we are runn
 
 Note the pattern of pumped hydro, which is charged at night (the bit of blue at night). SMART-ISO initially plans the pumped hydro using a 48-hour look-ahead model, but the actual pumped hydro comes from the hour-ahead model, which required the use of approximate dynamic programming to capture the value of water in the reservoir (without this, the model would simply use all the water right away, rather than waiting until the peak period). The simulated activities are those produced by the economic dispatch model that is run every five minutes.
 
-<img src="/sda-website/assets/images/smartiso/generation-historical-vs-simulated.jpg" alt="Side-by-side stacked-area charts titled 'Historical power generation during 22-28 Jul 2010' and 'Simulated power generation during 22-28 Jul 2010,' each showing nuclear (blue), steam (red), combined cycle (green), pumped hydro (small blue band), tiny hydro, and gas turbines (orange) stacked across the week" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" />
+<img src="/assets/images/smartiso/generation-historical-vs-simulated.jpg" alt="Side-by-side stacked-area charts titled 'Historical power generation during 22-28 Jul 2010' and 'Simulated power generation during 22-28 Jul 2010,' each showing nuclear (blue), steam (red), combined cycle (green), pumped hydro (small blue band), tiny hydro, and gas turbines (orange) stacked across the week" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" />
 
 ## Study of off-shore wind for the mid-Atlantic region {#offshore-wind}
 
@@ -75,7 +75,7 @@ Papers describing the offshore wind study:
 - Part I: Methodology for forecasting offshore wind
 - Part II: Description of SMART-ISO, and results of the offshore wind study
 
-<img src="/sda-website/assets/images/smartiso/wind-buildout-blocks.jpg" alt="A 2x2 grid of stacked-area charts showing simulated offshore wind levels by buildout block for four weeks: January 13-19, April 19-25, July, and October 14-20, 2010. Each chart stacks five buildout levels in different colors against hour-of-week on the x-axis" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" />
+<img src="/assets/images/smartiso/wind-buildout-blocks.jpg" alt="A 2x2 grid of stacked-area charts showing simulated offshore wind levels by buildout block for four weeks: January 13-19, April 19-25, July, and October 14-20, 2010. Each chart stacks five buildout levels in different colors against hour-of-week on the x-axis" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" />
 
 ## Features of the model {#features}
 

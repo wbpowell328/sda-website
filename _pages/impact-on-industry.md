@@ -23,7 +23,7 @@ CASTLE Lab prides itself on its ability to have an impact on industry. We do thi
 
 ### Consulting Firms Started {#consulting}
 
-Two consulting firms have been started by students who worked under the supervision of Warren Powell: **Princeton Transportation Consulting Group, Inc. (PTCG)** Founded in 1988, PTCG was started with two models developed at Princeton University. The first was [SuperSPIN](/sda-website/superspin/), an interactive optimization model for planning networks for less-than-truckload (LTL) motor carriers. The second was [MicroMAP](/sda-website/micromap/), the first commercially successful model for real-time load matching for truckload motor carriers. The first management team consisted of David Cape '87 as president, and Ken Nickerson '84 as lead software engineer. PTCG is now a subdivision of Manhattan Associates.
+Two consulting firms have been started by students who worked under the supervision of Warren Powell: **Princeton Transportation Consulting Group, Inc. (PTCG)** Founded in 1988, PTCG was started with two models developed at Princeton University. The first was [SuperSPIN](/superspin/), an interactive optimization model for planning networks for less-than-truckload (LTL) motor carriers. The second was [MicroMAP](/micromap/), the first commercially successful model for real-time load matching for truckload motor carriers. The first management team consisted of David Cape '87 as president, and Ken Nickerson '84 as lead software engineer. PTCG is now a subdivision of Manhattan Associates.
 
 > As of 2011, Manhattan Associates is still selling "MicroMAP" (as "Drivers and Loads") and SUPERSPIN. MicroMAP is used by 20 of the largest truckload carriers to dispatch over 66,000 drivers, while SUPERSPIN is used by 20 of the largest LTL carriers.
 
@@ -33,15 +33,15 @@ Two consulting firms have been started by students who worked under the supervis
 
 ### Strategic and Tactical Optimization of Locomotives {#plasma}
 
-**PLASMA** (Princeton Locomotive and Shop Management System) is the first production optimization model for locomotives for freight railroads in the U.S. Developed for Norfolk Southern Railroad, PLASMA is based on approximate dynamic programming technology. It is used for strategic fleet sizing and short-term operational planning. [Read the complete description of PLASMA ?](/sda-website/plasma/)
+**PLASMA** (Princeton Locomotive and Shop Management System) is the first production optimization model for locomotives for freight railroads in the U.S. Developed for Norfolk Southern Railroad, PLASMA is based on approximate dynamic programming technology. It is used for strategic fleet sizing and short-term operational planning. [Read the complete description of PLASMA ?](/plasma/)
 
 ------------------------------------------------------------------------
 
 ### Changing the LTL Trucking Industry {#ltl}
 
-It is not often that a model restructures an entire industry; [SuperSPIN](/sda-website/superspin/) was such a model. Developed in the 1980s during deregulation, it matured at Yellow Freight (known there as "SYSNET"). Under the leadership of John Braklow, SYSNET was used to completely restructure Yellow's network.
+It is not often that a model restructures an entire industry; [SuperSPIN](/superspin/) was such a model. Developed in the 1980s during deregulation, it matured at Yellow Freight (known there as "SYSNET"). Under the leadership of John Braklow, SYSNET was used to completely restructure Yellow's network.
 
-> [J.B. Braklow, et al., "Interactive Optimization Improves Service and Performance for Yellow Freight System," Interfaces, Vol. 22, No. 1, 1992.](/sda-website/Papers/Braklow%20Graham%20et%20al%20%20Interactive%20Optimization%20Improves%20Service%20at%20Yellow.pdf)
+> [J.B. Braklow, et al., "Interactive Optimization Improves Service and Performance for Yellow Freight System," Interfaces, Vol. 22, No. 1, 1992.](/Papers/Braklow%20Graham%20et%20al%20%20Interactive%20Optimization%20Improves%20Service%20at%20Yellow.pdf)
 
 SuperSPIN was eventually marketed to the rest of the industry, influencing the early planning of Roadway Package System (now FedEx Ground), FedEx Freight, and Overnight Transportation (now UPS Freight).
 
@@ -49,7 +49,7 @@ SuperSPIN was eventually marketed to the rest of the industry, influencing the e
 
 ### Real-time Optimization for Truckload Trucking {#truckload}
 
-We have worked extensively in real-time driver scheduling. [MicroMAP](/sda-website/micromap/) was the first real-time model to handle driver assignments at high detail while capturing future impacts. It has been installed at 20 of the nation's largest carriers, including J.B. Hunt and Swift. We also completed a strategic fleet planning system for **Schneider National**, allowing them to model operations at a high level of detail and save tens of millions of dollars annually. [More information here.](/sda-website/schneider/)
+We have worked extensively in real-time driver scheduling. [MicroMAP](/micromap/) was the first real-time model to handle driver assignments at high detail while capturing future impacts. It has been installed at 20 of the nation's largest carriers, including J.B. Hunt and Swift. We also completed a strategic fleet planning system for **Schneider National**, allowing them to model operations at a high level of detail and save tens of millions of dollars annually. [More information here.](/schneider/)
 
 ------------------------------------------------------------------------
 
@@ -70,7 +70,7 @@ Using approximate dynamic programming, we developed the first production-quality
 
 ### Locomotive Optimization for Norfolk Southern
 
-This system handles the assignment of locomotives to trains over planning horizons while simultaneously managing routing to shop locations. [Learn more.](/sda-website/plasma/)
+This system handles the assignment of locomotives to trains over planning horizons while simultaneously managing routing to shop locations. [Learn more.](/plasma/)
 
 ### Tactical and Strategic Fleet Planning for Netjets
 

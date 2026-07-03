@@ -3,7 +3,7 @@ REM ============================================================
 REM  Sequential Decision Analytics - one-click local start
 REM
 REM  Double-click this file to start:
-REM    - the website (http://localhost:4000/sda-website/)
+REM    - the website (http://localhost:4000/)
 REM    - the chatbot server (http://localhost:3000)
 REM    - your browser, pointed at the site
 REM
@@ -27,7 +27,7 @@ start "SDA Jekyll site" powershell -NoExit -Command ^
   "$env:PATH = 'C:\Ruby40-x64\bin;' + $env:PATH; ^
    cd '%ROOT%'; ^
    $env:RUBYOPT = '-r./ruby4_patch.rb'; ^
-   Write-Host 'Starting Jekyll on http://localhost:4000/sda-website/ ...' -ForegroundColor Cyan; ^
+   Write-Host 'Starting Jekyll on http://localhost:4000/ ...' -ForegroundColor Cyan; ^
    bundle exec jekyll serve --livereload --force_polling"
 
 REM --- Chatbot server (port 3000) ------------------------------
@@ -44,13 +44,13 @@ echo Waiting for servers to warm up (about 10 seconds)...
 timeout /t 10 /nobreak >nul
 
 echo Opening browser...
-start http://localhost:4000/sda-website/
+start http://localhost:4000/
 
 echo.
 echo ============================================
 echo  Both servers are now running.
 echo
-echo   - Site:    http://localhost:4000/sda-website/
+echo   - Site:    http://localhost:4000/
 echo   - Chatbot: http://localhost:3000
 echo
 echo  To stop them: close the two PowerShell windows

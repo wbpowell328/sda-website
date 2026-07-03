@@ -47,7 +47,7 @@ Reinforcement learning was developed by Sutton and Barto as a set of algorithmic
 
 In the first edition of Sutton and Barto's book, "reinforcement learning" referred to a class of algorithms. In the second edition, the field had expanded to embrace a much wider variety of methods, and as a result "reinforcement learning" started to be associated with the problem class *sequential decision problems*.
 
-[An in-depth discussion of the evolution of reinforcement learning is available here.](/sda-website/what-is-rl/)
+[An in-depth discussion of the evolution of reinforcement learning is available here.](/what-is-rl/)
 
 ## Optimal control {#optimal-control}
 
@@ -119,5 +119,5 @@ This problem arose in the 1960s when people would use simulation to evaluate the
 
 ## Reinforcement Learning vs Sequential Decision Analytics {#rl-vs-sda}
 
-A detailed comparison of reinforcement learning (in the tradition of Sutton and Barto) with the sequential decision analytics framework — including where the two overlap, where they diverge, and how the four classes of policies bridge the two — is on [its own page](/sda-website/rlvssda/).
+A detailed comparison of reinforcement learning (in the tradition of Sutton and Barto) with the sequential decision analytics framework — including where the two overlap, where they diverge, and how the four classes of policies bridge the two — is on [its own page](/rlvssda/).
 {% endraw %}

@@ -9,7 +9,7 @@ date: 2025-10-15 09:53:04
 
 Decisions are a fundamental human activity, studied and debated throughout our entire history, driven by our endless desire to improve.  As I like to say:  
 
-<img src="/sda-website/assets/images/whatisadecision/run-a-better-anything.jpg" alt="If you want to run a better supply chain, energy system, health system, business process, transportation system, ... anything — you have to make better decisions." style="display: block; margin: 1.5rem auto; max-width: 85%; height: auto;" />
+<img src="/assets/images/whatisadecision/run-a-better-anything.jpg" alt="If you want to run a better supply chain, energy system, health system, business process, transportation system, ... anything — you have to make better decisions." style="display: block; margin: 1.5rem auto; max-width: 85%; height: auto;" />
 
 After a career in traditional academic research on models and algorithms for making better decisions in various specialized settings, retirement has allowed me to think more deeply about this topic, and I have been struck by the open questions about decisions.  Specifically:
 

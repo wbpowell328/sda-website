@@ -29,8 +29,8 @@ There are two general strategies for creating policies, each of which can be div
 
 These strategies create functions that do **not** explicitly plan into the future to make a decision now. Instead, the functions are designed and tuned to work well over time. They are organized into the first two classes of policies:
 
-1. **[Policy function approximations (PFAs)](/sda-website/policy-function-approximations/)** — analytical functions that map the information in the state variable $S_t$ directly to a decision to be implemented now. This is the only one of the four classes that does not involve solving an embedded optimization problem.
-2. **[Cost function approximations (CFAs)](/sda-website/cost-function-approximations/)** — deterministic optimization models that are parameterized and tuned to work well over time. CFAs come in two main flavors:
+1. **[Policy function approximations (PFAs)](/policy-function-approximations/)** — analytical functions that map the information in the state variable $S_t$ directly to a decision to be implemented now. This is the only one of the four classes that does not involve solving an embedded optimization problem.
+2. **[Cost function approximations (CFAs)](/cost-function-approximations/)** — deterministic optimization models that are parameterized and tuned to work well over time. CFAs come in two main flavors:
 
    **a. Discrete decisions** — $x_t$ might be a choice of drug, a supplier for a part, or a discretized diameter of a wafer. We typically have an estimate of the performance of each choice, but this estimate is not known perfectly. Instead of just picking what appears best, we might use a policy like Upper Confidence Bounding:
 
@@ -44,7 +44,7 @@ These strategies create functions that do **not** explicitly plan into the futur
 
    Note the $\arg\max_x$ is an optimization problem, even if it is just a sort over $x$.
 
-   <img src="/sda-website/assets/images/policies/discrete-choices-with-uncertainty.png" alt="Bar chart of seven discrete choices A–G with vertical error bars showing the uncertainty around each choice's estimated value" width="540" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
+   <img src="/assets/images/policies/discrete-choices-with-uncertainty.png" alt="Bar chart of seven discrete choices A–G with vertical error bars showing the uncertainty around each choice's estimated value" width="540" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
 
    **b. Vector-valued decisions** — $x_t$ might be a vector of decisions assigning machines to tasks at time $t$. These can be large-scale integer programs for scheduling aircraft or manufacturing processes. We can introduce adjustments such as schedule slack, buffers, and other modifications to make the solutions work well over time in the field.
 
@@ -52,12 +52,12 @@ These strategies create functions that do **not** explicitly plan into the futur
 
 These strategies try to make good decisions now by planning into the future so we can anticipate the downstream effects of decisions made now. Two more classes of policies:
 
-3. **[Value function approximations (VFAs)](/sda-website/value-function-approximations/)** — the policies based on Bellman's equation (the optimal-control community calls these "Hamilton–Jacobi" equations). If you are in state $S_t$ and make decision $x_t$, after which new information $W_{t+1}$ arrives, the net effect is to take you to state $S_{t+1}$ (a random variable when you are making decision $x_t$). If we knew the value $V_{t+1}(S_{t+1})$, we would be able to choose the best decision using Bellman's equation:
+3. **[Value function approximations (VFAs)](/value-function-approximations/)** — the policies based on Bellman's equation (the optimal-control community calls these "Hamilton–Jacobi" equations). If you are in state $S_t$ and make decision $x_t$, after which new information $W_{t+1}$ arrives, the net effect is to take you to state $S_{t+1}$ (a random variable when you are making decision $x_t$). If we knew the value $V_{t+1}(S_{t+1})$, we would be able to choose the best decision using Bellman's equation:
 
    $$X^{VFA}(S_t) = \arg\max_{x} \big( C(S_t, x_t) + \mathbb{E}\{ V_{t+1}(S_{t+1}) \mid S_t, x_t \} \big)$$
 
    The problem is that we can virtually never compute $V_{t+1}(S_{t+1})$. Researchers have been trying to develop effective approximations of value functions ever since Bellman in the 1950s — creating fields with names like *approximate dynamic programming* and *reinforcement learning*.
-4. **[Direct lookahead approximations (DLAs)](/sda-website/direct-lookahead-approximations/)** — make a decision now by optimizing over a model that spans some time interval (the planning horizon) into the future. We might use a deterministic approximation of the future (very popular) or any of a range of stochastic approximations (such as decision trees).
+4. **[Direct lookahead approximations (DLAs)](/direct-lookahead-approximations/)** — make a decision now by optimizing over a model that spans some time interval (the planning horizon) into the future. We might use a deterministic approximation of the future (very popular) or any of a range of stochastic approximations (such as decision trees).
 
 These four classes of policies span **any** method for making decisions — including anything in the research literature, any methods used in practice, and even methods that have not been invented yet. That's why they are called *meta-classes*.
 
@@ -131,17 +131,17 @@ In both statistics / machine learning and sequential decisions, the search over 
 
 While it is important to understand all four classes of policies, the next step is actually choosing a policy. It is important to realize that problem-solving is an iterative process, and this applies to choosing policies. This process is illustrated in the graphic below.
 
-<img src="/sda-website/assets/images/policies/choosing-policies-ladders.png" alt="Two side-by-side ladders — labeled 'The decision-making policy' and 'Model realism' — connected by arrows that move back and forth between rungs, with a vertical 'Simple → Complex' arrow on the right. Choosing a policy is iterative: as the realism of the model increases, the sophistication of the policy increases, and vice versa." width="780" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
+<img src="/assets/images/policies/choosing-policies-ladders.png" alt="Two side-by-side ladders — labeled 'The decision-making policy' and 'Model realism' — connected by arrows that move back and forth between rungs, with a vertical 'Simple → Complex' arrow on the right. Choosing a policy is iterative: as the realism of the model increases, the sophistication of the policy increases, and vice versa." width="780" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
 
 There are problems for which one type of policy is obvious. For example, if we are driving on a long trip, Google Maps is going to use a deterministic lookahead policy by planning a trip to the destination. This plan, a deterministic lookahead, is updated periodically as traffic conditions change. We would never use any of the other three classes of policies.
 
 There are other problems where the choice of policy is not obvious, and may be dependent on the specific characteristics of the data. Below is a simple energy system designed to draw energy from a wind farm, where wind is being forecasted using rolling forecasts that are updated through the day.
 
-<img src="/sda-website/assets/images/policies/choosing-policies-energy-system.png" alt="A schematic of a small energy system: time series of wind energy and grid prices on the left feed into a battery storage and a wind farm + power grid; output flows to a building load shown as a demand (load) time series on the right" width="780" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
+<img src="/assets/images/policies/choosing-policies-energy-system.png" alt="A schematic of a small energy system: time series of wind energy and grid prices on the left feed into a battery storage and a wind farm + power grid; output flows to a building load shown as a demand (load) time series on the right" width="780" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
 
 We created five variations of this problem, changing characteristics such as the accuracy of the forecasts and the volatility of the wind farms. We then created five policies, one from each of the four classes plus a hybrid. The number in the table is a score capturing the performance. The yellow squares indicate the policy that worked best for each dataset. We were able to make each of the five policies work best for one of the problems.
 
-<img src="/sda-website/assets/images/policies/choosing-policies-results-table.png" alt="A 5-row table of energy-system problems (A through E) tested against five policies (PFA, CFA, VFA, DLA, DLA/CFA). The best policy per row is highlighted in yellow: Problem A — PFA (0.959); Problem B — CFA (0.752); Problem C — VFA (0.914); Problem D — DLA (0.997); Problem E — DLA/CFA hybrid (0.934). Each of the five policies wins on at least one variation of the problem." width="780" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
+<img src="/assets/images/policies/choosing-policies-results-table.png" alt="A 5-row table of energy-system problems (A through E) tested against five policies (PFA, CFA, VFA, DLA, DLA/CFA). The best policy per row is highlighted in yellow: Problem A — PFA (0.959); Problem B — CFA (0.752); Problem C — VFA (0.914); Problem D — DLA (0.997); Problem E — DLA/CFA hybrid (0.934). Each of the five policies wins on at least one variation of the problem." width="780" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
 
 The four classes of policies are not equally useful. There has been a strong bias in the academic research community toward the more complex policies which depend on Bellman's equation (VFAs) and stochastic lookaheads (stochastic-DLAs). In practice, people are much more likely to use the simpler policies.
 
@@ -158,7 +158,7 @@ It helps to list the policies based on usefulness. We start by dividing our four
 
 We now organize these six types of policies into four categories based on how useful they are:
 
-<img src="/sda-website/assets/images/policies/choosing-policies-categories.png" alt="A 4-row table grouping the six types of policies into popularity categories. Category 1 (most popular): PFAs (rules/analytical functions), CFAs (parameterized deterministic optimization), and deterministic DLAs — 'By far the most widely used in practice; the choice among the three tends to be obvious from the structure of the problem.' Category 2 — stochastic lookahead with discrete actions (decision trees, value-of-information policies): 'Popular in the decision analysis and Bayesian optimization communities.' Category 3 — stochastic lookahead using Bellman (policies based on VFAs / approximate dynamic programming): 'A very powerful strategy for a very small number of specialized problems.' Category 4 — stochastic lookahead with vectors (two-stage stochastic programming): 'This is how deterministic optimizers handle uncertainty. Almost no-one uses it in practice.'" width="780" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
+<img src="/assets/images/policies/choosing-policies-categories.png" alt="A 4-row table grouping the six types of policies into popularity categories. Category 1 (most popular): PFAs (rules/analytical functions), CFAs (parameterized deterministic optimization), and deterministic DLAs — 'By far the most widely used in practice; the choice among the three tends to be obvious from the structure of the problem.' Category 2 — stochastic lookahead with discrete actions (decision trees, value-of-information policies): 'Popular in the decision analysis and Bayesian optimization communities.' Category 3 — stochastic lookahead using Bellman (policies based on VFAs / approximate dynamic programming): 'A very powerful strategy for a very small number of specialized problems.' Category 4 — stochastic lookahead with vectors (two-stage stochastic programming): 'This is how deterministic optimizers handle uncertainty. Almost no-one uses it in practice.'" width="780" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
 
 It is always best to start with the simplest policy that makes sense for a particular application. But always remember:
 

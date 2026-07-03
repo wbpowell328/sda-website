@@ -14,12 +14,12 @@ This page outlines a series of courses and seminars, some of which were taught a
 - [**Reinforcement Learning and Stochastic Optimization (RLSO)**](#rlso) — a graduate-level course for students who want to learn how to model real-world sequential decision problems and develop implementable algorithms.
 - [**RLSO as a weekly seminar series**](#rlso-seminar) — how the RLSO course could be self-taught as a weekly seminar series.
 - [**Optimal Learning**](#optimal-learning) — I taught this course for 10 years at Princeton at the undergraduate level.
-- [**Designing an introductory optimization course**](/sda-website/teachingoptimization/) — an outline for an introductory optimization course for undergraduates and masters students, organized around the book *A Modern Approach to Teaching Optimization*.
-- [**How to teach optimization**](/sda-website/howtoteachoptimization/) — based on a 2025 talk to Cornell's ORIE department, making the case that most deterministic optimization problems are actually policies for sequential decision problems.
+- [**Designing an introductory optimization course**](/teachingoptimization/) — an outline for an introductory optimization course for undergraduates and masters students, organized around the book *A Modern Approach to Teaching Optimization*.
+- [**How to teach optimization**](/howtoteachoptimization/) — based on a 2025 talk to Cornell's ORIE department, making the case that most deterministic optimization problems are actually policies for sequential decision problems.
 
 ## Framing Decision Problems {#framing}
 
-<img src="/sda-website/assets/images/teaching-courses/bridging-vol-i-cover.jpg" alt="Bridging Decision Problems Vol I cover" width="200" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/teaching-courses/bridging-vol-i-cover.jpg" alt="Bridging Decision Problems Vol I cover" width="200" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 
 The traditional view of mathematical modeling is as a bridge between a real problem and an application. The problem with this approach is that it typically involves using someone skilled in mathematical modeling to ask the questions to formulate the model.
 
@@ -44,7 +44,7 @@ We approach framing centered on three questions:
 
 ## Sequential Decision Analytics and Modeling (SDAM) {#sdam}
 
-<img src="/sda-website/assets/images/teaching-courses/sdam-cover.jpg" alt="Sequential Decision Analytics and Modeling book cover" width="200" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/teaching-courses/sdam-cover.jpg" alt="Sequential Decision Analytics and Modeling book cover" width="200" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 
 **Description.** This course was taught at Princeton to undergraduates in operations research. It introduces the general field of sequential decision problems, using a teach-by-example style. The course follows a downloadable book (see below) that provides the general framework for sequential decision problems, followed by a series of examples that are all modeled using the same style. The examples were chosen to illustrate the four classes of policies, as well as other issues such as modeling uncertainty.
 
@@ -56,7 +56,7 @@ This course will not provide the comprehensive overview of methodology provided 
 
 **Readings.** This course is taught from the downloadable book: [*Sequential Decision Analytics and Modeling*](https://tinyurl.com/sdamodeling).
 
-**Syllabus.** [Download syllabus here](/sda-website/assets/papers/2023/04/ORF-411-2018-syllabus.pdf).
+**Syllabus.** [Download syllabus here](/assets/papers/2023/04/ORF-411-2018-syllabus.pdf).
 
 **Programming.** There are exercises at the end of each chapter. Most chapters are accompanied by a Python module that can be found at [https://tinyurl.com/sdagithub](https://tinyurl.com/sdagithub). Often the exercises can be completed without touching the code, but the software was designed to allow students to modify the logic. I suggest designing questions that fit the programming skills of the audience.
 
@@ -64,32 +64,32 @@ This course will not provide the comprehensive overview of methodology provided 
 
 Lectures from the course I taught Fall 2018, in PDF and PowerPoint formats.
 
-**Full-course PDFs:** [First half of course](/sda-website/assets/papers/2019/03/ORF-411-lecture-notes-Fall-2018-First-half.pdf) · [Second half of course](/sda-website/assets/papers/2019/03/ORF-411-lecture-notes-Fall-2018-Second-half.pdf)
+**Full-course PDFs:** [First half of course](/assets/papers/2019/03/ORF-411-lecture-notes-Fall-2018-First-half.pdf) · [Second half of course](/assets/papers/2019/03/ORF-411-lecture-notes-Fall-2018-Second-half.pdf)
 
 **Individual lectures (PowerPoint):**
 
-- Lecture 1 — [Introduction, applications, modeling](/sda-website/assets/slides/sdam/ORF-411-Lecture-1-Introduction-applications-modeling-frameworks.pptx)
-- Lecture 2 — [Adaptive market planning](/sda-website/assets/slides/sdam/ORF-411-Lecture-2-Adaptive-market-planning.pptx)
-- Lecture 3 — [Machine learning](/sda-website/assets/slides/sdam/ORF-411-Lecture-3-Machine-learning.pptx)
-- Lecture 4 — [Learning diabetes medications](/sda-website/assets/slides/sdam/ORF-411-Lecture-4-Learning-diabetes-medications.pptx)
-- Lecture 5 — [Learning policies](/sda-website/assets/slides/sdam/ORF-411-Lecture-5-Learning-policies.pptx)
-- Lecture 6 — [Stochastic shortest paths I](/sda-website/assets/slides/sdam/ORF-411-Lecture-6-Stochastic-shortest-paths-I.pptx)
-- Lecture 7 — [Stochastic shortest paths II](/sda-website/assets/slides/sdam/ORF-411-Lecture-7-Stochastic-shortest-paths-II.pptx)
-- Lecture 8 — [Designing policies](/sda-website/assets/slides/sdam/ORF-411-Lecture-8-Dynamic-shortest-paths.pptx)
-- Lecture 9 — [Energy storage I](/sda-website/assets/slides/sdam/ORF-411-Lecture-9-Designing-policies.pptx)
-- Lecture 10 — [Energy storage II](/sda-website/assets/slides/sdam/ORF-411-Lecture-10-Energy-storage-I.pptx)
-- Lecture 11 — [Energy storage III](/sda-website/assets/slides/sdam/ORF-411-Lecture-11-Energy-storage-II.pptx)
-- Lecture 12 — [Uncertainty modeling](/sda-website/assets/slides/sdam/ORF-411-Lecture-12-Energy-storage-III.pptx)
-- Lecture 13 — [Uncertainty modeling](/sda-website/assets/slides/sdam/ORF-411-Lecture-13-Uncertainty-modeling.pptx)
-- Lecture 14 — [The beer game I: Introduction](/sda-website/assets/slides/sdam/ORF-411-Lecture-14-The-beer-game-I.pptx)
-- Lecture 15 — [The beer game II](/sda-website/assets/slides/sdam/ORF-411-Lecture-15-The-beer-game-II.pptx) ([spreadsheet](/sda-website/assets/slides/sdam/ORF-411-Lecture-15-Princeton-beer-game-spreadsheet.xlsx))
-- Lecture 16 — [The beer game III: Discussion](/sda-website/assets/slides/sdam/ORF-411-Lecture-16-The-beer-game-III-Discussion.pptx)
-- Lecture 17 — [The blood management problem](/sda-website/assets/slides/sdam/ORF-411-Lecture-17-The-blood-management-problem.pptx)
-- Lecture 18 — [Hotel revenue management](/sda-website/assets/slides/sdam/ORF-411-Lecture-18-Hotel-revenue-management.pptx)
-- Lecture 19 — [Class decision problem: Booking flights](/sda-website/assets/slides/sdam/ORF-411-Lecture-19-Student-decision-problem-Booking-a-flight.pptx)
-- Lecture 20 — [Clinical drug trials](/sda-website/assets/slides/sdam/ORF-411-Lecture-20-Clinical-trials.pptx)
-- Lecture 21 — [Student decision problems: Rowing strategies, twitter trading](/sda-website/assets/slides/sdam/ORF-411-Lecture-21-Student-decision-problems-Rowing-twitter-trading.pptx)
-- Lecture 22 — [Summary lecture](/sda-website/assets/slides/sdam/ORF-411-Lecture-22-Summary-lecture.pptx)
+- Lecture 1 — [Introduction, applications, modeling](/assets/slides/sdam/ORF-411-Lecture-1-Introduction-applications-modeling-frameworks.pptx)
+- Lecture 2 — [Adaptive market planning](/assets/slides/sdam/ORF-411-Lecture-2-Adaptive-market-planning.pptx)
+- Lecture 3 — [Machine learning](/assets/slides/sdam/ORF-411-Lecture-3-Machine-learning.pptx)
+- Lecture 4 — [Learning diabetes medications](/assets/slides/sdam/ORF-411-Lecture-4-Learning-diabetes-medications.pptx)
+- Lecture 5 — [Learning policies](/assets/slides/sdam/ORF-411-Lecture-5-Learning-policies.pptx)
+- Lecture 6 — [Stochastic shortest paths I](/assets/slides/sdam/ORF-411-Lecture-6-Stochastic-shortest-paths-I.pptx)
+- Lecture 7 — [Stochastic shortest paths II](/assets/slides/sdam/ORF-411-Lecture-7-Stochastic-shortest-paths-II.pptx)
+- Lecture 8 — [Designing policies](/assets/slides/sdam/ORF-411-Lecture-8-Dynamic-shortest-paths.pptx)
+- Lecture 9 — [Energy storage I](/assets/slides/sdam/ORF-411-Lecture-9-Designing-policies.pptx)
+- Lecture 10 — [Energy storage II](/assets/slides/sdam/ORF-411-Lecture-10-Energy-storage-I.pptx)
+- Lecture 11 — [Energy storage III](/assets/slides/sdam/ORF-411-Lecture-11-Energy-storage-II.pptx)
+- Lecture 12 — [Uncertainty modeling](/assets/slides/sdam/ORF-411-Lecture-12-Energy-storage-III.pptx)
+- Lecture 13 — [Uncertainty modeling](/assets/slides/sdam/ORF-411-Lecture-13-Uncertainty-modeling.pptx)
+- Lecture 14 — [The beer game I: Introduction](/assets/slides/sdam/ORF-411-Lecture-14-The-beer-game-I.pptx)
+- Lecture 15 — [The beer game II](/assets/slides/sdam/ORF-411-Lecture-15-The-beer-game-II.pptx) ([spreadsheet](/assets/slides/sdam/ORF-411-Lecture-15-Princeton-beer-game-spreadsheet.xlsx))
+- Lecture 16 — [The beer game III: Discussion](/assets/slides/sdam/ORF-411-Lecture-16-The-beer-game-III-Discussion.pptx)
+- Lecture 17 — [The blood management problem](/assets/slides/sdam/ORF-411-Lecture-17-The-blood-management-problem.pptx)
+- Lecture 18 — [Hotel revenue management](/assets/slides/sdam/ORF-411-Lecture-18-Hotel-revenue-management.pptx)
+- Lecture 19 — [Class decision problem: Booking flights](/assets/slides/sdam/ORF-411-Lecture-19-Student-decision-problem-Booking-a-flight.pptx)
+- Lecture 20 — [Clinical drug trials](/assets/slides/sdam/ORF-411-Lecture-20-Clinical-trials.pptx)
+- Lecture 21 — [Student decision problems: Rowing strategies, twitter trading](/assets/slides/sdam/ORF-411-Lecture-21-Student-decision-problems-Rowing-twitter-trading.pptx)
+- Lecture 22 — [Summary lecture](/assets/slides/sdam/ORF-411-Lecture-22-Summary-lecture.pptx)
 
 ## SDAM as a weekly seminar series {#sdam-seminar}
 
@@ -102,7 +102,7 @@ The idea of this weekly seminar series is to focus on developing the process of 
 
 ## Reinforcement Learning and Stochastic Optimization (RLSO) {#rlso}
 
-<img src="/sda-website/assets/images/teaching-courses/rlso-cover.png" alt="Reinforcement Learning and Stochastic Optimization book cover" width="190" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/teaching-courses/rlso-cover.png" alt="Reinforcement Learning and Stochastic Optimization book cover" width="190" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 
 [Course syllabus](http://tinyurl.com/orf544syllabus).
 
@@ -116,18 +116,18 @@ The course will present a unified framework for stochastic optimization that cut
 
 ### Lecture slides (Spring 2019)
 
-- [Week 1 — Introduction and overview](/sda-website/assets/papers/2019/02/ORF-544-Week-1-Introduction-and-overview.pdf)
-- [Week 2 — Adaptive learning](/sda-website/assets/papers/2019/02/ORF-544-Week-2-Adaptive-learning-1.pdf)
-- [Week 3 — Derivative-based stochastic optimization](/sda-website/assets/papers/2019/02/ORF-544-Week-3-Derivative-based-stochastic-optimization.pdf) · [Stochastic-based stochastic search for nonconvex problems](/sda-website/assets/papers/2019/02/Ghadimi-Stochastic-optimization-for-nonconvex-problems-Feb-25.pdf)
-- [Week 4 — Derivative-free stochastic optimization Part I: PFAs and CFAs](/sda-website/assets/papers/2019/03/ORF-544-Week-4-Derivative-free-stochastic-optimization.pdf)
-- [Week 5 — Derivative-free stochastic optimization Part II: VFAs and DLAs](/sda-website/assets/papers/2019/03/ORF-544-Week-5-Derivative-free-stochastic-optimization-VFA-and-DLA.pdf)
-- [Week 6 — Notation and the unified modeling framework](/sda-website/assets/papers/2019/03/ORF-544-Week-6-Modeling-The-unified-framework-1.pdf)
-- Week 7 — [Uncertainty and designing policies](/sda-website/assets/papers/2019/03/ORF-544-Week-7-Uncertainty-and-designing-policies.pdf)
-- [Week 8 — Policy function approximations (PFAs) and policy search](/sda-website/assets/papers/2019/04/ORF-544-Week-8-PFAs-and-policy-search.pdf)
-- [Week 9 — Cost function approximations (CFAs) and introduction to Markov decision processes](/sda-website/assets/papers/2019/04/ORF-544-Week-9-CFAs-and-intro-to-MDP.pdf)
-- [Week 10 — Approximate dynamic programming and Q-learning (VFAs)](/sda-website/assets/papers/2019/05/ORF-544-Week-10-Approximate-dynamic-prograrmming-and-Q-learning.pdf)
-- [Week 11 — Approximate dynamic programming: Monotonicity and convexity](/sda-website/assets/papers/2019/05/ORF-544-Week-11-Approximate-dynamic-prograrmming-Monotonicity-and-convexity.pdf)
-- [Week 12 — Lookahead policies](/sda-website/assets/papers/2019/05/ORF-544-Week-12-Lookahead-policies.pdf)
+- [Week 1 — Introduction and overview](/assets/papers/2019/02/ORF-544-Week-1-Introduction-and-overview.pdf)
+- [Week 2 — Adaptive learning](/assets/papers/2019/02/ORF-544-Week-2-Adaptive-learning-1.pdf)
+- [Week 3 — Derivative-based stochastic optimization](/assets/papers/2019/02/ORF-544-Week-3-Derivative-based-stochastic-optimization.pdf) · [Stochastic-based stochastic search for nonconvex problems](/assets/papers/2019/02/Ghadimi-Stochastic-optimization-for-nonconvex-problems-Feb-25.pdf)
+- [Week 4 — Derivative-free stochastic optimization Part I: PFAs and CFAs](/assets/papers/2019/03/ORF-544-Week-4-Derivative-free-stochastic-optimization.pdf)
+- [Week 5 — Derivative-free stochastic optimization Part II: VFAs and DLAs](/assets/papers/2019/03/ORF-544-Week-5-Derivative-free-stochastic-optimization-VFA-and-DLA.pdf)
+- [Week 6 — Notation and the unified modeling framework](/assets/papers/2019/03/ORF-544-Week-6-Modeling-The-unified-framework-1.pdf)
+- Week 7 — [Uncertainty and designing policies](/assets/papers/2019/03/ORF-544-Week-7-Uncertainty-and-designing-policies.pdf)
+- [Week 8 — Policy function approximations (PFAs) and policy search](/assets/papers/2019/04/ORF-544-Week-8-PFAs-and-policy-search.pdf)
+- [Week 9 — Cost function approximations (CFAs) and introduction to Markov decision processes](/assets/papers/2019/04/ORF-544-Week-9-CFAs-and-intro-to-MDP.pdf)
+- [Week 10 — Approximate dynamic programming and Q-learning (VFAs)](/assets/papers/2019/05/ORF-544-Week-10-Approximate-dynamic-prograrmming-and-Q-learning.pdf)
+- [Week 11 — Approximate dynamic programming: Monotonicity and convexity](/assets/papers/2019/05/ORF-544-Week-11-Approximate-dynamic-prograrmming-Monotonicity-and-convexity.pdf)
+- [Week 12 — Lookahead policies](/assets/papers/2019/05/ORF-544-Week-12-Lookahead-policies.pdf)
 
 ## RLSO as a weekly seminar series {#rlso-seminar}
 
@@ -159,11 +159,11 @@ Below is a sketch of what I recommend could be covered each week.
 
 ## Optimal Learning {#optimal-learning}
 
-<img src="/sda-website/assets/images/teaching-courses/optimal-learning-cover.jpg" alt="Optimal Learning book cover" width="170" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/teaching-courses/optimal-learning-cover.jpg" alt="Optimal Learning book cover" width="170" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 
 [Course syllabus](http://tinyurl.com/orf418syllabus).
 
-**Course text:** [*Optimal Learning*, 2nd edition, updated March 11, 2018](/sda-website/assets/papers/2019/02/Powell-OptimalLearningWileyMarch112018.pdf).
+**Course text:** [*Optimal Learning*, 2nd edition, updated March 11, 2018](/assets/papers/2019/02/Powell-OptimalLearningWileyMarch112018.pdf).
 
 [Notation notes (designed to help with notation)](https://www.overleaf.com/read/dxytdmrgkkgm). · [Tutorial article aimed at experimental scientists](https://arxiv.org/abs/2004.05417).
 

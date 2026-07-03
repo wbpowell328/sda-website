@@ -40,7 +40,7 @@ Decisions are evaluated using performance metrics, which come in many flavors, s
 
 Metrics need to be prioritized. An effective way to do this is to sort them into a pyramid, where metrics at the same level are comparable in priority (but perhaps prioritized left to right).
 
-<img src="/sda-website/assets/images/framing-decision-problems/metrics-pyramid.png" alt="A pyramid of performance metrics: Unit cost at the top; Labor hours per unit, Inventory, and Downtime at the middle level; and Equipment (productivity / yield / maintenance expense / downtime), Personnel (cost per hour / training expense / turnover), and Facility (depreciation / maintenance / utilization) at the base" style="display: block; margin: 1.5rem auto; max-width: 80%; height: auto;" />
+<img src="/assets/images/framing-decision-problems/metrics-pyramid.png" alt="A pyramid of performance metrics: Unit cost at the top; Labor hours per unit, Inventory, and Downtime at the middle level; and Equipment (productivity / yield / maintenance expense / downtime), Personnel (cost per hour / training expense / turnover), and Facility (depreciation / maintenance / utilization) at the base" style="display: block; margin: 1.5rem auto; max-width: 80%; height: auto;" />
 
 ## Handling risk {#handling-risk}
 
@@ -59,7 +59,7 @@ In the 1970s, a popular set of commercials promoting V8 tomato juice focused on 
 
 There are many settings in practice where we behave as if we were on autopilot, and do not realize that we could have made different choices.
 
-A complete discussion of decisions is on the [Decisions, decisions](/sda-website/decisionsdecisions/) page.
+A complete discussion of decisions is on the [Decisions, decisions](/decisionsdecisions/) page.
 
 ## Uncertainties {#uncertainties}
 
@@ -69,5 +69,5 @@ The academic community studies the process of making decisions in the presence o
 
 We have identified 12 different ways that information can impact the behavior of a model or its implementation, including observational errors (does the patient have cancer?), exogenous uncertainty (weather, customer demands), prognostic uncertainty (forecasting errors), and implementation errors (people not following instructions).
 
-A complete discussion is on the [Modeling uncertainty](/sda-website/modeling-uncertainty/) page.
+A complete discussion is on the [Modeling uncertainty](/modeling-uncertainty/) page.
 {% endraw %}

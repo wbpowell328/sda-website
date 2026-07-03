@@ -36,5 +36,5 @@ A separate paper provides additional background on this project, and the general
 
 MicroMAP was the first commercial dispatch system to run fully in real-time, responding to updates in drivers and loads within a second while capturing a high level of detail about both drivers and loads. Even Schneider's own dispatch system ran in batch when users requested an optimization. PTCG was sold to Manhattan Associates which maintains the system under the name "Drivers and Loads." As of 2011, MicroMAP was being used by 20 of the largest truckload motor carriers to dispatch over 66,000 drivers, including two of the top three "mega" carriers (J. B. Hunt and Swift).
 
-Schneider pioneered load matching in the late 1970's with a myopic model that ran in a batch model. However, Schneider uses a model based on approximate dynamic programming for strategic fleet planning. See [the Schneider National page](/sda-website/schneider/).
+Schneider pioneered load matching in the late 1970's with a myopic model that ran in a batch model. However, Schneider uses a model based on approximate dynamic programming for strategic fleet planning. See [the Schneider National page](/schneider/).
 {% endraw %}

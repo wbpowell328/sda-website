@@ -6,7 +6,7 @@ date: 2026-06-04
 ---
 
 {% raw %}
-<img src="/sda-website/assets/images/biography/warren-powell-headshot.jpg" alt="Headshot of Warren B. Powell — silver-grey hair, navy blazer, light blue shirt, smiling, photographed against a grey background" width="260" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/biography/warren-powell-headshot.jpg" alt="Headshot of Warren B. Powell — silver-grey hair, navy blazer, light blue shirt, smiling, photographed against a grey background" width="260" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 It can become difficult to sort through almost 40 years of professional experience and identify the work that matters the most. Below is an attempt.
 
 - Warren Powell is the Chief Analytics Officer of Optimal Dynamics, and is a Professor Emeritus after retiring from Princeton, where he served as a faculty member in the Department of Operations Research and Financial Engineering since 1981. In 1990, he founded CASTLE Laboratory, which spans research in computational stochastic optimization with applications initially in transportation and logistics. In 2011, he founded the Princeton laboratory for Energy Systems Analysis (PENSA) to tackle the rich array of problems in energy systems analysis. In 2013, this morphed into "CASTLE Labs," focusing on computational stochastic optimization and learning.
@@ -41,7 +41,7 @@ He is the author / co-author / editor of:
 
 - **Bridging Decision Problems** (monograph series), Volume I: *Framing the Problem*, Kindle Direct Publishing, January 2026.
 - W. B. Powell, *A Modern Approach to Teaching Optimization*, Boston–Delft: NOW Publishers, 2024. [tinyurl.com/TeachingOpt](https://tinyurl.com/TeachingOpt/)
-- W. B. Powell, *[Reinforcement Learning and Stochastic Optimization: A unified framework for sequential decisions](/sda-website/rlso/)*, John Wiley and Sons, 2022.
+- W. B. Powell, *[Reinforcement Learning and Stochastic Optimization: A unified framework for sequential decisions](/rlso/)*, John Wiley and Sons, 2022.
 - W. B. Powell, *Sequential Decision Analytics and Modeling*, Boston–Delft: NOW Publishers, 2022. [tinyurl.com/sdamodeling](https://tinyurl.com/sdamodeling/)
 - W. B. Powell, I. O. Ryzhov, *Optimal Learning*, John Wiley and Sons, New York, 2012.
 - W. B. Powell, *Approximate Dynamic Programming: Solving the Curses of Dimensionality*, 2nd Edition, John Wiley and Sons, New York, 2011. Major revision of first edition.
@@ -63,5 +63,5 @@ He has served in numerous leadership and service roles, including President of t
 
 ## Full curriculum vitae
 
-[My CV is available here.](/sda-website/assets/papers/powellcv.pdf) (I use this for reporting purposes, so it includes, among the usual chatter, everything I have to put in various progress reports for funding agencies and the university.)
+[My CV is available here.](/assets/papers/powellcv.pdf) (I use this for reporting purposes, so it includes, among the usual chatter, everything I have to put in various progress reports for funding agencies and the university.)
 {% endraw %}

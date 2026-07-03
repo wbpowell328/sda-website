@@ -35,7 +35,7 @@ $$\tilde S_{t0},\, \tilde x_{t0},\, \tilde W_{t1},\, \ldots,\, \tilde S_{tt'},\,
 
 The tildes indicate that the state, decision, and information may not be the same as in the base model. All variables are indexed by **two time indices**: time $t$, which represents the point in time when we are trying to make a decision, and time $t'$, which represents the time within our approximate lookahead model. The base model and lookahead model are illustrated in the figure below.
 
-<img src="/sda-website/assets/images/direct-lookahead-approximations/base-vs-lookahead-model.png" alt="A diagram with two time axes: a horizontal 'base model' timeline from t-1 to T with the sequence S_0, x_0, W_1, …, S_T, x_T, and rising diagonal lookahead-model timelines launched from each base-model time point — each spanning t to t+H with tilde-decorated state, decision, and information variables to indicate they are approximations within the lookahead" width="688" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
+<img src="/assets/images/direct-lookahead-approximations/base-vs-lookahead-model.png" alt="A diagram with two time axes: a horizontal 'base model' timeline from t-1 to T with the sequence S_0, x_0, W_1, …, S_T, x_T, and rising diagonal lookahead-model timelines launched from each base-model time point — each spanning t to t+H with tilde-decorated state, decision, and information variables to indicate they are approximations within the lookahead" width="688" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
 
 We write our performance metric as $C(\tilde S_{tt'}, \tilde x_{tt'})$, realizing it may have to be modified to accommodate the modified state and decision.
 
@@ -45,7 +45,7 @@ $$X_t^{DLA}(S_t) = \arg\max_{x_t} \Big( C(S_t, x_t) + \widetilde{\mathbb{E}}_{\t
 
 The lookahead policy can be difficult to parse, so it helps to understand what is happening using a **decision tree** image (below). If $x_t$ is one of a set of discrete actions, then viewing the lookahead as a decision tree can be accurate, although even then we still need to think about the other approximations. We may also view the lookahead as a stochastic simulation, where we determine $x_t$ using the techniques of stochastic search (either derivative-based or derivative-free).
 
-<img src="/sda-website/assets/images/direct-lookahead-approximations/dla-decision-tree.png" alt="A diagram annotating the DLA policy equation alongside a fanning-out decision tree: starting from the current state with a single decision node, branches alternate between decision squares and information circles, with thick lines highlighting a path through the tree representing the maximum over policies and expectations into the future" width="750" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
+<img src="/assets/images/direct-lookahead-approximations/dla-decision-tree.png" alt="A diagram annotating the DLA policy equation alongside a fanning-out decision tree: starting from the current state with a single decision node, branches alternate between decision squares and information circles, with thick lines highlighting a path through the tree representing the maximum over policies and expectations into the future" width="750" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
 
 Now the challenge is **designing the right approximation** that strikes a balance between computational tractability and capturing the important characteristics of the problem as we plan into the future.
 
@@ -63,5 +63,5 @@ There are seven categories of approximations that we can apply to our lookahead:
 
 The first one is the most important choice: are we going to model our lookahead problem **deterministically or stochastically**? Categories 2, 3, and 4 apply to both deterministic and stochastic lookahead models. Categories 5, 6, and 7 are specific to stochastic lookaheads.
 
-A powerful strategy is to use a **deterministic lookahead that is parameterized to make the policy work better under uncertainty**. We already covered this under the heading of [cost function approximations](/sda-website/cost-function-approximations/).
+A powerful strategy is to use a **deterministic lookahead that is parameterized to make the policy work better under uncertainty**. We already covered this under the heading of [cost function approximations](/cost-function-approximations/).
 {% endraw %}

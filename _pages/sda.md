@@ -13,7 +13,7 @@ Chief innovation officer, Optimal Dynamics
 ## Introductory Material
 
 - [A video introducing the field.](http://tinyurl.com/sdafieldyoutube)
-- [View my new book](/sda-website/RLSO/) called *Reinforcement Learning and Stochastic Optimization: A unified framework for sequential decisions*
+- [View my new book](/RLSO/) called *Reinforcement Learning and Stochastic Optimization: A unified framework for sequential decisions*
 - I have compiled [a new resource page](https://tinyurl.com/sdalinks) on sequential decision analytics
 
 ### Tutorial
@@ -345,5 +345,5 @@ Alternatively, this material can be inserted in courses that need this material,
 
 The parametric cost function approximation emerged while putting this framework together. I came to appreciate it while working in energy, and then started to realize how powerful it could be in many settings.
 
-It is an idea that is widely used as an engineering heuristic, but disregarded (and largely discounted) by the academic research community in stochastic optimization. I believe, strongly, that this has been a major oversight.  Given the importance of the idea, I have created [a page dedicated to the idea](/sda-website/cfa/).
+It is an idea that is widely used as an engineering heuristic, but disregarded (and largely discounted) by the academic research community in stochastic optimization. I believe, strongly, that this has been a major oversight.  Given the importance of the idea, I have created [a page dedicated to the idea](/cfa/).
 {% endraw %}

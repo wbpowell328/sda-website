@@ -46,7 +46,7 @@ Over the past decade, the set of activities that fall under "reinforcement learn
 
 According to google scholar, there were over 60,000 books and papers containing "reinforcement learning" in year 2020 alone.  A quick search with google scholar confirms that you can find "reinforcement learning" in journals in computer science (machine learning), statistics,  electrical engineering (many journals), operations research, industrial engineering, chemical engineering, civil engineering, materials science, biology, chemistry, physics, economics, finance, social sciences, education, psychology, history, philosophy, politics, linguistics, literature (!!),... (I gave up looking). 
 
-<img src="/sda-website/assets/images/what-is-rl/Stochastic-optimization-terms-1-300x203.jpg" alt="A bar chart comparing the relative number of Google Scholar citations across major terms in stochastic optimization for the years 2010, 2015, and 2020, with 'reinforcement learning' showing dramatic growth from 2015 to 2020 and 'stochastic optimization' also growing quickly" width="390" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/what-is-rl/Stochastic-optimization-terms-1-300x203.jpg" alt="A bar chart comparing the relative number of Google Scholar citations across major terms in stochastic optimization for the years 2010, 2015, and 2020, with 'reinforcement learning' showing dramatic growth from 2015 to 2020 and 'stochastic optimization' also growing quickly" width="390" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 The graph to the right shows the growth over the years 2010, 2015 and 2020 in the citations of major terms associated with sequential decisions (usually under uncertainty).  "Reinforcement learning" stands out not just for its popularity, but its dramatic growth from 2015 to 2020 ("stochastic optimization" is also growing quickly, perhaps helping to emphasize the importance of handling uncertainty).
 
 Not surprisingly, the scope of problems has expanded far beyond the problems familiar to the original core community.  Even articles that attempt to communicate the breadth of applications ([an example is here](https://arxiv.org/abs/1908.06973)) do not come close to capturing all of the problems that are being addressed under the umbrella of "reinforcement learning."  And not surprising, this breadth of problems is pushing the boundaries of methodology.  Just as the methods of reinforcement learning grew from the original focus on Q-learning to the much wider range of methods in the second edition of Sutton and Barto's *Reinforcement Learning, *the field, as we speak, is growing into new application domains, sparking a continuing growth in the library of methods for solving these problems.
@@ -126,7 +126,7 @@ Following S&B, I think it is particularly important today to maintain the distin
 I provide a more detailed description of sequential decision problems and the four classes of policies below.
 
 <figure style="max-width: 900px; margin: 1.5rem 0;">
-  <img src="/sda-website/assets/images/rlvssda/JungleofstochasticoptimizationV2.jpg" alt="Evolution of policies for different fields" style="width: 100%; height: auto;" />
+  <img src="/assets/images/rlvssda/JungleofstochasticoptimizationV2.jpg" alt="Evolution of policies for different fields" style="width: 100%; height: auto;" />
   <figcaption style="text-align: center; font-style: italic; color: #5a4a35; margin-top: 0.5rem;">Evolution of policies for different fields</figcaption>
 </figure>
 
@@ -198,5 +198,5 @@ My most complete description of the four classes of policies (including a number
 
 ## Reinforcement learning vs. SDA {#rl-vs-sda}
 
-For a deeper comparison of reinforcement learning and sequential decision analytics — including a brief history of the field, the differences between Sutton and Barto's *Reinforcement Learning: An Introduction* and my *Reinforcement Learning and Stochastic Optimization*, the path from Q-learning to the four classes of policies, and my choices of notation — see the [Reinforcement learning versus sequential decision analytics](/sda-website/rlvssda/) page.
+For a deeper comparison of reinforcement learning and sequential decision analytics — including a brief history of the field, the differences between Sutton and Barto's *Reinforcement Learning: An Introduction* and my *Reinforcement Learning and Stochastic Optimization*, the path from Q-learning to the four classes of policies, and my choices of notation — see the [Reinforcement learning versus sequential decision analytics](/rlvssda/) page.
 {% endraw %}

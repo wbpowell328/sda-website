@@ -11,7 +11,7 @@ This course was taught at the undergraduate level at Princeton University for ov
 ### Quick links
 
 - [Course syllabus](http://tinyurl.com/orf418syllabus)
-- [Course text — *Optimal Learning*, 2nd edition (March 11, 2018)](/sda-website/assets/papers/optimal-learning-book.pdf)
+- [Course text — *Optimal Learning*, 2nd edition (March 11, 2018)](/assets/papers/optimal-learning-book.pdf)
 - [Notation notes (designed to help with notation)](https://www.overleaf.com/read/dxytdmrgkkgm)
 - [Tutorial article aimed at experimental scientists](https://arxiv.org/abs/2004.05417)
 
@@ -38,5 +38,5 @@ The course will have weekly problem sets in the first half of the semester. In t
 
 ## Readings
 
-The course will be taught from the second edition of [*Optimal Learning*](/sda-website/assets/papers/optimal-learning-book.pdf), which can be downloaded directly from this site.
+The course will be taught from the second edition of [*Optimal Learning*](/assets/papers/optimal-learning-book.pdf), which can be downloaded directly from this site.
 {% endraw %}

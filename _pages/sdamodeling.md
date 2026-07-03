@@ -10,16 +10,16 @@ Warren B. Powell
 Professor Emeritus, Princeton University
 Chief Innovation Officer, Optimal Dynamics
 
-<img src="/sda-website/assets/images/legacy/2026/02/SDAM-front-cover-jpg-201x300.jpg" alt="Cover of Sequential Decision Analytics and Modeling, 2nd edition" width="201" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/legacy/2026/02/SDAM-front-cover-jpg-201x300.jpg" alt="Cover of Sequential Decision Analytics and Modeling, 2nd edition" width="201" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 Sequential decision problems arise in virtually every form of human processes: transportation and logistics, supply chain management, energy, health (from public health to medical decision making), finance, e-commerce, laboratory sciences, …
 
 *Sequential Decision Analytics and Modeling* uses a teach-by-example style to illustrate a universal framework for modeling sequential decision problems. The universal framework applies to *any* sequential decision problem, from active learning problems up through complex resource allocation problems. Chapters are accompanied by Python modules that have implemented the models, but the book should be of value even to people not interested in writing code.
 
-- [Click here for a free copy of the 2nd edition](/sda-website/assets/papers/sdam-2nd-edition.pdf).
+- [Click here for a free copy of the 2nd edition](/assets/papers/sdam-2nd-edition.pdf).
 
 I also recommend as a companion my new monograph *Framing the Problem*, which is addressed very briefly at the beginning of each application chapter. Copies can be obtained from:
 
-- [Kindle edition (just $5)](https://tinyurl.com/PowellFramingAmazon/), or [download the PDF here](/sda-website/assets/papers/bridging-vol-i-framing.pdf).
+- [Kindle edition (just $5)](https://tinyurl.com/PowellFramingAmazon/), or [download the PDF here](/assets/papers/bridging-vol-i-framing.pdf).
 
 <br clear="all" />
 

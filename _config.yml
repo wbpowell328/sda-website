@@ -4,9 +4,10 @@ description: >-
   Stochastic Optimization. Princeton ORFE.
 author: Warren B. Powell
 
-# URL settings for GitHub Pages preview at https://wbpowell328.github.io/sda-website/
-url: "https://wbpowell328.github.io"
-baseurl: "/sda-website"
+# Custom domain (GitHub Pages serves the site at the root of warrenpowell.org).
+# The old github.io/sda-website URLs redirect here automatically.
+url: "https://warrenpowell.org"
+baseurl: ""
 
 # No parent theme — we ship our own layouts in _layouts/ and CSS in
 # assets/css/main.css. Plugins below still work.
@@ -56,3 +57,7 @@ exclude:
   - design-mockups/
   - "Website images/"
   - "Webpage notes.docx"
+  - start-castle.bat
+  - convert-page.ps1
+  - ruby4_patch.rb
+  - "Draft webpages/"

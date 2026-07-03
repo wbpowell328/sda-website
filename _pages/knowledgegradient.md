@@ -22,11 +22,11 @@ This page is organized as follows:
 - [**Learning while doing video**](#video) — a non-mathematical demo of KG using a mutual-fund cash-management example.
 - [**Teaching materials**](#teaching) — pointers to course materials on sequential decision problems.
 - [**Students and papers related to the knowledge gradient**](#students) — work by eight Ph.D. students and post-docs over a decade.
-- [**Additional readings on the knowledge gradient**](/sda-website/additional-readings-optimal-learning/) — curated bibliography by topic (belief models, online vs. offline learning, the S-curve effect, learning on graphs, and more).
+- [**Additional readings on the knowledge gradient**](/additional-readings-optimal-learning/) — curated bibliography by topic (belief models, online vs. offline learning, the S-curve effect, learning on graphs, and more).
 
 ## Test of Time Award Citation 2007--2011 {#award}
 
-<img src="/sda-website/assets/images/knowledgegradient/test-of-time-award.jpg" alt="INFORMS Journal on Computing Test of Time Award certificate presented to Peter Frazier, Warren Powell, and Savas Dayanik for 'The Knowledge-Gradient Policy for Correlated Normal Beliefs,' November 2025" width="360" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/knowledgegradient/test-of-time-award.jpg" alt="INFORMS Journal on Computing Test of Time Award certificate presented to Peter Frazier, Warren Powell, and Savas Dayanik for 'The Knowledge-Gradient Policy for Correlated Normal Beliefs,' November 2025" width="360" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 
 **The Knowledge-Gradient Policy for Correlated Normal Beliefs**
 
@@ -36,7 +36,7 @@ https://pubsonline.informs.org/doi/10.1287/ijoc.1080.0314
 
 This paper introduces the now well-known knowledge-gradient (KG) method for gathering information when faced with a black-box objective, where query measurements may be both costly and noisy. The focus of the paper is on ranking and selection, but the KG method can be used also to study multiarmed bandit problems and many other models in Bayesian information collection. This very broad applicability led to a lively KG research area that continues to this day, with new developments studied in modern machine learning. It is an excellent example of work that has stood the test of time.
 
-Peter Frazier prepared a retrospective of the knowledge gradient, which summarizes the body of research that followed the publication of the knowledge gradient ([Click here)](/sda-website/assets/papers/2026/02/Frazier-retrospective-of-KG-Dec-2025.pdf).
+Peter Frazier prepared a retrospective of the knowledge gradient, which summarizes the body of research that followed the publication of the knowledge gradient ([Click here)](/assets/papers/2026/02/Frazier-retrospective-of-KG-Dec-2025.pdf).
 
 Note that Peter (and the Bayesian optimization community) refer to the knowledge gradient as an "acquisition function." I use the more general term "policy" that recognizes that these active learning problems are just special cases of sequential decision problems, also known as dynamic programs.  In chapter 7 of my book *[Reinforcement Learning and Stochastic Optimization](https://tinyurl.com/RLandSO/)*, I address this class of problems under the heading of "derivative-free stochastic search" and illustrate all four classes of policies.  The knowledge gradient falls in the fourth class, direct lookahead approximations.
 
@@ -54,7 +54,7 @@ Examples of $$F(x, W)$$ include: the revenue from advertising a product, the per
 
 Although $$x$$ may be discrete or continuous, scalar or vector, the most common version of this problem involves identifying the best of a set of discrete choices which have uncertain values, as depicted below:
 
-<img src="/sda-website/assets/images/knowledgegradient/discrete-choices.jpg" alt="Bar chart of seven discrete choices (A through G), each showing an estimated goal/metric with an uncertainty interval, alongside a list of example decision settings: type of drug, supplier, trading policy, product design, battery technology, price, web page design, product to advertise, location for a clinic, diameter of silicon wafer, financial trading policy, advertising channel, choice of manager" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" />
+<img src="/assets/images/knowledgegradient/discrete-choices.jpg" alt="Bar chart of seven discrete choices (A through G), each showing an estimated goal/metric with an uncertainty interval, alongside a list of example decision settings: type of drug, supplier, trading policy, product design, battery technology, price, web page design, product to advertise, location for a clinic, diameter of silicon wafer, financial trading policy, advertising channel, choice of manager" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" />
 
 In chapter 7 of my 2022 book, *Reinforcement Learning and Stochastic Optimization,* I show how this problem can be solved with any of the four classes of policies.  However, two are the most widely used: 
 

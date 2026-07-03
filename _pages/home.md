@@ -6,8 +6,8 @@ date: 2017-07-16 23:57:03
 ---
 
 {% raw %}
-<img src="/sda-website/assets/images/home/left-bridge.png" alt="Pen-and-ink drawing of the left half of an arched stone bridge under construction, supported by wooden scaffolding" width="220" align="left" style="max-width: 100%; height: auto; margin-right: 1rem; margin-bottom: 0.5rem;" />
-<img src="/sda-website/assets/images/home/right-bridge.png" alt="Pen-and-ink drawing of the right half of an arched stone bridge under construction, supported by wooden scaffolding" width="200" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/home/left-bridge.png" alt="Pen-and-ink drawing of the left half of an arched stone bridge under construction, supported by wooden scaffolding" width="220" align="left" style="max-width: 100%; height: auto; margin-right: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/home/right-bridge.png" alt="Pen-and-ink drawing of the right half of an arched stone bridge under construction, supported by wooden scaffolding" width="200" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 <p style="text-align: center;">The challenge of using computers requires bridging complex problems and mathematical modeling. When these problems involve making decisions over time (which covers a vast range of applications), the research literature has fragmented into over a dozen different communities, each with their own notation, modeling styles, and algorithms illustrated using carefully chosen examples.</p>
 
 <p style="text-align: center;">Traditional approaches for optimizing systems are limited to narrow classes of (typically complex) applications. Combining decisions and uncertainty invariably leads to sophisticated tools with arcane mathematics, as evidenced by the almost universal lack of general purpose software packages.</p>

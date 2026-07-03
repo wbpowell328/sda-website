@@ -12,7 +12,7 @@ CASTLE Lab is pleased to announce that a project involving the adaptation of app
 
 The team contributing to the project includes Hugo P. Simao, Abraham George and Warren B. Powell from Princeton University, and Ted Gifford, Jeff Day and John Nienow from Schneider National..
 
-<img src="/sda-website/assets/images/wagner/schneider-dispatch.jpg" alt="Photograph of the Schneider National dispatch center — rows of dispatchers at desks with monitors" width="364" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/wagner/schneider-dispatch.jpg" alt="Photograph of the Schneider National dispatch center — rows of dispatchers at desks with monitors" width="364" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 The model, known as the Tactical Planning Simulator (TPS) at Schneider, produces a highly detailed "simulation" of fleet operations, capturing the dynamics of drivers and loads at a very high level of detail. The problem is formulated as a very large-scale stochastic optimization problem. We used an optimization framework to model the collective intelligence of the dispatch center (at the right). When we modeled operations at the level of detail required both for proper calibration and to provide sensitivity to key policy studies, the result was an infinite-dimensional dynamic program with a decision vector with 50,000 dimensions.
 
 The problem was solved using approximate dynamic programming, which overcomes the high dimensional state variables using methods from machine learning. This logic captured the critical ability of the dispatch center to anticipate the impact of decisions now on the future. This logic made it possible to capture not only a 15-dimensional attribute vector describing each of the over 5,000 drivers, but also uncertainties in loads (demands) and travel times. The optimization framework, which was carefully calibrated against historical performance, made it possible to introduce changes in the driver mix, loads, and policies, and capture the collective intelligence of their experienced team of dispatchers supported by modern information systems, which includes satellite communication and advanced optimization.
@@ -31,7 +31,7 @@ Considerable attention was put into capturing a host of real-world details so th
 
 A paper published in *Interfaces* describing the project with no mathematics is available below. It also summarizes a number of projects undertaken at Schneider producing millions of dollars in benefits.
 
-- [Simao, H.P., A. George, W.B. Powell, T. Gifford, J. Day, J. Nienow, *Approximate Dynamic Programming Captures Fleet Operations for Schneider National*, **Interfaces**, October 2010 — download PDF](/sda-website/assets/papers/2020/12/Simao_Interfaces_SchneiderNationalOctober2010.pdf).
+- [Simao, H.P., A. George, W.B. Powell, T. Gifford, J. Day, J. Nienow, *Approximate Dynamic Programming Captures Fleet Operations for Schneider National*, **Interfaces**, October 2010 — download PDF](/assets/papers/2020/12/Simao_Interfaces_SchneiderNationalOctober2010.pdf).
 
 A longer, more technical paper, published in *Transportation Science* in 2009, won the 2010 Best Paper Prize from the Society for Transportation Science and Logistics.
 

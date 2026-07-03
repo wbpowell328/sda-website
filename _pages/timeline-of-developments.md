@@ -188,7 +188,7 @@ A summary of major developments in CASTLE Labs over its history.
     <button class="tl-card" aria-expanded="false" type="button">
       <div class="tl-headline">SuperSPIN — first interactive optimization model<span class="tl-toggle">▼</span></div>
       <div class="tl-detail">
-        <p>Developed the <a href="/sda-website/superspin/">first interactive optimization model ("SuperSPIN")</a> for network design for less-than-truckload motor carriers. It was adopted by almost the entire LTL industry, and helped to stabilize LTL trucking in the post-deregulation era. SuperSPIN is still in production 40 years later (marketed by Manhattan Associates).</p>
+        <p>Developed the <a href="/superspin/">first interactive optimization model ("SuperSPIN")</a> for network design for less-than-truckload motor carriers. It was adopted by almost the entire LTL industry, and helped to stabilize LTL trucking in the post-deregulation era. SuperSPIN is still in production 40 years later (marketed by Manhattan Associates).</p>
       </div>
     </button>
   </div>
@@ -198,7 +198,7 @@ A summary of major developments in CASTLE Labs over its history.
     <button class="tl-card" aria-expanded="false" type="button">
       <div class="tl-headline">MicroMAP — first in-memory real-time load matching<span class="tl-toggle">▼</span></div>
       <div class="tl-detail">
-        <p>Developed <a href="/sda-website/micromap/">MicroMAP</a>, the first in-memory, real-time load-matching system for truckload trucking which captured the uncertainty of the future. MicroMAP was the first commercially successful load matching system, which is still in use today (marketed by Manhattan Associates).</p>
+        <p>Developed <a href="/micromap/">MicroMAP</a>, the first in-memory, real-time load-matching system for truckload trucking which captured the uncertainty of the future. MicroMAP was the first commercially successful load matching system, which is still in use today (marketed by Manhattan Associates).</p>
       </div>
     </button>
   </div>
@@ -280,7 +280,7 @@ A summary of major developments in CASTLE Labs over its history.
     <button class="tl-card" aria-expanded="false" type="button">
       <div class="tl-headline">PLASMA — locomotive optimization for Norfolk Southern<span class="tl-toggle">▼</span></div>
       <div class="tl-detail">
-        <p>Developed <a href="/sda-website/plasma/">PLASMA</a> for Norfolk Southern which was the first production-quality optimization model for a North American freight railroad. The model is still running at Norfolk Southern after 15 years, and remains the only optimization model in production at a North American freight railroad.</p>
+        <p>Developed <a href="/plasma/">PLASMA</a> for Norfolk Southern which was the first production-quality optimization model for a North American freight railroad. The model is still running at Norfolk Southern after 15 years, and remains the only optimization model in production at a North American freight railroad.</p>
       </div>
     </button>
   </div>
@@ -322,7 +322,7 @@ A summary of major developments in CASTLE Labs over its history.
     <button class="tl-card" aria-expanded="false" type="button">
       <div class="tl-headline">Knowledge gradient introduced — Peter Frazier<span class="tl-toggle">▼</span></div>
       <div class="tl-detail">
-        <p>Peter Frazier introduces the "<a href="/sda-website/optimal-learning/#kg-offline">knowledge gradient</a>," launching a new direction in optimal learning.</p>
+        <p>Peter Frazier introduces the "<a href="/optimal-learning/#kg-offline">knowledge gradient</a>," launching a new direction in optimal learning.</p>
       </div>
     </button>
   </div>
@@ -342,7 +342,7 @@ A summary of major developments in CASTLE Labs over its history.
     <button class="tl-card" aria-expanded="false" type="button">
       <div class="tl-headline">PENSA laboratory (Princeton laboratory for ENergy Systems Analysis) performs wide range of energy storage research<span class="tl-toggle">▼</span></div>
       <div class="tl-detail">
-        <p>PENSA developed an array of solution methods for a wide range of energy storage problems using the universal modeling framework, drawing on all four classes of policies to handle the diverse characteristics of energy storage problems. <a href="/sda-website/energystorage/">The complete list of publications is available here.</a></p>
+        <p>PENSA developed an array of solution methods for a wide range of energy storage problems using the universal modeling framework, drawing on all four classes of policies to handle the diverse characteristics of energy storage problems. <a href="/energystorage/">The complete list of publications is available here.</a></p>
       </div>
     </button>
   </div>
@@ -352,7 +352,7 @@ A summary of major developments in CASTLE Labs over its history.
     <button class="tl-card" aria-expanded="false" type="button">
       <div class="tl-headline">Approximate Dynamic Programming optimizes truckload fleet operations at Schneider National, wins Daniel Wagner prize.<span class="tl-toggle">▼</span></div>
       <div class="tl-detail">
-        <p><a href="/sda-website/schneider/">Winner, Daniel Wagner Prize</a> from Informs for the first application of approximate dynamic programming for truckload fleet management for Schneider National. Now called SMART-TL, this is the first system to be able to estimate the marginal value of drivers and loads while handling all driver work rules and home constraints. SMART-TL would be licensed to Optimal Dynamics, founded in 2017 to bring this technology to the truckload industry.</p>
+        <p><a href="/schneider/">Winner, Daniel Wagner Prize</a> from Informs for the first application of approximate dynamic programming for truckload fleet management for Schneider National. Now called SMART-TL, this is the first system to be able to estimate the marginal value of drivers and loads while handling all driver work rules and home constraints. SMART-TL would be licensed to Optimal Dynamics, founded in 2017 to bring this technology to the truckload industry.</p>
       </div>
     </button>
   </div>
@@ -424,7 +424,7 @@ A summary of major developments in CASTLE Labs over its history.
     <button class="tl-card" aria-expanded="false" type="button">
       <div class="tl-headline">10+ years of energy storage research compiled<span class="tl-toggle">▼</span></div>
       <div class="tl-detail">
-        <p><a href="/sda-website/energystorage/">Compiled 10+ years of research into energy storage</a>, which is the first to fully research all four classes of policies in the context of a wide range of storage applications, including the first formal model to properly handle rolling forecasts.</p>
+        <p><a href="/energystorage/">Compiled 10+ years of research into energy storage</a>, which is the first to fully research all four classes of policies in the context of a wide range of storage applications, including the first formal model to properly handle rolling forecasts.</p>
       </div>
     </button>
   </div>
@@ -446,7 +446,7 @@ A summary of major developments in CASTLE Labs over its history.
     <button class="tl-card" aria-expanded="false" type="button">
       <div class="tl-headline"><em>Sequential Decision Analytics and Modeling</em> published<span class="tl-toggle">▼</span></div>
       <div class="tl-detail">
-        <p>Published <a href="/sda-website/sdamodeling/"><em>Sequential Decision Analytics and Modeling: Modeling with Python</em></a>. This is an introductory book first used in an undergraduate course at Princeton, which uses a teach-by-example style.</p>
+        <p>Published <a href="/sdamodeling/"><em>Sequential Decision Analytics and Modeling: Modeling with Python</em></a>. This is an introductory book first used in an undergraduate course at Princeton, which uses a teach-by-example style.</p>
       </div>
     </button>
   </div>
@@ -456,7 +456,7 @@ A summary of major developments in CASTLE Labs over its history.
     <button class="tl-card" aria-expanded="false" type="button">
       <div class="tl-headline"><em>A Modern Approach to Teaching Optimization</em><span class="tl-toggle">▼</span></div>
       <div class="tl-detail">
-        <p>Posted <a href="/sda-website/teachingoptimization/"><em>A Modern Approach to Teaching Optimization</em></a> which presents a fundamentally new approach for teaching an introduction to optimization course for undergraduates or masters.</p>
+        <p>Posted <a href="/teachingoptimization/"><em>A Modern Approach to Teaching Optimization</em></a> which presents a fundamentally new approach for teaching an introduction to optimization course for undergraduates or masters.</p>
       </div>
     </button>
   </div>

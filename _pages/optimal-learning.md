@@ -8,7 +8,7 @@ date: 2026-06-01
 {% raw %}
 The most common sequential decision problems arise when we have two or more choices, typically (but not always) discrete, where we have to make the best choice. The challenge is that we do not know how well each choice will perform, but we can learn from experience to guide future decisions. Examples of these problems are illustrated in the graphic below.
 
-<img src="/sda-website/assets/images/optimal-learning/choices-with-uncertainty.png" alt="Bar chart of seven choices (A through G) with uncertainty bars, alongside a list of example problem settings: type of drug, supplier, trading policy, product design, battery technology, price, web page design, product to advertise, location for a clinic, diameter of silicon wafer, financial trading policy, advertising channel, choice of manager" style="display: block; margin: 1rem auto; max-width: 80%; height: auto;" />
+<img src="/assets/images/optimal-learning/choices-with-uncertainty.png" alt="Bar chart of seven choices (A through G) with uncertainty bars, alongside a list of example problem settings: type of drug, supplier, trading policy, product design, battery technology, price, web page design, product to advertise, location for a clinic, diameter of silicon wafer, financial trading policy, advertising channel, choice of manager" style="display: block; margin: 1rem auto; max-width: 80%; height: auto;" />
 
 These problems are ubiquitous. We may have two choices, or 10, or thousands. They come in a wide range of problem settings, which we review below. We then review different ways of deciding which choices to try which recognize the value of information on future decisions.
 
@@ -22,19 +22,19 @@ This page is organized as follows:
 - [**UCB policies for offline and online learning**](#ucb) — how the same policy can be tuned for either objective.
 - [**KG vs. UCB and the problem of tuning**](#kg-vs-ucb) — a direct head-to-head comparison and why tuning is harder than it looks.
 - [**A video application of UCB and KG**](#video) — a real-world mutual-fund cash-management problem.
-- [**The Knowledge Gradient — the original research**](/sda-website/knowledgegradient/) — the Test of Time Award paper, the research lineage, and Peter Frazier's open-source software.
+- [**The Knowledge Gradient — the original research**](/knowledgegradient/) — the Test of Time Award paper, the research lineage, and Peter Frazier's open-source software.
 
 ## Classes of optimal learning problems {#classes}
 
 There are countless variations of this basic problem. Two of the most important dimensions are the time and cost for running an experiment (which can range from fractions of a second to months), and whether we are learning in a test environment (a lab or a simulator) or in the field, where we have to live with the results of experiments. Budgets, which may limit the number of experiments that can be run, also play an important role.
 
-<img src="/sda-website/assets/images/optimal-learning/online-vs-offline-matrix.png" alt="A 2x2 matrix crossing offline vs. online learning with inexpensive vs. expensive experiments. Offline+inexpensive: optimizing computer games, tuning trading policies. Online+inexpensive: bidding for ad-clicks, ad-click maximization, recommender systems. Offline+expensive: laboratory experimentation, optimizing materials, tuning expensive simulators. Online+expensive: tuning industrial processes, finding the best price, finding the best drug. Time scales range from microseconds (top) to a month (bottom)." style="display: block; margin: 1rem auto; max-width: 80%; height: auto;" />
+<img src="/assets/images/optimal-learning/online-vs-offline-matrix.png" alt="A 2x2 matrix crossing offline vs. online learning with inexpensive vs. expensive experiments. Offline+inexpensive: optimizing computer games, tuning trading policies. Online+inexpensive: bidding for ad-clicks, ad-click maximization, recommender systems. Offline+expensive: laboratory experimentation, optimizing materials, tuning expensive simulators. Online+expensive: tuning industrial processes, finding the best price, finding the best drug. Time scales range from microseconds (top) to a month (bottom)." style="display: block; margin: 1rem auto; max-width: 80%; height: auto;" />
 
 A common thread that runs through all optimal learning problems is known as the "exploration vs. exploitation" tradeoff. This is most prominent when we are learning in the field, since we have to live with poor outcomes. However, the exploration-exploitation tradeoff arises even in offline experimental learning when we are working within a budget.
 
-Another important dimension involves the role of physical resources. The classical online learning problem is a pure learning problem where the state of the system consists purely of our beliefs about the performance of each choice. Contrast this with physical resource allocation problems, where the state is given by the quantity of different types and locations of resources. We can create a spectrum of problems that involve a mixture of physical resources and beliefs. The literature that addresses both at the same time is very sparse ([check here for examples of problems that combine physical resources with active learning](/sda-website/ic-vrp/)).
+Another important dimension involves the role of physical resources. The classical online learning problem is a pure learning problem where the state of the system consists purely of our beliefs about the performance of each choice. Contrast this with physical resource allocation problems, where the state is given by the quantity of different types and locations of resources. We can create a spectrum of problems that involve a mixture of physical resources and beliefs. The literature that addresses both at the same time is very sparse ([check here for examples of problems that combine physical resources with active learning](/ic-vrp/)).
 
-<img src="/sda-website/assets/images/optimal-learning/problem-spectrum-banner.png" alt="A horizontal spectrum showing three classes of problems: physical resource allocation problems (managing drivers, inventories, money); mixed problems that involve managing physical or financial resources while learning; and pure learning problems centered on beliefs about performance" style="display: block; margin: 1rem auto; max-width: 90%; height: auto;" />
+<img src="/assets/images/optimal-learning/problem-spectrum-banner.png" alt="A horizontal spectrum showing three classes of problems: physical resource allocation problems (managing drivers, inventories, money); mixed problems that involve managing physical or financial resources while learning; and pure learning problems centered on beliefs about performance" style="display: block; margin: 1rem auto; max-width: 90%; height: auto;" />
 
 Another important element is the consideration of risk. If we are learning in the field, are we willing to accept certain negative outcomes? If we are running experiments in a lab, what is the probability that we are unable to find an acceptable solution within the budget we have set?
 
@@ -83,7 +83,7 @@ where $\overline{\sigma}_x^n$ was the standard deviation of the estimate $\overl
 
 A key feature of IE policies is that the parameter $\theta^{IE}$ did not depend on the units of the problem. We could expect $\theta^{IE}$ to fall somewhere in the range $[0, 3]$.
 
-UCB policies all featured a tunable parameter such as $\theta^{UCB}$ or $\theta^{IE}$. If you check the four classes of policies on the [Policies](/sda-website/policies/) page, UCB policies such as these fall under the category of cost function approximations, which always have one or more tunable parameters. Tuning the parameter requires solving a problem of the form:
+UCB policies all featured a tunable parameter such as $\theta^{UCB}$ or $\theta^{IE}$. If you check the four classes of policies on the [Policies](/policies/) page, UCB policies such as these fall under the category of cost function approximations, which always have one or more tunable parameters. Tuning the parameter requires solving a problem of the form:
 
 $$\max_{\theta}\, \frac{1}{N}\sum_{n=1}^{N} W_{x^n}^{n}$$
 
@@ -106,21 +106,21 @@ A breakthrough enabled by the knowledge gradient was the ability to handle more 
 
 For example, if we are given seven types of medications and we administer type G, what we observe may change our belief about how well G performs, and in addition updates our beliefs of some or all of the other choices.
 
-<img src="/sda-website/assets/images/optimal-learning/correlated-beliefs.png" alt="Seven bar-plus-curve diagrams labeled A through G. Each shows a current point estimate (bar height) with a Gaussian belief curve attached. A single black dot marks a new observation on choice G, illustrating how an experiment on G shifts the beliefs about the other choices as well." width="360" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/optimal-learning/correlated-beliefs.png" alt="Seven bar-plus-curve diagrams labeled A through G. Each shows a current point estimate (bar height) with a Gaussian belief curve attached. A single black dot marks a new observation on choice G, illustrating how an experiment on G shifts the beliefs about the other choices as well." width="360" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 Most problems in practice exhibit correlated beliefs. The choices may be selling different types of clothes, the features on cars, the performance of different investments, the effect of different continuous parameters such as dosages, temperatures and concentrations. Correlated beliefs is what allows us to make a reasonable guess of the best molecular compound from 10,000 choices using 50 experiments.
 
 <br clear="all" />
 
 ### How it works
 
-<img src="/sda-website/assets/images/optimal-learning/kg-how-it-works.png" alt="Bar chart of seven choices (1-7) where choice 4 has the highest current estimate. A column of black dots above choice 5 shows possible outcomes of running an experiment on it. To the upper right, a distribution of 'improvement' is sketched with a spike at zero and a tail of positive improvements; the mean of that distribution is labeled 'Expected improvement = knowledge gradient'." width="380" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/optimal-learning/kg-how-it-works.png" alt="Bar chart of seven choices (1-7) where choice 4 has the highest current estimate. A column of black dots above choice 5 shows possible outcomes of running an experiment on it. To the upper right, a distribution of 'improvement' is sketched with a spike at zero and a tail of positive improvements; the mean of that distribution is labeled 'Expected improvement = knowledge gradient'." width="380" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 The concept of the knowledge gradient is quite simple. Imagine that we have a set of choices where choice 4 seems to be best. However, it is possible that choice 5 is actually best, but has a lower estimate because of errors in initial beliefs or the noise of experiments. If we try experiment 5, we might get any of the results shown as black circles (this is just a small sample). If we obtain any of the lower values and use this to update our belief about 5, we may obtain an updated estimate that is still not as good as choice 4, which means we would not change our decision about which is best.
 
 On the other hand, if we obtain a higher value for choice 5, the result might be that we estimate that 5 is even better than 4. The degree to which the new estimate of 5 exceeds the old estimate of 4 is the value of the information from running an experiment with choice 5. We next build a probability distribution of how much the value improves, which typically produces a spike at zero (no improvement), and a tail of improvements. The mean of this distribution is the expected improvement, which is the knowledge gradient.
 
 <br clear="all" />
 
-Peter Frazier developed a version of the knowledge gradient that captures the effect of correlations, a technique he called the "knowledge gradient for correlated beliefs" (or the "correlated KG" for short). This method won the "Test of Time" award from the journal that published the method. ([Click here for more on the correlated KG and the Test of Time award.](/sda-website/knowledgegradient/))
+Peter Frazier developed a version of the knowledge gradient that captures the effect of correlations, a technique he called the "knowledge gradient for correlated beliefs" (or the "correlated KG" for short). This method won the "Test of Time" award from the journal that published the method. ([Click here for more on the correlated KG and the Test of Time award.](/knowledgegradient/))
 
 Stated mathematically, the knowledge gradient is given by
 
@@ -135,7 +135,7 @@ For problems with independent beliefs, the knowledge gradient can be computed wi
 
 There is one important feature that the knowledge gradient lacks — it has no tunable parameters. It requires a little more work, but it is much easier to use.
 
-This work served as the basis for six Ph.D. dissertations. For a summary of this work, the Test of Time award, and a link to Peter Frazier's software library for the knowledge gradient, see [The Knowledge Gradient — the original research](/sda-website/knowledgegradient/).
+This work served as the basis for six Ph.D. dissertations. For a summary of this work, the Test of Time award, and a link to Peter Frazier's software library for the knowledge gradient, see [The Knowledge Gradient — the original research](/knowledgegradient/).
 
 ## The knowledge gradient for online learning {#kg-online}
 
@@ -169,7 +169,7 @@ The knowledge gradient and UCB policies are best suited for very different probl
 
 The knowledge gradient is better for applications where experiments are expensive, which means we need to depend heavily on prior knowledge and carefully developed belief models. We also have plenty of time to perform the calculations needed.
 
-<img src="/sda-website/assets/images/optimal-learning/opportunity-cost-curve.png" alt="A U-shaped opportunity-cost curve plotted against the tunable IE parameter theta^IE, from 0 to 4. At theta=0 the opportunity cost is very high (around 10). The minimum sits near theta=1.7 where 'IE wins' over the knowledge gradient (whose performance is shown as a horizontal dashed line at about 4.5). For poorly chosen theta the IE policy performs much worse than KG." width="320" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/optimal-learning/opportunity-cost-curve.png" alt="A U-shaped opportunity-cost curve plotted against the tunable IE parameter theta^IE, from 0 to 4. At theta=0 the opportunity cost is very high (around 10). The minimum sits near theta=1.7 where 'IE wins' over the knowledge gradient (whose performance is shown as a horizontal dashed line at about 4.5). For poorly chosen theta the IE policy performs much worse than KG." width="320" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 This said, we compared the performance of both policies, focusing on the need to tune the parameter in the UCB policy (we used interval estimation), whereas KG does not need tuning.
 
 The graph to the right shows the "opportunity cost" curve for the IE policy (where smaller is better). We see that the OC is quite high if $\theta^{IE} = 0$, which means that simply using the point estimate performs poorly. By contrast, KG, which does not have a tunable parameter, works much better.
