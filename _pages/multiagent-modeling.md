@@ -8,7 +8,7 @@ date: 2026-07-01
 {% raw %}
 There are countless settings involving making decisions, where it makes sense to divide the system into agents performing different functions. This is most vividly illustrated when modeling a spatially distributed supply chain where people are making decisions around the world which have to be coordinated.
 
-<img src="/assets/images/multiagent-modeling/multiagent-supply-chain.jpg" alt="A multiagent supply chain diagram on a tan background — factories, warehouses, retailers linked by physical-flow and information-flow arrows" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" width="600" />
+<img src="/assets/images/multiagent-modeling/multiagent-supply-chain.jpg" alt="A multiagent supply chain diagram on a tan background — factories, warehouses, retailers linked by physical-flow and information-flow arrows" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" width="540" />
 
 Even the most basic sequential decision problem is best viewed as consisting of two agents: 1) the environment, which knows the ground truth about underlying process governing the evolution of systems over time, and the generators of new information, and 2) a controlling agent that makes decisions that affect the evolution of the system in some way.
 
@@ -146,7 +146,7 @@ Our multiagent notation lays the foundation for a full multiagent system. In the
 
 A multiagent model is illustrated below. Each box captures the scope of a single agent which might be the manager of a single manufacturing plant, or a scientist running a lab, or a physician in the field.
 
-<img src="/assets/images/multiagent-modeling/media/image3.png" alt="A multiagent-system schematic with several boxed agents connected by solid lines (physical/financial resource flows) and dashed lines (information flows, some going through a shared data repository)" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" width="700" />
+<img src="/assets/images/multiagent-modeling/media/image3.png" alt="A multiagent-system schematic with several boxed agents connected by solid lines (physical/financial resource flows) and dashed lines (information flows, some going through a shared data repository)" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" width="560" />
 
 The dashed lines in the figure indicate the flow of information, which may be to or from a data repository. Solid lines represent the flows of physical or financial resources.
 
@@ -274,7 +274,7 @@ In other words, the behavior of one agent can (and should) recognize how the beh
 
 The beer game was developed by Jay Forrester at MIT in the 1950s and has grown into a standard exercise in supply chain management classes. It consists of at least four "echelons" where beer is moved from the factory through several states of storage and distribution before meeting the demands at a retailer.
 
-<img src="/assets/images/multiagent-modeling/media/image7.png" alt="Beer-game schematic: four echelons from factory to retailer, with beer flowing right-to-left along the top row and order slips flowing left-to-right along the bottom row" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" width="620" />
+<img src="/assets/images/multiagent-modeling/beer-game.png" alt="Beer-game schematic: four echelons from factory to retailer, with beer flowing right-to-left along the top row and order slips flowing left-to-right along the bottom row" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" width="620" />
 
 Beer (top line) moves from right to left, usually in the form of pennies (as the game is played). The amount of beer is determined by requests that are written on slips of paper that are moved from left to right (bottom line), nicely capturing both the flows of physical goods (cases of beer) and information (the requests). The game does not model cash flows and financing.
 
