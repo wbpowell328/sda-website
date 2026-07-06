@@ -48,6 +48,8 @@
       url: /statevariables/
     - title: Modeling uncertainty
       url: /modeling-uncertainty/
+    - title: Multiagent modeling
+      url: /multiagent-modeling/
 
 - section: Policies
   items:
