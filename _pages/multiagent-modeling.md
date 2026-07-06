@@ -8,7 +8,7 @@ date: 2026-07-01
 {% raw %}
 There are countless settings involving making decisions, where it makes sense to divide the system into agents performing different functions. This is most vividly illustrated when modeling a spatially distributed supply chain where people are making decisions around the world which have to be coordinated.
 
-<img src="/sda-website/assets/images/multiagent-modeling/media/image1.png" alt="A multiagent supply chain diagram on a tan background — factories, warehouses, retailers linked by physical-flow and information-flow arrows" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" width="600" />
+<img src="/sda-website/assets/images/multiagent-modeling/multiagent-supply-chain.jpg" alt="A multiagent supply chain diagram on a tan background — factories, warehouses, retailers linked by physical-flow and information-flow arrows" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" width="600" />
 
 Even the most basic sequential decision problem is best viewed as consisting of two agents: 1) the environment, which knows the ground truth about underlying process governing the evolution of systems over time, and the generators of new information, and 2) a controlling agent that makes decisions that affect the evolution of the system in some way.
 
