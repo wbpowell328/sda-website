@@ -8,11 +8,13 @@ date: 2026-07-01
 {% raw %}
 There are countless settings involving making decisions, where it makes sense to divide the system into agents performing different functions. This is most vividly illustrated when modeling a spatially distributed supply chain where people are making decisions around the world which have to be coordinated.
 
-<img src="/assets/images/multiagent-modeling/multiagent-supply-chain.jpg" alt="A multiagent supply chain diagram on a tan background — factories, warehouses, retailers linked by physical-flow and information-flow arrows" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" width="540" />
+<img src="/assets/images/multiagent-modeling/multiagent-supply-chain.jpg" alt="A multiagent supply chain diagram on a tan background — factories, warehouses, retailers linked by physical-flow and information-flow arrows" width="540" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 
 Even the most basic sequential decision problem is best viewed as consisting of two agents: 1) the environment, which knows the ground truth about underlying process governing the evolution of systems over time, and the generators of new information, and 2) a controlling agent that makes decisions that affect the evolution of the system in some way.
 
 All the material in this section is based on Chapter 20 of *[Reinforcement Learning and Stochastic Optimization](https://tinyurl.com/RLandSO/)*. The discussions below represent a high-level tour of this chapter.
+
+<br clear="all" />
 
 ## Jump to a section
 
@@ -108,7 +110,7 @@ We start by introducing our index for agents:
 
 We reserve $q = 0$ for the environment, which occupies a special place in our multiagent vocabulary. If we work on a two-agent problem, we suggest letting "0" be "agent 0" for the environment, and then letting "$q$" (which is a letter, not an index of a set) as our decision-making agent.
 
-If we have multiple decision-making agents, we might use $q_{1}, \ldots, q_{|\mathcal{Q}|}$ to label each agent, or simply let $q \in \{0, 1, 2, \ldots, |\mathcal{Q}|\}$ be the indices for each agent, where we reserve $q = 0$ for the environment.
+If we have multiple decision-making agents, we might use $q_{1}, \ldots, q_{\lvert\mathcal{Q}\rvert}$ to label each agent, or simply let $q \in \{0, 1, 2, \ldots, \lvert\mathcal{Q}\rvert\}$ be the indices for each agent, where we reserve $q = 0$ for the environment.
 
 Once we establish our "$q$" notation for agents, we can model our state variable as
 
