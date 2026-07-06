@@ -12,7 +12,7 @@ There are countless settings involving making decisions, where it makes sense to
 
 Even the most basic sequential decision problem is best viewed as consisting of two agents: 1) the environment, which knows the ground truth about underlying process governing the evolution of systems over time, and the generators of new information, and 2) a controlling agent that makes decisions that affect the evolution of the system in some way.
 
-All the material in this section is based on Chapter 20 of *[Reinforcement Learning and Stochastic Optimization](https://tinyurl.com/RLandSO/)*. The discussions below represent a high-level tour of this chapter.
+All the material in this section is based on Chapter 20 of *[Reinforcement Learning and Stochastic Optimization](https://tinyurl.com/RLandSO/)*. Chapter 20 can be [downloaded here](https://tinyurl.com/RLSOchapter20/). The discussions below represent a high-level tour of this chapter.
 
 <br clear="all" />
 
