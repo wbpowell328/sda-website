@@ -67,7 +67,7 @@ A more subtle assumption often made in stochastic models is that the *functions*
 
 ## The POMDP formulation (section 20.3 in RLSO) {#pomdp}
 
-<img src="/assets/images/multiagent-modeling/media/image2.png" alt="Schematic of a POMDP: a controlling agent interacting with an environment through observations and actions, with the true system state hidden" width="380" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/multiagent-modeling/media/image2.png" alt="Schematic of a POMDP: a controlling agent interacting with an environment through observations and actions, with the true system state hidden" width="440" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 While there is an extensive literature on multi-agent systems, the only formal framework addressing the identification of optimal decisions in the context of a single decision-maker and an uncertain environment is known as "partially observable Markov decision processes," popularly known as "POMDPs."
 
 While POMDPs have been very popular with the probability community, they have seen little in the way of practical applications. The underlying theory requires an intense exercise using Bayes theorem that is computationally intractable for the complex state variables that actually arise in practice. It depends on Bellman's equation for making decisions, which has its own computational challenges.
