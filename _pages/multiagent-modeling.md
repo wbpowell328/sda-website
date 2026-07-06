@@ -8,7 +8,7 @@ date: 2026-07-01
 {% raw %}
 There are countless settings involving making decisions, where it makes sense to divide the system into agents performing different functions. This is most vividly illustrated when modeling a spatially distributed supply chain where people are making decisions around the world which have to be coordinated.
 
-<img src="/sda-website/assets/images/multiagent-modeling/multiagent-supply-chain.jpg" alt="A multiagent supply chain diagram on a tan background — factories, warehouses, retailers linked by physical-flow and information-flow arrows" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" width="600" />
+<img src="/assets/images/multiagent-modeling/multiagent-supply-chain.jpg" alt="A multiagent supply chain diagram on a tan background — factories, warehouses, retailers linked by physical-flow and information-flow arrows" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" width="600" />
 
 Even the most basic sequential decision problem is best viewed as consisting of two agents: 1) the environment, which knows the ground truth about underlying process governing the evolution of systems over time, and the generators of new information, and 2) a controlling agent that makes decisions that affect the evolution of the system in some way.
 
@@ -65,7 +65,7 @@ A more subtle assumption often made in stochastic models is that the *functions*
 
 ## The POMDP formulation (section 20.3 in RLSO) {#pomdp}
 
-<img src="/sda-website/assets/images/multiagent-modeling/media/image2.png" alt="Schematic of a POMDP: a controlling agent interacting with an environment through observations and actions, with the true system state hidden" width="380" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/multiagent-modeling/media/image2.png" alt="Schematic of a POMDP: a controlling agent interacting with an environment through observations and actions, with the true system state hidden" width="380" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 While there is an extensive literature on multi-agent systems, the only formal framework addressing the identification of optimal decisions in the context of a single decision-maker and an uncertain environment is known as "partially observable Markov decision processes," popularly known as "POMDPs."
 
 While POMDPs have been very popular with the probability community, they have seen little in the way of practical applications. The underlying theory requires an intense exercise using Bayes theorem that is computationally intractable for the complex state variables that actually arise in practice. It depends on Bellman's equation for making decisions, which has its own computational challenges.
@@ -146,7 +146,7 @@ Our multiagent notation lays the foundation for a full multiagent system. In the
 
 A multiagent model is illustrated below. Each box captures the scope of a single agent which might be the manager of a single manufacturing plant, or a scientist running a lab, or a physician in the field.
 
-<img src="/sda-website/assets/images/multiagent-modeling/media/image3.png" alt="A multiagent-system schematic with several boxed agents connected by solid lines (physical/financial resource flows) and dashed lines (information flows, some going through a shared data repository)" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" width="700" />
+<img src="/assets/images/multiagent-modeling/media/image3.png" alt="A multiagent-system schematic with several boxed agents connected by solid lines (physical/financial resource flows) and dashed lines (information flows, some going through a shared data repository)" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" width="700" />
 
 The dashed lines in the figure indicate the flow of information, which may be to or from a data repository. Solid lines represent the flows of physical or financial resources.
 
@@ -258,7 +258,7 @@ This means that while the two agents are presumably working for the same company
 
 The image below describes the flow of information on each day, where the field agent is assumed to be able to see information that provides a hint about that day's demand. His request is then transmitted to the central agent who balances this request against other sources of information, including historical knowledge. The central agent then solves her own decision problem, which assumes a balanced attitude toward uncovered demand and excess inventory.
 
-<img src="/sda-website/assets/images/multiagent-modeling/media/image4.png" alt="Two-agent newsvendor daily-information-flow diagram: a field agent facing the market demand sends a request to a central allocating agent, who returns an allocation after balancing the request against other information" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" width="700" />
+<img src="/assets/images/multiagent-modeling/media/image4.png" alt="Two-agent newsvendor daily-information-flow diagram: a field agent facing the market demand sends a request to a central allocating agent, who returns an allocation after balancing the request against other information" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" width="700" />
 
 If this were a single agent problem, the field agent would ask for more than he needs, because he assesses a high penalty for unsatisfied demand. Because the central agent does not share this bias, she is typically reducing his request, and the field agent knows this, so he inflates his original request to compensate for an anticipated reduction. The central agent, of course, knows that the field agent is doing this, and compensates accordingly.
 
@@ -274,7 +274,7 @@ In other words, the behavior of one agent can (and should) recognize how the beh
 
 The beer game was developed by Jay Forrester at MIT in the 1950s and has grown into a standard exercise in supply chain management classes. It consists of at least four "echelons" where beer is moved from the factory through several states of storage and distribution before meeting the demands at a retailer.
 
-<img src="/sda-website/assets/images/multiagent-modeling/media/image7.png" alt="Beer-game schematic: four echelons from factory to retailer, with beer flowing right-to-left along the top row and order slips flowing left-to-right along the bottom row" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" width="620" />
+<img src="/assets/images/multiagent-modeling/media/image7.png" alt="Beer-game schematic: four echelons from factory to retailer, with beer flowing right-to-left along the top row and order slips flowing left-to-right along the bottom row" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" width="620" />
 
 Beer (top line) moves from right to left, usually in the form of pennies (as the game is played). The amount of beer is determined by requests that are written on slips of paper that are moved from left to right (bottom line), nicely capturing both the flows of physical goods (cases of beer) and information (the requests). The game does not model cash flows and financing.
 
