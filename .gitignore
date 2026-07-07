@@ -62,4 +62,4 @@ _pages/*.md.original
 # Warren's book source material (LaTeX + .docx) — feeds the RAG ingestion
 # script but should NOT be committed to a public repo. The .tex/.docx
 # sources are his IP. Kept locally only; backed up via Dropbox.
-Ask Prof Powell chat material/
+Chatbot knowledge base/

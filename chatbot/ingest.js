@@ -25,7 +25,7 @@ import pLimit from 'p-limit';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, '.env'), override: true });
 
-const SOURCE_ROOT = path.resolve(__dirname, '..', 'Ask Prof Powell chat material');
+const SOURCE_ROOT = path.resolve(__dirname, '..', 'Chatbot knowledge base');
 const PAGES_ROOT  = path.resolve(__dirname, '..', '_pages');
 const DB_PATH = path.join(__dirname, 'knowledge.db');
 const EMBED_MODEL = 'voyage-3';
