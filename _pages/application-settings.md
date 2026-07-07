@@ -71,7 +71,7 @@ Using an optimization model to make decisions is very familiar in operations res
 
 ## A diverse set of problems {#diverse}
 
-<img src="/assets/images/application-settings/sdp-supermarket.png" alt="Wide-angle photo of a large supermarket interior with long aisles of merchandise" width="468" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/application-settings/large-department-store.png" alt="Illustration of the interior of a large department store, with tall aisles of varied merchandise stretching into the distance" width="468" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 To imagine the vast diversity of sequential decision problems, think of the largest supermarket or retail center, and the millions of items it may carry. This is how to envision the population of sequential decision problems. Just consider all the different types of decisions, the different sources, styles and flavors of uncertainty, the variety of objective functions, and the physics that govern the evolution of physical, financial and informational resources. Our universal modeling framework can handle *any* sequential decision problem, and covers *any* method for making decisions.
 
 <br clear="all" />
