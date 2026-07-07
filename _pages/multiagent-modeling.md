@@ -14,9 +14,7 @@ Even the most basic sequential decision problem is best viewed as consisting of 
 
 All the material in this section is based on Chapter 20 of *[Reinforcement Learning and Stochastic Optimization](https://tinyurl.com/RLandSO/)*. Chapter 20 can be [downloaded here](https://tinyurl.com/RLSOchapter20/). The discussions below represent a high-level tour of this chapter.
 
-<br clear="all" />
-
-## Jump to a section
+<h2 style="clear: both; margin-top: -0.75in;">Jump to a section</h2>
 
 - [Types and capabilities of agents](#types-of-agents)
 - [From stochastic optimization to a two-agent model](#two-agent)
