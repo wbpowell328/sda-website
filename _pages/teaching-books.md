@@ -8,44 +8,12 @@ date: 2026-05-31
 {% raw %}
 ## Jump to a book
 
-- [Reinforcement Learning and Stochastic Optimization](#rlso)
-- [Sequential Decision Analytics and Modeling](#sdam)
 - [Bridging Decision Problems (monograph series)](#bridging)
+- [Sequential Decision Analytics and Modeling](#sdam)
+- [Reinforcement Learning and Stochastic Optimization](#rlso)
 - [A Modern Approach to Teaching Optimization](#mato)
 - [Optimal Learning](#optimal-learning)
 - [The Decision Factory](#decision-factory)
-
-<img src="/assets/images/teaching-books/rlso-cover.png" alt="Reinforcement Learning and Stochastic Optimization book cover" width="180" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
-
-## Reinforcement Learning and Stochastic Optimization {#rlso}
-
-W. B. Powell, *Reinforcement Learning and Stochastic Optimization: A unified framework for sequential decisions (RLSO)*, 1100 pages, John Wiley and Sons, 2022.
-
-This is a graduate-level book aimed at readers who are interested in writing their own models and algorithms. The mathematical notation provides sufficient detail to support this level of modeling. There are over 350 exercises, organized at the end of each chapter in seven categories:
-
-1. Review questions
-2. Modeling questions
-3. Computational exercises
-4. Theory questions
-5. Problem-solving questions
-6. Exercises from SDAM (see below)
-7. The "diary problem" — a question aimed at a single problem designed by the reader in chapter 1
-
-[Click here for book webpage.](/rlso/)
-
-<br clear="all" />
-
-<img src="/assets/images/teaching-books/sdam-cover.jpg" alt="Sequential Decision Analytics and Modeling book cover" width="180" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
-
-## Sequential Decision Analytics and Modeling {#sdam}
-
-W. B. Powell, *Sequential Decision Analytics and Modeling (SDAM)*, 2nd edition, Kindle and PDF, 2025.
-
-SDAM is recommended as a starting point for readers interested in an introduction to the general area of sequential decision problems. It uses a teach-by-example style. Each of the application chapters (every chapter except 1 and 7) follows the same outline: narrative, framing (metrics, decisions, uncertainties), the five elements of the universal modeling framework, a section on modeling uncertainty (typically brief), and a section suggesting policies that might be effective for making decisions.
-
-[Click here for book webpage.](/sdamodeling/)
-
-<br clear="all" />
 
 <img src="/assets/images/teaching-books/bridging-vol-i-cover.jpg" alt="Bridging Decision Problems, Volume I: Framing the Problem cover" width="180" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 
@@ -67,6 +35,38 @@ These questions are supported by a dozen different applications in chapter 2, an
 
 - **Volume II: The Universal Modeling Framework** — this volume will cover all five elements in considerable depth, representing a substantial expansion on Chapter 9 (Modeling) in RLSO. The presentation uses careful mathematical notation, which is essential for a modeling chapter. There is an in-depth section on modeling uncertainty, but it makes no attempt to describe how to make decisions — that is handled in Volume III.
 - **Volume III: Policies** — builds on the modeling framework in Volume II and covers all four classes of policies described in RLSO. The presentation is organized by presenting the policies that are most widely used first, then policies with more limited applications. In some cases policies are presented for specific problem settings, such as whether decisions are discrete or vector-valued.
+
+<br clear="all" />
+
+<img src="/assets/images/teaching-books/sdam-cover.jpg" alt="Sequential Decision Analytics and Modeling book cover" width="180" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+
+## Sequential Decision Analytics and Modeling {#sdam}
+
+W. B. Powell, *Sequential Decision Analytics and Modeling (SDAM)*, 2nd edition, Kindle and PDF, 2025.
+
+SDAM is recommended as a starting point for readers interested in an introduction to the general area of sequential decision problems. It uses a teach-by-example style. Each of the application chapters (every chapter except 1 and 7) follows the same outline: narrative, framing (metrics, decisions, uncertainties), the five elements of the universal modeling framework, a section on modeling uncertainty (typically brief), and a section suggesting policies that might be effective for making decisions.
+
+[Click here for book webpage.](/sdamodeling/)
+
+<br clear="all" />
+
+<img src="/assets/images/teaching-books/rlso-cover.png" alt="Reinforcement Learning and Stochastic Optimization book cover" width="180" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+
+## Reinforcement Learning and Stochastic Optimization {#rlso}
+
+W. B. Powell, *Reinforcement Learning and Stochastic Optimization: A unified framework for sequential decisions (RLSO)*, 1100 pages, John Wiley and Sons, 2022.
+
+This is a graduate-level book aimed at readers who are interested in writing their own models and algorithms. The mathematical notation provides sufficient detail to support this level of modeling. There are over 350 exercises, organized at the end of each chapter in seven categories:
+
+1. Review questions
+2. Modeling questions
+3. Computational exercises
+4. Theory questions
+5. Problem-solving questions
+6. Exercises from SDAM (see below)
+7. The "diary problem" — a question aimed at a single problem designed by the reader in chapter 1
+
+[Click here for book webpage.](/rlso/)
 
 <br clear="all" />
 
