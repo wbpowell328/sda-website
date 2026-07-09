@@ -10,9 +10,12 @@
   if (!mount) return;
 
   const API_URL = window.CASTLE_CHAT_API || 'http://localhost:3000/chat';
+  const UPLOAD_URL     = API_URL.replace(/\/chat(\?|$)/, '/upload$1');
+  const ATTACHMENT_URL = API_URL.replace(/\/chat(\?|$)/, '/attachment$1');
   const STORAGE_KEY = 'castle_chat_messages_v2';
   const SESSION_KEY = 'castle_chat_session_v1';
   const MARKED_CDN = 'https://cdn.jsdelivr.net/npm/marked@15/marked.min.js';
+  const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 
   // Stable per-tab session ID so the admin log can group conversations.
   function getSessionId() {
@@ -135,7 +138,7 @@
       border-color: #c9621e;
       background: #fff;
     }
-    .castle-chat-send {
+    .castle-chat-send, .castle-chat-attach {
       flex: 0 0 auto;
       width: 42px;
       background: #c9621e;
@@ -149,8 +152,57 @@
       justify-content: center;
       transition: background 0.12s;
     }
-    .castle-chat-send:hover:not(:disabled) { background: #a84d12; }
-    .castle-chat-send:disabled { opacity: 0.45; cursor: not-allowed; }
+    .castle-chat-send:hover:not(:disabled),
+    .castle-chat-attach:hover:not(:disabled) { background: #a84d12; }
+    .castle-chat-send:disabled,
+    .castle-chat-attach:disabled { opacity: 0.45; cursor: not-allowed; }
+    .castle-chat-attach {
+      background: #faf5e6;
+      color: #7a6240;
+      border: 1px solid #d8c89c;
+    }
+    .castle-chat-attach:hover:not(:disabled) {
+      background: #ede0bd;
+      color: #3d2914;
+      border-color: #c9a86b;
+    }
+    .castle-chat-attachment {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.7rem;
+      margin-top: 0.5rem;
+      background: #f4ecd4;
+      border: 1px solid #d8c89c;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: #3d2914;
+    }
+    .castle-attach-filename {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .castle-attach-clear {
+      background: none;
+      border: 0;
+      color: #8a3a1a;
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 0 0.2rem;
+      line-height: 1;
+    }
+    .castle-attach-clear:hover { color: #3d2914; }
+    .castle-attach-error {
+      margin-top: 0.5rem;
+      padding: 0.4rem 0.7rem;
+      background: #fdecec;
+      border: 1px solid #f5c2c2;
+      border-radius: 8px;
+      font-size: 0.83rem;
+      color: #8a1a1a;
+    }
 
     .castle-chat-conv {
       margin-top: 1rem;
@@ -351,8 +403,16 @@
       <form class="castle-chat-form" novalidate>
         <textarea class="castle-chat-input" rows="1"
           placeholder="Ask anything about Warren's research, books, courses, or writing..."></textarea>
+        <button type="button" class="castle-chat-attach" aria-label="Attach a PDF" title="Attach a PDF (up to 10 MB) — it stays with the conversation">📎</button>
         <button type="submit" class="castle-chat-send" aria-label="Send">↑</button>
       </form>
+      <input type="file" class="castle-chat-file-input" accept=".pdf,application/pdf" hidden />
+      <div class="castle-chat-attachment" hidden>
+        <span aria-hidden="true">📄</span>
+        <span class="castle-attach-filename"></span>
+        <button type="button" class="castle-attach-clear" aria-label="Remove attachment" title="Remove attachment">✕</button>
+      </div>
+      <div class="castle-attach-error" hidden></div>
       <div class="castle-chat-conv" hidden>
         <div class="castle-chat-conv-toolbar">
           <span class="castle-chat-conv-label">Conversation</span>
@@ -364,13 +424,19 @@
     </section>
   `;
 
-  const sugWrap     = mount.querySelector('.castle-chat-suggestions');
-  const form        = mount.querySelector('.castle-chat-form');
-  const input       = mount.querySelector('.castle-chat-input');
-  const sendBtn     = mount.querySelector('.castle-chat-send');
-  const convWrap    = mount.querySelector('.castle-chat-conv');
-  const messagesEl  = mount.querySelector('.castle-chat-messages');
-  const clearBtn    = mount.querySelector('.castle-chat-clear');
+  const sugWrap        = mount.querySelector('.castle-chat-suggestions');
+  const form           = mount.querySelector('.castle-chat-form');
+  const input          = mount.querySelector('.castle-chat-input');
+  const sendBtn        = mount.querySelector('.castle-chat-send');
+  const attachBtn      = mount.querySelector('.castle-chat-attach');
+  const fileInput      = mount.querySelector('.castle-chat-file-input');
+  const attachChip     = mount.querySelector('.castle-chat-attachment');
+  const attachName     = mount.querySelector('.castle-attach-filename');
+  const attachClearBtn = mount.querySelector('.castle-attach-clear');
+  const attachError    = mount.querySelector('.castle-attach-error');
+  const convWrap       = mount.querySelector('.castle-chat-conv');
+  const messagesEl     = mount.querySelector('.castle-chat-messages');
+  const clearBtn       = mount.querySelector('.castle-chat-clear');
 
   const INITIAL_PLACEHOLDER  = "Ask your question here";
   const FOLLOWUP_PLACEHOLDER = "Ask a follow-up — the bot remembers this conversation...";
@@ -723,6 +789,88 @@
   }
   renderAll();
 
+  // --- Attachment lifecycle ---------------------------------------------
+  function showAttachment(filename) {
+    attachName.textContent = filename;
+    attachName.title = filename;
+    attachChip.hidden = false;
+    hideAttachError();
+    attachBtn.title = 'A PDF is already attached — click to replace it';
+  }
+  function hideAttachment() {
+    attachChip.hidden = true;
+    attachName.textContent = '';
+    attachBtn.title = 'Attach a PDF (up to 10 MB) — it stays with the conversation';
+  }
+  function showAttachError(msg) {
+    attachError.textContent = msg;
+    attachError.hidden = false;
+    setTimeout(() => { attachError.hidden = true; }, 6000);
+  }
+  function hideAttachError() { attachError.hidden = true; }
+
+  async function refreshAttachmentState() {
+    try {
+      const url = ATTACHMENT_URL + (ATTACHMENT_URL.includes('?') ? '&' : '?')
+        + 'sessionId=' + encodeURIComponent(getSessionId());
+      const res = await fetch(url);
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.attached) showAttachment(data.filename);
+      else hideAttachment();
+    } catch (_) { /* server may not support attachments — ignore */ }
+  }
+  refreshAttachmentState();
+
+  attachBtn.addEventListener('click', () => {
+    hideAttachError();
+    fileInput.value = '';   // clear so re-picking the same file still fires 'change'
+    fileInput.click();
+  });
+
+  fileInput.addEventListener('change', async () => {
+    const file = fileInput.files && fileInput.files[0];
+    if (!file) return;
+    if (file.type !== 'application/pdf' && !/\.pdf$/i.test(file.name)) {
+      showAttachError('Only PDF files are supported.');
+      return;
+    }
+    if (file.size > MAX_UPLOAD_BYTES) {
+      showAttachError(`File is ${(file.size / 1024 / 1024).toFixed(1)} MB — the limit is 10 MB.`);
+      return;
+    }
+    attachBtn.disabled = true;
+    const originalLabel = attachBtn.textContent;
+    attachBtn.textContent = '…';
+    try {
+      const url = UPLOAD_URL + (UPLOAD_URL.includes('?') ? '&' : '?')
+        + 'sessionId=' + encodeURIComponent(getSessionId());
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch(url, { method: 'POST', body: fd });
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => ({}));
+        throw new Error(errBody.error || `Upload failed (${res.status})`);
+      }
+      const data = await res.json();
+      showAttachment(data.filename || file.name);
+    } catch (err) {
+      showAttachError(err.message || 'Upload failed.');
+    } finally {
+      attachBtn.disabled = false;
+      attachBtn.textContent = originalLabel;
+    }
+  });
+
+  attachClearBtn.addEventListener('click', async () => {
+    hideAttachment();
+    try {
+      const url = ATTACHMENT_URL + (ATTACHMENT_URL.includes('?') ? '&' : '?')
+        + 'sessionId=' + encodeURIComponent(getSessionId());
+      await fetch(url, { method: 'DELETE' });
+    } catch (_) { /* best-effort */ }
+  });
+
   // --- Send --------------------------------------------------------------
   let sending = false;
 
@@ -822,6 +970,15 @@
     input.style.height = Math.min(140, input.scrollHeight) + 'px';
   });
   clearBtn.addEventListener('click', () => {
+    // Best-effort: also drop any attachment tied to the current session.
+    try {
+      const url = ATTACHMENT_URL + (ATTACHMENT_URL.includes('?') ? '&' : '?')
+        + 'sessionId=' + encodeURIComponent(getSessionId());
+      fetch(url, { method: 'DELETE' }).catch(() => {});
+    } catch (_) {}
+    hideAttachment();
+    hideAttachError();
+
     messages = [];
     saveMessages();
     // Reset the session ID too — Clear starts a fresh conversation in the log.

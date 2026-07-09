@@ -7,6 +7,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import Anthropic from '@anthropic-ai/sdk';
 import rateLimit from 'express-rate-limit';
+import multer from 'multer';
 import crypto from 'node:crypto';
 import { readFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
@@ -36,6 +37,23 @@ if (!existsSync(SYSTEM_PROMPT_PATH)) {
 const RAG_ENABLED = existsSync(KNOWLEDGE_DB_PATH) && !!process.env.VOYAGE_API_KEY;
 const systemPrompt = readFileSync(SYSTEM_PROMPT_PATH, 'utf8');
 const client = new Anthropic();
+
+// ---- Session-scoped PDF attachments ---------------------------------------
+// Users can attach a PDF that stays with their conversation. Held in memory,
+// keyed by sessionId, and evicted after ATTACHMENT_TTL_MS of inactivity.
+const MAX_UPLOAD_MB = Number(process.env.MAX_UPLOAD_MB) || 10;
+const ATTACHMENT_TTL_MS = Number(process.env.ATTACHMENT_TTL_MS) || 60 * 60 * 1000; // 1h
+const attachments = new Map(); // sessionId -> { data: Buffer, filename, mediaType, uploadedAt }
+
+setInterval(() => {
+  const cutoff = Date.now() - ATTACHMENT_TTL_MS;
+  for (const [id, att] of attachments) if (att.uploadedAt < cutoff) attachments.delete(id);
+}, 5 * 60 * 1000).unref();
+
+function sanitizeSessionId(raw) {
+  if (typeof raw !== 'string') return '';
+  return raw.trim().slice(0, 64);
+}
 
 const app = express();
 // Render (and most reverse proxies) forwards client IP via X-Forwarded-For.
@@ -75,6 +93,52 @@ app.get('/health', (req, res) => {
 function safeStats() { try { return { enabled: true, ...stats() }; } catch (e) { return { enabled: false, error: e.message }; } }
 
 app.use(adminRouter);
+
+// ---- Upload / attachment endpoints ----------------------------------------
+const uploadLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: Number(process.env.UPLOAD_RATE_LIMIT) || 10,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: { error: 'Upload rate limit exceeded. Please wait an hour and try again.' },
+});
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: MAX_UPLOAD_MB * 1024 * 1024, files: 1 },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype !== 'application/pdf') return cb(new Error('Only PDF files are supported.'));
+    cb(null, true);
+  },
+});
+
+app.post('/upload', uploadLimiter, (req, res) => {
+  upload.single('file')(req, res, (err) => {
+    if (err) return res.status(400).json({ error: err.message });
+    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+    const sessionId = sanitizeSessionId(req.query.sessionId || req.body?.sessionId);
+    if (!sessionId) return res.status(400).json({ error: 'sessionId required' });
+    attachments.set(sessionId, {
+      data: req.file.buffer,
+      filename: req.file.originalname || 'document.pdf',
+      mediaType: 'application/pdf',
+      uploadedAt: Date.now(),
+    });
+    res.json({ ok: true, filename: req.file.originalname, size: req.file.size });
+  });
+});
+
+app.get('/attachment', (req, res) => {
+  const sessionId = sanitizeSessionId(req.query.sessionId);
+  const att = sessionId ? attachments.get(sessionId) : null;
+  if (!att) return res.json({ attached: false });
+  res.json({ attached: true, filename: att.filename, size: att.data.length });
+});
+
+app.delete('/attachment', (req, res) => {
+  const sessionId = sanitizeSessionId(req.query.sessionId);
+  if (sessionId) attachments.delete(sessionId);
+  res.json({ ok: true });
+});
 
 // Stream a chat completion back as Server-Sent Events.
 // Request: { messages: [{ role: "user"|"assistant", content: "..." }, ...], sessionId?: "..." }
@@ -158,6 +222,35 @@ app.post('/chat', chatLimiter, async (req, res) => {
     // Strip any non-API fields the widget attached for its own bookkeeping
     // (e.g. `citations` on assistant messages). Anthropic rejects unknown keys.
     const cleanMessages = messages.map(m => ({ role: m.role, content: m.content }));
+
+    // If this session has an attached PDF, splice it into the latest user
+    // message so Claude sees the doc as context for its answer. Cached
+    // ephemerally so quick follow-ups don't re-pay full input cost.
+    const attachment = attachments.get(sessionId);
+    if (attachment) {
+      for (let i = cleanMessages.length - 1; i >= 0; i--) {
+        if (cleanMessages[i].role === 'user') {
+          const original = cleanMessages[i].content;
+          cleanMessages[i] = {
+            role: 'user',
+            content: [
+              {
+                type: 'document',
+                source: {
+                  type: 'base64',
+                  media_type: attachment.mediaType,
+                  data: attachment.data.toString('base64'),
+                },
+                cache_control: { type: 'ephemeral' },
+              },
+              { type: 'text', text: typeof original === 'string' ? original : '' },
+            ],
+          };
+          break;
+        }
+      }
+    }
+
     const stream = client.messages.stream({
       model: MODEL,
       max_tokens: 4096,
