@@ -403,7 +403,7 @@
       <form class="castle-chat-form" novalidate>
         <textarea class="castle-chat-input" rows="1"
           placeholder="Ask anything about Warren's research, books, courses, or writing..."></textarea>
-        <button type="button" class="castle-chat-attach" aria-label="Attach a PDF" title="Attach a PDF (up to 10 MB) — it stays with the conversation">📎</button>
+        <button type="button" class="castle-chat-attach" aria-label="Attach a PDF" title="Attach a PDF (up to 10 MB) — it stays with the conversation">+</button>
         <button type="submit" class="castle-chat-send" aria-label="Send">↑</button>
       </form>
       <input type="file" class="castle-chat-file-input" accept=".pdf,application/pdf" hidden />
