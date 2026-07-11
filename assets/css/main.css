@@ -513,7 +513,9 @@ img, video { max-width: 100%; height: auto; display: block; }
   .featured-img img { min-height: 160px; max-height: 180px; }
   .card-grid { grid-template-columns: repeat(2, 1fr); }
   .two-up { grid-template-columns: 1fr; }
-  .topnav { width: 100%; gap: 1rem; flex-wrap: wrap; }
+  /* Hide the horizontal top nav on mobile — the hamburger already exposes
+     these same section links (and more) through the sidebar. */
+  .topnav { display: none; }
 }
 /* Below ~700px, un-float inline images so text doesn't get squeezed into a
    thin column beside them. Uses !important because pages set inline styles
