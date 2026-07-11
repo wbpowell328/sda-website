@@ -63,6 +63,9 @@
       <a href="{{ '/' | relative_url }}" class="brand">Sequential Decision Analytics</a>
       <span class="brand-sub">Warren B. Powell &middot; Princeton University</span>
     </div>
+    <button type="button" class="sidebar-toggle" aria-controls="site-sidebar" aria-expanded="false" aria-label="Open menu">
+      <span aria-hidden="true">☰</span> Menu
+    </button>
     <nav class="topnav" aria-label="Primary">
       {% for section in site.data.nav %}
         <a href="{{ section.items[0].url | relative_url }}">{{ section.section }}</a>
@@ -72,7 +75,7 @@
 </header>
 
 <div class="layout">
-  <nav class="sidebar" aria-label="Site navigation">
+  <nav class="sidebar" id="site-sidebar" aria-label="Site navigation">
     {%- comment -%}
       First pass: find the section whose items contain the current page URL.
       We use the *first* match (guard with `current_section == nil`) so that
@@ -147,6 +150,29 @@
   <p>&copy; {{ site.time | date: "%Y" }} {{ site.author }} &middot;
     <a href="https://www.linkedin.com/in/warrenbpowell" target="_blank" rel="noopener noreferrer">Contact me on LinkedIn</a></p>
 </footer>
+
+<!-- Mobile sidebar toggle. No-op on desktop where the button is hidden. -->
+<script>
+  (function () {
+    var btn = document.querySelector('.sidebar-toggle');
+    var sidebar = document.getElementById('site-sidebar');
+    if (!btn || !sidebar) return;
+    btn.addEventListener('click', function () {
+      var open = sidebar.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    });
+    // Close after tapping any nav link — otherwise the sidebar hangs open
+    // over the newly-loaded page (SPA-like feel on plain hyperlinks).
+    sidebar.addEventListener('click', function (e) {
+      var a = e.target.closest('a');
+      if (!a) return;
+      sidebar.classList.remove('is-open');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.setAttribute('aria-label', 'Open menu');
+    });
+  })();
+</script>
 
 <!-- Chat widget — activates on pages that include a #castle-chat-inline
      mount point. On localhost it talks to the local Node proxy
