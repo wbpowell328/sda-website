@@ -532,4 +532,12 @@ img, video { max-width: 100%; height: auto; display: block; }
   .card-grid { grid-template-columns: 1fr; }
   .featured-body { padding: 0.9rem 1rem; }
   .featured-body h2 { font-size: 1.2rem; }
+  /* Phone-only: halve inline images so they don't dominate the screen.
+     Repeats the [align] selectors so the specificity beats the 700-px un-float
+     rule above (both use !important; last-declared wins at equal specificity). */
+  .content img,
+  .content img[align="right"],
+  .content img[align="left"] {
+    max-width: 50% !important;
+  }
 }
