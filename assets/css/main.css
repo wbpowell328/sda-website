@@ -513,9 +513,7 @@ img, video { max-width: 100%; height: auto; display: block; }
   .featured-img img { min-height: 160px; max-height: 180px; }
   .card-grid { grid-template-columns: repeat(2, 1fr); }
   .two-up { grid-template-columns: 1fr; }
-  /* Hide the horizontal top nav on mobile — the hamburger already exposes
-     these same section links (and more) through the sidebar. */
-  .topnav { display: none; }
+  .topnav { width: 100%; gap: 1rem; flex-wrap: wrap; }
 }
 /* Below ~700px, un-float inline images so text doesn't get squeezed into a
    thin column beside them. Uses !important because pages set inline styles
@@ -534,4 +532,7 @@ img, video { max-width: 100%; height: auto; display: block; }
   .card-grid { grid-template-columns: 1fr; }
   .featured-body { padding: 0.9rem 1rem; }
   .featured-body h2 { font-size: 1.2rem; }
+  /* Phones only: hide the horizontal topnav — the hamburger already covers
+     the same section links. iPad and larger keep the topnav visible. */
+  .topnav { display: none; }
 }
