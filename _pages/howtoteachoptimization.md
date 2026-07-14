@@ -26,7 +26,7 @@ Do you have different ideas, or anything you might add to this?  Email me at wb
 
 ## Some initial thoughts
 
-1.  By far the most common (I would say universal) decision problem involves making the best choice from a set of discrete alternatives.  There may be just two choices (to act or not, A/B testing), a small set of discrete choices (say 10 to 100), or many thousands of choices (types of drugs or molecules, discretized sets of parameters).  What makes these problems hard (once the set of choices is known) is that the performance of each choice is uncertain. ![](https://castle.princeton.edu/wp-content/uploads/2026/01/Discrete-choices-uncertainty-1024x438.jpg)
+1.  By far the most common (I would say universal) decision problem involves making the best choice from a set of discrete alternatives.  There may be just two choices (to act or not, A/B testing), a small set of discrete choices (say 10 to 100), or many thousands of choices (types of drugs or molecules, discretized sets of parameters).  What makes these problems hard (once the set of choices is known) is that the performance of each choice is uncertain. ![Diagram illustrating discrete choices under uncertainty — a set of alternative options each with an unknown reward distribution](/assets/images/howtoteachoptimization/discrete-choices-uncertainty.jpg)
 2.  The next class of "hard" decision problems are deterministic, and where decisions are vectors, such as the assignment of a set of resources (people, machines) to a set of tasks (jobs, loads to be moved).  These may be linear, integer, and/or nonlinear.  We tend to spend far too much time describing algorithms to solve these problems, despite the presence of widely available packages that we can use, often available in Excel, as python modules, or as commercially available packages.  By contrast, we spend far too little time teaching students how to use these tools properly.  For example, many (most? almost all?) deterministic optimization problems are solved repeatedly over time, which means they are sequential decision problems.  This means a decision now has to be made without knowing information that will arrive after we make the decision, which may impact how a decision performs in the future. 
 3.  We enjoy teaching very advanced, graduate-level courses in stochastic optimization for making decisions under uncertainty, ignoring the reality that the vast majority of these problems are solved in practice using deterministic optimization tools. As a result, we avoid teaching how to handle uncertainty in our introductory courses, ignoring the reality that *everyone* makes decisions, and *everyone* has to deal with uncertainty.
 
@@ -62,13 +62,13 @@ Of particular importance to students in a problem domain such as business, engin
 2.  What types of decisions are being made (and who makes them)?
 3.  What are the sources of uncertainty?
 
-![](https://castle.princeton.edu/wp-content/uploads/2025/12/Bridging-Vol-I-cover-202x300.jpg)This material is covered in a short monograph that is [available on Kindle here](https://tinyurl.com/PowellFramingAmazon/). For a peek into the issues covered here, see the [webpage on "What is a decision" here](https://tinyurl.com/whatisadecision/).  
+![Cover of Bridging Decision Problems, Volume I: Framing the Problem](/assets/images/teaching-books/bridging-vol-i-cover.jpg)This material is covered in a short monograph that is [available on Kindle here](https://tinyurl.com/PowellFramingAmazon/). For a peek into the issues covered here, see the [webpage on "What is a decision" here](https://tinyurl.com/whatisadecision/).  
 
 While this material seems more basic that the topics in my optimization course above, the lack of any mathematics can be deceptive: identifying metrics, decisions and uncertainties requires a level of maturity in a problem context.
 
 ## A Modern Approach to Teaching Optimization (2024)
 
-![](https://castle.princeton.edu/wp-content/uploads/2026/01/MATO_FrontCover-197x300.jpg)In 2024 I wrote a short book for instructions in reaction to people teaching introductory optimization courses by starting with linear programming and the simplex algorithm.  [The pdf can be downloaded here.](https://tinyurl.com/TeachingOpt/)
+![Cover of A Modern Approach to Teaching Optimization by Warren B. Powell](/assets/images/teaching-books/mato-cover.jpg)In 2024 I wrote a short book for instructions in reaction to people teaching introductory optimization courses by starting with linear programming and the simplex algorithm.  [The pdf can be downloaded here.](https://tinyurl.com/TeachingOpt/)
 
 MATO is written for instructors teaching an introductory course for undergraduates or masters.  It suggests 11 topics, starting with regression (where you optimize parameters), then progresses through five topics addressing simple, sequential decision problems that any student would recognize.
 

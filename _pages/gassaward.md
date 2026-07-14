@@ -21,5 +21,5 @@ Prize Committee Chair
 Radhika Kulkarni
 2022 INFORMS President
 
-[Click here to download the announcement](https://castle.princeton.edu/wp-content/uploads/2022/09/Saul_Gass_Expository_Writing_Award.pdf)
+[Click here to download the announcement](/assets/papers/saul-gass-expository-writing-award.pdf)
 {% endraw %}
