@@ -123,7 +123,7 @@ I was surprised to learn that there are very few efforts to define "decision." T
 
 There is also a substantial literature that focuses on how people make decisions, where the set of decisions is typically a simple set of discrete alternatives, but where the performance of each alternative is uncertain.  
 
-<img src="https://castle.princeton.edu/wp-content/uploads/2026/04/Eilon-What-is-a-decision-Top-Smaller-1.jpg" alt="Top of Samuel Eilon's 1969 Management Science paper titled 'What Is a Decision'" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" />
+<img src="/assets/images/decisionsdecisions/eilon-what-is-a-decision.jpg" alt="Top of Samuel Eilon's 1969 Management Science paper titled 'What Is a Decision'" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" />
 
 [A 1969 paper in the prestigious journal *Management Science* by Samuel Eilon was titled "What Is a Decision" which opens with the line](https://tinyurl.com/EilonWhatIsADecision/):  
 
@@ -145,17 +145,17 @@ The only community that seems to consistently offer a formal definition is decis
 
 Note that in this version, he includes the requirement that there be a "choice between two or more alternatives" which was missing from his first version, but consistent with Ofstad's characterization.
 
-<img src="https://castle.princeton.edu/wp-content/uploads/2026/03/Howard-What-is-a-decision.jpg" alt="Scan of Ron Howard's 2015 definition of a decision from 'Foundations of Decision Analysis'" style="display: block; margin: 1rem auto; max-width: 85%; height: auto;" />
+<img src="/assets/images/decisionsdecisions/howard-what-is-a-decision.jpg" alt="Scan of Ron Howard's 2015 definition of a decision from 'Foundations of Decision Analysis'" style="display: block; margin: 1rem auto; max-width: 85%; height: auto;" />
 
 The paragraph below the definition explains his reasoning, in particular his use of "irrevocable."  What he is trying to do is to exclude someone "thinking about" a choice, but this has the effect of excluding any form of planning.
 
 In *Handbook of Decision Analysis (2nd edition),* Parnell et al. adopted Howard's definition where they state: 
 
-<img src="https://castle.princeton.edu/wp-content/uploads/2025/10/ParnellDecisionDefined.jpg" alt="Parnell et al.'s definition of a decision from Handbook of Decision Analysis, 2nd edition" style="display: block; margin: 1rem auto; max-width: 85%; height: auto;" />
+<img src="/assets/images/decisionsdecisions/parnell-decision-defined.jpg" alt="Parnell et al.'s definition of a decision from Handbook of Decision Analysis, 2nd edition" style="display: block; margin: 1rem auto; max-width: 85%; height: auto;" />
 
 David Skinner, in his elegant book *Introduction to Decision Analysis (3rd edition)*, uses the definition: 
 
-<img src="https://castle.princeton.edu/wp-content/uploads/2025/10/SkinnerDecisiondefined-1.jpg" alt="David Skinner's definition of a decision from Introduction to Decision Analysis, 3rd edition" style="display: block; margin: 1rem auto; max-width: 85%; height: auto;" />
+<img src="/assets/images/decisionsdecisions/skinner-decision-defined.jpg" alt="David Skinner's definition of a decision from Introduction to Decision Analysis, 3rd edition" style="display: block; margin: 1rem auto; max-width: 85%; height: auto;" />
 
 Note that this version excludes both "irrevocable" or any mention of having a choice among a set of alternatives.  So, after Google Maps decides on a path (where multiple paths are considered), Skinner's definition would apply to the driver who is simply following the recommended path.
 
@@ -163,7 +163,7 @@ Howard's definition seems to exclude a linear program, which is choosing an opti
 
 Yet another definition comes from Joannes Vermorel, the CEO of Lokad, a provider of software for supply chain management, who wrote a very thoughtful book "Introduction to Supply Chain" which contains the definition (in Chapter 8 - Decisions):
 
-<img src="https://castle.princeton.edu/wp-content/uploads/2026/04/Definition-Intro-to-supply-chain.jpg" alt="Joannes Vermorel's definition of a decision from 'Introduction to Supply Chain'" style="display: block; margin: 1rem auto; max-width: 85%; height: auto;" />
+<img src="/assets/images/decisionsdecisions/vermorel-definition.jpg" alt="Joannes Vermorel's definition of a decision from 'Introduction to Supply Chain'" style="display: block; margin: 1rem auto; max-width: 85%; height: auto;" />
 
 We can go back to Aristotle (\~350 BCE), for whom a *decision* *is a **deliberate choice of action made through reasoning, aimed at achieving a good or virtuous end.*** Typical of the early philosophers up through modern decision scientists in psychology (such as Kahneman - see below), this description focuses on how to make a decision and how to evaluate it, but avoids the question of identifying what decisions are available to be made.
 
@@ -181,7 +181,7 @@ Below I illustrate a time when I was invited to tour an Amazon fulfillment facil
 
 I like to emphasize that improving any process starts in English.
 
-<img src="https://castle.princeton.edu/wp-content/uploads/2025/10/ProblemsToDecisions.jpg" alt="A diagram or photo illustrating how observing a process — people, machines, conveyors, inventory in a fulfillment facility — translates into identifying decisions that can be improved" style="display: block; margin: 1rem auto; max-width: 80%; height: auto;" />
+<img src="/assets/images/decisionsdecisions/problems-to-decisions.jpg" alt="A diagram or photo illustrating how observing a process — people, machines, conveyors, inventory in a fulfillment facility — translates into identifying decisions that can be improved" style="display: block; margin: 1rem auto; max-width: 80%; height: auto;" />
 
 ## How do we make decisions? {#how-do-we-make-decisions}
 
@@ -222,7 +222,7 @@ There are entire communities that focus on a specific class of policies, as occu
 
 ## The psychology of decision making {#psychology}
 
-<img src="https://castle.princeton.edu/wp-content/uploads/2025/10/KahnemanThinkingFastandSlow-212x300.jpg" alt="Cover of Daniel Kahneman's book 'Thinking, Fast and Slow' — a sketch of two figures with the title set in stencil-style type" width="220" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/decisionsdecisions/kahneman-thinking-fast-and-slow.jpg" alt="Cover of Daniel Kahneman's book 'Thinking, Fast and Slow' — a sketch of two figures with the title set in stencil-style type" width="220" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 There is an extensive literature on how people make decisions.  Easily the leading voices in this literature are Daniel Kahneman, former Princeton professor and Nobel prize-winning author, with over 500,000 citations, and his frequent coauthor, Amos Tversky.  Kahneman's work focused on *how* people make decisions, especially in the handling of uncertainty.  His highly cited book book, *Thinking Fast and Slow* explored how different regions of the brain would handle the tasks associated with decision-making.
 
 So it was to my considerable surprise that nowhere in his extensive writings does it appear that he ever actually defined a decision.  Implicit in his discussions is the assumption that decisions are discrete alternatives, where the goal would be to choose what is "best" from a set of discrete alternatives.  For example, none of his work would help with problems such as choosing the best assignment of 100 resources to 100 tasks, optimizing thousands (or billions) of parameters in a statistical model, or choosing the best *policy* for making decisions.
@@ -299,7 +299,7 @@ I have been compiling a list of "great thinkers" in the area of decision-making.
 7.  Howard Raiffa (1960s) -- Who, with Ron Howard, introduced and developed the field of decision analysis.  
 8.  Daniel Kahneman (1970s) -- Winner of the Nobel prize in economics, Kahneman was renowned for his work, often with his perennial coauthor Amos Tversky, on human judgment and decision-making under uncertainty.
 
-<img src="https://castle.princeton.edu/wp-content/uploads/2025/10/AristotletoKahneman.jpg" alt="A panel of portraits or headshots of the eight great thinkers: Aristotle, William Hamilton, John von Neumann, Herbert Simon, George Dantzig, Richard Bellman, Howard Raiffa, and Daniel Kahneman" style="display: block; margin: 1rem auto; max-width: 85%; height: auto;" />
+<img src="/assets/images/decisionsdecisions/aristotle-to-kahneman.jpg" alt="A panel of portraits or headshots of the eight great thinkers: Aristotle, William Hamilton, John von Neumann, Herbert Simon, George Dantzig, Richard Bellman, Howard Raiffa, and Daniel Kahneman" style="display: block; margin: 1rem auto; max-width: 85%; height: auto;" />
 
 What is surprising is my realization that none of these people ever *defined* a decision, although a notable exception is the definition by Ron Howard (described at the top of this page) who played a central role (along with Howard Raiffa) in the development of decision analysis.  What I did was to look at the *types* of decisions each considered in their work - it is very revealing in terms of what they seem to think of a decision:
 
