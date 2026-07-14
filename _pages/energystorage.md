@@ -8,7 +8,7 @@ date: 2026-06-04
 {% raw %}
 Energy storage is both disarmingly simple and astonishingly rich. This page summarizes my research into models and algorithms for controlling a wide array of energy storage problems. "Energy storage" is a form of inventory problem, and has taught me quite a bit about complex supply chain problems.
 
-Primary emphasis is on the control strategy, where I have found that, depending on the specific characteristics of the problem, you will need all [four classes of policies](/jungle/):
+Primary emphasis is on the control strategy, where I have found that, depending on the specific characteristics of the problem, you will need all [four classes of policies](/policies/#four-classes):
 
 - **Policy function approximations (PFAs)** — analytical functions that map state to action. Examples include: buy at low grid prices, sell at high prices; linear or nonlinear functions; or neural networks (a high-dimensional nonlinear function).
 - **Cost function approximations (CFAs)** — parameterized optimization models, largely overlooked in the academic literature.
@@ -40,7 +40,7 @@ This page is organized under the following headings:
 - [**Optimal energy investments including storage**](#energy-investments) — strategic planning with parameterized policy search.
 - [**Demonstrating that all four classes of policies may work best for energy storage**](#four-classes-demonstrated) — five storage problems, each best solved by a different class.
 
-The first paper below is a tutorial article on the universal framework with an introduction to the four classes of policies (see the video at the top of [the jungle page](/jungle/) for a quick introduction). More important is that it describes how to properly model a variety of energy storage problems as sequential decision problems, with care given to the representation of the state variable (something that is often overlooked in the literature). I recommend this paper as a starting point.
+The first paper below is a tutorial article on the universal framework with an introduction to the [four classes of policies](/policies/#four-classes). More important is that it describes how to properly model a variety of energy storage problems as sequential decision problems, with care given to the representation of the state variable (something that is often overlooked in the literature). I recommend this paper as a starting point.
 
 ## Tutorial: modeling energy storage problems {#tutorial-modeling}
 
