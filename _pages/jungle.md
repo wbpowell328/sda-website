@@ -12,10 +12,6 @@ Some highlights:
 
 - New! I have created [a webpage summarizing a field that I am calling "sequential decision analytics"](/sda/).  See the[ video introduction to sequential decision analytics](https://www.youtube.com/watch?v=qAbDgXZkRmY).
 
-- For an introduction to the unified framework: I revised and re-recorded a tutorial on the unified framework that I gave at the Kellogg School of Business at Northwestern (February 2020).  It is now on YouTube in two parts:
-  - [Part I - Describes applications, the universal modeling framework, and introduces the four classes of policies for making decisions in the context of pure learning problems (derivative free stochastic search, also known as bandit problems).](http://tinyurl.com/unifiedframeworktutorialpartI) Slides to Part I.
-  - [Part II - Here I illustrate the four classes of policies in the context of more general state-dependent problems.  I then briefly illustrate how these ideas are used at Optimal Dynamics.](http://tinyurl.com/unifiedframeworktutorialpartII) Slides to Part II.
-
 - Scroll down to "Educational materials" for more material.
 
 - Scroll down to "Talks and videos" for other presentations. 
@@ -54,36 +50,13 @@ All of the material below, including the material for the graduate course, is wr
   - There is also a graduate level course that I taught at Princeton: ORF 544 -  *Stochastic Optimization and Learning.* Additional materials are:
     - - The [webpage for the ORF 544 course, complete with all lecture notes in PowerPoint](/orf-544/).
     - A book (in progress) written entirely around this framework can be accessed at [Reinforcement Learning and Stochastic Optimization: A unified framework for sequential decisions](/rlso/)  (this is being continually updated) - This is a book (in progress \~700 pages) that is designed entirely around the unified framework. This book was used in a graduate course on stochastic optimization.  Cite this reference as: Warren B. Powell, *Reinforcement Learning and Stochastic Optimization and Learning: A Unified Framework*, Department of Operations Research and Financial Engineering, Princeton University, 2019. 
-  - A very short presentation illustrating the jungle of stochastic optimization (updated April 12, 2019).  The last slide shows the evolution of seven major communities from their origin using one of the four classes of policies, to where they stand now (using two, three or often all four classes of policies.
+  - [A very short presentation illustrating the jungle of stochastic optimization](/assets/slides/jungle-of-stochastic-optimization-april-2019.pptx) (updated April 12, 2019).  The last slide shows the evolution of seven major communities from their origin using one of the four classes of policies, to where they stand now (using two, three or often all four classes of policies.
 
 **Talks and videos:**
 
 - - I am now posting videos on youtube under the channel for [Optimal Dynamics](http://tinyurl.com/optimaldynamicsyoutube).
 
   - Youtube video of talk given for REFASHIOND Ventures on sequential decision analytics, with examples from supply chain management.
-
-  - 90 minute presentation at Northwestern Kellogg School of Business, Feb 19, 2020.  This is my latest "unified framework" talk.  For the first time, I illustrated the four classes of policies using two broad problem classes: pure learning problems ("state-independent problems") and the more complex "state-dependent problems." [A video of the talk.](https://kellogg-northwestern.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=0f40c081-ead9-42e5-8f1c-ab6000d766c0)
-
-  - I gave a 2-day workshop on the unified framework at the Olin Business School at Washington University in St. Louis Nov 5-6, 2019.  [2-day workshop Syllabus](https://tinyurl.com/twodaytutorialsyllabus). The powerpoint slides are below:
-    - 1. Introduction
-    - 2. Modeling, state variables
-    - 3. Modeling energy storage, uncertainty
-    - 4. Designing policies
-    - 5. Belief models, sequential learning
-    - 6. Active learning
-    - 7. Policies for active learning
-    - 8. Policy search (derivative-based and derivative-free)
-    - 9. Mixed learning-resource allocation
-    - 10. High dimensional ADP for resource allocation
-    - 11. Stochastic lookahead policies
-    - 12. Supply chain management
-    - 13. The modeling process
-    - 14. Guidelines for choosing policies
-    - 15. Reading materials
-
-  - My 90 minute tutorial at Informs  (powerpoint) ([pdf](/assets/papers/powell-unified-framework-informs-seattle-2019.pdf)).  [The recording I made of my INFORMS talk](https://photos.app.goo.gl/NP9sR9KBwmY8QLeU8).  If you attended the talk, [please provide feedback here](http://tinyurl.com/unifiedframeworkcomments)
-
-&nbsp;
 
 - [See the list of past and pending talks.](https://tinyurl.com/unifiedframework)  [If you are interested in me giving a talk at your school or company, send me an email](mailto:wbpowell328@gmail.com).
 
