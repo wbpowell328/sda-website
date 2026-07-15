@@ -40,7 +40,7 @@ The next stop is a big one. It is called **[Decisions, decisions](/decisionsdeci
 
 **[What is a decision](/decisionsdecisions/#what-is-a-decision)**
 
-Next visit the second section which lists different types of decision settings. This section lists nine types of decision settings. The point of this list is to help with the process of identifying decisions:
+There is a tendency to use relatively simple examples of decisions (what path, what move, how much to order, what price). In fact, the range of decisions is quite rich. We list nine types of decision settings to illustrate the range of decision types. Be sure to look at the table in the section that follows, [From applications to decision types](/decisionsdecisions/#from-apps-to-types), for examples of decision types in a number of problem domains.
 
 **[Types of decision settings](/decisionsdecisions/#types-of-decision-settings)**
 
