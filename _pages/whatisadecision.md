@@ -16,10 +16,12 @@ After a career in traditional academic research on models and algorithms for mak
 - [What is a decision?](#what-is-a-decision)
 - [Types of decision settings (very important!)](#types-of-decision-settings)
 - [From applications to decision types](#from-apps-to-types)
-- [Some features of decisions](#some-features-of-decisions):
+- [Some perspectives of decisions](#some-features-of-decisions):
   - [Flavors of decisions](#flavors)
   - [Timing](#timing)
   - [Different words for "decision"](#different-words)
+  - [Making a decision](#making-a-decision)
+  - [Decisions vs. commitments](#decisions-vs-commitments)
 - [History of defining decisions](#history-of-defining-decisions)
 - [What decisions do we need to make?](#what-decisions-to-make)
 - [How do we make decisions?](#how-do-we-make-decisions)
@@ -256,13 +258,13 @@ In this section, we illustrate how we envision applying the list of decision typ
 
 The idea of the nine types of decisions is to provide a guide to think outside the box of the most familiar decisions. In practice, you are not going to subject each of these decisions to formal analysis, which is why the ninth type, "Deciding what to decide," remains a completely subjective choice.
 
-## Some features of decisions {#some-features-of-decisions}
+## Some perspectives of decisions {#some-features-of-decisions}
 
 Here we provide some additional features of decisions:
 
-a.  Flavors of decision variables.
-b.  Timing of when decisions are made and implemented.
-c.  Different words for "decision"
+- Flavors of decision variables.
+- Timing of when decisions are made and implemented.
+- Different words for "decision".
 
 ### Flavors of decision variables {#flavors}
 
@@ -301,6 +303,46 @@ Given that decisions are a universal human activity, it should not be surprising
 - Trade (finance)
 - Treatment (medical, decoration)
 - Vote (expressing a choice of candidates)
+
+### Making a decision {#making-a-decision}
+
+I learned that there is no consensus as to what is meant by "Making a decision." For example, imagine we compile a dataset of patient attributes and their symptoms, along with the treatment decisions made by physicians, and use this dataset to train a neural network. If we then use the neural network to recommend a treatment for a new patient, can we say the neural network is "making a decision"?
+
+The question produced dozens of thoughtful answers, but no consensus.
+
+My answer? Yes, the neural network *is* making a decision.
+
+Rationale: A decision is being made any time there is a set of choices (discrete or continuous, scalar or vector-valued), and we recommend a particular choice. It does not matter what method is being used, and while there is typically a performance metric that we are trying to optimize, there is no requirement that the decision be optimal in any way.
+
+Discussion:
+
+The following illustration helps identify a central feature of a decision. Consider the following two settings:
+
+1. Estimating demand $$D_{t}$$ as a function of price $$p_{t}$$:
+
+    $$D_{t} = \theta_{0}^{D} - \theta_{1}^{D}p_{t}$$
+
+    This is a simple linear model, where we might use a dataset of past demands and prices to find the values of $$\theta^{D} = (\theta_{0}^{D}, \theta_{1}^{D})$$ that produce the best fit (although this does not matter). We quickly recognize this as an exercise in machine learning.
+
+2. Placing an order $$x_{t}$$ as a function of the current inventory $$R_{t}$$:
+
+    $$x_{t} = \theta_{0}^{x} - \theta_{1}^{x}R_{t}$$
+
+    This equation represents a way of making an inventory ordering decision (a way of "making a decision"), while the first equation is a way of estimating demand as a function of price (a machine learning problem).
+
+The difference between the two settings is that in the first, $$D_{t}$$ is determined by the market while in the second, we have the responsibility of choosing the order quantity $$x_{t}$$.
+
+Now imagine we are trying to determine how many items to purchase, $$D_{t}$$, when the market price is $$p_{t}$$. In this case, the first equation becomes a policy for making the decision $$D_{t}$$ which we now control.
+
+Any function $$f(x)$$ can be viewed as a policy if it is our responsibility to determine $$x$$. If we control $$x$$, then the function is "making a decision." It all boils down to who controls the variable.
+
+### Decisions vs. commitments {#decisions-vs-commitments}
+
+There are many who equate "decisions" (or "making decisions") with some sort of commitment that they will be implemented. For example, Ron Howard's 1966 definition of a decision as an "irrevocable allocation of resources" implies a commitment that a decision will be implemented.
+
+I disagree.
+
+Whenever a computer is used to plan/optimize decisions, there can never be a requirement or expectation of how the optimized solution will be used. We might be planning into the future or simulating decisions for a strategic study, or making a recommendation that a human then ignores.
 
 ## **History of defining decisions** {#history-of-defining-decisions}
 
