@@ -92,7 +92,7 @@ In this section, we illustrate how we envision applying the list of decision typ
       <th>4. Information sharing / dissemination</th>
       <th>5. Functions</th>
       <th>6. Parameters</th>
-      <th>7. Labeling/identification/estimation</th>
+      <th>7. Labeling /<br>identification /<br>estimation</th>
       <th>8. Features / behaviors</th>
       <th>9. Deciding what to decide</th>
     </tr>
