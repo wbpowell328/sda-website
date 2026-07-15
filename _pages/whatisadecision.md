@@ -70,7 +70,191 @@ Decisions arise in a variety of settings.  Communities that study the science o
 
 There is an inevitable overlap between the different types of decisions.  We may decide to send a truck from one location to another (a physical decision, type 1), which gives us an observation of the travel time (an information decision, type 3), which we use to update our estimate of travel times.  
 
-If you think of a type of decision that does not seem to fit in these types, email me at wbpowell328@gmail.com. 
+If you think of a type of decision that does not seem to fit in these types, email me at wbpowell328@gmail.com.
+
+## From applications to decision types {#from-apps-to-types}
+
+The list of types of decisions above, while not directly involving any analytics, are analytically motivated, and are unlikely to be immediately obvious from domain experts.
+
+In this section, we illustrate how we envision applying the list of decision types by creating a matrix, where each row is an application setting, followed by nine columns, one for each decision type. In the cell corresponding to the application setting and decision type, we list some examples of decisions that fall in the appropriate decision type which are relevant to the application setting:
+
+<div style="overflow-x: auto; margin: 1rem 0;">
+<table class="apps-vs-types">
+  <thead>
+    <tr>
+      <th rowspan="2" style="min-width: 8rem;">Application domain</th>
+      <th colspan="9" style="text-align: center;">Decision types</th>
+    </tr>
+    <tr>
+      <th>1. Resource allocation</th>
+      <th>2. Strategic decisions</th>
+      <th>3. Information collection</th>
+      <th>4. Information sharing / dissemination</th>
+      <th>5. Functions</th>
+      <th>6. Parameters</th>
+      <th>7. Labeling / identification</th>
+      <th>8. Features / behaviors</th>
+      <th>9. Deciding what to decide</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Corporate finance</th>
+      <td>Investment in facilities, bonds, loans</td>
+      <td>Purchasing new companies</td>
+      <td>New product launches</td>
+      <td>Marketing strategies, social media</td>
+      <td>Contract terms, uncertainty modeling, risk evaluation</td>
+      <td>Pricing, risk tolerance</td>
+      <td>Estimating future interest rates, likelihood of policy changes</td>
+      <td>Product features, contract terms</td>
+      <td>Deciding what to decide</td>
+    </tr>
+    <tr>
+      <th>Financial management</th>
+      <td>Portfolio optimization</td>
+      <td>Major real estate investment, major private equity investment</td>
+      <td>Hiring a new portfolio manager, researching new technology</td>
+      <td>Selling to investors, managing signals sent to market</td>
+      <td>Choice of portfolio optimization model</td>
+      <td>Tuning parameters of portfolio model</td>
+      <td>Estimating future returns, change in price of oil</td>
+      <td>Mix of financial investments</td>
+      <td>Deciding what to decide</td>
+    </tr>
+    <tr>
+      <th>Drug development</th>
+      <td>Which drugs to research / send to clinical trials</td>
+      <td>Launching new research initiative, launching drug into new market</td>
+      <td>Laboratory experiments, Phase I trial, market surveys</td>
+      <td>Communication with physicians, marketing to public</td>
+      <td>Design of drug portfolio optimization model</td>
+      <td>Parameters of portfolio optimization model; drug prices</td>
+      <td>Estimating future drug efficacy, competitive response</td>
+      <td>Drug characteristics; pill vs. injection; frequency</td>
+      <td>Deciding what to decide</td>
+    </tr>
+    <tr>
+      <th>Medical decision making</th>
+      <td>Spending limits on drugs</td>
+      <td>Amputation? Transplant? Chemo vs. radiation? Abortion?</td>
+      <td>What tests to run, trying a treatment or medication</td>
+      <td>What to share with patient; patient instructions</td>
+      <td>Policy to use for testing treatments</td>
+      <td>Dosages, policy parameters</td>
+      <td>Diagnosing a patient</td>
+      <td>Features of drug / side effects</td>
+      <td>Deciding what to decide</td>
+    </tr>
+    <tr>
+      <th>Public health</th>
+      <td>Funding, vaccine allocations</td>
+      <td>Requiring COVID masks, launching insurance program</td>
+      <td>Testing for COVID, sampling sewage, testing for deer ticks</td>
+      <td>Public information, instructions to physicians, drug labels</td>
+      <td>Utility function for allocating vaccines, model of patient response to dosage</td>
+      <td>Age limits for vaccination</td>
+      <td>Predicting next year's flu</td>
+      <td>Behavioral changes required of patient (diet, exercise, medications)</td>
+      <td>Deciding what to decide</td>
+    </tr>
+    <tr>
+      <th>Supply chain management</th>
+      <td>Allocating inventories, manufacturing capacity</td>
+      <td>Asian vs. domestic suppliers; materials required by product design</td>
+      <td>Hiring product-tracking firm, inventory-sensing technology</td>
+      <td>Web interface for database, product advertising</td>
+      <td>Forecasting methods, inventory replenishment policy</td>
+      <td>Forecasting parameters, inventory policy parameters</td>
+      <td>Economic forecasting, competitor behavior</td>
+      <td>Purchasing contracts, labor contracts</td>
+      <td>Deciding what to decide</td>
+    </tr>
+    <tr>
+      <th>Truckload fleet management</th>
+      <td>Assigning drivers to loads</td>
+      <td>Purchasing fleet of flatbeds</td>
+      <td>Testing out new traffic lanes</td>
+      <td>Load solicitation queries; driver ads</td>
+      <td>Load acceptance policies</td>
+      <td>Pricing, fleet size</td>
+      <td>Estimating future spot prices</td>
+      <td>Contract terms with shippers</td>
+      <td>Deciding what to decide</td>
+    </tr>
+    <tr>
+      <th>Power grid management</th>
+      <td>Generation capacity, which generators to run</td>
+      <td>Major investments in generation and transmission capacity</td>
+      <td>Testing new storage technologies</td>
+      <td>Marketing campaigns to encourage conservation</td>
+      <td>Design of unit commitment models</td>
+      <td>Tuning limits on voltage fluctuations, parameters in unit commitment models</td>
+      <td>Forecasting power demand tomorrow</td>
+      <td>Terms of contracts for energy capacity markets</td>
+      <td>Deciding what to decide</td>
+    </tr>
+    <tr>
+      <th>Oil and gas extraction</th>
+      <td>Which oil wells to dig; managing oil inventories</td>
+      <td>Exploring a new field; testing new technology</td>
+      <td>Purchasing geologic surveys; drilling test well</td>
+      <td>Communicating new labor policies</td>
+      <td>Creating drilling strategies for fracking</td>
+      <td>Bid price for a field; minimum flow rate</td>
+      <td>Estimating yield of an oil pocket</td>
+      <td>Terms of leasing contracts</td>
+      <td>Deciding what to decide</td>
+    </tr>
+    <tr>
+      <th>E-commerce</th>
+      <td>Inventory planning</td>
+      <td>Choosing suppliers, distribution strategy</td>
+      <td>Choosing product to advertise</td>
+      <td>Social media advertising</td>
+      <td>Design of policy for advertising product</td>
+      <td>Parameters of ad-click bidding policy</td>
+      <td>Forecasting product demands</td>
+      <td>Delivery services; return handling</td>
+      <td>Deciding what to decide</td>
+    </tr>
+    <tr>
+      <th>Hotel management</th>
+      <td>Number of rooms at different price points</td>
+      <td>Launching new hotel chain</td>
+      <td>Testing new services</td>
+      <td>Marketing messages and channels</td>
+      <td>Room contract terms; bidding policies for ads</td>
+      <td>Room rates</td>
+      <td>Estimating demand for special events</td>
+      <td>Services with a room (e.g. breakfast)</td>
+      <td>Deciding what to decide</td>
+    </tr>
+    <tr>
+      <th>Presidential election</th>
+      <td>Hiring state-level campaign staffs; candidate travel schedule</td>
+      <td>Decision to run for office</td>
+      <td>Running a poll</td>
+      <td>Campaign ads (TV, social media, podcasts, local signs)</td>
+      <td>Contract terms with campaign advisers, marketing contracts</td>
+      <td>Budgets (hiring, ads)</td>
+      <td>Forecasting turnout, votes</td>
+      <td>Campaign promises</td>
+      <td>Deciding what to decide</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<style>
+.apps-vs-types { border-collapse: collapse; font-size: 0.72rem; line-height: 1.3; }
+.apps-vs-types th, .apps-vs-types td { border: 1px solid #c9a86b; padding: 0.35rem 0.45rem; vertical-align: top; }
+.apps-vs-types thead th { background: #ede0bd; color: #3d2914; font-weight: 600; }
+.apps-vs-types tbody th { background: #faf5e6; color: #3d2914; text-align: left; font-weight: 600; white-space: nowrap; }
+.apps-vs-types tbody tr:nth-child(even) td { background: #fbf9f4; }
+</style>
+
+The idea of the nine types of decisions is to provide a guide to think outside the box of the most familiar decisions. In practice, you are not going to subject each of these decisions to formal analysis, which is why the ninth type, "Deciding what to decide," remains a completely subjective choice.
 
 ## Some features of decisions {#some-features-of-decisions}
 
