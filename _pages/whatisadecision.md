@@ -60,7 +60,7 @@ Decisions arise in a variety of settings.  Communities that study the science o
 
 6.  **Setting parameters** - Functions are typically characterized by one or more parameters (typically continuous, but not always) that can be tuned to improve predictive accuracy (when fitting statistical models) or optimized to improve performance (when tuning a policy for making decisions). Parameters may be associated with a function; they can be the weight on a performance metric, or they could be a target (or limit) for a performance metric. 
 
-7.  **Labeling or identification -** We may be given a picture of a person, and asked to identify them, where we want to maximize the number of times we identify the person correctly.  A large language model is given a set of tokens, and it tries to identify the most likely token that comes next. This type of decision specifically targets the choice of *label*, as opposed to choosing the best model as would be done in machine learning (choosing the model would be a type 5 decision, while optimizing the coefficients is type 6).  
+7.  **Labeling/identification/estimation -** We may be asked to name a disease, identify a plant, or estimate future tomorrows load on the power grid.
 
 8.  **Features and behaviors** - How to design a product, what features a software package should have, what services should be provided to a customer, and whether or not to be polite. This might also include a student's choice of major, which determines the skills they will graduate with.
 
