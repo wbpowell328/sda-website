@@ -266,18 +266,18 @@ c.  Different words for "decision"
 
 ### Flavors of decision variables {#flavors}
 
-a.  **Binary** - We choose to hold an asset or sell it; we can make a purchase now or wait; we have to decide which of two webpage designs to use (known as A/B testing). 
-b.  **Discrete** - We have a set of three or more choices.  We may be choosing among 10 or 20 suppliers, 5,000 molecular compounds, or 1 million combinations of discretized parameters.
-c.  **Continuous scalar** - This might describe a price, dosage, diameter or temperature.
-d.  **Vectors**, where the elements may be continuous, binary or discrete.
-e.  **Categorical**, where a choice is described by a vector of attributes $$a_1, \ldots, a_K$$.
+- **Binary** - We choose to hold an asset or sell it; we can make a purchase now or wait; we have to decide which of two webpage designs to use (known as A/B testing).
+- **Discrete** - We have a set of three or more choices.  We may be choosing among 10 or 20 suppliers, 5,000 molecular compounds, or 1 million combinations of discretized parameters.
+- **Continuous scalar** - This might describe a price, dosage, diameter or temperature.
+- **Vectors**, where the elements may be continuous, binary or discrete.
+- **Categorical**, where a choice is described by a vector of attributes $$a_1, \ldots, a_K$$.
 
 ### Timing {#timing}
 
-a.  Whether a decision is made now (at time $$t$$) or planned for some time in the future.
-b.  When it is implemented. We may order an aircraft to be delivered in 2 years, or we place an order from a distant supplier where it takes four months to arrive.  
-c.  Whether it is made just once (purchasing a company, designing a building), or repeated over time (ordering inventory, scheduling machines).
-d.  Whether a decision is made at specified points in time, or triggered by exogenous events.
+- Whether a decision is made now (at time $$t$$) or planned for some time in the future.
+- When it is implemented. We may order an aircraft to be delivered in 2 years, or we place an order from a distant supplier where it takes four months to arrive.
+- Whether it is made just once (purchasing a company, designing a building), or repeated over time (ordering inventory, scheduling machines).
+- Whether a decision is made at specified points in time, or triggered by exogenous events.
 
 ### Different words for "decision" {#different-words}
 
