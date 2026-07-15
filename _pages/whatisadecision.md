@@ -15,6 +15,7 @@ After a career in traditional academic research on models and algorithms for mak
 
 - [What is a decision?](#what-is-a-decision)
 - [Types of decision settings (very important!)](#types-of-decision-settings)
+- [From applications to decision types](#from-apps-to-types)
 - [Some features of decisions](#some-features-of-decisions):
   - [Flavors of decisions](#flavors)
   - [Timing](#timing)
