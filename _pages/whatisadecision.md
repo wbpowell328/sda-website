@@ -60,7 +60,7 @@ Decisions arise in a variety of settings.  Communities that study the science o
 
 6.  **Setting parameters** - Functions are typically characterized by one or more parameters (typically continuous, but not always) that can be tuned to improve predictive accuracy (when fitting statistical models) or optimized to improve performance (when tuning a policy for making decisions). Parameters may be associated with a function; they can be the weight on a performance metric, or they could be a target (or limit) for a performance metric. 
 
-7.  **Labeling/identification/estimation -** We may be asked to name a disease, identify a plant, or estimate future tomorrows load on the power grid.
+7.  **Labeling/identification/estimation -** We may be asked to name a disease, identify a plant, or estimate tomorrow's load on the power grid.
 
 8.  **Features and behaviors** - How to design a product, what features a software package should have, what services should be provided to a customer, and whether or not to be polite. This might also include a student's choice of major, which determines the skills they will graduate with.
 
@@ -92,7 +92,7 @@ In this section, we illustrate how we envision applying the list of decision typ
       <th>4. Information sharing / dissemination</th>
       <th>5. Functions</th>
       <th>6. Parameters</th>
-      <th>7. Labeling / identification</th>
+      <th>7. Labeling/identification/estimation</th>
       <th>8. Features / behaviors</th>
       <th>9. Deciding what to decide</th>
     </tr>
