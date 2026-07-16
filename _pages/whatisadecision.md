@@ -338,7 +338,7 @@ The difference between the two settings is that in the first, $$D_{t}$$ is deter
 
 Now imagine we are trying to determine how many items to purchase, $$D_{t}$$, when the market price is $$p_{t}$$. In this case, the first equation becomes a policy for making the decision $$D_{t}$$ which we now control.
 
-Any function $$f(x)$$ can be viewed as a policy if it is our responsibility to determine $$x$$. If we control $$x$$, then the function is "making a decision." It all boils down to who controls the variable.
+Any variable $$x$$ is a decision if we control how it is chosen, either directly or through the design of a function (called a policy) $$X^\pi(S|\theta)$$ where $$S$$ contains the information we use to make the decision.
 
 ### Decisions vs. commitments {#decisions-vs-commitments}
 
