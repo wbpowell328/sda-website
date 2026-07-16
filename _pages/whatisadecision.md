@@ -16,7 +16,7 @@ After a career in traditional academic research on models and algorithms for mak
 - [What is a decision?](#what-is-a-decision)
 - [Types of decision settings (very important!)](#types-of-decision-settings)
 - [From applications to decision types](#from-apps-to-types)
-- [Some perspectives of decisions](#some-features-of-decisions):
+- [Some perspectives of decisions](#some-perspectives-of-decisions):
   - [Flavors of decisions](#flavors)
   - [Timing](#timing)
   - [Different words for "decision"](#different-words)
@@ -258,7 +258,9 @@ In this section, we illustrate how we envision applying the list of decision typ
 
 The idea of the nine types of decisions is to provide a guide to think outside the box of the most familiar decisions. In practice, you are not going to subject each of these decisions to formal analysis, which is why the ninth type, "Deciding what to decide," remains a completely subjective choice.
 
-## Some perspectives of decisions {#some-features-of-decisions}
+## Some perspectives of decisions {#some-perspectives-of-decisions}
+
+<a id="some-features-of-decisions"></a>
 
 Here we provide some additional features of decisions:
 
