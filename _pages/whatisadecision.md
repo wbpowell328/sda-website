@@ -265,6 +265,8 @@ Here we provide some additional features of decisions:
 - Flavors of decision variables.
 - Timing of when decisions are made and implemented.
 - Different words for "decision".
+- Making a decision.
+- Decisions vs. commitments.
 
 ### Flavors of decision variables {#flavors}
 
@@ -526,7 +528,7 @@ I have been compiling a list of "great thinkers" in the area of decision-making.
 7.  Howard Raiffa (1960s) -- Who, with Ron Howard, introduced and developed the field of decision analysis.  
 8.  Daniel Kahneman (1970s) -- Winner of the Nobel prize in economics, Kahneman was renowned for his work, often with his perennial coauthor Amos Tversky, on human judgment and decision-making under uncertainty.
 
-<img src="/assets/images/decisionsdecisions/aristotle-to-kahneman.jpg" alt="A panel of portraits or headshots of the eight great thinkers: Aristotle, William Hamilton, John von Neumann, Herbert Simon, George Dantzig, Richard Bellman, Howard Raiffa, and Daniel Kahneman" style="display: block; margin: 1rem auto; max-width: 85%; height: auto;" />
+<img src="/assets/images/decisionsdecisions/aristotle-to-kahneman.jpg" alt="A panel of portraits or headshots of the eight great thinkers: Aristotle, William Hamilton, John von Neumann, Herbert Simon, George Dantzig, Richard Bellman, Howard Raiffa, and Daniel Kahneman" style="display: block; margin: 1rem auto; max-width: 72%; height: auto;" />
 
 What is surprising is my realization that none of these people ever *defined* a decision, although a notable exception is the definition by Ron Howard (described at the top of this page) who played a central role (along with Howard Raiffa) in the development of decision analysis.  What I did was to look at the *types* of decisions each considered in their work - it is very revealing in terms of what they seem to think of a decision:
 
