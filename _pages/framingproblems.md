@@ -49,7 +49,7 @@ These pyramids can be made at any level of the company. They may focus on a part
 There are two ways we can evaluate any performance metric:
 
 - **On average** — this can mean total profits, cost per item, or average production per day.
-- **Risk metrics** — averages account for uncertainty by smoothing variations into an average or total, but some events impact the system in such a way that it is not captured by an average. These events have to be first identified in English, and then quantified in the form of metrics that are likely in different units than the average performance.
+- **Risk metrics** — averages account for uncertainty by smoothing variations into an average or total, but some events impact the system in such a way that it is not captured by an average. We begin by defining risk events, in English, which are events that are not properly captured by averages (plant shutdowns, patient deaths, product recalls, clinical trial failures). We then design metrics to quantify these events, which can be incorporated in the objective function or (more commonly) as a constraint.
 
 Risk metrics can be included in the objective function (usually with a scaling factor) or handled as a constraint.
 
