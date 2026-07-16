@@ -420,7 +420,7 @@
         </div>
         <div class="castle-chat-messages"></div>
       </div>
-      <div class="castle-chat-footer">Responses may be wrong; verify before citing.</div>
+      <div class="castle-chat-footer">Responses may not be accurate; verify before using.</div>
     </section>
   `;
 
