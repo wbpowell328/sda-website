@@ -36,7 +36,100 @@ Chapter 10 of *Reinforcement Learning and Stochastic Optimization* identifies 12
 
 The way to use these 12 categories is as a *guide* to identifying the forms of uncertainty that might apply to a particular problem. Below, the same checklist is applied to the game of chess, a problem of managing cash for a mutual fund, and a complex public health problem.
 
-<img src="/assets/images/modeling-uncertainty/uncertainty-examples-table.png" alt="A 4-column table mapping the 12 categories of uncertainty to specific examples for chess (mostly just opponent behavior), mutual fund cash management (deposits/redemptions/markets, forecasts, testing policies, updating cash, max returns/min stock sales, interest rates), and public health (infection rates, mutations, flu forecasts, transmission rates, dosages, disease modeling, disease transitions, vaccination, instruction clarity, algorithmic variations, infection vs. cost objectives, vaccination policies)" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
+<div style="overflow-x: auto; margin: 1rem 0;">
+<table class="uncertainty-examples">
+  <thead>
+    <tr>
+      <th>12 Classes of uncertainty</th>
+      <th>Chess</th>
+      <th>Mutual fund cash management</th>
+      <th>Public health</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1. Observational uncertainty</th>
+      <td></td>
+      <td></td>
+      <td>What are infection rates</td>
+    </tr>
+    <tr>
+      <th>2. Exogenous uncertainty</th>
+      <td>Opponent behavior</td>
+      <td>Deposits, redemptions, markets</td>
+      <td>Mutations of the virus</td>
+    </tr>
+    <tr>
+      <th>3. Prognostic uncertainty</th>
+      <td></td>
+      <td>Forecasts of deposits, redempt.</td>
+      <td>Forecasting prevalent flu this fall</td>
+    </tr>
+    <tr>
+      <th>4. Inferential uncertainty</th>
+      <td></td>
+      <td>Testing different policies</td>
+      <td>Estimating transmission rates</td>
+    </tr>
+    <tr>
+      <th>5. Experimental variability</th>
+      <td></td>
+      <td></td>
+      <td>Testing dosages</td>
+    </tr>
+    <tr>
+      <th>6. Model uncertainty</th>
+      <td></td>
+      <td>Updating cash on hand</td>
+      <td>Modeling spread of disease</td>
+    </tr>
+    <tr>
+      <th>7. Transitional uncertainty</th>
+      <td></td>
+      <td></td>
+      <td>Actual disease transitions</td>
+    </tr>
+    <tr>
+      <th>8. Implementation uncertainty</th>
+      <td></td>
+      <td></td>
+      <td>Failure to get vaccinated</td>
+    </tr>
+    <tr>
+      <th>9. Communication errors</th>
+      <td></td>
+      <td></td>
+      <td>Lack of clarity in instructions</td>
+    </tr>
+    <tr>
+      <th>10. Algorithmic instability</th>
+      <td></td>
+      <td></td>
+      <td>Variations in algorithmic results</td>
+    </tr>
+    <tr>
+      <th>11. Goal uncertainty</th>
+      <td></td>
+      <td>Max. returns, min. stock sales</td>
+      <td>Minimize infections? Costs?</td>
+    </tr>
+    <tr>
+      <th>12. Environmental uncertainty</th>
+      <td></td>
+      <td>Changes in interest rates</td>
+      <td>Changing policies on vaccinations</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<style>
+.uncertainty-examples { border-collapse: collapse; font-size: 0.85rem; line-height: 1.35; width: 100%; }
+.uncertainty-examples th, .uncertainty-examples td { border: 1px solid #c9a86b; padding: 0.4rem 0.55rem; vertical-align: top; }
+.uncertainty-examples thead th { background: #ede0bd; color: #3d2914; font-weight: 600; text-align: left; }
+.uncertainty-examples tbody th { background: #faf5e6; color: #3d2914; text-align: left; font-weight: 600; white-space: nowrap; }
+.uncertainty-examples tbody tr:nth-child(even) td { background: #fbf9f4; }
+</style>
 
 A simple problem such as playing chess would have only one of these, while complex problems such as supply chain management or public health would have one or more sources in all 12 categories.
 
