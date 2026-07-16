@@ -40,7 +40,9 @@ Decisions are evaluated using performance metrics, which come in many flavors, s
 
 Metrics need to be prioritized. An effective way to do this is to sort them into a pyramid, where metrics at the same level are comparable in priority (but perhaps prioritized left to right).
 
-<img src="/assets/images/framing-decision-problems/metrics-pyramid.png" alt="A pyramid of performance metrics: Unit cost at the top; Labor hours per unit, Inventory, and Downtime at the middle level; and Equipment (productivity / yield / maintenance expense / downtime), Personnel (cost per hour / training expense / turnover), and Facility (depreciation / maintenance / utilization) at the base" style="display: block; margin: 1.5rem auto; max-width: 80%; height: auto;" />
+<img src="/assets/images/framing-decision-problems/metrics-pyramid.png" alt="A pyramid of performance metrics: Unit cost at the top; Labor hours per unit, Inventory, and Downtime at the middle level; and Equipment (productivity / yield / maintenance expense / downtime), Personnel (cost per hour / training expense / turnover), and Facility (depreciation / maintenance / utilization) at the base" style="display: block; margin: 1.5rem auto; max-width: 68%; height: auto;" />
+
+These pyramids can be made at any level of the company. They may focus on a particular project, or track day-to-day performance. An organization will typically have many of these pyramids. Note that an executive or manager at one level may decide on the metrics of people or groups that report to them.
 
 ## Handling risk {#handling-risk}
 
