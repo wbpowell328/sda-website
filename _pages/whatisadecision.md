@@ -262,11 +262,11 @@ The idea of the nine types of decisions is to provide a guide to think outside t
 
 Here we provide some additional features of decisions:
 
-- Flavors of decision variables.
-- Timing of when decisions are made and implemented.
-- Different words for "decision".
-- Making a decision.
-- Decisions vs. commitments.
+- [Flavors of decision variables](#flavors).
+- [Timing of when decisions are made and implemented](#timing).
+- [Different words for "decision"](#different-words).
+- [Making a decision](#making-a-decision).
+- [Decisions vs. commitments](#decisions-vs-commitments).
 
 ### Flavors of decision variables {#flavors}
 
