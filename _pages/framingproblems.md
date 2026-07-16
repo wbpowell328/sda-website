@@ -51,8 +51,6 @@ There are two ways we can evaluate any performance metric:
 - **On average** — this can mean total profits, cost per item, or average production per day.
 - **Risk metrics** — averages account for uncertainty by smoothing variations into an average or total, but some events impact the system in such a way that it is not captured by an average. We begin by defining risk events, in English, which are events that are not properly captured by averages (plant shutdowns, patient deaths, product recalls, clinical trial failures). We then design metrics to quantify these events, which can be incorporated in the objective function or (more commonly) as a constraint.
 
-Risk metrics can be included in the objective function (usually with a scaling factor) or handled as a constraint.
-
 ## Decisions {#decisions}
 
 Decisions are how we change a process — whether it is an initial design decision, or operational decisions that are made over time. Decisions can be obvious (routing trucks, ordering inventory, prescribing a medication), but often they are not.
