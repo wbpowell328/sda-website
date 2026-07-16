@@ -55,11 +55,14 @@ There are two ways we can evaluate any performance metric:
 
 Decisions are how we change a process — whether it is an initial design decision, or operational decisions that are made over time. Decisions can be obvious (routing trucks, ordering inventory, prescribing a medication), but often they are not.
 
+<img src="/assets/images/framing-decision-problems/could-have-had-a-v8.png" alt="A cartoon-style illustration in the spirit of the 1970s V8 tomato juice commercials — a person slapping their forehead with the tagline 'I could have had a V8!'" width="315" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 In the 1970s, a popular set of commercials promoting V8 tomato juice focused on the realization that consumers did not realize that drinking a can of soda represented a decision. The commercials were designed around the theme of people realizing after drinking their soda that "I could have had a V8!"
 
-There are many settings in practice where we behave as if we were on autopilot, and do not realize that we could have made different choices.
+There are many settings in practice where we behave as if we were on autopilot, and do not realize that we could have made different choices. This happens when we have adopted a method for making decisions (called a *policy*), which is itself a decision.
 
-A complete discussion of decisions is on the [Decisions, decisions](/decisionsdecisions/) page.
+<br clear="all" />
+
+A complete discussion of decisions is on the [Decisions, decisions](/decisionsdecisions/) page. There, we define a decision as information we control, which then allows us to name nine types of decisions, including several that are typically overlooked.
 
 ## Uncertainties {#uncertainties}
 
