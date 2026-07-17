@@ -28,7 +28,7 @@ These questions help to clarify *thinking* about problems, which is all that is 
 
 The framework spans *any* method for making decisions (called "policies"), from simple rules to large-scale deterministic integer programs, since these all fall in the four classes of policies. We also identify 12 categories of uncertainty that may come in a range of styles and time scales. The process of developing these tools has been dramatically streamlined in recent years with the emergence of large language models.
 
-A good way to start is to follow the instructions in **"A guided tour"** which starts with material on problem framing that requires no math. Most of the presentation is free of math, while a few pages have some math. If you are interested in more depth, try using **"Ask Professor Powell"** which will use as much math as you want (just ask). The chatbot has been trained with all my books, 1,000 pages of LinkedIn posts on decision analytics, and the contents of this website.
+A good way to start is to follow the instructions in [**A guided tour**](/guided-tour/) which starts with material on problem framing that requires no math. Most of the presentation is free of math, while a few pages have some math. If you are interested in more depth, try using [**Ask Professor Powell**](/ask-professor-powell/) which will use as much math as you want (just ask). The chatbot has been trained with all my books, 1,000 pages of LinkedIn posts on decision analytics, and the contents of this website.
 
 The thoughts on this website are based on a lifetime of research using computers to make decisions. I hope you find it useful. Please share!
 
