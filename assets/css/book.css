@@ -6,7 +6,7 @@
    feel instead of "browsing a website" feel. */
 
 body.book-reader {
-  background: #efe4c8;
+  background: #ddcfa8;
   font-family: Georgia, "Iowan Old Style", "Palatino Linotype", Palatino, serif;
   color: #2b2419;
   line-height: 1.7;
@@ -42,6 +42,10 @@ body.book-reader {
   font-weight: 400;
   font-size: 0.82rem;
   color: #d4b88a;
+  max-width: 60vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .book-topbar-actions {
   display: flex;
@@ -104,12 +108,18 @@ body.book-reader {
 .book-toc-drawer .book-toc-chnum { font-weight: 700; }
 
 /* ============================================================
-   Reading column
+   Reading column — styled as a paper page against the darker
+   surrounding background, so it reads as a contained page rather
+   than text floating in an open browser window.
    ============================================================ */
 .book-page {
   max-width: 720px;
-  margin: 0 auto;
-  padding: 2.5rem 1.5rem 4rem;
+  margin: 2rem auto 2.5rem;
+  background: #fbf6e7;
+  border-left: 1px solid #c9b98a;
+  border-right: 1px solid #c9b98a;
+  box-shadow: 0 0 2px rgba(61,41,20,0.15), 0 12px 30px rgba(61,41,20,0.12);
+  padding: 3rem 3.5rem 4rem;
 }
 .book-page-title {
   font-family: "Georgia", serif;
@@ -162,7 +172,8 @@ body.book-reader {
 
 @media (max-width: 600px) {
   .book-topbar-exit { display: none; }
+  .book-topbar-subtitle { max-width: 75vw; }
   .book-toc-drawer { width: 85vw; left: -85vw; }
-  .book-page { padding: 2rem 1.1rem 3rem; }
+  .book-page { margin: 0.75rem auto 1.5rem; padding: 1.75rem 1.25rem 3rem; }
   .book-page-title { font-size: 1.6rem; }
 }

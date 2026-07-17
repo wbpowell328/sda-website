@@ -28,11 +28,13 @@
 {% for c in reachable %}
   {% if c.url == page.url %}{% assign current_index = forloop.index0 %}{% endif %}
 {% endfor %}
+{% assign current_chapter = nil %}
+{% if current_index >= 0 %}{% assign current_chapter = reachable[current_index] %}{% endif %}
 
-<header class="book-topbar">
+<header class="book-topbar" data-chapter-num="{% if current_chapter %}{{ current_chapter.num }}{% endif %}">
   <a class="book-topbar-title" href="{{ '/bridging-vol1/' | relative_url }}">
     {{ site.data.bridging_vol1_toc.book_title }}
-    <span class="book-topbar-subtitle">{{ site.data.bridging_vol1_toc.book_subtitle }}</span>
+    <span class="book-topbar-subtitle" id="book-topbar-subtitle" data-default-text="{{ site.data.bridging_vol1_toc.book_subtitle }}">{{ site.data.bridging_vol1_toc.book_subtitle }}</span>
   </a>
   <div class="book-topbar-actions">
     <button type="button" class="book-toc-toggle" aria-controls="book-toc-drawer" aria-expanded="false">
@@ -111,6 +113,53 @@
         btn.setAttribute('aria-expanded', 'false');
       }
     });
+  })();
+</script>
+
+<!-- Running chapter/section indicator: as the reader scrolls, the top bar
+     subtitle swaps from the book subtitle to "Chapter N › Current section",
+     tracking whichever h2/h3 has most recently scrolled under the bar. -->
+<script>
+  (function () {
+    var topbar = document.querySelector('.book-topbar');
+    var subtitleEl = document.getElementById('book-topbar-subtitle');
+    var chapterNum = topbar ? topbar.getAttribute('data-chapter-num') : '';
+    if (!topbar || !subtitleEl || !chapterNum) return;
+
+    var headings = Array.prototype.slice.call(document.querySelectorAll('.book-page h2, .book-page h3'));
+    if (!headings.length) return;
+
+    var defaultText = subtitleEl.getAttribute('data-default-text') || subtitleEl.textContent;
+    var scheduled = false;
+
+    function currentSection() {
+      var threshold = topbar.getBoundingClientRect().height + 8;
+      var active = null;
+      for (var i = 0; i < headings.length; i++) {
+        if (headings[i].getBoundingClientRect().top <= threshold) {
+          active = headings[i];
+        } else {
+          break;
+        }
+      }
+      return active;
+    }
+
+    function update() {
+      scheduled = false;
+      var active = currentSection();
+      subtitleEl.textContent = active
+        ? ('Chapter ' + chapterNum + ' › ' + active.textContent)
+        : defaultText;
+    }
+
+    window.addEventListener('scroll', function () {
+      if (scheduled) return;
+      scheduled = true;
+      setTimeout(update, 100);
+    }, { passive: true });
+
+    update();
   })();
 </script>
 
