@@ -309,7 +309,7 @@ A different form of variability is captured under the general term "seasonality"
 Figure 5.4 (left) shows solar energy production over the course of a week, illustrating both the familiar and highly predictable pattern created by the sun, which is interfered by the highly stochastic presence of cloud cover. Figure 5.4 (right) shows hourly solar energy over the entire year, where we can clearly see the reduction in solar energy during the winter season.
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/DailyAnnualSolarEnergy.png" alt="Daily solar energy over a week (left), and annual solar energy (right).">
+  <img src="/assets/images/bridging-vol1/DailyAnnualSolarEnergy.jpg" alt="Daily solar energy over a week (left), and annual solar energy (right).">
   <figcaption><span class="fig-num">Figure 5.4.</span> Daily solar energy over a week (left), and annual solar energy (right).</figcaption>
 </figure>
 
