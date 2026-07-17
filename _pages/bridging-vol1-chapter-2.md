@@ -127,7 +127,7 @@ As with decisions, we can start by listing every source of uncertainty that we c
 
 ### Impact of uncertainty on decisions
 
-<figure class="book-figure" style="float:right; max-width: 260px; margin-left: 1.5rem;">
+<figure class="book-figure" style="float:right; max-width: 221px; margin-left: 1.5rem;">
   <img src="/assets/images/bridging-vol1/AssignmentProblemsimple.png" alt="A simple assignment problem.">
   <figcaption><span class="fig-num">Figure 2.3.</span> A simple assignment problem.</figcaption>
 </figure>
