@@ -452,7 +452,7 @@ It needs to be clear from this description that LLMs are not inherently intellig
 Often these problems can be depicted pictorially, as shown on the left in figure 1.10, but there is a standard way of writing them mathematically, often starting with the notation on the right. While this mathematical notation will not be generally familiar, universities produce thousands of students each year who are trained to model problems in this format. Then, there are many computer packages, some available commercially while others are available for free, that can solve even large scale problems efficiently.
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/AssignmenttoLinearProgram.png" alt="Graphical illustration of an assignment problem and its mathematical representation as a linear program.">
+  <img src="/assets/images/bridging-vol1/AssignmenttoLinearProgram.jpg" alt="Graphical illustration of an assignment problem and its mathematical representation as a linear program.">
   <figcaption><span class="fig-num">Figure 1.10.</span> Graphical illustration of a type of decision problem (assigning resources to tasks), and its mathematical representation as a linear program.</figcaption>
 </figure>
 
