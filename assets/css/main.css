@@ -624,6 +624,19 @@ img, video { max-width: 100%; height: auto; display: block; }
    second column. */
 .book-table.is-list-table th, .book-table.is-list-table td { text-align: left; }
 
+/* Wider list tables (3-4 columns, e.g. Table 4.1's word lists) have
+   narrower columns competing for the same page width, which wraps short
+   phrases onto a second line and defeats the row-height tightening above.
+   A slightly smaller font and tighter horizontal padding keeps more of
+   these phrases on one line. */
+.book-table.is-list-table {
+  font-size: 0.86rem;
+}
+.book-table.is-list-table th, .book-table.is-list-table td {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
 /* Rating cells for H/M/L/N interaction-matrix tables (impact of a decision
    or uncertainty on a metric: High/Medium/Low/None). Colors follow the
    author's original spreadsheet convention: red=H, orange=M, yellow=L,
