@@ -405,7 +405,7 @@ Machine learning models come in a variety of styles, but these can be organized 
 - **Parametric models** – These are analytical functions of inputs that produce one or more outputs using a mathematical function that depends on a set of unknown parameters. If the function is linear in these parameters, then this would be a linear model. More general models use functions that are nonlinear in the parameters. Figure 1.6 illustrates linear and nonlinear models.
 
   <figure class="book-figure">
-    <img src="/assets/images/bridging-vol1/LinearandNonlinearFunctions.png" alt="Illustrations of linear and nonlinear parametric functions used in machine learning.">
+    <img src="/assets/images/bridging-vol1/LinearandNonlinearFunctions.png" alt="Illustrations of linear and nonlinear parametric functions used in machine learning." style="max-width: 464px;">
     <figcaption><span class="fig-num">Figure 1.6.</span> Illustrations of linear and nonlinear parametric functions used in machine learning.</figcaption>
   </figure>
 
