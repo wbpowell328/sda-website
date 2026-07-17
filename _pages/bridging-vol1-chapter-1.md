@@ -376,7 +376,7 @@ It is easy to think that, given the extensive use of computers, information proc
 ## Artificial intelligence
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/7levelsofAI.png" alt="The 7 levels of artificial intelligence.">
+  <img src="/assets/images/bridging-vol1/7levelsofAI.png" alt="The 7 levels of artificial intelligence." style="max-width: 485px;">
   <figcaption><span class="fig-num">Figure 1.4.</span> The 7 levels of artificial intelligence.</figcaption>
 </figure>
 
