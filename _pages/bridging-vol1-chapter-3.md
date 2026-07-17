@@ -133,7 +133,7 @@ The simple answer is: no. Imagine that there is a major disruption in a supply c
 These issues are not captured by the usual accounting processes that track corporate performance. It is this reason that there is an array of books addressing what is widely referred to as "risk" (or "resilience" which refers to the ability of companies to bounce back from major events) as shown in figure 3.2. These books are typically qualitative descriptions of different types of risk, often (but not always) without a formal process for handling risk.
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/SupplyChainRiskBooks.png" alt="A sample of books on supply chain risk and resilience.">
+  <img src="/assets/images/bridging-vol1/SupplyChainRiskBooks.png" alt="A sample of books on supply chain risk and resilience." style="max-width: 515px;">
   <figcaption><span class="fig-num">Figure 3.2.</span> A sample of books on supply chain risk and resilience.</figcaption>
 </figure>
 
