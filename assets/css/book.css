@@ -12,6 +12,13 @@ body.book-reader {
   line-height: 1.7;
 }
 
+/* Keep jumped-to headings (from the contents drawer, or any #anchor link)
+   clear of the sticky top bar, which would otherwise cover them. Value
+   matches the topbar's height plus a little breathing room; the mobile
+   override in the media query below covers the topbar's taller wrapped
+   state on narrow screens. */
+html { scroll-padding-top: 90px; }
+
 /* ============================================================
    Top bar — slim, book title + contents toggle, no site nav
    ============================================================ */
@@ -218,6 +225,7 @@ body.book-reader {
 .book-footer a { color: #8a3a1a; }
 
 @media (max-width: 600px) {
+  html { scroll-padding-top: 130px; }
   .book-topbar-exit { display: none; }
   .book-topbar-subtitle { max-width: 75vw; }
   .book-toc-drawer { width: 85vw; left: -85vw; }
