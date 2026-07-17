@@ -184,7 +184,7 @@ Uncertainty is easily the most subtle issue when understanding a decision proble
 One of the most widely studied problems in operations research (as well as stochastic optimization) is the inventory problem, which is typically posed as determining when to place an order to replenish, and how large the order should be. The classical textbook description of an inventory replenishment problem is depicted in figure 2.4, which shows the increase in inventories when new product arrives, followed by the depletion as product is consumed. A stockout, where inventory drops to zero, is depicted.
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/SimpleInventory.png" alt="Illustration of a classical inventory problem with short lead times.">
+  <img src="/assets/images/bridging-vol1/SimpleInventory.jpg" alt="Illustration of a classical inventory problem with short lead times." style="max-width: 485px;">
   <figcaption><span class="fig-num">Figure 2.4.</span> Illustration of a classical inventory problem with short lead times.</figcaption>
 </figure>
 
