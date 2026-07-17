@@ -111,8 +111,6 @@ html { scroll-padding-top: 90px; }
   color: #2b2419;
 }
 .book-toc-drawer a:hover { background: #ede0bd; text-decoration: none; }
-.book-toc-drawer li.is-current > .book-toc-row > a,
-.book-toc-drawer li.is-current a { background: #ede0bd; border-left: 3px solid #c9621e; font-weight: 700; }
 .book-toc-drawer .book-toc-placeholder { color: #9c8a68; }
 .book-toc-drawer .book-toc-chnum { font-weight: 700; }
 
