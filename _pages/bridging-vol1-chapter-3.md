@@ -181,7 +181,7 @@ Today, we have software packages that can solve even large instances of these pr
 At the time that this book is being written, we understand that inventory problems have to be optimized over time. However, the community that specializes in optimization models for complex problems, such as the driver assignment problem, portfolio management problem, and warehouse location problem, each have to reflect the effect of new information, and the impact of decisions now on the future. We have powerful software packages to solve these problems at a point in time, but nothing to optimize performance over time.
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/DynamicAssignmentProblem.png" alt="The assignment problem has to be solved repeatedly, and decisions made at one point in time have an impact on future problems.">
+  <img src="/assets/images/bridging-vol1/DynamicAssignmentProblem.jpg" alt="The assignment problem has to be solved repeatedly, and decisions made at one point in time have an impact on future problems.">
   <figcaption><span class="fig-num">Figure 3.3.</span> Here we illustrate the reality that the assignment problem has to be solved repeatedly. Further, the decisions made at one point in time has an impact on future problems.</figcaption>
 </figure>
 
