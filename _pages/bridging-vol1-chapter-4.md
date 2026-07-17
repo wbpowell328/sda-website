@@ -272,14 +272,14 @@ It is easiest to think of tuning a set of parameters $\theta$ in a simulator, bu
 Imagine that we are dispatching a fleet of trucks where we have to assign drivers to move the loads of freight from a pickup location to a delivery location. Figure 4.3 illustrates how this problem has to be solved repeatedly over time. What we decide to do on Monday will change the locations of drivers on Tuesday and Wednesday. Each day, shippers call in new sets of loads that are not known in advance, so the carrier has to make assignment decisions on Monday without knowing what is going to happen on Tuesday or Wednesday.
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/AssignmentThreeDays.png" alt="Illustration of the problem of assigning trucks over a three day period.">
+  <img src="/assets/images/bridging-vol1/AssignmentThreeDays.png" alt="Illustration of the problem of assigning trucks over a three day period." style="max-width: 515px;">
   <figcaption><span class="fig-num">Figure 4.3.</span> Illustration of the problem of assigning trucks over a three day period.</figcaption>
 </figure>
 
 Optimizing over a multiple day horizon in the presence of the uncertainties is an incredibly complex task. Instead, we can approximate the value of drivers in the future, as shown in figure 4.4. This can be done by running simulations into the future, and then calculating the value of drivers in different locations. When we include these values (called "value function approximations"), the problem we now have to solve on Monday is no more complicated than if we completely ignored the impact of sending drivers into different locations.
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/AssignmentwithDownstreamVFA.png" alt="Assigning drivers to loads using estimates of the value of drivers in the future.">
+  <img src="/assets/images/bridging-vol1/AssignmentwithDownstreamVFA.png" alt="Assigning drivers to loads using estimates of the value of drivers in the future." style="max-width: 515px;">
   <figcaption><span class="fig-num">Figure 4.4.</span> Assigning drivers to loads using estimates of the value of drivers in the future.</figcaption>
 </figure>
 
