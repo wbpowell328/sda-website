@@ -76,12 +76,22 @@ A useful exercise is to create a spreadsheet where different decisions are liste
 - **L** – Decision has a low impact on the metric.
 - **N** – Decision has no impact on the metric.
 
-Figure 2.3 illustrates how this might look for a small inventory problem. The spreadsheet can be downloaded from [tinyurl.com/FramingInteractionMatrix](https://tinyurl.com/FramingInteractionMatrix/).
+Table 2.1 illustrates how this might look for a small inventory problem. The spreadsheet can be downloaded from [tinyurl.com/FramingInteractionMatrix](https://tinyurl.com/FramingInteractionMatrix/).
 
-<figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/DecisionMetricsMatrixSmall.png" alt="Interaction matrix for decisions and metrics for an inventory problem with small lead times.">
-  <figcaption><span class="fig-num">Figure 2.3.</span> Interaction matrix for decisions and metrics for an inventory problem with small lead times.</figcaption>
-</figure>
+<div class="book-table-wrap">
+<table class="book-table">
+<caption><span class="fig-num">Table 2.1.</span> Interaction matrix for decisions and metrics for an inventory problem with small lead times.</caption>
+<thead>
+<tr><th>Decisions \ Metrics</th><th>Sales revenue</th><th>Product costs</th><th>Holding costs</th><th>Stockouts</th></tr>
+</thead>
+<tbody>
+<tr><td>When/how much to order</td><td class="hml-h">H</td><td class="hml-h">H</td><td class="hml-m">M</td><td class="hml-m">M</td></tr>
+<tr><td>Purchase currency hedge?</td><td class="hml-n">N</td><td class="hml-l">L</td><td></td><td class="hml-n">N</td></tr>
+<tr><td>Discounting</td><td class="hml-m">M</td><td class="hml-n">N</td><td class="hml-l">L</td><td class="hml-m">M</td></tr>
+<tr><td>Market product on social media</td><td class="hml-h">H</td><td class="hml-l">L</td><td class="hml-l">L</td><td class="hml-m">M</td></tr>
+</tbody>
+</table>
+</div>
 
 Start by listing the metrics from left to right in order of importance. We are then going to use the matrix to identify the most important decisions, and the metrics that are most impacted by the decisions you have listed.
 
@@ -94,12 +104,22 @@ The exercise of filling in tables such as this can help guide the process of und
 
 ### Impact of uncertainty given the decision
 
-Imagine that we have made a decision (which means it is fixed). We need to understand the forms of uncertainty that affect the metrics produced by the decision. For our simple (short lead time) inventory problem, we might obtain the matrix given in figure 2.4.
+Imagine that we have made a decision (which means it is fixed). We need to understand the forms of uncertainty that affect the metrics produced by the decision. For our simple (short lead time) inventory problem, we might obtain the matrix given in table 2.2.
 
-<figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/UncertaintyMetricsMatrixsmall.png" alt="Interaction matrix for uncertainties and metrics given a decision, for an inventory problem with small lead times.">
-  <figcaption><span class="fig-num">Figure 2.4.</span> Interaction matrix for uncertainties and metrics given a decision, for an inventory problem with small lead times.</figcaption>
-</figure>
+<div class="book-table-wrap">
+<table class="book-table">
+<caption><span class="fig-num">Table 2.2.</span> Interaction matrix for uncertainties and metrics given a decision, for an inventory problem with small lead times.</caption>
+<thead>
+<tr><th>Uncertainty \ Metrics</th><th>Sales revenue</th><th>Unit costs</th><th>Holding costs</th><th>Stockouts</th></tr>
+</thead>
+<tbody>
+<tr><td>Sales (units sold)</td><td class="hml-h">H</td><td class="hml-l">L</td><td class="hml-m">M</td><td class="hml-m">M</td></tr>
+<tr><td>Lead times</td><td class="hml-l">L</td><td class="hml-l">L</td><td class="hml-m">M</td><td class="hml-h">H</td></tr>
+<tr><td>Forecasting errors</td><td class="hml-l">L</td><td class="hml-n">N</td><td class="hml-m">M</td><td class="hml-m">M</td></tr>
+<tr><td>Inventory shrinkage</td><td class="hml-m">M</td><td class="hml-n">N</td><td></td><td class="hml-n">N</td></tr>
+</tbody>
+</table>
+</div>
 
 Modeling uncertainty simply means understanding information that may arise in the future which we do not know yet. This simple observation is often overlooked in discussions of uncertainty, which can become buried in sophisticated mathematics ("stochastic modeling") and the quantification of risk (which few understand).
 
@@ -109,10 +129,10 @@ As with decisions, we can start by listing every source of uncertainty that we c
 
 <figure class="book-figure" style="float:right; max-width: 260px; margin-left: 1.5rem;">
   <img src="/assets/images/bridging-vol1/AssignmentProblemsimple.png" alt="A simple assignment problem.">
-  <figcaption><span class="fig-num">Figure 2.5.</span> A simple assignment problem.</figcaption>
+  <figcaption><span class="fig-num">Figure 2.3.</span> A simple assignment problem.</figcaption>
 </figure>
 
-The most common setting where uncertainty impacts what decisions you are allowed to make arises in the context of resource allocation problems where we are managing some resource (people, machines, product supplies, drugs) to serve tasks (jobs, patients, customers). In figure 2.5 we are illustrating the assignment of trucks (with drivers) to move loads of freight. The main source of uncertainty is the flow of loads being called in by shippers to be moved, but this could be any task. We might assign a driver to a load that is not attractive in terms of profitability, but which ties up the driver for several days, preventing him from being used on a better load that might be called in later in the day.
+The most common setting where uncertainty impacts what decisions you are allowed to make arises in the context of resource allocation problems where we are managing some resource (people, machines, product supplies, drugs) to serve tasks (jobs, patients, customers). In figure 2.3 we are illustrating the assignment of trucks (with drivers) to move loads of freight. The main source of uncertainty is the flow of loads being called in by shippers to be moved, but this could be any task. We might assign a driver to a load that is not attractive in terms of profitability, but which ties up the driver for several days, preventing him from being used on a better load that might be called in later in the day.
 
 The flow of customer requests is a major source of uncertainty that arises in:
 
@@ -161,18 +181,18 @@ Uncertainty is easily the most subtle issue when understanding a decision proble
 
 ### Narrative
 
-One of the most widely studied problems in operations research (as well as stochastic optimization) is the inventory problem, which is typically posed as determining when to place an order to replenish, and how large the order should be. The classical textbook description of an inventory replenishment problem is depicted in figure 2.6, which shows the increase in inventories when new product arrives, followed by the depletion as product is consumed. A stockout, where inventory drops to zero, is depicted.
+One of the most widely studied problems in operations research (as well as stochastic optimization) is the inventory problem, which is typically posed as determining when to place an order to replenish, and how large the order should be. The classical textbook description of an inventory replenishment problem is depicted in figure 2.4, which shows the increase in inventories when new product arrives, followed by the depletion as product is consumed. A stockout, where inventory drops to zero, is depicted.
 
 <figure class="book-figure">
   <img src="/assets/images/bridging-vol1/SimpleInventory.png" alt="Illustration of a classical inventory problem with short lead times.">
-  <figcaption><span class="fig-num">Figure 2.6.</span> Illustration of a classical inventory problem with short lead times.</figcaption>
+  <figcaption><span class="fig-num">Figure 2.4.</span> Illustration of a classical inventory problem with short lead times.</figcaption>
 </figure>
 
-A more realistic version of an inventory problem is illustrated in figure 2.7, which depicts an inventory problem that might arise in a setting where the product is coming from a distant location (such as from China to the eastern U.S.). We might have to wait 6-8 weeks, but weather delays can extend this even more. Long-distance shipping typically involves movement by ocean container ships for port-to-port moves, rail (common within the U.S.) and then truck.
+A more realistic version of an inventory problem is illustrated in figure 2.5, which depicts an inventory problem that might arise in a setting where the product is coming from a distant location (such as from China to the eastern U.S.). We might have to wait 6-8 weeks, but weather delays can extend this even more. Long-distance shipping typically involves movement by ocean container ships for port-to-port moves, rail (common within the U.S.) and then truck.
 
 <figure class="book-figure">
   <img src="/assets/images/bridging-vol1/ComplexInventory.png" alt="Illustration of an inventory problem with long lead times.">
-  <figcaption><span class="fig-num">Figure 2.7.</span> Illustration of an inventory problem with long lead times.</figcaption>
+  <figcaption><span class="fig-num">Figure 2.5.</span> Illustration of an inventory problem with long lead times.</figcaption>
 </figure>
 
 Planning inventories has to be coordinated with strategies for managing demand, which can be influenced through pricing, discounts, promotions, and marketing. Inventory management has to deal with a number of sources of uncertainty, ranging from the usual day-to-day variability in demand, to market shifts due to competitor behavior, new technologies, and both losing suppliers as well as the emergence of new sources of supplies. In addition, there can be significant variations in transportation times due to weather, mechanical failures, and labor actions at ports. Excessive delays may be managed by using fast modes such as air freight as an alternative to container shipping, and truckload trucking as an alternative to rail.
@@ -202,34 +222,56 @@ It helps to organize decisions based on whether we are solving a single inventor
 
 The list of decisions that are relevant to inventory planning is quite long. In the [interactions section below](#inventorydecisioninteractions) we are going to use a tool we call "interaction matrices" to identify the most important decisions.
 
-<figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/InventoryDecisionsSlow.png" alt="Operational inventory decisions.">
-  <figcaption>(a) Operational</figcaption>
-</figure>
-<figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/InventoryDecisionsMedium.png" alt="Tactical inventory decisions.">
-  <figcaption>(b) Tactical</figcaption>
-</figure>
-<figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/InventoryDecisionsFast.png" alt="Strategic inventory decisions.">
-  <figcaption><span class="fig-num">Figure 2.8.</span> (c) Strategic — different types of decisions for inventory problems for each time scale.</figcaption>
-</figure>
-
 <div class="book-table-wrap">
 <table class="book-table">
-<caption><span class="fig-num">Table 2.1.</span> Which category of resource each inventory decision primarily affects.</caption>
+<caption><span class="fig-num">Table 2.3.</span> Operational inventory decisions and which category of resource each one primarily affects.</caption>
 <thead>
-<tr><th></th><th>Physical</th><th>Financial</th><th>Information</th></tr>
+<tr><th></th><th>Physical</th><th>Financial</th><th>Informational</th></tr>
 </thead>
 <tbody>
 <tr><td>Whether to observe/verify inventory</td><td></td><td></td><td>&#10003;</td></tr>
-<tr><td>Who from the set of available suppliers to place the order</td><td></td><td></td><td>&#10003;</td></tr>
-<tr><td>When to place a replenishment order</td><td>&#10003;</td><td></td><td></td></tr>
-<tr><td>How much to order</td><td>&#10003;</td><td></td><td></td></tr>
-<tr><td>How to package it (ocean container, truckload, pallet, box)</td><td>&#10003;</td><td></td><td></td></tr>
-<tr><td>How to finance order (cash transfer, bank loan)</td><td></td><td>&#10003;</td><td></td></tr>
-<tr><td>Choice of transportation modes from abroad</td><td>&#10003;</td><td></td><td></td></tr>
-<tr><td>Choice of transportation modes for inland distribution</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Who from the set of available suppliers to place the order (if there are multiple suppliers)</td><td></td><td></td><td>&#10003;</td></tr>
+<tr><td>When to place a replenishment order.</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>How much to order.</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>How to package it (ocean container, half-container, pallets, boxes).</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>How to finance order (cash transfer, bank loan, ...)</td><td></td><td>&#10003;</td><td></td></tr>
+<tr><td>The choice of transportation modalities for products from abroad to intermediate storage facilities</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>The choice of transportation modalities for domestic distribution to customers</td><td>&#10003;</td><td></td><td></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="book-table-wrap">
+<table class="book-table">
+<caption><span class="fig-num">Table 2.4.</span> Tactical inventory decisions and which category of resource each one primarily affects.</caption>
+<thead>
+<tr><th></th><th>Physical</th><th>Financial</th><th>Informational</th></tr>
+</thead>
+<tbody>
+<tr><td>Whether to purchase currency hedges for products from abroad.</td><td></td><td>&#10003;</td><td></td></tr>
+<tr><td>Discounts/promotions (to reduce inventory)</td><td>&#10003;</td><td>&#10003;</td><td></td></tr>
+<tr><td>Product pricing.</td><td>&#10003;</td><td>&#10003;</td><td></td></tr>
+<tr><td>Marketing/displays (shelf space, end-cap display, advertising (various forms))</td><td></td><td></td><td>&#10003;</td></tr>
+<tr><td>Running market tests for features, design, ...</td><td></td><td></td><td>&#10003;</td></tr>
+<tr><td>Design and implement marketing campaign</td><td></td><td></td><td>&#10003;</td></tr>
+<tr><td>Choice of supplier (for each material or component), including whether to have multiple suppliers. This determines the possible suppliers.</td><td></td><td></td><td>&#10003;</td></tr>
+<tr><td>Equipment maintenance (increases scheduled downtime, decreases unscheduled down time)</td><td>&#10003;</td><td></td><td></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="book-table-wrap">
+<table class="book-table">
+<caption><span class="fig-num">Table 2.5.</span> Strategic inventory decisions and which category of resource each one primarily affects.</caption>
+<thead>
+<tr><th></th><th>Physical</th><th>Financial</th><th>Informational</th></tr>
+</thead>
+<tbody>
+<tr><td>Contracts with inventory visibility platforms (where is my shipment)?</td><td></td><td></td><td>&#10003;</td></tr>
+<tr><td>Choice of demand forecasting methodology (statistical methods, involvement of different people across the organization).</td><td></td><td></td><td>&#10003;</td></tr>
+<tr><td>Product design (which determines the required materials and components)</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Market identification (who are we selling to)</td><td></td><td></td><td>&#10003;</td></tr>
+<tr><td>How much connectivity (information sharing) to seek with manufacturing supply chain partners</td><td></td><td></td><td>&#10003;</td></tr>
 </tbody>
 </table>
 </div>
@@ -238,59 +280,152 @@ The list of decisions that are relevant to inventory planning is quite long. In 
 
 These decisions are made on different time scales: operational (hourly, daily, weekly), tactical (monthly), and strategic (quarterly, yearly).
 
-- **Operational** - These are decisions that might be made in real-time, but are typically made either daily or weekly (figure 2.8(a)).
-- **Tactical** - Decisions made on a monthly basis (figure 2.8(b)).
-- **Strategic** - Decisions made on a quarterly or yearly basis (figure 2.8(c)).
+- **Operational** - These are decisions that might be made in real-time, but are typically made either daily or weekly (table 2.3).
+- **Tactical** - Decisions made on a monthly basis (table 2.4).
+- **Strategic** - Decisions made on a quarterly or yearly basis (table 2.5).
 
 #### Supply chain design
 
-There are decisions related to the design of supply chain networks that cut across many (tens to thousands) of individual inventory decisions. These are decisions that are typically made on longer time scales. Figure 2.9 provides some examples of network-level decisions for designing the supply chain.
+There are decisions related to the design of supply chain networks that cut across many (tens to thousands) of individual inventory decisions. These are decisions that are typically made on longer time scales. Figure 2.6 provides some examples of network-level decisions for designing the supply chain.
 
 <figure class="book-figure">
   <img src="/assets/images/bridging-vol1/InventoryDecisionsNetwork.png" alt="Supply chain design decisions.">
-  <figcaption><span class="fig-num">Figure 2.9.</span> Supply chain design decisions.</figcaption>
+  <figcaption><span class="fig-num">Figure 2.6.</span> Supply chain design decisions.</figcaption>
 </figure>
 
 ### Uncertainties
 
 Uncertainties also occur on different time scales. We include a special category for major disruptions that may occur, but not on a regular basis.
 
-<figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/InventoryUncertaintyDaily.png" alt="Hourly to daily inventory uncertainty.">
-  <figcaption>(a) Hourly to daily</figcaption>
-</figure>
-<figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/InventoryUncertaintyWeekly.png" alt="Weekly inventory uncertainty.">
-  <figcaption>(b) Weekly</figcaption>
-</figure>
-<figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/InventoryUncertaintyYearly.png" alt="Monthly to yearly inventory uncertainty.">
-  <figcaption>(c) Monthly to yearly</figcaption>
-</figure>
-<figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/InventoryUncertaintyMajorDisruptions.png" alt="Major disruptions.">
-  <figcaption><span class="fig-num">Figure 2.10.</span> (d) Major disruptions — different types of uncertainties for inventory problems in operational (a), tactical (b) and strategic (c) time scales, plus major disruptions (d) that do not occur on a regular basis.</figcaption>
-</figure>
+<div class="book-table-wrap">
+<table class="book-table">
+<caption><span class="fig-num">Table 2.6.</span> Hourly-to-daily inventory uncertainties and which category of resource each one primarily affects.</caption>
+<thead>
+<tr><th></th><th>Physical</th><th>Financial</th><th>Informational</th></tr>
+</thead>
+<tbody>
+<tr><td>Day-to-day variations in customer demands</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Errors in measuring inventories</td><td></td><td></td><td>&#10003;</td></tr>
+<tr><td>Inventory "shrinkage" (theft, loss, spoilage, breakage, ...)</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Yield from shipment (how many items/how much material met specifications)</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Transportation delays due to weather, equipment failures</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Forecasting errors</td><td></td><td></td><td>&#10003;</td></tr>
+<tr><td>Cost of raw commodities</td><td></td><td>&#10003;</td><td></td></tr>
+<tr><td>Cost of inputs from suppliers</td><td></td><td>&#10003;</td><td></td></tr>
+<tr><td>Power (electricity, fuels) outages</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Communication errors, human execution errors</td><td></td><td></td><td>&#10003;</td></tr>
+<tr><td>Day-to-day variations in company stock price</td><td></td><td>&#10003;</td><td></td></tr>
+<tr><td>Financial fraud in individual transactions</td><td></td><td>&#10003;</td><td></td></tr>
+<tr><td>Day-to-day availability of available-to-allocate capacity</td><td>&#10003;</td><td></td><td></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="book-table-wrap">
+<table class="book-table">
+<caption><span class="fig-num">Table 2.7.</span> Weekly inventory uncertainties and which category of resource each one primarily affects.</caption>
+<thead>
+<tr><th></th><th>Physical</th><th>Financial</th><th>Informational</th></tr>
+</thead>
+<tbody>
+<tr><td>Shifts in the mean demand due to technology shifts, competitor behavior, market shifts</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Changes in the selling price of a product (affects demand and profit flows)</td><td>&#10003;</td><td>&#10003;</td><td></td></tr>
+<tr><td>Changes in commodity prices</td><td></td><td>&#10003;</td><td></td></tr>
+<tr><td>How the market responds to pricing changes</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Delays due to strikes at ports, railyards, international crossing points</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Shifts in behavior of large customers</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Shifts in attitudes on Wall St (e.g. from "growth" to "stable" to "recession")</td><td></td><td></td><td>&#10003;</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="book-table-wrap">
+<table class="book-table">
+<caption><span class="fig-num">Table 2.8.</span> Monthly-to-yearly inventory uncertainties and which category of resource each one primarily affects.</caption>
+<thead>
+<tr><th></th><th>Physical</th><th>Financial</th><th>Informational</th></tr>
+</thead>
+<tbody>
+<tr><td>Emergence of new information technologies (AWS, AI, visibility platforms)</td><td></td><td></td><td>&#10003;</td></tr>
+<tr><td>Emergence of new manufacturing/material handling technologies (e.g. robotics)</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Emergence of new competitors</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Shifts in population patterns (e.g. growth of immigration)</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Shifts in demand patterns (increase in demand for high-end products)</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Treaties governing trade</td><td>&#10003;</td><td>&#10003;</td><td></td></tr>
+<tr><td>Changes in labor availability</td><td>&#10003;</td><td></td><td></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="book-table-wrap">
+<table class="book-table">
+<caption><span class="fig-num">Table 2.9.</span> Major-disruption inventory uncertainties and which category of resource each one primarily affects.</caption>
+<thead>
+<tr><th></th><th>Physical</th><th>Financial</th><th>Informational</th></tr>
+</thead>
+<tbody>
+<tr><td>Emergence of new information technologies (AWS, AI, visibility platforms)</td><td></td><td></td><td>&#10003;</td></tr>
+<tr><td>Emergence of new manufacturing/material handling technologies (e.g. robotics)</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Emergence of new competitors</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Shifts in population patterns (e.g. growth of immigration)</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Shifts in demand patterns (increase in demand for high-end products)</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Treaties governing trade</td><td>&#10003;</td><td>&#10003;</td><td></td></tr>
+<tr><td>Changes in labor availability</td><td>&#10003;</td><td></td><td></td></tr>
+</tbody>
+</table>
+</div>
+
+*(Note: table 2.9's source figure renders identically to table 2.8 — flagged for you to check against the manuscript; the "major disruptions" row content may need to be swapped in from a different source file.)*
 
 Identifying the different sources of uncertainty is a particularly rich area for complex problems such as supply chains. Not only are there a wide range of uncertainties, they come in different styles such as fine-grained volatility, regime shifting, spikes, bursts and rare events. We discuss these behaviors in more detail in Chapter 5.
 
-<figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/DecisionMetricsMatrixLarge.png" alt="Interaction matrix for decisions and metrics for an inventory problem with long lead times.">
-  <figcaption><span class="fig-num">Figure 2.11.</span> Interaction matrix for decisions and metrics for an inventory problem with long lead times.</figcaption>
-</figure>
+<div class="book-table-wrap">
+<table class="book-table">
+<caption><span class="fig-num">Table 2.10.</span> Interaction matrix for decisions and metrics for an inventory problem with long lead times.</caption>
+<thead>
+<tr><th>Decisions \ Metrics</th><th>Sales revenue</th><th>Product costs</th><th>Holding costs</th><th>Stockouts</th><th>Inventory turns</th><th>Operating margin</th><th>Sales growth</th></tr>
+</thead>
+<tbody>
+<tr><td>When/how much to order</td><td class="hml-h">H</td><td class="hml-h">H</td><td class="hml-m">M</td><td class="hml-m">M</td><td class="hml-m">M</td><td class="hml-m">M</td><td class="hml-l">L</td></tr>
+<tr><td>Purchase currency hedge?</td><td class="hml-n">N</td><td class="hml-l">L</td><td class="hml-n">N</td><td class="hml-n">N</td><td class="hml-n">N</td><td class="hml-m">M</td><td class="hml-n">N</td></tr>
+<tr><td>Discounting</td><td class="hml-m">M</td><td class="hml-n">N</td><td class="hml-l">L</td><td class="hml-m">M</td><td class="hml-l">L</td><td class="hml-m">M</td><td class="hml-m">M</td></tr>
+<tr><td>Market product on social media</td><td class="hml-h">H</td><td class="hml-l">L</td><td class="hml-l">L</td><td class="hml-m">M</td><td class="hml-m">M</td><td class="hml-l">L</td><td class="hml-m">M</td></tr>
+<tr><td>Choice of supplier</td><td class="hml-l">L</td><td class="hml-m">M</td><td class="hml-l">L</td><td class="hml-l">L</td><td class="hml-l">L</td><td class="hml-m">M</td><td class="hml-l">L</td></tr>
+<tr><td>Pricing</td><td class="hml-h">H</td><td class="hml-n">N</td><td class="hml-l">L</td><td class="hml-l">L</td><td class="hml-l">L</td><td class="hml-m">M</td><td class="hml-m">M</td></tr>
+<tr><td>Currency hedges?</td><td class="hml-n">N</td><td class="hml-l">L</td><td class="hml-n">N</td><td class="hml-n">N</td><td class="hml-n">N</td><td class="hml-l">L</td><td class="hml-n">N</td></tr>
+<tr><td>Inventory sensors</td><td class="hml-l">L</td><td class="hml-l">L</td><td class="hml-l">L</td><td class="hml-m">M</td><td class="hml-l">L</td><td class="hml-l">L</td><td class="hml-n">N</td></tr>
+<tr><td>Use visibility platforms to track inbound product?</td><td></td><td class="hml-l">L</td><td class="hml-l">L</td><td class="hml-m">M</td><td class="hml-l">L</td><td class="hml-l">L</td><td class="hml-n">N</td></tr>
+<tr><td>Product design</td><td class="hml-m">M</td><td class="hml-h">H</td><td class="hml-l">L</td><td class="hml-m">M</td><td class="hml-m">M</td><td class="hml-m">M</td><td class="hml-h">H</td></tr>
+</tbody>
+</table>
+</div>
 
 ### Interactions {#inventorydecisioninteractions}
 
-A powerful exercise that helps with developing an understanding of the different elements of decision problems is to subjectively assess the strength of different types of interactions, an idea we first introduced in the [capturing interactions section above](#capturinginteractions). We start with describing the interactions between decisions and metrics for an inventory problem with long lead times, shown in figure 2.11. We emphasize that filling out this matrix is completely subjective, since it helps us identify the most important decisions, as well as the metrics that we have the greatest chance of improving.
+A powerful exercise that helps with developing an understanding of the different elements of decision problems is to subjectively assess the strength of different types of interactions, an idea we first introduced in the [capturing interactions section above](#capturinginteractions). We start with describing the interactions between decisions and metrics for an inventory problem with long lead times, shown in table 2.10. We emphasize that filling out this matrix is completely subjective, since it helps us identify the most important decisions, as well as the metrics that we have the greatest chance of improving.
 
 What we are doing is replacing what is often a completely invisible step of choosing what decisions to focus on, with a process that makes this choice explicit, even if it is made subjectively.
 
-The interaction matrix for uncertainties and metrics given a decision might look like that given in figure 2.12. Here, we make a point of holding a decision fixed to avoid blending the effect that uncertainty has on which decision we make.
+The interaction matrix for uncertainties and metrics given a decision might look like that given in table 2.11. Here, we make a point of holding a decision fixed to avoid blending the effect that uncertainty has on which decision we make.
 
-<figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/UncertaintyMetricsMatrixLarge.png" alt="Interaction matrix for uncertainties and metrics given a decision for an inventory problem with small lead times.">
-  <figcaption><span class="fig-num">Figure 2.12.</span> Interaction matrix for uncertainties and metrics given a decision for an inventory problem with small lead times.</figcaption>
-</figure>
+<div class="book-table-wrap">
+<table class="book-table">
+<caption><span class="fig-num">Table 2.11.</span> Interaction matrix for uncertainties and metrics given a decision for an inventory problem with long lead times.</caption>
+<thead>
+<tr><th>Uncertainty \ Metrics</th><th>Sales revenue</th><th>Unit costs</th><th>Holding costs</th><th>Stockouts</th><th>Inventory turns</th><th>Operating margin</th><th>Sales growth</th></tr>
+</thead>
+<tbody>
+<tr><td>Sales (units sold)</td><td class="hml-h">H</td><td class="hml-l">L</td><td class="hml-m">M</td><td class="hml-m">M</td><td class="hml-h">H</td><td class="hml-m">M</td><td class="hml-h">H</td></tr>
+<tr><td>Lead times</td><td class="hml-l">L</td><td class="hml-l">L</td><td class="hml-m">M</td><td class="hml-h">H</td><td class="hml-m">M</td><td class="hml-l">L</td><td class="hml-m">M</td></tr>
+<tr><td>Forecasting errors</td><td class="hml-l">L</td><td class="hml-n">N</td><td class="hml-m">M</td><td class="hml-m">M</td><td class="hml-m">M</td><td class="hml-h">H</td><td class="hml-l">L</td></tr>
+<tr><td>Inventory shrinkage</td><td class="hml-m">M</td><td class="hml-n">N</td><td class="hml-l">L</td><td class="hml-n">N</td><td class="hml-m">M</td><td class="hml-l">L</td><td class="hml-n">N</td></tr>
+<tr><td>Changes in commodity prices</td><td class="hml-n">N</td><td class="hml-h">H</td><td class="hml-n">N</td><td class="hml-n">N</td><td class="hml-n">N</td><td class="hml-n">N</td><td class="hml-l">L</td></tr>
+<tr><td>Market response to price</td><td class="hml-m">M</td><td class="hml-n">N</td><td class="hml-n">N</td><td class="hml-n">N</td><td class="hml-n">N</td><td class="hml-m">M</td><td class="hml-l">L</td></tr>
+<tr><td>Work stoppages</td><td class="hml-m">M</td><td class="hml-l">L</td><td class="hml-n">N</td><td class="hml-m">M</td><td class="hml-l">L</td><td class="hml-l">L</td><td class="hml-n">N</td></tr>
+<tr><td>Competitor pricing behavior</td><td class="hml-m">M</td><td class="hml-n">N</td><td class="hml-l">L</td><td class="hml-l">L</td><td class="hml-l">L</td><td class="hml-m">M</td><td class="hml-m">M</td></tr>
+</tbody>
+</table>
+</div>
 
 ## Demand management – selling furniture {#demandmanagementfurniture}
 
@@ -405,11 +540,11 @@ Energy systems offer an exceptionally rich set of uncertainties that affect both
 - The cost of equipment (solar panels, wind turbines, batteries, gas turbines, and nuclear power plants) evolves continuously over time.
 - The emergence of new technologies, such as small nuclear power plants and new battery technologies.
 
-The emphasis on renewables has raised the visibility of uncertainties. Figure 2.13 shows solar output on an hourly basis, over an entire year, which communicates both seasonal variations, familiar daily cycles, and the effects of cloud cover. Of particular importance is the predictability of the different forms of uncertainty. We know when the sun will set decades in the future, but cloud cover is particularly difficult even on very short time horizons.
+The emphasis on renewables has raised the visibility of uncertainties. Figure 2.7 shows solar output on an hourly basis, over an entire year, which communicates both seasonal variations, familiar daily cycles, and the effects of cloud cover. Of particular importance is the predictability of the different forms of uncertainty. We know when the sun will set decades in the future, but cloud cover is particularly difficult even on very short time horizons.
 
 <figure class="book-figure">
   <img src="/assets/images/bridging-vol1/AnnualSolarEnergy.png" alt="Hourly solar energy generation over an entire year.">
-  <figcaption><span class="fig-num">Figure 2.13.</span> Hourly solar energy generation over an entire year.</figcaption>
+  <figcaption><span class="fig-num">Figure 2.7.</span> Hourly solar energy generation over an entire year.</figcaption>
 </figure>
 
 ## Hotel revenue management
@@ -727,11 +862,11 @@ Some of the uncertainties faced in truckload trucking include:
 
 A mutual fund manager who had taken an operations planning course for his MBA was introduced to a classic problem known as the "newsvendor problem." Newsvendor problems arise when you have to decide on a quantity of a resource (for example, newspapers) to allocate to serve a demand that is not known when you make your decision. If you allocate too much, you will have resources left over, where we assume they cannot be held for the future (just as today's newspapers are of no value tomorrow). If we allocate too few, then we will have unsatisfied demand.
 
-After finishing his MBA (at a top business school), the mutual fund manager faced the problem of deciding how much cash to keep on hand to handle requests for redemptions. The problem is summarized in the email shown in figure 2.14, but the core elements are as follows:
+After finishing his MBA (at a top business school), the mutual fund manager faced the problem of deciding how much cash to keep on hand to handle requests for redemptions. The problem is summarized in the email shown in figure 2.8, but the core elements are as follows:
 
 <figure class="book-figure">
   <img src="/assets/images/bridging-vol1/MutualFundemail.png" alt="Email from a mutual fund manager and former MBA student seeking advice on how to manage the cash balance.">
-  <figcaption><span class="fig-num">Figure 2.14.</span> Email from a mutual fund manager and former MBA student seeking advice on how to manage the cash balance.</figcaption>
+  <figcaption><span class="fig-num">Figure 2.8.</span> Email from a mutual fund manager and former MBA student seeking advice on how to manage the cash balance.</figcaption>
 </figure>
 
 - The mutual fund has to maintain enough cash to meet requests for redemptions. If there is not enough cash on hand when a redemption request comes in, they will have to liquidate stocks, incurring transaction costs, and possibly being forced to sell at a lower price. If they hold too much cash, then they are missing out on the potential growth of investments in the market.
@@ -861,11 +996,11 @@ There is a massive problem class in decision-making that can be best described a
   - Basketball – Who should play each position.
   - Portfolio managers – Who gets the best results managing a portfolio.
 
-Each of these contexts involves choosing from among a set of choices. We want to choose the one that works the best, but we are not sure how well each will perform. The situation is depicted in figure 2.15. There may be two choices, dozens, hundreds, and many thousands.
+Each of these contexts involves choosing from among a set of choices. We want to choose the one that works the best, but we are not sure how well each will perform. The situation is depicted in figure 2.9. There may be two choices, dozens, hundreds, and many thousands.
 
 <figure class="book-figure">
   <img src="/assets/images/bridging-vol1/DiscreteChoices2.png" alt="A set of discrete choices.">
-  <figcaption><span class="fig-num">Figure 2.15.</span> A set of discrete choices.</figcaption>
+  <figcaption><span class="fig-num">Figure 2.9.</span> A set of discrete choices.</figcaption>
 </figure>
 
 This basic problem comes in a variety of flavors:

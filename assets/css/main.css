@@ -611,6 +611,15 @@ img, video { max-width: 100%; height: auto; display: block; }
 .book-table th { background: #ede0bd; color: #3d2914; }
 .book-table td:first-child { text-align: left; }
 
+/* Rating cells for H/M/L/N interaction-matrix tables (impact of a decision
+   or uncertainty on a metric: High/Medium/Low/None). Colors follow the
+   author's original spreadsheet convention: red=H, orange=M, yellow=L,
+   white/blank=N. */
+.book-table td.hml-h { background: #f4433699; font-weight: 700; }
+.book-table td.hml-m { background: #ffb74d99; font-weight: 700; }
+.book-table td.hml-l { background: #fff17699; font-weight: 700; }
+.book-table td.hml-n { background: transparent; color: #6b5a3f; }
+
 .book-exercises {
   padding-left: 1.5rem;
   counter-reset: exercise;
