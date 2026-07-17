@@ -12,8 +12,8 @@ Humanity is comprised of a variety of processes, each of which encompasses a ran
 
 This book will be defined by the following statement:
 
-<figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/Ifyouwantabetter.png" alt="If you want to run a better {anything} you have to make better decisions.">
+<figure class="book-figure is-self-framed">
+  <img src="/assets/images/bridging-vol1/Ifyouwantabetter.jpg" alt="If you want to run a better {anything} you have to make better decisions.">
 </figure>
 
 We work from the premise that we are always working to improve things, and we can only do so by manipulating elements we control, otherwise known as *decisions*.
