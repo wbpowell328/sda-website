@@ -66,10 +66,10 @@ $$X^{UCB}(S_t \mid \theta^{UCB}) = \mathop{\mathrm{argmax}}_{x}\left( \overline{
 
 where:
 
-- $x \in \mathcal{X} = \{x_1, x_2, \ldots, x_K\}$
-- $\overline{\mu}_x^n$ = current estimate of the performance of choice $x$ after $n$ experiments.
-- $N_x^n$ = the number of times that we have tested choice $x$ after $n$ experiments.
-- $\theta^{UCB}$ = a tunable parameter.
+<div class="var-def">$x \in \mathcal{X} = \{x_1, x_2, \ldots, x_K\}$ = the set of choices being tested.</div>
+<div class="var-def">$\overline{\mu}_x^n$ = current estimate of the performance of choice $x$ after $n$ experiments.</div>
+<div class="var-def">$N_x^n$ = the number of times that we have tested choice $x$ after $n$ experiments.</div>
+<div class="var-def">$\theta^{UCB}$ = a tunable parameter.</div>
 
 This is just one example of an entire family of so-called "upper confidence bounding" policies which use different methods for creating optimistic estimates of the true value. If $\theta^{UCB} = 0$ then we are just choosing to test the choice that appears to be best on the basis of the current estimate $\overline{\mu}_x^n$.
 
@@ -89,8 +89,8 @@ $$\max_{\theta}\, \frac{1}{N}\sum_{n=1}^{N} W_{x^n}^{n}$$
 
 where
 
-- $W_x^n$ = the observed performance of choice $x^n$ chosen in the $n^{\text{th}}$ experiment.
-- $x^n = X^{UCB}(S_t \mid \theta)$ is the choice made to test in the $n^{\text{th}}$ experiment, given the belief state $S^n = (\overline{\mu}_x^n),\, x \in \mathcal{X}$, which is the belief state of all the alternatives.
+<div class="var-def">$W_x^n$ = the observed performance of choice $x^n$ chosen in the $n^{\text{th}}$ experiment.</div>
+<div class="var-def">$x^n = X^{UCB}(S_t \mid \theta)$ is the choice made to test in the $n^{\text{th}}$ experiment, given the belief state $S^n = (\overline{\mu}_x^n),\, x \in \mathcal{X}$, which is the belief state of all the alternatives.</div>
 
 UCB-style policies have proven very popular in settings such as e-commerce where it is necessary to quickly identify which product to advertise when a customer brings up a webpage. However, they are not well suited to problems with expensive experiments and (invariably) smaller budgets.
 

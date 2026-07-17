@@ -16,9 +16,9 @@ $$S_{0},\, x_{0},\, W_{1},\, \ldots,\, S_{t},\, x_{t},\, W_{t+1},\, \ldots,\, S_
 
 where
 
-- $S_t =$ what we know at time $t$ when we need to make a decision.
-- $x_t =$ the decision we make (which can be different types of decisions).
-- $W_{t+1} =$ information that becomes available from outside our control, after we make decision $x_t$.
+<div class="var-def">$S_t =$ what we know at time $t$ when we need to make a decision.</div>
+<div class="var-def">$x_t =$ the decision we make (which can be different types of decisions).</div>
+<div class="var-def">$W_{t+1} =$ information that becomes available from outside our control, after we make decision $x_t$.</div>
 
 This view is from the perspective of a single decision-making agent; if there is more than one decision-maker, we model each one separately, along with the interactions between them.
 

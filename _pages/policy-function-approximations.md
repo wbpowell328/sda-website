@@ -40,13 +40,13 @@ The policy $\pi$ contains the set of features (where we also use $f$ to describe
 
 An example of a linear decision rule is the **PID controller** (PID stands for *proportional, integral, derivative*), widely used when controlling temperature, flows of liquids or gases, and administering drugs such as insulin. Let:
 
-- $r_t$ = target value we are trying to hit (temperature, flow, blood sugar),
-- $y_t$ = actual value,
-- $T_s$ = length of time step,
-- $e_t = r_t - y_t$ = error (proportional),
-- $I_t = I_{t-1} + T_s e_t$ = sum of errors (integral),
-- $D_t = (e_t - e_{t-1}) / T_s$ = derivative,
-- $S_t = (y_t, e_t, I_t, D_t)$ = state variable.
+<div class="var-def">$r_t$ = target value we are trying to hit (temperature, flow, blood sugar).</div>
+<div class="var-def">$y_t$ = actual value.</div>
+<div class="var-def">$T_s$ = length of time step.</div>
+<div class="var-def">$e_t = r_t - y_t$ = error (proportional).</div>
+<div class="var-def">$I_t = I_{t-1} + T_s e_t$ = sum of errors (integral).</div>
+<div class="var-def">$D_t = (e_t - e_{t-1}) / T_s$ = derivative.</div>
+<div class="var-def">$S_t = (y_t, e_t, I_t, D_t)$ = state variable.</div>
 
 The PID control policy is then
 
