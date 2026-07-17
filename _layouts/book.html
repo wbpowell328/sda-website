@@ -48,8 +48,14 @@
   <ol>
     {% for c in chapters %}
       <li class="{% if c.url == page.url %}is-current{% endif %}">
-        {% if c.url != "" %}
-          <a href="{{ c.url | relative_url }}">{% if c.num != "" %}<span class="book-toc-chnum">Chapter {{ c.num }}.</span> {% endif %}{{ c.title }}</a>
+        {% if c.url != "" and c.is_toc != true %}
+          <div class="book-toc-row">
+            <a href="{{ c.url | relative_url }}">{% if c.num != "" %}<span class="book-toc-chnum">Chapter {{ c.num }}.</span> {% endif %}{{ c.title }}</a>
+            <button type="button" class="book-toc-expand" data-chapter-url="{{ c.url | relative_url }}" aria-expanded="false" aria-label="Show sections of {{ c.title }}">&#9656;</button>
+          </div>
+          <ul class="book-toc-sections" hidden></ul>
+        {% elsif c.url != "" %}
+          <a href="{{ c.url | relative_url }}">{{ c.title }}</a>
         {% else %}
           <span class="book-toc-placeholder">{% if c.num != "" %}<span class="book-toc-chnum">Chapter {{ c.num }}.</span> {% endif %}{{ c.title }} <em>(coming soon)</em></span>
         {% endif %}
@@ -112,6 +118,79 @@
         drawer.classList.remove('is-open');
         btn.setAttribute('aria-expanded', 'false');
       }
+    });
+  })();
+</script>
+
+<!-- Per-chapter section expand/collapse in the contents drawer. Each
+     chapter's h2/h3 sections are only fetched and parsed the first time its
+     toggle is opened (cached afterward), so browsing the drawer never
+     requires loading every chapter's HTML up front. Multiple chapters can be
+     expanded at once — collapsing one never auto-collapses another. -->
+<script>
+  (function () {
+    var drawer = document.getElementById('book-toc-drawer');
+    if (!drawer) return;
+
+    function renderSections(container, headings) {
+      headings.forEach(function (h) {
+        var li = document.createElement('li');
+        li.className = h.tag === 'H3' ? 'book-toc-sub' : '';
+        var a = document.createElement('a');
+        a.href = h.url + '#' + h.id;
+        a.textContent = h.text;
+        li.appendChild(a);
+        container.appendChild(li);
+      });
+    }
+
+    function extractHeadings(doc, url) {
+      var nodes = doc.querySelectorAll('.book-page h2, .book-page h3');
+      return Array.prototype.map.call(nodes, function (h) {
+        return { tag: h.tagName, id: h.id, text: h.textContent, url: url };
+      });
+    }
+
+    drawer.addEventListener('click', function (e) {
+      var btn = e.target.closest('.book-toc-expand');
+      if (!btn) return;
+      e.preventDefault();
+
+      var row = btn.closest('li');
+      var sectionsEl = row.querySelector('.book-toc-sections');
+      var expanded = btn.getAttribute('aria-expanded') === 'true';
+
+      if (expanded) {
+        btn.setAttribute('aria-expanded', 'false');
+        sectionsEl.hidden = true;
+        return;
+      }
+
+      btn.setAttribute('aria-expanded', 'true');
+      sectionsEl.hidden = false;
+
+      if (sectionsEl.dataset.loaded) return;
+      sectionsEl.dataset.loaded = 'true';
+
+      var url = btn.getAttribute('data-chapter-url');
+      var isCurrentPage = url.replace(/\/$/, '') === window.location.pathname.replace(/\/$/, '');
+
+      if (isCurrentPage) {
+        renderSections(sectionsEl, extractHeadings(document, url));
+        return;
+      }
+
+      sectionsEl.innerHTML = '<li class="book-toc-loading">Loading…</li>';
+      fetch(url)
+        .then(function (res) { return res.text(); })
+        .then(function (html) {
+          var doc = new DOMParser().parseFromString(html, 'text/html');
+          sectionsEl.innerHTML = '';
+          renderSections(sectionsEl, extractHeadings(doc, url));
+        })
+        .catch(function () {
+          sectionsEl.innerHTML = '<li class="book-toc-loading">Couldn\'t load sections.</li>';
+        });
     });
   })();
 </script>
