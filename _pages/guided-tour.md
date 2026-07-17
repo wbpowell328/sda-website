@@ -159,7 +159,7 @@ The chatbot can write out mathematics and can even write code. However, it is ve
 
 Stochastic search is easily the most common form of sequential decision problem. It arises in two forms:
 
-1. **Derivative-based stochastic search** – We may have a set of continuous parameters that affect the performance of our policy, or any other continuous parameter (diameter of a wafer, price of a product, dosage of a drug, temperature of a manufacturing process). At the moment I do not have a webpage on this topic, but you can download [Chapter 5, Derivative-based stochastic search](https://tinyurl.com/RLSOchapter7), in [*Reinforcement Learning and Stochastic Optimization*](/rlso/). Pay special attention to the algorithm called SPSA (see section 5.4.4) which is a powerful strategy for doing derivative-based stochastic search when the parameters form a vector, and where you do not have access to an explicit formula for the derivatives (gradient).
+1. **Derivative-based stochastic search** – We may have a set of continuous parameters that affect the performance of our policy, or any other continuous parameter (diameter of a wafer, price of a product, dosage of a drug, temperature of a manufacturing process). At the moment I do not have a webpage on this topic, but you can download [Chapter 5, Derivative-based stochastic search](https://tinyurl.com/RLSOchapter5), in [*Reinforcement Learning and Stochastic Optimization*](/rlso/). Pay special attention to the algorithm called SPSA (see section 5.4.4) which is a powerful strategy for doing derivative-based stochastic search when the parameters form a vector, and where you do not have access to an explicit formula for the derivatives (gradient).
 2. **Derivative-free stochastic search** – These problems arise when there is a set of discrete choices and we want to make the choice that is "best" according to some metric, but we are not sure about the performance of the choices. The problem is illustrated below. I have covered this problem under the label of "optimal learning" but it has been studied under names such as "multiarmed bandit problem," "Bayesian optimization," "ranking and selection," "design of experiments" or "intelligent trial-and-error."
 
 <img src="/assets/images/guided-tour/derivative-free-search.png" alt="An illustration of derivative-free stochastic search: a list of candidate choices (type of drug, supplier, trading policy, product design, and others) beside a bar chart of seven choices A–G, each bar showing an estimated goal/metric value with a confidence interval" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto;" />
@@ -184,11 +184,9 @@ We cover this material under the heading [**Optimal Learning**](/optimal-learnin
 
     where
 
-    $$\overline{\mu}_{tx} =$$ Estimate of the performance of choice $$x$$ at time $$t$$ (or after $$t$$ experiments).
-
-    $$\overline{\sigma}_{xt} =$$ Standard deviation of $$\overline{\mu}_{tx}$$.
-
-    $$\theta =$$ a tunable parameter.
+    <div class="var-def">$\overline{\mu}_{tx} =$ Estimate of the performance of choice $x$ at time $t$ (or after $t$ experiments).</div>
+    <div class="var-def">$\overline{\sigma}_{xt} =$ Standard deviation of $\overline{\mu}_{tx}$.</div>
+    <div class="var-def">$\theta =$ a tunable parameter.</div>
 
     UCB policies are very simple (trivial even), but as I have said before: "the price of simplicity is tunable parameters… and tuning is hard." These policies were originally developed for online learning, but they can be tuned for either online or offline settings. At the same time, tuning picks up any other problem characteristics such as the level of noise in the experiments, the budget, and the nature of the belief model (e.g. are there correlated beliefs).
 - **[KG vs. UCB and the problem of tuning](/optimal-learning/#kg-vs-ucb)** – UCB policies are a form of cost function approximation (CFA), since they require solving an optimization problem (in the form of the sorting over the adjusted values of each choice), with a tunable parameter. KG, on the other hand, is a form of stochastic DLA. KG is clearly more complex, but one benefit is that it does not have any tunable parameters.
