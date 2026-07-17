@@ -536,3 +536,23 @@ img, video { max-width: 100%; height: auto; display: block; }
      the same section links. iPad and larger keep the topnav visible. */
   .topnav { display: none; }
 }
+
+/* ============================================================
+   Variable-definition callout — shared across notation-heavy pages
+   Site convention: any line of the form  variable = explanation
+   goes inside <div class="var-def">. Nested sub-definitions (when
+   one variable is composed of others) use var-def-nested.
+   ============================================================ */
+.var-def {
+  background: #faf5e6;
+  border-left: 3px solid #c9a86b;
+  border-radius: 0 4px 4px 0;
+  padding: 0.55rem 0.9rem;
+  margin: 0.55rem 0;
+}
+.var-def .var-def-nested {
+  background: #f4ecd4;
+  border-left-color: #a97e42;
+  margin: 0.4rem 0 0.4rem 1.25rem;
+  padding: 0.4rem 0.75rem;
+}

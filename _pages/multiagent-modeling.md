@@ -82,17 +82,15 @@ We start with a brief review of our single-agent notation, and then show how to 
 
 We have been modeling sequential decision problems using the following notation:
 
-$S_{t} =$ Our state of knowledge at time $t$ which consists of:
+<div class="var-def">$S_{t} =$ Our state of knowledge at time $t$ which consists of:
+<div class="var-def var-def-nested">$R_{t} =$ Quantities of resources of different types at time $t$. We might let $R_{ta}$ be the number of resources with attribute $a$ at time $t$, where $a$ may be a vector.</div>
+<div class="var-def var-def-nested">$I_{t} =$ Information about parameters and functions at time $t$.</div>
+<div class="var-def var-def-nested">$B_{t} =$ Beliefs stored about any uncertain quantities and parameters that we do not know perfectly. Beliefs may be stored with a mixture of frequentist or Bayesian statistics.</div>
+</div>
 
-> $R_{t} =$ Quantities of resources of different types at time $t$. We might let $R_{ta}$ be the number of resources with attribute $a$ at time $t$, where $a$ may be a vector.
->
-> $I_{t} =$ Information about parameters and functions at time $t$.
->
-> $B_{t} =$ Beliefs stored about any uncertain quantities and parameters that we do not know perfectly. Beliefs may be stored with a mixture of frequentist or Bayesian statistics.
+<div class="var-def">$x_{t} =$ A (possibly vector-valued) set of decisions that act on our system in any way, whether it is changing quantities, parameters, or functions that affect the evolution of the system.</div>
 
-$x_{t} =$ A (possibly vector-valued) set of decisions that act on our system in any way, whether it is changing quantities, parameters, or functions that affect the evolution of the system.
-
-$W_{t+1,i} =$ The information of type $i \in \mathcal{I}^{\inf}$ which arrives after decision $x_{t}$ is made, and before we make decision $x_{t+1}$. Information may arrive from a variety of sources over different time scales.
+<div class="var-def">$W_{t+1,i} =$ The information of type $i \in \mathcal{I}^{\inf}$ which arrives after decision $x_{t}$ is made, and before we make decision $x_{t+1}$. Information may arrive from a variety of sources over different time scales.</div>
 
 Our state variable evolves according to the state transition model:
 
@@ -104,7 +102,7 @@ which covers the updating of quantities of resources $R_{t}$, information about 
 
 We start by introducing our index for agents:
 
-> $q \in \mathcal{Q} =$ A (finite) set of agents.
+<div class="var-def">$q \in \mathcal{Q} =$ A (finite) set of agents.</div>
 
 We reserve $q = 0$ for the environment, which occupies a special place in our multiagent vocabulary. If we work on a two-agent problem, we suggest letting "0" be "agent 0" for the environment, and then letting "$q$" (which is a letter, not an index of a set) as our decision-making agent.
 
@@ -132,7 +130,7 @@ We need to emphasize how much we are hiding in this single equation. It covers u
 
 A major change when we extend to multiple decision-making agents is the need to represent what other agents know. We use the notation
 
-$S_{tqq'} =$ The state of what agent $q$ knows about agent $q'$ at time $t$.
+<div class="var-def">$S_{tqq'} =$ The state of what agent $q$ knows about agent $q'$ at time $t$.</div>
 
 Examples of this kind of information include:
 
@@ -162,9 +160,9 @@ When we transition to multiple decision-makers, we introduce the dimension of le
 
 There are many settings, with supply chain management being the most visible, where one agent can send physical resources (parts, products, people, water, chemicals, money) to another agent. To represent this, we introduce the notation:
 
-$\mathcal{Q}_{q}^{+} =$ Set of agents $q'$ that an agent $q$ can send physical resources to.
+<div class="var-def">$\mathcal{Q}_{q}^{+} =$ Set of agents $q'$ that an agent $q$ can send physical resources to.</div>
 
-$x_{tqq'a} =$ Flow of resources with attribute vector $a$ from $q$ to $q'$ at time $t$ (there may be some lag before the resources arrive at agent $q'$). We can use this notation to represent any action by agent $q$ on agent $q'$ at time $t$.
+<div class="var-def">$x_{tqq'a} =$ Flow of resources with attribute vector $a$ from $q$ to $q'$ at time $t$ (there may be some lag before the resources arrive at agent $q'$). We can use this notation to represent any action by agent $q$ on agent $q'$ at time $t$.</div>
 
 There is a lot of other notation required to fill out the dynamics that can be found in chapter 20, but this provides a start.
 
@@ -182,19 +180,19 @@ Easily the most subtle dimension of modeling multiagent systems is capturing the
 
 Given the subtleties of sending and sharing information, it helps to introduce new notation rather than re-using our "$x_{tqq'}$" notation. We can define:
 
-$z_{tqq'i} =$ The sharing of information from element "$i$" known to agent $q$ with agent $q'$ at time $t$.
+<div class="var-def">$z_{tqq'i} =$ The sharing of information from element "$i$" known to agent $q$ with agent $q'$ at time $t$.</div>
 
 If you are agent $q'$, you are told that $z_{tqq'i}$ is informing you about information held by agent $q$ at time $t$. This might be the status of a production line, a patient reporting on their condition, the status of a piece of equipment, or the location of a shipment. However, the information may not be accurate. We might need to capture:
 
-$\beta_{qq'i} =$ The precision (inverse of the variance) of the reliability of the information sent from $q$ to $q'$ describing information element $i$.
+<div class="var-def">$\beta_{qq'i} =$ The precision (inverse of the variance) of the reliability of the information sent from $q$ to $q'$ describing information element $i$.</div>
 
-$\delta_{qq'i} =$ The bias in the information about data element $i$ sent from $q$ to $q'$.
+<div class="var-def">$\delta_{qq'i} =$ The bias in the information about data element $i$ sent from $q$ to $q'$.</div>
 
 Bias and variance (precision) are two key statistics capturing the reliability of information. It is very common that information arrives with errors, which may consist of bias (being consistently high or low) plus noise, captured by the variance. These parameters can reflect the relationship between $q$ and $q'$ (we are more honest with some people than others).
 
 We are typically aware that it costs money to move physical goods from one agent to another, while moving information is often negligible. This is not the case, for example, when we are dealing with robots/drones, so we might also capture:
 
-$\eta_{qq'i} =$ The energy required to send information about data element $i$ from $q$ to $q'$.
+<div class="var-def">$\eta_{qq'i} =$ The energy required to send information about data element $i$ from $q$ to $q'$.</div>
 
 Energy consumption is an important consideration for robots and drones, hence the energy requirements for communication need to be considered.
 
@@ -212,7 +210,7 @@ An exogenous agent does not have to be an individual — it can be a market repr
 
 The ability to influence exogenous information processes is common, which is why I started to write the exogenous information process as a function:
 
-$W_{t+1,i}(S_{t}, x_{t}) =$ Information of type $i$ arriving between $t$ (that is, after we make decision $x_{t}$) and $t+1$ (before we make decision $x_{t+1}$), which might be influenced by the current state $S_{t}$ (that is, what we know before we make decision $x_{t}$) and/or the decision itself $x_{t}$.
+<div class="var-def">$W_{t+1,i}(S_{t}, x_{t}) =$ Information of type $i$ arriving between $t$ (that is, after we make decision $x_{t}$) and $t+1$ (before we make decision $x_{t+1}$), which might be influenced by the current state $S_{t}$ (that is, what we know before we make decision $x_{t}$) and/or the decision itself $x_{t}$.</div>
 
 It is usually the case (but not always) that the state $S_{t}$ reflects previous decisions. As a result, dependence on either $S_{t}$ and/or $x_{t}$ implies that there is another agent (or group of agents) that is making its own decisions that affects the information arriving to the agent making the decision $x_{t}$.
 
@@ -286,9 +284,9 @@ This problem could be solved using any of the four classes of policies, but PFAs
 
 To illustrate an anchor-and-adjustment policy, first define:
 
-$\bar{F}_{t,q-1,q} =$ Estimated fill rate to agent $q-1$ by agent $q$ ($q-1$ is one echelon closer to the retailer $q$).
+<div class="var-def">$\bar{F}_{t,q-1,q} =$ Estimated fill rate to agent $q-1$ by agent $q$ ($q-1$ is one echelon closer to the retailer $q$).</div>
 
-$\bar{A}_{t,q-1,q} =$ Actual beer orders from agent $q-1$ to agent $q$.
+<div class="var-def">$\bar{A}_{t,q-1,q} =$ Actual beer orders from agent $q-1$ to agent $q$.</div>
 
 There are different ways to compute $\bar{F}_{t,q-1,q}$; one, called "adaptive estimation" is given by
 
@@ -296,9 +294,9 @@ $$\bar{F}_{t,q-1,q} = (1 - \gamma)\bar{F}_{t-1,q-1,q} + \gamma \bar{A}_{t,q-1,q}
 
 Next define:
 
-$\delta R_{tq}^{inv} =$ Adjustment based on the current inventory $R_{tq}^{inv}$.
+<div class="var-def">$\delta R_{tq}^{inv} =$ Adjustment based on the current inventory $R_{tq}^{inv}$.</div>
 
-$\delta R_{tq}^{transit} =$ Adjustment based on the current in-transit inventory $R_{tq}^{transit}$.
+<div class="var-def">$\delta R_{tq}^{transit} =$ Adjustment based on the current in-transit inventory $R_{tq}^{transit}$.</div>
 
 These quantities might be estimated using
 
