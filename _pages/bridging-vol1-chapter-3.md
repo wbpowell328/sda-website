@@ -94,11 +94,11 @@ It is common, especially in business, to compile lists of metrics, where these l
 The organization of metrics into a pyramid is largely subjective, but there should be a single metric at the top which is felt to be the most important metric. The top metric should be one that is either maximized or minimized, but the same is not necessarily true of all of the other metrics, an issue we address next.
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/PyramidStockPrice.png" alt="A pyramid of metrics that might be used at the executive level of a publicly traded company.">
+  <img src="/assets/images/bridging-vol1/PyramidStockPrice.jpg" alt="A pyramid of metrics that might be used at the executive level of a publicly traded company.">
   <figcaption>(a)</figcaption>
 </figure>
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/PyramidCost.png" alt="A pyramid of metrics that might be used in a manufacturing plant.">
+  <img src="/assets/images/bridging-vol1/PyramidCost.jpg" alt="A pyramid of metrics that might be used in a manufacturing plant.">
   <figcaption><span class="fig-num">Figure 3.1.</span> (b) — (a) A pyramid of metrics that might be used at the executive level of a publicly traded company. (b) A pyramid of metrics that might be used in a manufacturing plant.</figcaption>
 </figure>
 
