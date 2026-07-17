@@ -11,7 +11,7 @@ date: 2026-07-17
 The first step in improving any product, process or service is to provide a basic description, and then identify possible performance metrics, types of decisions, and sources of uncertainty. We are going to illustrate these first steps using a variety of application settings. We are then going to draw on these applications throughout the rest of the book to illustrate different modeling devices.
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/PowellApplications.png" alt="An illustration of the many settings for making decisions.">
+  <img src="/assets/images/bridging-vol1/PowellApplications.png" alt="An illustration of the many settings for making decisions." style="max-width: 515px;">
   <figcaption><span class="fig-num">Figure 2.1.</span> An illustration of the many settings for making decisions.</figcaption>
 </figure>
 
