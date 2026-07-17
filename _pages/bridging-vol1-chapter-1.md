@@ -375,12 +375,12 @@ It is easy to think that, given the extensive use of computers, information proc
 
 ## Artificial intelligence
 
+Ultimately the goal of thinking about a complex problem in a formal way is to use the power of the computer to improve the process. Most people will immediately suggest using "artificial intelligence" (often referred to as "AI"). The problem is that "AI" is a term that has been used since the 1950s, and has evolved steadily over the years, typically being applied to the latest invention coming out of the field of computer science.
+
 <figure class="book-figure">
   <img src="/assets/images/bridging-vol1/7levelsofAI.png" alt="The 7 levels of artificial intelligence." style="max-width: 485px;">
   <figcaption><span class="fig-num">Figure 1.4.</span> The 7 levels of artificial intelligence.</figcaption>
 </figure>
-
-Ultimately the goal of thinking about a complex problem in a formal way is to use the power of the computer to improve the process. Most people will immediately suggest using "artificial intelligence" (often referred to as "AI"). The problem is that "AI" is a term that has been used since the 1950s, and has evolved steadily over the years, typically being applied to the latest invention coming out of the field of computer science.
 
 We divide the major forms of AI into seven levels, depicted in figure 1.4. After we describe these seven levels, we will organize them into four fundamentally different classes of intelligence.
 
