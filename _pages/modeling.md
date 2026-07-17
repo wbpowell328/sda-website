@@ -39,11 +39,12 @@ Note that these four steps do not cover all dimensions of real projects, especia
 
 This part of the website will take you through the following steps:
 
-- [**What is a decision?**](/decisionsdecisions/) — we address the problem of identifying decisions, starting by defining what we mean by "decisions."
+- [**Decisions, decisions**](/decisionsdecisions/) — we address the problem of identifying decisions, starting by defining what we mean by "decisions."
 - [**Framing decision problems**](/framingproblems/) — we identify the problem of choosing metrics, decisions, and uncertainties.
 - [**The universal modeling framework**](/universal-modeling-framework/) — we introduce the universal modeling framework that is the basis for how we think about sequential decision problems.
 - [**State variables**](/statevariables/) — "state variables" capture all the information we need to model our system. We show how to identify this information from the components of the model.
 - [**Modeling uncertainty**](/modeling-uncertainty/) — a major dimension of any sequential decision problem is modeling the flow of information from outside our system, which is always uncertain.
+- [**Multiagent modeling**](/multiagent-modeling/) — any sequential decision problem can be modeled using at least two agents, and they often require multiple decision-making agents.
 
 After covering this material, we then turn to the challenge of designing **policies** which determine how we make decisions.
 {% endraw %}
