@@ -557,7 +557,7 @@ Energy systems offer an exceptionally rich set of uncertainties that affect both
 The emphasis on renewables has raised the visibility of uncertainties. Figure 2.6 shows solar output on an hourly basis, over an entire year, which communicates both seasonal variations, familiar daily cycles, and the effects of cloud cover. Of particular importance is the predictability of the different forms of uncertainty. We know when the sun will set decades in the future, but cloud cover is particularly difficult even on very short time horizons.
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/AnnualSolarEnergy.png" alt="Hourly solar energy generation over an entire year.">
+  <img src="/assets/images/bridging-vol1/AnnualSolarEnergy.png" alt="Hourly solar energy generation over an entire year." style="max-width: 515px;">
   <figcaption><span class="fig-num">Figure 2.6.</span> Hourly solar energy generation over an entire year.</figcaption>
 </figure>
 
