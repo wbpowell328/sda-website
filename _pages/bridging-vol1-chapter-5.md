@@ -364,7 +364,7 @@ Correlation over time can arise in each of our five problem settings as follows:
 5. If a plant is shut down for maintenance, there may be a drop in loads out of a location for a week.
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/CrossingTimes.png" alt="Actual vs. forecast, showing crossing times.">
+  <img src="/assets/images/bridging-vol1/CrossingTimes.png" alt="Actual vs. forecast, showing crossing times." style="max-width: 515px;">
   <figcaption><span class="fig-num">Figure 5.6.</span> Actual vs. forecast, showing crossing times.</figcaption>
 </figure>
 
