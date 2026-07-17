@@ -422,7 +422,7 @@ Machine learning models come in a variety of styles, but these can be organized 
 **Level 3 – Pattern recognition** - The next level of AI emerged from the research community in 2010 addressing the problem of pattern recognition. Pattern recognition is just another form of machine learning that we saw in level 2, which involves using neural networks. However, these neural networks are much larger than the ones used in the 1990s. Instead of many thousands to a million parameters, these neural networks might have 10 to 100 million parameters. These were referred to as "deep neural networks."
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/SunflowerTakemeHome.png" alt="Illustration of the ability of a neural network to recognize the picture of a sunflower, or the voice pattern saying Take me home.">
+  <img src="/assets/images/bridging-vol1/SunflowerTakemeHome.jpg" alt="Illustration of the ability of a neural network to recognize the picture of a sunflower, or the voice pattern saying Take me home.">
   <figcaption><span class="fig-num">Figure 1.8.</span> Illustration of the ability of a neural network to recognize the picture of a sunflower, or the voice pattern saying "Take me home."</figcaption>
 </figure>
 
