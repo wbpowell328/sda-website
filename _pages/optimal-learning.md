@@ -128,8 +128,8 @@ $$\nu_x^n = \mathbb{E}_{\mu}^n\, \mathbb{E}_{W\mid\mu}\!\left\{ \max_{x'} \overl
 
 where
 
-- $\overline{\mu}_{x'}^{n}$ is the current estimate of the value of choice $x'$ after $n$ experiments, and
-- $\overline{\mu}_{x'}^{n+1}(x)$ is the updated value of choice $x'$ after running experiment for choice $x$ (since beliefs are correlated, testing choice $x$ may change our belief about other choices $x'$).
+<div class="var-def">$\overline{\mu}_{x'}^{n}$ = the current estimate of the value of choice $x'$ after $n$ experiments.</div>
+<div class="var-def">$\overline{\mu}_{x'}^{n+1}(x)$ = the updated value of choice $x'$ after running experiment for choice $x$ (since beliefs are correlated, testing choice $x$ may change our belief about other choices $x'$).</div>
 
 For problems with independent beliefs, the knowledge gradient can be computed with a simple formula that can be implemented in a spreadsheet. For problems with correlated beliefs, we can still compute it exactly, but it requires a simple algorithm.
 
