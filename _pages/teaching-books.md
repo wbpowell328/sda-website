@@ -29,7 +29,7 @@ Volume I is 150 pages centered on answering three questions:
 
 These questions are supported by a dozen different applications in chapter 2, and uses no math.
 
-[Click here for book webpage.](/bridgingdecisionproblems/)
+[Click here for an online version of the book.](/bridging-vol1/) [Click here for the webpage for the monograph series with a downloadable pdf.](/bridgingdecisionproblems/)
 
 ### Forthcoming volumes
 
