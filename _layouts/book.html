@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if page.title %}{{ page.title }} — {% endif %}{{ site.data.bridging_vol1_toc.book_title }}</title>
+  <meta name="description" content="{{ site.data.bridging_vol1_toc.book_title }}: {{ site.data.bridging_vol1_toc.book_subtitle }}, by {{ site.data.bridging_vol1_toc.author }}.">
+  <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/book.css' | relative_url }}">
+  {% seo title=false %}
+
+  <!-- Google Analytics 4 — property "CASTLE website", stream "Main website" -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-W5YKX4DTGL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-W5YKX4DTGL');
+  </script>
+
+  {% include mathjax-setup.html %}
+</head>
+<body class="book-reader">
+
+{% assign chapters = site.data.bridging_vol1_toc.chapters %}
+{% assign reachable = chapters | where_exp: "c", "c.url != ''" %}
+{% assign current_index = -1 %}
+{% for c in reachable %}
+  {% if c.url == page.url %}{% assign current_index = forloop.index0 %}{% endif %}
+{% endfor %}
+
+<header class="book-topbar">
+  <a class="book-topbar-title" href="{{ '/bridging-vol1/' | relative_url }}">
+    {{ site.data.bridging_vol1_toc.book_title }}
+    <span class="book-topbar-subtitle">{{ site.data.bridging_vol1_toc.book_subtitle }}</span>
+  </a>
+  <div class="book-topbar-actions">
+    <button type="button" class="book-toc-toggle" aria-controls="book-toc-drawer" aria-expanded="false">
+      Contents
+    </button>
+    <a class="book-topbar-exit" href="{{ '/bridgingdecisionproblems/' | relative_url }}">Back to SDA site &rarr;</a>
+  </div>
+</header>
+
+<nav id="book-toc-drawer" class="book-toc-drawer" aria-label="Table of contents">
+  <ol>
+    {% for c in chapters %}
+      <li class="{% if c.url == page.url %}is-current{% endif %}">
+        {% if c.url != "" %}
+          <a href="{{ c.url | relative_url }}">{% if c.num != "" %}<span class="book-toc-chnum">Chapter {{ c.num }}.</span> {% endif %}{{ c.title }}</a>
+        {% else %}
+          <span class="book-toc-placeholder">{% if c.num != "" %}<span class="book-toc-chnum">Chapter {{ c.num }}.</span> {% endif %}{{ c.title }} <em>(coming soon)</em></span>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ol>
+</nav>
+
+<main class="book-page">
+  {% if page.title %}<h1 class="book-page-title">{{ page.title }}</h1>{% endif %}
+  {{ content }}
+
+  {% if current_index >= 0 %}
+    {% assign prev_c = nil %}
+    {% assign next_c = nil %}
+    {% assign prev_i = current_index | minus: 1 %}
+    {% if prev_i >= 0 %}{% assign prev_c = reachable[prev_i] %}{% endif %}
+    {% assign next_i = current_index | plus: 1 %}
+    {% if next_i < reachable.size %}{% assign next_c = reachable[next_i] %}{% endif %}
+    {% if prev_c or next_c %}
+      <nav class="book-nav" aria-label="Chapter navigation">
+        <div class="book-nav-prev">
+          {% if prev_c %}
+            <span class="book-nav-label">{% if prev_c.is_toc %}{{ site.data.bridging_vol1_toc.book_title }}{% else %}Previous chapter{% endif %}</span>
+            <a href="{{ prev_c.url | relative_url }}">&larr; {% if prev_c.is_toc %}Table of contents{% else %}Chapter {{ prev_c.num }}: {{ prev_c.title }}{% endif %}</a>
+          {% endif %}
+        </div>
+        <div class="book-nav-next">
+          {% if next_c %}
+            <span class="book-nav-label">{% if next_c.is_toc %}{{ site.data.bridging_vol1_toc.book_title }}{% else %}Next chapter{% endif %}</span>
+            <a href="{{ next_c.url | relative_url }}">{% if next_c.is_toc %}Table of contents{% else %}Chapter {{ next_c.num }}: {{ next_c.title }}{% endif %} &rarr;</a>
+          {% endif %}
+        </div>
+      </nav>
+    {% endif %}
+  {% endif %}
+</main>
+
+<footer class="book-footer">
+  <p>&copy; {{ site.time | date: "%Y" }} {{ site.data.bridging_vol1_toc.author }} &middot; <a href="{{ '/bridgingdecisionproblems/' | relative_url }}">Back to the Sequential Decision Analytics site</a></p>
+</footer>
+
+<script>
+  (function () {
+    var btn = document.querySelector('.book-toc-toggle');
+    var drawer = document.getElementById('book-toc-drawer');
+    if (!btn || !drawer) return;
+    btn.addEventListener('click', function () {
+      var open = drawer.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    drawer.addEventListener('click', function (e) {
+      if (e.target.closest('a')) {
+        drawer.classList.remove('is-open');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        drawer.classList.remove('is-open');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>

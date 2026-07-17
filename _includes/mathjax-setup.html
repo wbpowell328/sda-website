@@ -1,0 +1,36 @@
+  <!-- MathJax v3 with shim for kramdown's mathjax engine.
+       Kramdown wraps $$...$$ math in <script type="math/tex">…</script> tags
+       (the legacy MathJax-v2 marker). Our pageReady hook converts these to
+       \(…\) / \[…\] delimiters in the DOM before MathJax renders, so MathJax v3
+       (which doesn't natively recognize the legacy tags) can pick them up.
+
+       mathjax-macros.js defines window.CASTLE_MATH_MACROS (~300 macros from
+       00-OUU_Wiley.tex). MUST load before window.MathJax is assigned. -->
+  <script src="{{ '/assets/js/mathjax-macros.js' | relative_url }}"></script>
+  <script>
+    window.MathJax = {
+      loader: { load: ['[tex]/noerrors'] },
+      tex: {
+        packages: { '[+]': ['noerrors'] },
+        inlineMath:  [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        macros: window.CASTLE_MATH_MACROS || {},
+      },
+      svg: { fontCache: 'global' },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] },
+      startup: {
+        pageReady: function () {
+          document.querySelectorAll('script[type^="math/tex"]').forEach(function (s) {
+            var display = (s.getAttribute('type') || '').indexOf('mode=display') >= 0;
+            var open = display ? '\\[' : '\\(';
+            var close = display ? '\\]' : '\\)';
+            var text = document.createTextNode(open + s.textContent + close);
+            s.parentNode.replaceChild(text, s);
+          });
+          return MathJax.startup.defaultPageReady();
+        },
+      },
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

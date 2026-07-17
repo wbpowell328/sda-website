@@ -1,0 +1,168 @@
+/* Standalone book reader — used only by _layouts/book.html.
+   Deliberately has none of the SDA site's header/topnav/sidebar chrome;
+   loaded alongside main.css so it can reuse the .book-figure / .book-table /
+   .book-exercises / .book-nav component styles and the site's color palette,
+   but overrides page-level layout and typography for a "reading a book"
+   feel instead of "browsing a website" feel. */
+
+body.book-reader {
+  background: #efe4c8;
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+  color: #2b2419;
+  line-height: 1.7;
+}
+
+/* ============================================================
+   Top bar — slim, book title + contents toggle, no site nav
+   ============================================================ */
+.book-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: #3d2914;
+  color: #f5ecd6;
+  padding: 0.85rem 1.5rem;
+  border-bottom: 3px solid #c9621e;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+.book-topbar-title {
+  color: #f5ecd6;
+  font-weight: 700;
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+.book-topbar-title:hover { color: #fff; text-decoration: none; }
+.book-topbar-subtitle {
+  display: block;
+  font-weight: 400;
+  font-size: 0.82rem;
+  color: #d4b88a;
+}
+.book-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.88rem;
+}
+.book-toc-toggle {
+  background: #c9621e;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.book-toc-toggle:hover { background: #a84d12; }
+.book-topbar-exit { color: #d4b88a; }
+.book-topbar-exit:hover { color: #f5ecd6; }
+
+/* ============================================================
+   Contents drawer — off-canvas panel, toggled by the button above
+   ============================================================ */
+.book-toc-drawer {
+  position: fixed;
+  top: 0;
+  left: -320px;
+  width: 300px;
+  height: 100%;
+  overflow-y: auto;
+  background: #fbf6e7;
+  border-right: 1px solid #d9c9a3;
+  box-shadow: 2px 0 12px rgba(0,0,0,0.15);
+  z-index: 50;
+  transition: left 0.2s ease;
+  padding: 1.5rem 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+.book-toc-drawer.is-open { left: 0; }
+.book-toc-drawer ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: none;
+}
+.book-toc-drawer li {
+  margin-bottom: 0.4rem;
+}
+.book-toc-drawer a, .book-toc-drawer .book-toc-placeholder {
+  display: block;
+  padding: 0.5rem 0.7rem;
+  border-radius: 4px;
+  font-size: 0.92rem;
+  color: #2b2419;
+}
+.book-toc-drawer a:hover { background: #ede0bd; text-decoration: none; }
+.book-toc-drawer li.is-current a { background: #ede0bd; border-left: 3px solid #c9621e; font-weight: 700; }
+.book-toc-drawer .book-toc-placeholder { color: #9c8a68; }
+.book-toc-drawer .book-toc-chnum { font-weight: 700; }
+
+/* ============================================================
+   Reading column
+   ============================================================ */
+.book-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+.book-page-title {
+  font-family: "Georgia", serif;
+  font-size: 2.1rem;
+  color: #3d2914;
+  margin: 0 0 1.5rem;
+  line-height: 1.25;
+  border-bottom: 2px solid #c9621e;
+  padding-bottom: 0.5rem;
+}
+.book-page h2, .book-page h3, .book-page h4 {
+  font-family: "Georgia", serif;
+  color: #3d2914;
+  line-height: 1.3;
+}
+.book-page h2 { margin-top: 2.5rem; font-size: 1.5rem; }
+.book-page h3 { margin-top: 2rem; font-size: 1.25rem; }
+.book-page h4 { margin-top: 1.5rem; font-size: 1.08rem; }
+.book-page p { margin: 0 0 1.15rem; }
+.book-page ul, .book-page ol { padding-left: 1.6rem; margin-bottom: 1.15rem; }
+.book-page li { margin-bottom: 0.35rem; }
+.book-page a { color: #8a3a1a; }
+.book-page blockquote {
+  border-left: 4px solid #c9621e;
+  margin: 1.25rem 0;
+  padding: 0.5rem 1.25rem;
+  color: #5a4a35;
+  background: #f7efd8;
+  font-style: italic;
+}
+
+.book-byline {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #6b5a3f;
+  font-size: 0.92rem;
+  margin: -1rem 0 2rem;
+}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+.book-footer {
+  text-align: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.85rem;
+  color: #6b5a3f;
+  padding: 1.5rem 1rem 2.5rem;
+}
+.book-footer a { color: #8a3a1a; }
+
+@media (max-width: 600px) {
+  .book-topbar-exit { display: none; }
+  .book-toc-drawer { width: 85vw; left: -85vw; }
+  .book-page { padding: 2rem 1.1rem 3rem; }
+  .book-page-title { font-size: 1.6rem; }
+}

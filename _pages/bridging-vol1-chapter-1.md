@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: book
 title: "Chapter 1: The Fundamentals of Framing"
 permalink: /bridging-vol1/chapter-1/
 date: 2026-07-17
@@ -712,14 +712,4 @@ Using computers to make decisions opens the door to the use of "artificial intel
 </li>
 </ol>
 
-<nav class="book-nav" aria-label="Chapter navigation">
-  <div class="book-nav-prev">
-    <span class="book-nav-label">Bridging Decision Problems, Vol. I</span>
-    <a href="/bridging-vol1/">&larr; Table of contents</a>
-  </div>
-  <div class="book-nav-next">
-    <span class="book-nav-label">Next chapter</span>
-    <a href="/bridging-vol1/chapter-2/">Chapter 2: Applications &rarr;</a>
-  </div>
-</nav>
 {% endraw %}

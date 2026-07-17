@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: book
 title: "Chapter 2: Applications"
 permalink: /bridging-vol1/chapter-2/
 date: 2026-07-17
@@ -1013,14 +1013,4 @@ When an exercise asks for an interaction matrix, you can use the template for th
 </li>
 </ol>
 
-<nav class="book-nav" aria-label="Chapter navigation">
-  <div class="book-nav-prev">
-    <span class="book-nav-label">Previous chapter</span>
-    <a href="/bridging-vol1/chapter-1/">&larr; Chapter 1: The Fundamentals of Framing</a>
-  </div>
-  <div class="book-nav-next">
-    <span class="book-nav-label">Bridging Decision Problems, Vol. I</span>
-    <a href="/bridging-vol1/">Table of contents &rarr;</a>
-  </div>
-</nav>
 {% endraw %}
