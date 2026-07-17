@@ -1013,7 +1013,7 @@ There is a massive problem class in decision-making that can be best described a
 Each of these contexts involves choosing from among a set of choices. We want to choose the one that works the best, but we are not sure how well each will perform. The situation is depicted in figure 2.8. There may be two choices, dozens, hundreds, and many thousands.
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/DiscreteChoices2.png" alt="A set of discrete choices.">
+  <img src="/assets/images/bridging-vol1/DiscreteChoices2.jpg" alt="A set of discrete choices.">
   <figcaption><span class="fig-num">Figure 2.8.</span> A set of discrete choices.</figcaption>
 </figure>
 
