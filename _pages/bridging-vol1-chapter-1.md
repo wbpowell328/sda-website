@@ -410,7 +410,7 @@ Machine learning models come in a variety of styles, but these can be organized 
   </figure>
 
   <figure class="book-figure">
-    <img src="/assets/images/bridging-vol1/NeuralNetwork.png" alt="Illustration of a small neural network.">
+    <img src="/assets/images/bridging-vol1/NeuralNetwork.jpg" alt="Illustration of a small neural network.">
     <figcaption><span class="fig-num">Figure 1.7.</span> Illustration of a (very small) neural network. Each link carries a parameter that has to be tuned so that the output comes as close as possible to the label associated with the inputs in a training dataset.</figcaption>
   </figure>
 
