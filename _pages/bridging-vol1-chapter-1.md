@@ -395,7 +395,7 @@ The problem with rule-based systems is that as the number of elements making up 
 **Level 2 – Statistics/machine learning** - Under development since the early 1900s, statistics (known as machine learning in computer science) is the science of using data to estimate models. We might use observations of different prices of a hotel room to estimate the demand, or historical demands to forecast the future. This field grew explosively in the 1980s and 1990s (as computers became widely available).
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/ThreeCirclesofML.png" alt="Every type of function for machine learning falls in three overlapping circles." style="max-width: 388px;">
+  <img src="/assets/images/bridging-vol1/ThreeCirclesofML.png" alt="Every type of function for machine learning falls in three overlapping circles." style="max-width: 310px;">
   <figcaption><span class="fig-num">Figure 1.5.</span> Every type of function for machine learning falls in these overlapping circles, including 1) lookup table functions, 2) parametric functions, and 3) nonparametric functions (locally parametric).</figcaption>
 </figure>
 
