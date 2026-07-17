@@ -299,7 +299,7 @@ DLA policies can be divided into two subclasses:
 Note that we do not need to subdivide deterministic lookaheads since, even if the decision in each time period is a scalar, the entire lookahead model requires optimizing over the vector of decisions spanning the time periods over the planning horizon.
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/GoogleMapslookaheadHoriz.png" alt="Path planned by Google maps based on estimated travel times (left); alternative path based on perceived risk of driving through New York city (right).">
+  <img src="/assets/images/bridging-vol1/GoogleMapslookaheadHoriz.jpg" alt="Path planned by Google maps based on estimated travel times (left); alternative path based on perceived risk of driving through New York city (right).">
   <figcaption><span class="fig-num">Figure 4.5.</span> Path planned by Google maps based on estimated travel times (left); alternative path based on perceived risk of driving through New York city (right).</figcaption>
 </figure>
 
