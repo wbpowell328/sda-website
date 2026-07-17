@@ -612,8 +612,9 @@ img, video { max-width: 100%; height: auto; display: block; }
 }
 .book-table th, .book-table td {
   border: 1px solid #d9c9a3;
-  padding: 0.45rem 0.7rem;
+  padding: 0.25rem 0.7rem;
   text-align: center;
+  line-height: 1.35;
 }
 .book-table th { background: #ede0bd; color: #3d2914; }
 .book-table td:first-child { text-align: left; }
