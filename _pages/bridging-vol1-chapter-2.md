@@ -76,7 +76,7 @@ A useful exercise is to create a spreadsheet where different decisions are liste
 - **L** – Decision has a low impact on the metric.
 - **N** – Decision has no impact on the metric.
 
-Table 2.1 illustrates how this might look for a small inventory problem. The spreadsheet can be downloaded from [tinyurl.com/FramingInteractionMatrix](https://tinyurl.com/FramingInteractionMatrix/).
+Table 2.1 illustrates how this might look for a small inventory problem. The spreadsheet can be downloaded from [tinyurl.com/InteractionMatrix/](https://tinyurl.com/InteractionMatrix/).
 
 <div class="book-table-wrap">
 <table class="book-table">
