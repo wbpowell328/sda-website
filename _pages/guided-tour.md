@@ -153,7 +153,7 @@ You may ask questions, and then ask follow-up questions, and the chatbot will be
 
 The chatbot can write out mathematics and can even write code. However, it is very unlikely that it would be able to solve a real problem given the subtleties of modeling. Please do not use any of the outputs of the chatbot in a production setting without understanding the concepts and verifying the recommendations.
 
-<img src="/assets/images/guided-tour/chatbot-screenshot.png" alt="Screenshot of the Ask Professor Powell chatbot page, showing suggested starter questions and a conversation in which the assistant frames an inventory replenishment problem using the five-element model" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto; border: 1px solid #d9c9a8;" />
+<img src="/assets/images/guided-tour/chatbot-screenshot.jpg" alt="Screenshot of the Ask Professor Powell chatbot page, showing suggested starter questions and a conversation in which the assistant frames an inventory replenishment problem using the five-element model" style="display: block; margin: 1.5rem auto; max-width: 100%; height: auto; border: 1px solid #d9c9a8;" />
 
 ## The sixth pass – Stochastic search {#sixth-pass}
 
