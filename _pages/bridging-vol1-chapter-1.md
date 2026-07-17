@@ -595,11 +595,11 @@ Figure 1.12(a) depicts the problem as a static, deterministic problem. When this
 <figure class="book-figure">
   <div class="book-figure-row">
     <figure class="book-figure">
-      <img src="/assets/images/bridging-vol1/StaticAssignment.png" alt="Static assignment problem.">
+      <img src="/assets/images/bridging-vol1/StaticAssignment.jpg" alt="Static assignment problem.">
       <figcaption>(a)</figcaption>
     </figure>
     <figure class="book-figure">
-      <img src="/assets/images/bridging-vol1/DynamicAssignment.png" alt="Dynamic assignment problem.">
+      <img src="/assets/images/bridging-vol1/DynamicAssignment.jpg" alt="Dynamic assignment problem.">
       <figcaption>(b)</figcaption>
     </figure>
   </div>
