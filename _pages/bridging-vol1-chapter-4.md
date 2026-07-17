@@ -243,7 +243,7 @@ There are many problems where the best approach for making decisions is to use a
 The simplest example of this approach is illustrated in figure 4.2, where we need to choose which product to advertise on social media (we could substitute any problem with discrete choices listed in the [intelligent trial and error section](/bridging-vol1/chapter-2/#intelligenttrialanderror) of Chapter 2). We have a point estimate for the value of each product based on past experience, which we have learned can involve a lot of noise, resulting in some poor estimates. We can also use past experience to estimate a standard deviation which is a measure of the spread of uncertainty. Typically we are 95 percent sure that the truth is within plus or minus 2 standard deviations.
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/DiscreteChoiceMeanStdDev.png" alt="When faced with a discrete set of choices, the uncertainty in the belief about how each performs may be described by its average value and standard deviation.">
+  <img src="/assets/images/bridging-vol1/DiscreteChoiceMeanStdDev.jpg" alt="When faced with a discrete set of choices, the uncertainty in the belief about how each performs may be described by its average value and standard deviation.">
   <figcaption><span class="fig-num">Figure 4.2.</span> When faced with a discrete set of choices, the uncertainty in the belief about how each performs may be described by its average value, and the standard deviation which captures the spread of the belief.</figcaption>
 </figure>
 
