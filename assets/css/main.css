@@ -644,7 +644,7 @@ img, video { max-width: 100%; height: auto; display: block; }
 .book-exercises > li::marker {
   font-weight: 700;
   color: #8a3a1a;
-  content: "Exercise " counter(exercise) ". ";
+  content: counter(exercise) ". ";
 }
 
 .book-nav {
