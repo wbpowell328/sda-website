@@ -101,7 +101,7 @@ The behavior of passively making decisions is absolutely pervasive, but this cre
 To make a better decision, you have to recognize when you are making a decision. A good exercise is to create your "decisions book" and then make mental notes as you recognize when a decision is being made (which is to say, there was a choice, and different choices could be made).
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/IdentifyingDecisions.png" alt="A challenge is to work in any of a variety of problem settings and identify the decisions that are being made.">
+  <img src="/assets/images/bridging-vol1/IdentifyingDecisions.jpg" alt="A challenge is to work in any of a variety of problem settings and identify the decisions that are being made." style="max-width: 515px;">
   <figcaption><span class="fig-num">Figure 4.1.</span> A challenge is to work in any of a variety of problem settings (such as those on the right) and identify the decisions that are being made.</figcaption>
 </figure>
 
