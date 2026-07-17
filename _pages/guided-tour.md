@@ -166,11 +166,7 @@ Stochastic search is easily the most common form of sequential decision problem.
 
 Derivative-free stochastic search is a sequential decision problem where the state variable consists purely of the beliefs about the performance of each choice. Chapter 7 of *Reinforcement Learning and Stochastic Optimization* deals with this topic in depth, illustrating in the process all four classes of policies, although only two are widely used. We describe both on the SDA website.
 
-The SDA website covers this topic under the heading of optimal learning which can be accessed at:
-
-**[Optimal Learning](/optimal-learning/)**
-
-The page has a number of headings. Below is a brief summary of each, and you can click on any of the headings and go to the corresponding webpage.
+We cover this material under the heading [**Optimal Learning**](/optimal-learning/) which covers the following topics:
 
 - **[Classes of optimal learning problems](/optimal-learning/#classes)** – Optimal learning problems, especially when stated as a "multi-armed bandit problem," is often posed as a set of discrete choices (such as products to advertise on a webpage) with unknown values (the likelihood that a user might purchase the product). In fact, optimal learning problems can be described along multiple dimensions such as:
     - Cost of observing performance (inexpensive, such as an ad-click, to expensive, such as running an experiment in the field spanning several weeks or more).
