@@ -19,7 +19,7 @@ This book will be defined by the following statement:
 We work from the premise that we are always working to improve things, and we can only do so by manipulating elements we control, otherwise known as *decisions*.
 
 <div class="book-table-wrap">
-<table class="book-table">
+<table class="book-table is-list-table">
 <caption><span class="fig-num">Table 1.1.</span> A sample of problem settings with examples of objectives that capture performance.</caption>
 <thead>
 <tr><th>Application</th><th>Objectives</th></tr>

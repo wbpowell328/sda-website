@@ -618,6 +618,11 @@ img, video { max-width: 100%; height: auto; display: block; }
 .book-table th { background: #ede0bd; color: #3d2914; }
 .book-table td:first-child { text-align: left; }
 
+/* Two-column "term - description" style tables (e.g. Table 1.1) read
+   better fully left-justified rather than with centered text in the
+   second column. */
+.book-table.is-list-table th, .book-table.is-list-table td { text-align: left; }
+
 /* Rating cells for H/M/L/N interaction-matrix tables (impact of a decision
    or uncertainty on a metric: High/Medium/Low/None). Colors follow the
    author's original spreadsheet convention: red=H, orange=M, yellow=L,
