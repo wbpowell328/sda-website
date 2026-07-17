@@ -1087,7 +1087,7 @@ Uncertainties for discrete choice (trial-and-error) problems can come in two for
 
 ## Exercises
 
-When an exercise asks for an interaction matrix, you can use the template for the "Framing Interaction Matrix" that can be downloaded from [tinyurl.com/FramingInteractionMatrix](https://tinyurl.com/FramingInteractionMatrix/).
+When an exercise asks for an interaction matrix, you can use the template for the "Framing Interaction Matrix" that can be downloaded from [tinyurl.com/InteractionMatrix/](https://tinyurl.com/InteractionMatrix/).
 
 <ol class="book-exercises">
 <li>For the inventory problem, pick a product you are familiar with (for example food, clothing, household items, drugs, or hardware) and answer the following:
