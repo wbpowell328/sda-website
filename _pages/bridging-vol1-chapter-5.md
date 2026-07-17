@@ -248,7 +248,7 @@ There are many ways uncertainty affects performance, from random costs to how a 
 The first step in understanding uncertainty requires listing the different sources of uncertainty, as we have done above. The next step, then, is describing the different forms that the uncertainty arises. Below is a sampling of these:
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/AnnualSolarEnergy.png" alt="Hourly energy output from solar over an entire year, demonstrating both with-day and seasonal variability.">
+  <img src="/assets/images/bridging-vol1/AnnualSolarEnergy.png" alt="Hourly energy output from solar over an entire year, demonstrating both with-day and seasonal variability." style="max-width: 515px;">
   <figcaption><span class="fig-num">Figure 5.1.</span> Hourly energy output from solar over an entire year, demonstrating both with-day and seasonal variability.</figcaption>
 </figure>
 
