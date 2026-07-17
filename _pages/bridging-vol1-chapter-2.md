@@ -191,7 +191,7 @@ One of the most widely studied problems in operations research (as well as stoch
 A more realistic version of an inventory problem is illustrated in figure 2.5, which depicts an inventory problem that might arise in a setting where the product is coming from a distant location (such as from China to the eastern U.S.). We might have to wait 6-8 weeks, but weather delays can extend this even more. Long-distance shipping typically involves movement by ocean container ships for port-to-port moves, rail (common within the U.S.) and then truck.
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/ComplexInventory.png" alt="Illustration of an inventory problem with long lead times.">
+  <img src="/assets/images/bridging-vol1/ComplexInventory.jpg" alt="Illustration of an inventory problem with long lead times.">
   <figcaption><span class="fig-num">Figure 2.5.</span> Illustration of an inventory problem with long lead times.</figcaption>
 </figure>
 
