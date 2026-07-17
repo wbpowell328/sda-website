@@ -267,7 +267,7 @@ The first step in understanding uncertainty requires listing the different sourc
   - The number of people making bids on houses (say, for a given realtor), will shift to different levels as interest rates change.
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/Bursts.png" alt="Illustration of bursts of activity.">
+  <img src="/assets/images/bridging-vol1/Bursts.png" alt="Illustration of bursts of activity." style="max-width: 485px;">
   <figcaption><span class="fig-num">Figure 5.2.</span> Illustration of bursts of activity.</figcaption>
 </figure>
 
