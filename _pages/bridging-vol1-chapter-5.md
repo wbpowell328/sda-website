@@ -327,7 +327,7 @@ If we are modeling uncertainty on the computer, we have to find a way to represe
   It is also possible to manually create a cumulative distribution using judgment.
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/EmpiricalCDF.png" alt="Computing an empirical CDF from a set of observations.">
+  <img src="/assets/images/bridging-vol1/EmpiricalCDF.png" alt="Computing an empirical CDF from a set of observations." style="max-width: 485px;">
   <figcaption><span class="fig-num">Figure 5.5.</span> Computing an empirical CDF from a set of observations.</figcaption>
 </figure>
 
