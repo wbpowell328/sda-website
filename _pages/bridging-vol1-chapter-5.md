@@ -281,7 +281,7 @@ The first step in understanding uncertainty requires listing the different sourc
   - A storm system moving past an airport can result in a number of flight cancellations, which in turn can create a large number of last-minute requests for hotel rooms.
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/RealTimePricesFebruary.png" alt="Real-time electricity prices, updated every five minutes, in February, illustrating extreme volatility.">
+  <img src="/assets/images/bridging-vol1/RealTimePricesFebruary.png" alt="Real-time electricity prices, updated every five minutes, in February, illustrating extreme volatility." style="max-width: 485px;">
   <figcaption><span class="fig-num">Figure 5.3.</span> Real-time electricity prices, updated every five minutes, in February, illustrating extreme volatility.</figcaption>
 </figure>
 
