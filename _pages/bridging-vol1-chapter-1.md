@@ -712,7 +712,7 @@ Using computers to make decisions opens the door to the use of "artificial intel
 
 **Modeling questions**
 
-<ol class="book-exercises">
+<ol class="book-exercises" style="counter-reset: exercise 8;">
 <li>Give an example of a sequential decision problem that you encounter in your daily activities and do the following:
   <ol type="a">
     <li>Identify at least one performance metric that you would like to improve.</li>
