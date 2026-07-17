@@ -286,12 +286,26 @@ These decisions are made on different time scales: operational (hourly, daily, w
 
 #### Supply chain design
 
-There are decisions related to the design of supply chain networks that cut across many (tens to thousands) of individual inventory decisions. These are decisions that are typically made on longer time scales. Figure 2.6 provides some examples of network-level decisions for designing the supply chain.
+There are decisions related to the design of supply chain networks that cut across many (tens to thousands) of individual inventory decisions. These are decisions that are typically made on longer time scales. Table 2.6 provides some examples of network-level decisions for designing the supply chain.
 
-<figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/InventoryDecisionsNetwork.png" alt="Supply chain design decisions.">
-  <figcaption><span class="fig-num">Figure 2.6.</span> Supply chain design decisions.</figcaption>
-</figure>
+<div class="book-table-wrap">
+<table class="book-table">
+<caption><span class="fig-num">Table 2.6.</span> Network-level supply chain design decisions and which category of resource each one primarily affects.</caption>
+<thead>
+<tr><th></th><th>Physical</th><th>Financial</th><th>Informational</th></tr>
+</thead>
+<tbody>
+<tr><td>Where to locate buffer stocks and how to rebalance them</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Closing existing facilities</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Where to purchase/lease/build/expand manufacturing facilities</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Which manufacturing facilities to close/sell, terminate leases</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Where to purchase/lease/build/expand warehouses and distribution centers</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Whether to introduce materials handling automation in DCs and warehouses</td><td>&#10003;</td><td></td><td></td></tr>
+<tr><td>Investment in information technologies for information sharing and coordination</td><td></td><td></td><td>&#10003;</td></tr>
+<tr><td>Arrange significant line of credit or other source of backup financing</td><td></td><td>&#10003;</td><td></td></tr>
+</tbody>
+</table>
+</div>
 
 ### Uncertainties
 
@@ -299,7 +313,7 @@ Uncertainties also occur on different time scales. We include a special category
 
 <div class="book-table-wrap">
 <table class="book-table">
-<caption><span class="fig-num">Table 2.6.</span> Hourly-to-daily inventory uncertainties and which category of resource each one primarily affects.</caption>
+<caption><span class="fig-num">Table 2.7.</span> Hourly-to-daily inventory uncertainties and which category of resource each one primarily affects.</caption>
 <thead>
 <tr><th></th><th>Physical</th><th>Financial</th><th>Informational</th></tr>
 </thead>
@@ -323,7 +337,7 @@ Uncertainties also occur on different time scales. We include a special category
 
 <div class="book-table-wrap">
 <table class="book-table">
-<caption><span class="fig-num">Table 2.7.</span> Weekly inventory uncertainties and which category of resource each one primarily affects.</caption>
+<caption><span class="fig-num">Table 2.8.</span> Weekly inventory uncertainties and which category of resource each one primarily affects.</caption>
 <thead>
 <tr><th></th><th>Physical</th><th>Financial</th><th>Informational</th></tr>
 </thead>
@@ -341,7 +355,7 @@ Uncertainties also occur on different time scales. We include a special category
 
 <div class="book-table-wrap">
 <table class="book-table">
-<caption><span class="fig-num">Table 2.8.</span> Monthly-to-yearly inventory uncertainties and which category of resource each one primarily affects.</caption>
+<caption><span class="fig-num">Table 2.9.</span> Monthly-to-yearly inventory uncertainties and which category of resource each one primarily affects.</caption>
 <thead>
 <tr><th></th><th>Physical</th><th>Financial</th><th>Informational</th></tr>
 </thead>
@@ -359,7 +373,7 @@ Uncertainties also occur on different time scales. We include a special category
 
 <div class="book-table-wrap">
 <table class="book-table">
-<caption><span class="fig-num">Table 2.9.</span> Major-disruption inventory uncertainties and which category of resource each one primarily affects.</caption>
+<caption><span class="fig-num">Table 2.10.</span> Major-disruption inventory uncertainties and which category of resource each one primarily affects.</caption>
 <thead>
 <tr><th></th><th>Physical</th><th>Financial</th><th>Informational</th></tr>
 </thead>
@@ -375,13 +389,13 @@ Uncertainties also occur on different time scales. We include a special category
 </table>
 </div>
 
-*(Note: table 2.9's source figure renders identically to table 2.8 — flagged for you to check against the manuscript; the "major disruptions" row content may need to be swapped in from a different source file.)*
+*(Note: table 2.10's source figure renders identically to table 2.9 — flagged for you to check against the manuscript; the "major disruptions" row content may need to be swapped in from a different source file.)*
 
 Identifying the different sources of uncertainty is a particularly rich area for complex problems such as supply chains. Not only are there a wide range of uncertainties, they come in different styles such as fine-grained volatility, regime shifting, spikes, bursts and rare events. We discuss these behaviors in more detail in Chapter 5.
 
 <div class="book-table-wrap">
 <table class="book-table">
-<caption><span class="fig-num">Table 2.10.</span> Interaction matrix for decisions and metrics for an inventory problem with long lead times.</caption>
+<caption><span class="fig-num">Table 2.11.</span> Interaction matrix for decisions and metrics for an inventory problem with long lead times.</caption>
 <thead>
 <tr><th>Decisions \ Metrics</th><th>Sales revenue</th><th>Product costs</th><th>Holding costs</th><th>Stockouts</th><th>Inventory turns</th><th>Operating margin</th><th>Sales growth</th></tr>
 </thead>
@@ -402,15 +416,15 @@ Identifying the different sources of uncertainty is a particularly rich area for
 
 ### Interactions {#inventorydecisioninteractions}
 
-A powerful exercise that helps with developing an understanding of the different elements of decision problems is to subjectively assess the strength of different types of interactions, an idea we first introduced in the [capturing interactions section above](#capturinginteractions). We start with describing the interactions between decisions and metrics for an inventory problem with long lead times, shown in table 2.10. We emphasize that filling out this matrix is completely subjective, since it helps us identify the most important decisions, as well as the metrics that we have the greatest chance of improving.
+A powerful exercise that helps with developing an understanding of the different elements of decision problems is to subjectively assess the strength of different types of interactions, an idea we first introduced in the [capturing interactions section above](#capturinginteractions). We start with describing the interactions between decisions and metrics for an inventory problem with long lead times, shown in table 2.11. We emphasize that filling out this matrix is completely subjective, since it helps us identify the most important decisions, as well as the metrics that we have the greatest chance of improving.
 
 What we are doing is replacing what is often a completely invisible step of choosing what decisions to focus on, with a process that makes this choice explicit, even if it is made subjectively.
 
-The interaction matrix for uncertainties and metrics given a decision might look like that given in table 2.11. Here, we make a point of holding a decision fixed to avoid blending the effect that uncertainty has on which decision we make.
+The interaction matrix for uncertainties and metrics given a decision might look like that given in table 2.12. Here, we make a point of holding a decision fixed to avoid blending the effect that uncertainty has on which decision we make.
 
 <div class="book-table-wrap">
 <table class="book-table">
-<caption><span class="fig-num">Table 2.11.</span> Interaction matrix for uncertainties and metrics given a decision for an inventory problem with long lead times.</caption>
+<caption><span class="fig-num">Table 2.12.</span> Interaction matrix for uncertainties and metrics given a decision for an inventory problem with long lead times.</caption>
 <thead>
 <tr><th>Uncertainty \ Metrics</th><th>Sales revenue</th><th>Unit costs</th><th>Holding costs</th><th>Stockouts</th><th>Inventory turns</th><th>Operating margin</th><th>Sales growth</th></tr>
 </thead>
@@ -540,11 +554,11 @@ Energy systems offer an exceptionally rich set of uncertainties that affect both
 - The cost of equipment (solar panels, wind turbines, batteries, gas turbines, and nuclear power plants) evolves continuously over time.
 - The emergence of new technologies, such as small nuclear power plants and new battery technologies.
 
-The emphasis on renewables has raised the visibility of uncertainties. Figure 2.7 shows solar output on an hourly basis, over an entire year, which communicates both seasonal variations, familiar daily cycles, and the effects of cloud cover. Of particular importance is the predictability of the different forms of uncertainty. We know when the sun will set decades in the future, but cloud cover is particularly difficult even on very short time horizons.
+The emphasis on renewables has raised the visibility of uncertainties. Figure 2.6 shows solar output on an hourly basis, over an entire year, which communicates both seasonal variations, familiar daily cycles, and the effects of cloud cover. Of particular importance is the predictability of the different forms of uncertainty. We know when the sun will set decades in the future, but cloud cover is particularly difficult even on very short time horizons.
 
 <figure class="book-figure">
   <img src="/assets/images/bridging-vol1/AnnualSolarEnergy.png" alt="Hourly solar energy generation over an entire year.">
-  <figcaption><span class="fig-num">Figure 2.7.</span> Hourly solar energy generation over an entire year.</figcaption>
+  <figcaption><span class="fig-num">Figure 2.6.</span> Hourly solar energy generation over an entire year.</figcaption>
 </figure>
 
 ## Hotel revenue management
@@ -862,11 +876,11 @@ Some of the uncertainties faced in truckload trucking include:
 
 A mutual fund manager who had taken an operations planning course for his MBA was introduced to a classic problem known as the "newsvendor problem." Newsvendor problems arise when you have to decide on a quantity of a resource (for example, newspapers) to allocate to serve a demand that is not known when you make your decision. If you allocate too much, you will have resources left over, where we assume they cannot be held for the future (just as today's newspapers are of no value tomorrow). If we allocate too few, then we will have unsatisfied demand.
 
-After finishing his MBA (at a top business school), the mutual fund manager faced the problem of deciding how much cash to keep on hand to handle requests for redemptions. The problem is summarized in the email shown in figure 2.8, but the core elements are as follows:
+After finishing his MBA (at a top business school), the mutual fund manager faced the problem of deciding how much cash to keep on hand to handle requests for redemptions. The problem is summarized in the email shown in figure 2.7, but the core elements are as follows:
 
 <figure class="book-figure">
   <img src="/assets/images/bridging-vol1/MutualFundemail.png" alt="Email from a mutual fund manager and former MBA student seeking advice on how to manage the cash balance.">
-  <figcaption><span class="fig-num">Figure 2.8.</span> Email from a mutual fund manager and former MBA student seeking advice on how to manage the cash balance.</figcaption>
+  <figcaption><span class="fig-num">Figure 2.7.</span> Email from a mutual fund manager and former MBA student seeking advice on how to manage the cash balance.</figcaption>
 </figure>
 
 - The mutual fund has to maintain enough cash to meet requests for redemptions. If there is not enough cash on hand when a redemption request comes in, they will have to liquidate stocks, incurring transaction costs, and possibly being forced to sell at a lower price. If they hold too much cash, then they are missing out on the potential growth of investments in the market.
@@ -996,11 +1010,11 @@ There is a massive problem class in decision-making that can be best described a
   - Basketball – Who should play each position.
   - Portfolio managers – Who gets the best results managing a portfolio.
 
-Each of these contexts involves choosing from among a set of choices. We want to choose the one that works the best, but we are not sure how well each will perform. The situation is depicted in figure 2.9. There may be two choices, dozens, hundreds, and many thousands.
+Each of these contexts involves choosing from among a set of choices. We want to choose the one that works the best, but we are not sure how well each will perform. The situation is depicted in figure 2.8. There may be two choices, dozens, hundreds, and many thousands.
 
 <figure class="book-figure">
   <img src="/assets/images/bridging-vol1/DiscreteChoices2.png" alt="A set of discrete choices.">
-  <figcaption><span class="fig-num">Figure 2.9.</span> A set of discrete choices.</figcaption>
+  <figcaption><span class="fig-num">Figure 2.8.</span> A set of discrete choices.</figcaption>
 </figure>
 
 This basic problem comes in a variety of flavors:
