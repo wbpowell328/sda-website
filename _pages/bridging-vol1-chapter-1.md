@@ -18,12 +18,31 @@ This book will be defined by the following statement:
 
 We work from the premise that we are always working to improve things, and we can only do so by manipulating elements we control, otherwise known as *decisions*.
 
-<figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/ApplicationswithObjectives.png" alt="A sample of problem settings with examples of objectives that capture performance.">
-  <figcaption><span class="fig-num">Figure 1.1.</span> This is a sample of the many problem settings with examples of objectives that capture performance.</figcaption>
-</figure>
+<div class="book-table-wrap">
+<table class="book-table">
+<caption><span class="fig-num">Table 1.1.</span> A sample of problem settings with examples of objectives that capture performance.</caption>
+<thead>
+<tr><th>Application</th><th>Objectives</th></tr>
+</thead>
+<tbody>
+<tr><td>Energy systems</td><td>Reduce cost, minimize outages</td></tr>
+<tr><td>Public health</td><td>Minimize deaths, maximize productivity</td></tr>
+<tr><td>Business applications</td><td>Maximize profits, minimize costs</td></tr>
+<tr><td>Supply chain management</td><td>Minimize costs, maximize revenue/productivity</td></tr>
+<tr><td>Manufacturing</td><td>Minimize cost, maximize yield, minimize defects</td></tr>
+<tr><td>Economics</td><td>Minimize inflation, maximize growth and employment</td></tr>
+<tr><td>Finance</td><td>Maximize returns, minimize risk</td></tr>
+<tr><td>Transportation systems (public)</td><td>Maximize coverage, minimize cost</td></tr>
+<tr><td>Freight transportation</td><td>Minimize cost, maximize service, meet driver needs</td></tr>
+<tr><td>Engineering</td><td>Maximize strength, minimize cost, maximize performance</td></tr>
+<tr><td>Drug discovery</td><td>Minimize deaths, negative health outcomes, cost</td></tr>
+<tr><td>Sports</td><td>Maximize wins, minimize player payrolls, maximize attendance</td></tr>
+<tr><td>Entertainment</td><td>Maximize views, minimize costs</td></tr>
+</tbody>
+</table>
+</div>
 
-Figure 1.1 lists a range of human activities, each followed by a short list of metrics that might be used to evaluate performance (the list of metrics can be quite long). These applications hint at the universe of problems where we "want to do better" but the challenge has been creating a step-by-step path that leads to improved performance.
+Table 1.1 lists a range of human activities, each followed by a short list of metrics that might be used to evaluate performance (the list of metrics can be quite long). These applications hint at the universe of problems where we "want to do better" but the challenge has been creating a step-by-step path that leads to improved performance.
 
 All real-world problem settings need to start with an unstructured, "plain English" description. By contrast, any mathematical model assumes that the problem has already been structured into a form that can be understood by a computer. What is missing is the inputs of people who actually understand the problem, creating the gap depicted by the unfinished bridge that is the front cover of the book.
 
@@ -82,7 +101,7 @@ Any of these represent a perfectly sound motivation for identifying a problem to
 
 <figure class="book-figure" style="float:right; max-width: 260px; margin-left: 1.5rem;">
   <img src="/assets/images/bridging-vol1/NotreDame.png" alt="A medieval cathedral.">
-  <figcaption><span class="fig-num">Figure 1.2.</span> A medieval cathedral.</figcaption>
+  <figcaption><span class="fig-num">Figure 1.1.</span> A medieval cathedral.</figcaption>
 </figure>
 
 An article in the USA Today during the COVID pandemic described the problem of distributing vaccines as "mind-boggingly complex." The reason for this statement is that people do not know how to think about complex problems. It is sometimes helpful to remember that medieval cathedrals were designed and built by people with no formal education; the problem with vaccine distribution is not the complexity - it is knowing how to think about it.
@@ -129,10 +148,10 @@ These three questions are not enough to solve a problem, but they are the starti
 
 <figure class="book-figure" style="float:right; max-width: 220px; margin-left: 1.5rem;">
   <img src="/assets/images/bridging-vol1/Chessboard.png" alt="Playing chess may be hard, but it is very simple to model.">
-  <figcaption><span class="fig-num">Figure 1.3.</span> Playing chess may be hard, but it is very simple to model.</figcaption>
+  <figcaption><span class="fig-num">Figure 1.2.</span> Playing chess may be hard, but it is very simple to model.</figcaption>
 </figure>
 
-It helps to illustrate these questions for the setting of one of the most challenging games ever invented: playing chess (see figure 1.3). Answering our three framing questions is given by:
+It helps to illustrate these questions for the setting of one of the most challenging games ever invented: playing chess (see figure 1.2). Answering our three framing questions is given by:
 
 1. **Performance metric** – Winning the game.
 2. **Decisions** – Allowable moves.
@@ -345,10 +364,10 @@ Decisions are "made" from information, which itself may need to be created (coll
 
 <figure class="book-figure">
   <img src="/assets/images/bridging-vol1/FlowofInformation.png" alt="An illustration of information flowing from initial source, through stages of processing and estimation, up to the point where it is used to make decisions.">
-  <figcaption><span class="fig-num">Figure 1.4.</span> An illustration of information flowing from initial source, through stages of processing and estimation, up to the point where it is used to make decisions (another form of information).</figcaption>
+  <figcaption><span class="fig-num">Figure 1.3.</span> An illustration of information flowing from initial source, through stages of processing and estimation, up to the point where it is used to make decisions (another form of information).</figcaption>
 </figure>
 
-The flow of information is depicted in figure 1.4. "Information" might be observed inventories, a forecast created from history, the result of a decision to collect information through a market survey, or the result of a production planning process. The processing nodes are mathematical functions – sets of equations that act on the inputs to produce an output. The functions may do anything, from adding up numbers to producing forecasts to making decisions by solving an optimization problem.
+The flow of information is depicted in figure 1.3. "Information" might be observed inventories, a forecast created from history, the result of a decision to collect information through a market survey, or the result of a production planning process. The processing nodes are mathematical functions – sets of equations that act on the inputs to produce an output. The functions may do anything, from adding up numbers to producing forecasts to making decisions by solving an optimization problem.
 
 Just as with physical processes, information processes typically consist of manual steps (such as entering inventories) combined with steps that are done on the computer (and hence are automated), such as running a forecast.
 
@@ -358,12 +377,12 @@ It is easy to think that, given the extensive use of computers, information proc
 
 <figure class="book-figure">
   <img src="/assets/images/bridging-vol1/7levelsofAI.png" alt="The 7 levels of artificial intelligence.">
-  <figcaption><span class="fig-num">Figure 1.5.</span> The 7 levels of artificial intelligence.</figcaption>
+  <figcaption><span class="fig-num">Figure 1.4.</span> The 7 levels of artificial intelligence.</figcaption>
 </figure>
 
 Ultimately the goal of thinking about a complex problem in a formal way is to use the power of the computer to improve the process. Most people will immediately suggest using "artificial intelligence" (often referred to as "AI"). The problem is that "AI" is a term that has been used since the 1950s, and has evolved steadily over the years, typically being applied to the latest invention coming out of the field of computer science.
 
-We divide the major forms of AI into seven levels, depicted in figure 1.5. After we describe these seven levels, we will organize them into four fundamentally different classes of intelligence.
+We divide the major forms of AI into seven levels, depicted in figure 1.4. After we describe these seven levels, we will organize them into four fundamentally different classes of intelligence.
 
 ### The seven levels of AI
 
@@ -377,25 +396,25 @@ The problem with rule-based systems is that as the number of elements making up 
 
 <figure class="book-figure">
   <img src="/assets/images/bridging-vol1/ThreeCirclesofML.png" alt="Every type of function for machine learning falls in three overlapping circles.">
-  <figcaption><span class="fig-num">Figure 1.6.</span> Every type of function for machine learning falls in these overlapping circles, including 1) lookup table functions, 2) parametric functions, and 3) nonparametric functions (locally parametric).</figcaption>
+  <figcaption><span class="fig-num">Figure 1.5.</span> Every type of function for machine learning falls in these overlapping circles, including 1) lookup table functions, 2) parametric functions, and 3) nonparametric functions (locally parametric).</figcaption>
 </figure>
 
-Machine learning models come in a variety of styles, but these can be organized into three broad classes as illustrated in figure 1.6:
+Machine learning models come in a variety of styles, but these can be organized into three broad classes as illustrated in figure 1.5:
 
 - **Lookup tables** – These are of the form "If {input} then {output}," similar to rule-based systems.
-- **Parametric models** – These are analytical functions of inputs that produce one or more outputs using a mathematical function that depends on a set of unknown parameters. If the function is linear in these parameters, then this would be a linear model. More general models use functions that are nonlinear in the parameters. Figure 1.7 illustrates linear and nonlinear models.
+- **Parametric models** – These are analytical functions of inputs that produce one or more outputs using a mathematical function that depends on a set of unknown parameters. If the function is linear in these parameters, then this would be a linear model. More general models use functions that are nonlinear in the parameters. Figure 1.6 illustrates linear and nonlinear models.
 
   <figure class="book-figure">
     <img src="/assets/images/bridging-vol1/LinearandNonlinearFunctions.png" alt="Illustrations of linear and nonlinear parametric functions used in machine learning.">
-    <figcaption><span class="fig-num">Figure 1.7.</span> Illustrations of linear and nonlinear parametric functions used in machine learning.</figcaption>
+    <figcaption><span class="fig-num">Figure 1.6.</span> Illustrations of linear and nonlinear parametric functions used in machine learning.</figcaption>
   </figure>
 
   <figure class="book-figure">
     <img src="/assets/images/bridging-vol1/NeuralNetwork.png" alt="Illustration of a small neural network.">
-    <figcaption><span class="fig-num">Figure 1.8.</span> Illustration of a (very small) neural network. Each link carries a parameter that has to be tuned so that the output comes as close as possible to the label associated with the inputs in a training dataset.</figcaption>
+    <figcaption><span class="fig-num">Figure 1.7.</span> Illustration of a (very small) neural network. Each link carries a parameter that has to be tuned so that the output comes as close as possible to the label associated with the inputs in a training dataset.</figcaption>
   </figure>
 
-  An important class of parametric models which first emerged in the 1970s is neural networks (see figure 1.8). Neural networks have an input layer, where any set of inputs enter the network through the input nodes. These values are then transformed through the intermediate layers before producing one or more outputs. Each link in the network has a parameter associated with it, where the early neural networks often had thousands to a million parameters.
+  An important class of parametric models which first emerged in the 1970s is neural networks (see figure 1.7). Neural networks have an input layer, where any set of inputs enter the network through the input nodes. These values are then transformed through the intermediate layers before producing one or more outputs. Each link in the network has a parameter associated with it, where the early neural networks often had thousands to a million parameters.
 
   It is best to think of neural networks as a very high-dimensional nonlinear function that can be used to fit a virtually unlimited set of relationships, but at a cost of requiring large training datasets. Also, their flexibility limits their ability to be used in the presence of noise.
 - **Nonparametric models** – These are most easily envisioned as models that are local approximations of a function. For example, we may have estimates of a function at a set of points, and we then use linear extrapolations of these points to provide estimates of points for which we do not have an estimate.
@@ -404,10 +423,10 @@ Machine learning models come in a variety of styles, but these can be organized 
 
 <figure class="book-figure">
   <img src="/assets/images/bridging-vol1/SunflowerTakemeHome.png" alt="Illustration of the ability of a neural network to recognize the picture of a sunflower, or the voice pattern saying Take me home.">
-  <figcaption><span class="fig-num">Figure 1.9.</span> Illustration of the ability of a neural network to recognize the picture of a sunflower, or the voice pattern saying "Take me home."</figcaption>
+  <figcaption><span class="fig-num">Figure 1.8.</span> Illustration of the ability of a neural network to recognize the picture of a sunflower, or the voice pattern saying "Take me home."</figcaption>
 </figure>
 
-The inputs would be the pixels in an image (or the signals from a voice pattern), which is a much higher dimensional input. The hard part was creating a training dataset large enough to perform the parameter tuning. The training dataset had to consist of millions of images (which was easy to find on the internet) with the associated "labels" which identified the image such as "sunflower" or "Take me home" in figure 1.9. The hard part was getting the labels, which had to be generated by people.
+The inputs would be the pixels in an image (or the signals from a voice pattern), which is a much higher dimensional input. The hard part was creating a training dataset large enough to perform the parameter tuning. The training dataset had to consist of millions of images (which was easy to find on the internet) with the associated "labels" which identified the image such as "sunflower" or "Take me home" in figure 1.8. The hard part was getting the labels, which had to be generated by people.
 
 The breakthrough in training came when a Princeton computer science professor, Fei-Fei Li, realized that a software environment created by Amazon called the "Mechanical Turk" made it possible to reach out to people around the world willing to work for very low wages to create these labels. In other words, the breakthrough was not so much the underlying analytics (neural networks were developed back in the 1970s) but rather access to enough data at low cost.
 
@@ -415,10 +434,10 @@ The breakthrough in training came when a Princeton computer science professor, F
 
 <figure class="book-figure">
   <img src="/assets/images/bridging-vol1/ChatGPTPrompt.png" alt="Large Language Models such as ChatGPT use a training dataset to construct a distribution of words that might follow a sequence of words.">
-  <figcaption><span class="fig-num">Figure 1.10.</span> Large Language Models such as ChatGPT use a training dataset to construct a distribution of words that might follow a sequence of words, initiated with a prompt, but building on the sequence created by the LLM.</figcaption>
+  <figcaption><span class="fig-num">Figure 1.9.</span> Large Language Models such as ChatGPT use a training dataset to construct a distribution of words that might follow a sequence of words, initiated with a prompt, but building on the sequence created by the LLM.</figcaption>
 </figure>
 
-Figure 1.10 illustrates this, starting with the prompt "The best way to improve the robustness of a supply chain is to…" The neural network then produces a probability distribution of the word that might come next, based on the training dataset. The large language model (or LLM) then samples from this distribution, in proportion to the distribution. If it chooses the word "design" then the sequence "The best way to improve the robustness of a supply chain is to design…" is input to the neural network, which then produces another distribution of words. The process of sampling a word, adding it to the previous sequence of words to produce a new sequence, is repeated over and over. This is why the process is called "generative AI."
+Figure 1.9 illustrates this, starting with the prompt "The best way to improve the robustness of a supply chain is to…" The neural network then produces a probability distribution of the word that might come next, based on the training dataset. The large language model (or LLM) then samples from this distribution, in proportion to the distribution. If it chooses the word "design" then the sequence "The best way to improve the robustness of a supply chain is to design…" is input to the neural network, which then produces another distribution of words. The process of sampling a word, adding it to the previous sequence of words to produce a new sequence, is repeated over and over. This is why the process is called "generative AI."
 
 The neural networks used to generate the distribution of "next words" that follow a previous sequence are truly colossal. While a deep neural network for pattern recognition (Level 3) might have 10 to 100 million parameters, the neural networks used for LLMs might range between 10 billion and 1 trillion parameters.
 
@@ -430,11 +449,11 @@ It needs to be clear from this description that LLMs are not inherently intellig
 - Airlines have to schedule their aircraft and the crews (both pilots and stewarding crews) over extended periods (typically quarterly) to maximize utilization while observing rules for maintaining aircraft along with rules for using people.
 - A financial manager may be constantly juggling the allocation of capital among 10,000 different investments, giving us 10,000 buy or sell decisions that are made daily.
 
-Often these problems can be depicted pictorially, as shown on the left in figure 1.11, but there is a standard way of writing them mathematically, often starting with the notation on the right. While this mathematical notation will not be generally familiar, universities produce thousands of students each year who are trained to model problems in this format. Then, there are many computer packages, some available commercially while others are available for free, that can solve even large scale problems efficiently.
+Often these problems can be depicted pictorially, as shown on the left in figure 1.10, but there is a standard way of writing them mathematically, often starting with the notation on the right. While this mathematical notation will not be generally familiar, universities produce thousands of students each year who are trained to model problems in this format. Then, there are many computer packages, some available commercially while others are available for free, that can solve even large scale problems efficiently.
 
 <figure class="book-figure">
   <img src="/assets/images/bridging-vol1/AssignmenttoLinearProgram.png" alt="Graphical illustration of an assignment problem and its mathematical representation as a linear program.">
-  <figcaption><span class="fig-num">Figure 1.11.</span> Graphical illustration of a type of decision problem (assigning resources to tasks), and its mathematical representation as a linear program.</figcaption>
+  <figcaption><span class="fig-num">Figure 1.10.</span> Graphical illustration of a type of decision problem (assigning resources to tasks), and its mathematical representation as a linear program.</figcaption>
 </figure>
 
 **Level 6 – Sequential decision problems** – The vast majority of decisions are made repeatedly over time, whether it is every few seconds, minutes or hours, daily, weekly, quarterly or yearly. Even our deterministic optimization problems in level 5 above are usually solved repeatedly over time, but most decisions are much simpler. Some examples of sequential decision problems are:
@@ -536,12 +555,12 @@ Volume II of this series will also cover the dimensions of the universal modelin
 
 <figure class="book-figure">
   <img src="/assets/images/bridging-vol1/DiscreteChoicewithUncertainty.png" alt="A decision problem with discrete choices, and uncertainty about the value of each choice.">
-  <figcaption><span class="fig-num">Figure 1.12.</span> A decision problem with discrete choices, and uncertainty about the value of each choice.</figcaption>
+  <figcaption><span class="fig-num">Figure 1.11.</span> A decision problem with discrete choices, and uncertainty about the value of each choice.</figcaption>
 </figure>
 
 ### The most common decision problem
 
-Decision problems, and in particular sequential decision problems, are an exceptionally rich problem class. However, often overlooked in the literature on optimization is that the vast majority of decision problems are described by figure 1.12, where we might have two choices (take an action or not), or a small set of choices (which drug to use, where to purchase a part), or a large number of choices (which product to advertise, which molecule to use when creating a new drug).
+Decision problems, and in particular sequential decision problems, are an exceptionally rich problem class. However, often overlooked in the literature on optimization is that the vast majority of decision problems are described by figure 1.11, where we might have two choices (take an action or not), or a small set of choices (which drug to use, where to purchase a part), or a large number of choices (which product to advertise, which molecule to use when creating a new drug).
 
 A distinguishing characteristic of this problem class is that while we may have an estimate about the performance of each choice, we are typically uncertain about the performance which will emerge after we make a choice. We may just have one chance at making the best choice, but often we make this decision repeatedly, and can learn from past experiences. There are many variations of this problem:
 
@@ -566,12 +585,12 @@ We urge readers to keep the following in mind:
 
 - A static, deterministic optimization model is just a special case of a sequential decision problem.
 - We will show (in Volume II) that deterministic optimization tools are widely used in the solution of general sequential decision problems.
-- By far the most common decision problem that arises in practical applications is the one depicted in figure 1.12, where we have to choose the best of a set of choices. Even when we capture the uncertainty in our beliefs about the choices, the different methods for solving this problem still reduce to solving sequences of deterministic optimization problems.
+- By far the most common decision problem that arises in practical applications is the one depicted in figure 1.11, where we have to choose the best of a set of choices. Even when we capture the uncertainty in our beliefs about the choices, the different methods for solving this problem still reduce to solving sequences of deterministic optimization problems.
 - The problem is not that a deterministic approximation is used; the error is in how the decisions are evaluated. The performance of the decisions have to be evaluated over time as new information arrives.
 
 The most common mistake made in the use of deterministic optimization models is to overlook when the problem has to be solved repeatedly over time. An example of this arises in a problem class called an "assignment problem" where we are assigning "resources" (people, trucks, machines) to "tasks" (job assignments, loads to be moved, jobs to be completed). These are never solved just once; as time moves forward, the resources make progress finishing the tasks, new tasks are called in, and the machines may undergo failures changing how long they need to finish a task.
 
-Figure 1.13(a) depicts the problem as a static, deterministic problem. When this problem was first solved by George Dantzig in the 1950s, it was considered a great breakthrough (which it was). However, even 70 years later, top professionals ignore that the problem is never solved just once; it has to be solved repeatedly over time, and it is virtually always the case that the solution at one point in time affects the problems that need to be solved in the (uncertain) future.
+Figure 1.12(a) depicts the problem as a static, deterministic problem. When this problem was first solved by George Dantzig in the 1950s, it was considered a great breakthrough (which it was). However, even 70 years later, top professionals ignore that the problem is never solved just once; it has to be solved repeatedly over time, and it is virtually always the case that the solution at one point in time affects the problems that need to be solved in the (uncertain) future.
 
 <figure class="book-figure">
   <div class="book-figure-row">
@@ -584,10 +603,10 @@ Figure 1.13(a) depicts the problem as a static, deterministic problem. When this
       <figcaption>(b)</figcaption>
     </figure>
   </div>
-  <figcaption><span class="fig-num">Figure 1.13.</span> (a) Static assignment problem; (b) dynamic assignment problem.</figcaption>
+  <figcaption><span class="fig-num">Figure 1.12.</span> (a) Static assignment problem; (b) dynamic assignment problem.</figcaption>
 </figure>
 
-The real problem is depicted in figure 1.13(b), where we illustrate the problem being solved sequentially over time. We note that it is impossible to determine if a deterministic optimization problem needs to be solved sequentially just by looking at the mathematics of the model; it requires understanding the problem in English.
+The real problem is depicted in figure 1.12(b), where we illustrate the problem being solved sequentially over time. We note that it is impossible to determine if a deterministic optimization problem needs to be solved sequentially just by looking at the mathematics of the model; it requires understanding the problem in English.
 
 ## Stages of modeling
 
