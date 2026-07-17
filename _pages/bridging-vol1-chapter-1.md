@@ -554,7 +554,7 @@ Our approach depends on the universal modeling framework sketched in the [sectio
 Volume II of this series will also cover the dimensions of the universal modeling framework in far more detail than we can in this volume, using modest levels of notation. However, the universal modeling framework cannot be used without answering the three questions addressed in this volume.
 
 <figure class="book-figure">
-  <img src="/assets/images/bridging-vol1/DiscreteChoicewithUncertainty.png" alt="A decision problem with discrete choices, and uncertainty about the value of each choice.">
+  <img src="/assets/images/bridging-vol1/DiscreteChoicewithUncertainty.jpg" alt="A decision problem with discrete choices, and uncertainty about the value of each choice.">
   <figcaption><span class="fig-num">Figure 1.11.</span> A decision problem with discrete choices, and uncertainty about the value of each choice.</figcaption>
 </figure>
 
