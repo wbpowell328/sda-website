@@ -176,7 +176,7 @@ Under extensions, we are going to introduce uncertainty in a way that allows us 
 We are going to change the information that we can use while making decisions. In our first stochastic shortest path problem, we assumed that we had to choose the next link to traverse *before* we see the actual travel cost over the link. Now assume that we make our decision *after* we observe the link costs, which means we make our decision using the actual cost $\chat_{ij}$ rather than its expectation (or average) $\cbar_{ij}$. This is illustrated in Figure 5.3, where a traveler at node 6 gets to see the actual costs on the links out of node 6 (rather than just knowledge of the distributions).
 
 <figure class="book-figure">
-  <img src="/assets/images/sdam/stochasticgraph2.png" alt="Network for a stochastic shortest path problem where travelers get to see the link costs before making a decision." style="max-width: 500px;">
+  <img src="/assets/images/sdam/stochasticgraph2.jpg" alt="Network for a stochastic shortest path problem where travelers get to see the link costs before making a decision." style="max-width: 500px;">
   <figcaption><span class="fig-num">Figure 5.3.</span> Network for a stochastic shortest path problem where travelers get to see the link costs before making a decision. This graph depicts a traveler who has traversed the path 1-3-6, and now sees the costs on links out of node 6.</figcaption>
 </figure>
 
