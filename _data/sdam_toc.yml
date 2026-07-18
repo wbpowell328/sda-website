@@ -30,7 +30,7 @@ chapters:
     url: "/sdam/chapter-5/"
   - num: "6"
     title: "Stochastic shortest path problems - Dynamic"
-    url: ""
+    url: "/sdam/chapter-6/"
   - num: "7"
     title: "Applications, revisited"
     url: ""
