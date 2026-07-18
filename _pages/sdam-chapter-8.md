@@ -399,7 +399,15 @@ $$
 where $\phi_f(s), f=1, \ldots, F$ is a set of appropriately chosen features. Examples of features might be
 
 $$
-\phi_1(s) = R_t, \quad \phi_2(s) = R^2_t, \quad \phi_3(s) = p_t, \quad \phi_4(s) = p^2_t, \quad \phi_5(s) = p_{t-1}, \quad \phi_6(s) = p_{t-2}, \quad \phi_7(s) = R_t p_t.
+\begin{gather*}
+\phi_1(s) = R_t, \\
+\phi_2(s) = R^2_t, \\
+\phi_3(s) = p_t, \\
+\phi_4(s) = p^2_t, \\
+\phi_5(s) = p_{t-1}, \\
+\phi_6(s) = p_{t-2}, \\
+\phi_7(s) = R_t p_t.
+\end{gather*}
 $$
 
 Note that with a constant term $\theta_0$, this model has only eight coefficients to be estimated. Sampling a few hundred states should be more than enough to get a good statistical approximation. This methodology is relatively insensitive to the number of state variables, and of course there is no problem if any of the variables are continuous.
