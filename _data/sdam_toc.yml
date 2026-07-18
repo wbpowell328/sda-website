@@ -24,7 +24,7 @@ chapters:
     url: "/sdam/chapter-3/"
   - num: "4"
     title: "Learning the best diabetes medication"
-    url: ""
+    url: "/sdam/chapter-4/"
   - num: "5"
     title: "Stochastic shortest path problems - Static"
     url: ""
