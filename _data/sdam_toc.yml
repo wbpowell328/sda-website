@@ -39,7 +39,7 @@ chapters:
     url: "/sdam/chapter-8/"
   - num: "9"
     title: "Energy storage II"
-    url: ""
+    url: "/sdam/chapter-9/"
   - num: "10"
     title: "Supply chain management I: The two-agent newsvendor problem"
     url: ""
