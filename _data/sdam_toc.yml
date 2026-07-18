@@ -18,7 +18,7 @@ chapters:
     url: "/sdam/chapter-1/"
   - num: "2"
     title: "An asset selling problem"
-    url: ""
+    url: "/sdam/chapter-2/"
   - num: "3"
     title: "Adaptive market planning"
     url: ""
