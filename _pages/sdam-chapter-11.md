@@ -166,7 +166,7 @@ Keep in mind that $R^{inv}_{tq}$ is the current inventory, so $R^{inv}_{tq}-x^{f
 We now search for the best policy using
 
 $$
-\min_\pi \E\left\{\sum_{t=0}^T C_q(S_t,X^\pi(S_t))|S_0\right\}.
+\min_\pi \E\left\{\sum_{t=0}^T C_q(S_t,X^\pi(S_t))\vert S_0\right\}.
 $$
 
 This has to be done for each agent $q$, assuming that each are self-optimizing. A separate challenge is choosing policies for each agent, which can only use the information available to each agent, but where we still want policies that achieve a global optimality. That is a question beyond the scope of this book.
@@ -197,7 +197,7 @@ We are going to warm up with some simple ordering rules:
 - Request from agent $q+1$ whatever was requested from $q$ in the previous time period:
 
 $$
-X^{\pi,req}_{t,q,q+1}(S_{tq}|\theta) = W^{req}_{t-1,q-1,q} + \theta_{q}.
+X^{\pi,req}_{t,q,q+1}(S_{tq}\vert \theta) = W^{req}_{t-1,q-1,q} + \theta_{q}.
 $$
 
   This policy ignores how much we have in inventory; it is a pure tracking policy. This policy requires that we store the previous request $W^{req}_{t-1,q-1,q}$ in our state variable which becomes
@@ -210,14 +210,14 @@ $$
 - Request what is needed to meet current and past requests:
 
 $$
-X^{\pi,req}_{t,q,q+1}(S_{tq}|\theta) = R^{back}_{tq} + \theta_{q}.
+X^{\pi,req}_{t,q,q+1}(S_{tq}\vert \theta) = R^{back}_{tq} + \theta_{q}.
 $$
 
   When we have leftover demands, this policy would be double-counting, which means making multiple requests.
 - Target inventory policy:
 
 $$
-X^{\pi,req}_{t,q,q+1}(S_{tq}|\theta) = \max\{0, \theta^{target}_{q}-R^{inv}_{tq}\}.
+X^{\pi,req}_{t,q,q+1}(S_{tq}\vert \theta) = \max\{0, \theta^{target}_{q}-R^{inv}_{tq}\}.
 $$
 
   This policy seeks to maintain a specified target inventory $\theta^{target}$ which is not varied as conditions change.
@@ -278,7 +278,7 @@ $$
   We can use these to create an "anchor-and-adjustment" policy given by
 
 $$
-X^{\pi,req}_{t,q,q+1}(S_{tq}|\theta_q) = \max\{0,\Fbar_{t,q-1,q} + \delta R^{inv}_{tq} + \delta R^{transit}_{tq}\}.
+X^{\pi,req}_{t,q,q+1}(S_{tq}\vert \theta_q) = \max\{0,\Fbar_{t,q-1,q} + \delta R^{inv}_{tq} + \delta R^{transit}_{tq}\}.
 $$
 
   So now we have to design adjustment mechanisms. A possible strategy for $\delta R^{inv}_t$ might be
@@ -312,7 +312,7 @@ We first posed a stochastic lookahead policy in [Chapter 7](/sdam/chapter-7/), b
 $$
 \begin{align}
 X^{DLA}(S_t) &= \argmin_{x_t\in\Xcal}\Big(C(S_t,x_t) + {} \nonumber \\
-& \ \Etilde_{\Wtilde_{t,t+1}} \Big\{\min_{\tilde \pi} \E_{\Wtilde_{t,t+2}, \ldots, \Wtilde_{tT}} \Big\{\sum_{t'=t+1}^T C(\Stilde_{tt'},\Xtilde^{\tilde \pi}_t(\Stilde_{tt'}))\Big|\Stilde_{t,t+1}\Big\} \Big|S_t,x_t\Big\}\Big). \label{eq:policiesapproximateDLA2}
+& \ \Etilde_{\Wtilde_{t,t+1}} \Big\{\min_{\tilde \pi} \E_{\Wtilde_{t,t+2}, \ldots, \Wtilde_{tT}} \Big\{\sum_{t'=t+1}^T C(\Stilde_{tt'},\Xtilde^{\tilde \pi}_t(\Stilde_{tt'}))\Big\vert \Stilde_{t,t+1}\Big\} \Big\vert S_t,x_t\Big\}\Big). \label{eq:policiesapproximateDLA2}
 \end{align}
 $$
 

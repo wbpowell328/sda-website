@@ -257,7 +257,7 @@ We refer to the process of answering these three questions as *framing the probl
 - **State variables $S_t$** – The state variable captures everything you need to know at time $t$ to make a decision at time $t$, compute costs and constraints, and if necessary, simulate your way to time $t+1$. State variables can include information about physical resources (inventories or the location of a vehicle which enter the problem through constraints), other information (such as costs or prices which enter the objective function), and beliefs about quantities and parameters we do not know perfectly (such as forecasts or estimates of how a patient would respond to a drug).
 - **Decision variables $x_t$** – These describe how we are going to design or control our system. Decisions have to satisfy constraints that we write as $x_t \in \Xcal$ where $\Xcal$ could be a set of discrete choices, or a set of linear equations. Decisions will be determined by *policies* that are functions (or rules) that we designate by $X^\pi(S_t)$ that determine $x_t$ given what is in the state variable. Policies can be very simple (buy-low, sell-high) or quite complex.
 
-  The index $\pi$ carries information about the type of function that is used to make decisions, and any tunable parameters. Let $f\in\Fcal$ be the structure of the function, $\Fcal$ be the set of possible functions, and let $\theta\in\Theta^f$ be any tunable parameters for function $f$. Our policy would then be represented as $\pi = (f,\theta)$. We will often write the policy as $X^\pi(S_t|\theta)$ to indicate the dependence on tunable parameters.
+  The index $\pi$ carries information about the type of function that is used to make decisions, and any tunable parameters. Let $f\in\Fcal$ be the structure of the function, $\Fcal$ be the set of possible functions, and let $\theta\in\Theta^f$ be any tunable parameters for function $f$. Our policy would then be represented as $\pi = (f,\theta)$. We will often write the policy as $X^\pi(S_t\vert \theta)$ to indicate the dependence on tunable parameters.
 
   We return to this in considerable detail later in this chapter, and throughout the book. Each of the examples given in the book has been chosen to help illustrate specific types of policies.
 - **Exogenous information $W_{t+1}$** – This is new information that arrives after we make decision $x_t$ (but before we decide $x_{t+1}$) such as how much we sell after setting a price, or the time to complete the path we chose. When we make a decision at time $t$, the information in $W_{t+1}$ is unknown, so we treat it as a random variable when we are choosing $x_t$.
@@ -279,7 +279,7 @@ $$
 
 $$
 \begin{align}
-\max_{\pi=(f,\theta)} F^\pi(S_0) = \E \left\{\sum_{t=0}^T C(S_t,X^\pi(S_t|\theta))|S_0\right\},\label{eq:baseobjectivefunction}
+\max_{\pi=(f,\theta)} F^\pi(S_0) = \E \left\{\sum_{t=0}^T C(S_t,X^\pi(S_t\vert \theta))\vert S_0\right\},\label{eq:baseobjectivefunction}
 \end{align}
 $$
 
@@ -386,7 +386,7 @@ Our profits $\Fhat^\pi(S_0)$ are random because it depends on a particular seque
 
 $$
 \begin{align}
-F^\pi(S_0) = \E \left\{\sum_{t=0}^T C(S_t,X^\pi(S_t),\Dhat_{t+1})|S_0\right\}. \label{eq:inventoryobjective}
+F^\pi(S_0) = \E \left\{\sum_{t=0}^T C(S_t,X^\pi(S_t),\Dhat_{t+1})\vert S_0\right\}. \label{eq:inventoryobjective}
 \end{align}
 $$
 
@@ -408,7 +408,7 @@ Using this model, we can create a set of demands $(\Dhat_1, \Dhat_2, \ldots, \Dh
 
 $$
 \begin{align}
-X^\pi(S_t|\theta) = \begin{cases} \theta^{max} - R_t & \text{if } R_t < \theta^{min}, \\ 0 & \text{otherwise,}\end{cases} \label{eq:introorderupto}
+X^\pi(S_t\vert \theta) = \begin{cases} \theta^{max} - R_t & \text{if } R_t < \theta^{min}, \\ 0 & \text{otherwise,}\end{cases} \label{eq:introorderupto}
 \end{align}
 $$
 
@@ -417,10 +417,10 @@ where $\theta = (\theta^{min},\theta^{max})$ is a set of parameters that need to
 **Step 6. Evaluating policies** – There are a variety of strategies we might use. In practice, we cannot compute the expectation in the objective function in equation $\eqref{eq:inventoryobjective}$, so we take a series of samples of demands. Let $\Dhat^n_1, \ldots, \Dhat^n_T$ be one sample of demands over $t=1, \ldots, T$, and assume we can generate $N$ of these. Now we can estimate our expected profits from policy $X^\pi(S_t)$ by averaging over the samples for $n=1, \ldots, N$, which is computed using
 
 $$
-\Fbar^\pi(\theta|S_0) = \frac{1}{N} \sum_{n=1}^N \sum_{t=0}^T C(S_t,X^\pi(S_t|\theta),\Dhat^n_{t+1}).
+\Fbar^\pi(\theta\vert S_0) = \frac{1}{N} \sum_{n=1}^N \sum_{t=0}^T C(S_t,X^\pi(S_t\vert \theta),\Dhat^n_{t+1}).
 $$
 
-In plain English, we are simulating the policy $X^\pi(S_t|\theta)$ $N$ times using the simulated (or observed from history) samples of demands $\Dhat^n_1, \ldots, \Dhat^n_T$, and then averaging the performance to get $\Fbar^\pi(\theta|S_0)$. We then face the problem of finding the best value of $\theta$. A simple strategy would be to generate $K$ possible values $\theta_1, \ldots, \theta_K$, simulating each one to find $\Fbar^\pi(\theta_k|S_0)$ for each $k$, and then pick the value of $\theta_k$ that works the best. This is not an optimal strategy, but it provides a simple, practical starting point.
+In plain English, we are simulating the policy $X^\pi(S_t\vert \theta)$ $N$ times using the simulated (or observed from history) samples of demands $\Dhat^n_1, \ldots, \Dhat^n_T$, and then averaging the performance to get $\Fbar^\pi(\theta\vert S_0)$. We then face the problem of finding the best value of $\theta$. A simple strategy would be to generate $K$ possible values $\theta_1, \ldots, \theta_K$, simulating each one to find $\Fbar^\pi(\theta_k\vert S_0)$ for each $k$, and then pick the value of $\theta_k$ that works the best. This is not an optimal strategy, but it provides a simple, practical starting point.
 
 ### A slightly more complicated problem
 
@@ -544,7 +544,7 @@ We now state our objective function formally as
 
 $$
 \begin{align}
-\max_{\pi=(f,\theta)} \E \left\{\sum_{t=0}^T C(S_t,X^\pi(S_t|\theta),\Dhat_{t+1})|S_0\right\}. \label{eq:introcomplexinventoryobjective}
+\max_{\pi=(f,\theta)} \E \left\{\sum_{t=0}^T C(S_t,X^\pi(S_t\vert \theta),\Dhat_{t+1})\vert S_0\right\}. \label{eq:introcomplexinventoryobjective}
 \end{align}
 $$
 
@@ -564,7 +564,7 @@ Uncertainty models can become quite complex, but this will serve as an illustrat
 
 $$
 \begin{align}
-X^\pi(S_t|\theta) = \max\{0,f^D_{t,t+1}-R_t\} + \theta. \label{eq:adjustedforecastpolicy}
+X^\pi(S_t\vert \theta) = \max\{0,f^D_{t,t+1}-R_t\} + \theta. \label{eq:adjustedforecastpolicy}
 \end{align}
 $$
 
@@ -573,7 +573,7 @@ If we had a perfect forecast, then all we have to order would be $f^D_{t,t+1}$ (
 **Step 6. Evaluating policies** – This time we have to generate samples of all the random variables in the sequence $W_1, W_2, \ldots, W_T$. Again we might generate $N$ samples of the entire sequence so we can estimate the performance of a policy using
 
 $$
-\Fbar^\pi(\theta) = \frac{1}{N} \sum_{n=1}^N \sum_{t=0}^T C(S_t,X^\pi(S_t|\theta),\Dhat^n_{t+1}).
+\Fbar^\pi(\theta) = \frac{1}{N} \sum_{n=1}^N \sum_{t=0}^T C(S_t,X^\pi(S_t\vert \theta),\Dhat^n_{t+1}).
 $$
 
 We again face the problem of finding the best value of $\theta$, but we return to that challenge later.
@@ -664,7 +664,7 @@ $$
 
 $$
 \begin{align}
-\max_{\pi=(f,\theta)} F^\pi(S_0) = \E \left\{\sum_{t=0}^T C_t(S_t,X^\pi_t(S_t|\theta))|S_0\right\}, \label{eq:objectivecumulativereward}
+\max_{\pi=(f,\theta)} F^\pi(S_0) = \E \left\{\sum_{t=0}^T C_t(S_t,X^\pi_t(S_t\vert \theta))\vert S_0\right\}, \label{eq:objectivecumulativereward}
 \end{align}
 $$
 
@@ -712,7 +712,7 @@ Often, we are just working with a single sample path, possibly from history. In 
 
 $$
 \begin{align}
-\max_\pi \Fhat^\pi(\omega|S_0) = \sum_{t=0}^T C_t(S_t(\omega),X^\pi_t(S_t(\omega))). \label{eq:objectivecumulativerewardsample}
+\max_\pi \Fhat^\pi(\omega\vert S_0) = \sum_{t=0}^T C_t(S_t(\omega),X^\pi_t(S_t(\omega))). \label{eq:objectivecumulativerewardsample}
 \end{align}
 $$
 
@@ -729,7 +729,7 @@ We need to distinguish between the initial state $S_0$ and subsequent states $S_
 - **$S_0$** – The initial state $S_0$ captures i) deterministic parameters that never change, ii) initial values of quantities or parameters that do change (possibly due to decisions), and iii) beliefs about quantities or parameters that we do not know perfectly (this might be the parameters of a probability distribution) such as how we respond to a vaccine or how the market will respond to price. The beliefs may remain static, or we may update them as we learn from observations.
 - **$S_t$** – This is all the information we need at time $t$ from history to model the system from time $t$ onward. $S_t$ for $t > 0$ only includes variables that are changing over time, which means that at time $t$ we may also be using static information contained in $S_0$.
 
-We write the explicit dependence of the performance of the policy on the initial state $S_0$, whether we use $F^\pi(S_0)$, $\Fbar^\pi(S_0)$ or $\Fhat^\pi(\omega|S_0)$. While this should be obvious, it is often overlooked. The initial state includes elements such as:
+We write the explicit dependence of the performance of the policy on the initial state $S_0$, whether we use $F^\pi(S_0)$, $\Fbar^\pi(S_0)$ or $\Fhat^\pi(\omega\vert S_0)$. While this should be obvious, it is often overlooked. The initial state includes elements such as:
 
 - Initial values of the quantities of physical or financial resources $R_0$ – This might be starting inventories, the initial location of a vehicle, the available machines, and the initial set of facilities. It also includes any static values, such as a transportation network, the size of a warehouse (which does not change), and the number of trucks in a fleet.
 - Initial values of parameters, along with any functions used to model the problem $I_0$ – This could be an initial price, the level of medication in a patient, along with the choice of functions for performing forecasting or modeling the evolution of disease in a population.
@@ -737,10 +737,10 @@ We write the explicit dependence of the performance of the policy on the initial
 
 We note it helps to separate initial values that never change, from those that evolve over time, either directly as a result of decisions or from exogenous information. Values that never change are stored in $S_0$, but are not represented in $S_t$ for $t > 0$. The reason for this is the desire to keep $S_t$ as compact as possible.
 
-Assume our policy $X^\pi(S_t|\theta)$ has tunable parameters. For example, we might be managing an inventory system where we use the familiar "order-up-to" policy (known in the inventory literature as an $(s,S)$ policy) given by
+Assume our policy $X^\pi(S_t\vert \theta)$ has tunable parameters. For example, we might be managing an inventory system where we use the familiar "order-up-to" policy (known in the inventory literature as an $(s,S)$ policy) given by
 
 $$
-X^\pi(S_t|\theta) = \begin{cases} \theta^{max} - R_t & R_t < \theta^{min},\\ 0 & \text{otherwise.}\end{cases}
+X^\pi(S_t\vert \theta) = \begin{cases} \theta^{max} - R_t & R_t < \theta^{min},\\ 0 & \text{otherwise.}\end{cases}
 $$
 
 where $\theta = (\theta^{min},\theta^{max})$. For simplicity we might assume when we place an order it arrives right away (a standard textbook assumption that is never true in practice) which allows us to write the evolution of our physical state $R_t$ (the amount in inventory just before we place our instantaneous order) using
@@ -749,13 +749,13 @@ $$
 R_{t+1} = \max\{0,R_t + x_t - \Dhat_{t+1}\}
 $$
 
-where $x_t = X^\pi(S_t|\theta)$ and $\Dhat_{t+1}$ is the demand for our product over the interval $(t,t+1)$ (this is our exogenous information $W_{t+1}$). Finally let $C(S_t,x_t,W_{t+1})$ be our net profit over the interval $(t,t+1)$ (which is not important right now).
+where $x_t = X^\pi(S_t\vert \theta)$ and $\Dhat_{t+1}$ is the demand for our product over the interval $(t,t+1)$ (this is our exogenous information $W_{t+1}$). Finally let $C(S_t,x_t,W_{t+1})$ be our net profit over the interval $(t,t+1)$ (which is not important right now).
 
 Now imagine that we have a historical demand process $W_1, W_2, \ldots, W_t, \ldots, W_T$ that allows us to run a simulation of our system. Let $\omega$ represent this historical sequence of demands (or any exogenous information). We would write the problem of finding the best set of ordering parameters $\theta$ using
 
 $$
 \begin{align}
-\max_\theta \Fhat^\pi(\omega,\theta|S_0) = \sum_{t=0}^T C_t(S_t(\omega),X^\pi_t(S_t(\omega))), \label{eq:optimizingtheta}
+\max_\theta \Fhat^\pi(\omega,\theta\vert S_0) = \sum_{t=0}^T C_t(S_t(\omega),X^\pi_t(S_t(\omega))), \label{eq:optimizingtheta}
 \end{align}
 $$
 
@@ -787,10 +787,10 @@ $$
 S^n_0, x^n_0, W^n_1, \ldots, S^n_t, x^n_t, W^N_{t+1}, \ldots, S^N_T,
 $$
 
-  where $x^n_t = X^{\pi,n}(S^n_t|\theta)$.
+  where $x^n_t = X^{\pi,n}(S^n_t\vert \theta)$.
 - **Optimizing final reward** – A common setting is where we are performing stochastic search, as would happen when looking for the best policy. Each iteration for evaluating the algorithm might require a simulation over time, although this is not always the case.
 
-  Now let's assume that our decision variable is the parameter $\theta$, and that we have an algorithm $\Theta^\pi(S^{\theta,n})$ that works just like a policy $X^\pi(S_t|\theta)$, but where $S^{\theta,n}$ captures the "state" of the algorithm at the $n$th iteration.
+  Now let's assume that our decision variable is the parameter $\theta$, and that we have an algorithm $\Theta^\pi(S^{\theta,n})$ that works just like a policy $X^\pi(S_t\vert \theta)$, but where $S^{\theta,n}$ captures the "state" of the algorithm at the $n$th iteration.
 
   Search algorithms are all sequential decision problems, but unlike most sequential decision problems over time, we want to run $N$ iterations, and we only care about our solution at the end. Let $\theta^{\pi,N}$ be the value of $\theta^n$ after $N$ iterations, while following "algorithm" (policy) $\pi$.
 
@@ -892,7 +892,7 @@ $$
 where we might assume that
 
 $$
-\varepsilon_{t+1} \sim N(0, |x_t| \sigma^2_t),
+\varepsilon_{t+1} \sim N(0, \vert x_t\vert  \sigma^2_t),
 $$
 
 This model assumes that $\varepsilon_{t+1}$ has mean 0, and variance that grows with the absolute value of $x_t$. The information $W_{t+1}(S_t,x_t)$ would then have mean $\theta^x x_t$ which is positive if we are purchasing shares ($x_t > 0$), and negative if we are selling into the market ($x_t < 0$).
@@ -982,7 +982,7 @@ $$
 
 $$
 \begin{align}
-V_t(S_t) = \max_{x_t} \big(C(S_t,x_t) + \E_{W_{t+1}} \left\{V_{t+1}(S_{t+1})|S_t,x_t\right\}\big). \label{eq:bellmanstochastic}
+V_t(S_t) = \max_{x_t} \big(C(S_t,x_t) + \E_{W_{t+1}} \left\{V_{t+1}(S_{t+1})\vert S_t,x_t\right\}\big). \label{eq:bellmanstochastic}
 \end{align}
 $$
 
@@ -994,7 +994,7 @@ $$
 
 $$
 \begin{align}
-X^\pi(S_t) = \argmax_{x_t\in\Xcal_t} \big(C(S_t,x_t) + \E_{W_{t+1}} \{\Vbar_{t+1}(S_{t+1})|S_t,x_t\}\big). \label{eq:introvbarpolicy}
+X^\pi(S_t) = \argmax_{x_t\in\Xcal_t} \big(C(S_t,x_t) + \E_{W_{t+1}} \{\Vbar_{t+1}(S_{t+1})\vert S_t,x_t\}\big). \label{eq:introvbarpolicy}
 \end{align}
 $$
 

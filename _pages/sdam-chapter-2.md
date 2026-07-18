@@ -157,7 +157,7 @@ We write $S_t(\omega)$ to express the dependence on the sample path. We could al
 If we follow policy $\pi$ along this sample path, we can compute the performance using
 
 $$
-\Fhat^\pi(\omega|S_0) = \sum_{t=0}^{T-1} p_t(\omega)X^\pi(S_t(\omega)).
+\Fhat^\pi(\omega\vert S_0) = \sum_{t=0}^{T-1} p_t(\omega)X^\pi(S_t(\omega)).
 $$
 
 This is for one sample path. Note that we get a set of decisions $x_t(\omega)$ for each sample path from the policy $x_t(\omega) = X^\pi(S_t(\omega))$. This notation communicates that $x_t$ is a random variable that depends on the sample path $\omega$. For each sample path, we still get $\sum_{t=0}^{T-1} x_t(\omega) =1$, which parallels our constraint above for the deterministic version of the problem. There is a time $\tau(\omega)$ which is the time where $x_t(\omega)=1$ for $t=\tau(\omega)$. This time is known as a *stopping time* for this asset selling problem.
@@ -166,7 +166,7 @@ We can simulate over a sample of $N$ samples $\omega^1, \ldots, \omega^n, \ldots
 
 $$
 \begin{align}
-\Fbar^\pi(S_0) = \frac{1}{N} \sum_{n=1}^N \Fhat^\pi(\omega^n|S_0). \label{eq:assetsellingfbarpi}
+\Fbar^\pi(S_0) = \frac{1}{N} \sum_{n=1}^N \Fhat^\pi(\omega^n\vert S_0). \label{eq:assetsellingfbarpi}
 \end{align}
 $$
 
@@ -202,7 +202,7 @@ Often, we are going to write our objective function as
 
 $$
 \begin{align}
-\max_\pi \E \left\{\sum_{t=0}^{T-1} p_tX^\pi(S_t)|S_0 \right\}. \label{eq:assetsellingexpectedsum}
+\max_\pi \E \left\{\sum_{t=0}^{T-1} p_tX^\pi(S_t)\vert S_0 \right\}. \label{eq:assetsellingexpectedsum}
 \end{align}
 $$
 
@@ -261,7 +261,7 @@ We can envision several different policies for this problem. For example, a simp
 
 $$
 \begin{align}
-X^{sell-low}(S_t|\theta^{low}) &= \begin{cases} 1 & \text{if } p_t < \theta^{low}, \\ 1 & \text{if } t=T, \\ 0 & \text{otherwise.}\end{cases} \label{eq:assetsellingpolicy1}
+X^{sell-low}(S_t\vert \theta^{low}) &= \begin{cases} 1 & \text{if } p_t < \theta^{low}, \\ 1 & \text{if } t=T, \\ 0 & \text{otherwise.}\end{cases} \label{eq:assetsellingpolicy1}
 \end{align}
 $$
 
@@ -269,7 +269,7 @@ Another policy might be a "high-low" selling policy, where we want to sell if th
 
 $$
 \begin{align}
-X^{high-low}(S_t|\theta^{high-low}) &= \begin{cases} 1 & \text{if } p_t < \theta^{low} \text{ or } p_t > \theta^{high}, \\ 1 & \text{if } t=T, \\ 0 & \text{otherwise.}\end{cases} \label{eq:assetsellingpolicy2}
+X^{high-low}(S_t\vert \theta^{high-low}) &= \begin{cases} 1 & \text{if } p_t < \theta^{low} \text{ or } p_t > \theta^{high}, \\ 1 & \text{if } t=T, \\ 0 & \text{otherwise.}\end{cases} \label{eq:assetsellingpolicy2}
 \end{align}
 $$
 
@@ -283,11 +283,11 @@ Now consider a tracking policy that we might write as
 
 $$
 \begin{align}
-X^{track}(S_t|\theta^{track}) &= \begin{cases} 1 & \text{if } p_t \geq \pbar_t + \theta^{track}, \\ 1 & \text{if } t=T, \\ 0 & \text{otherwise.}\end{cases} \label{eq:trackingpolicy}
+X^{track}(S_t\vert \theta^{track}) &= \begin{cases} 1 & \text{if } p_t \geq \pbar_t + \theta^{track}, \\ 1 & \text{if } t=T, \\ 0 & \text{otherwise.}\end{cases} \label{eq:trackingpolicy}
 \end{align}
 $$
 
-In all the cases, we can only sell the asset (that is, $X^{track}(S_t|\theta^{track}) =1$) if we are still holding the asset (which means $R^{asset}_t = 1$).
+In all the cases, we can only sell the asset (that is, $X^{track}(S_t\vert \theta^{track}) =1$) if we are still holding the asset (which means $R^{asset}_t = 1$).
 
 For this policy, we are going to need to tweak our model because we now need $\pbar_t$ in order to make a decision. This means we would now write our state as
 
@@ -432,13 +432,13 @@ There are simple formulas that govern the updating of $\etabar_t$ to $\etabar_{t
 We first let
 
 $$
-\pbar_t(p_t|\etabar_t) = \etabar_{t0} p_t + \etabar_{t1} p_{t-1}
+\pbar_t(p_t\vert \etabar_t) = \etabar_{t0} p_t + \etabar_{t1} p_{t-1}
 $$
 
 be our estimate of $p_{t+1}$ given what we know at time $t$. The error in this estimate is given by
 
 $$
-\hat{\varepsilon}_{t+1} = \pbar(p_t|\etabar_t) - p_{t+1}.
+\hat{\varepsilon}_{t+1} = \pbar(p_t\vert \etabar_t) - p_{t+1}.
 $$
 
 Now let the vector $\phi_t$ be the vector of explanatory variables in our price process which is given by
@@ -485,7 +485,7 @@ L = scipy.linalg.cholesky(Sigma, lower=True)
 
 The matrix $L$ allows us to obtain the matrix $\Sigma$ using $\Sigma = L^T L$.
 
-Now let $Z$ be a vector of random variables, one for each asset, where $Z_i \sim N(0,1)$ (virtually every programming language has routines for creating random samples from normal distributions with mean 0, variance 1). Let $p_t$, $p_{t+1}$ and $Z$ be column vectors (dimensioned by the number of assets). We first create a sample $\hat Z$ by sampling from $N(0,1)$ $|\Ical|$ times. Our sample of prices $p_{t+1}$ is then given by
+Now let $Z$ be a vector of random variables, one for each asset, where $Z_i \sim N(0,1)$ (virtually every programming language has routines for creating random samples from normal distributions with mean 0, variance 1). Let $p_t$, $p_{t+1}$ and $Z$ be column vectors (dimensioned by the number of assets). We first create a sample $\hat Z$ by sampling from $N(0,1)$ $\vert \Ical\vert $ times. Our sample of prices $p_{t+1}$ is then given by
 
 $$
 p_{t+1} = p_t + L \hat{Z}.
@@ -550,7 +550,7 @@ We used this problem to illustrate different types of PFA policies:
     \pbar_t = \frac{1}{7}\sum_{t'=t-7+1}^{t} p_{t'}.
     $$
 
-    The trader will sell an asset if $p_t < \pbar_t - \theta^{sell}$. Write out the decision rule as a policy $X^\pi(S_t|\theta^{sell})$ that returns 1 if we sell the asset and 0 otherwise.</li>
+    The trader will sell an asset if $p_t < \pbar_t - \theta^{sell}$. Write out the decision rule as a policy $X^\pi(S_t\vert \theta^{sell})$ that returns 1 if we sell the asset and 0 otherwise.</li>
     <li>What is the exogenous information?</li>
     <li>Write out the transition equations. You need an equation for each element of $S_t$.</li>
     <li>Write out the objective function (and remember to use an expectation operator for each random variable as described in the instructions). Be sure to specify what you are optimizing over given the class of policy specified in part (c). Assume that you are training your policy on historical data in an offline setting.</li>
@@ -593,7 +593,7 @@ These exercises use the Python module *AssetSelling* on [tinyurl.com/sdagithub](
 <li>Our basic "high-low" selling policy was given by
 
 $$
-X^{high-low}(S_t|\theta^{high-low}) = \begin{cases} 1 & \text{if } p_t < \theta^{low} \text{ or } p_t > \theta^{high}, \\ 1 & \text{if } t=T, \\ 0 & \text{otherwise.}\end{cases}
+X^{high-low}(S_t\vert \theta^{high-low}) = \begin{cases} 1 & \text{if } p_t < \theta^{low} \text{ or } p_t > \theta^{high}, \\ 1 & \text{if } t=T, \\ 0 & \text{otherwise.}\end{cases}
 $$
 
 In addition to the module *AssetSelling*, you will also need to download the spreadsheet "Chapter2_asset_selling_policy" from [tinyurl.com/sdamodelingsupplements](https://tinyurl.com/sdamodelingsupplements) which provides parameters to be used by the python module.
@@ -619,7 +619,7 @@ We are going to use $\pbar_t$ as a forecast of $p_{t+1}$ given what we know at t
 
     $$
     \begin{align}
-    X^{time-series}(S_t|\theta^{low}) &= \begin{cases} 1 & \text{if } p_t < \pbar_t - \theta \text{ or } p_t > \pbar_t + \theta, \\ 1 & \text{if } t=T, \\ 0 & \text{otherwise.}\end{cases} \label{eq:assetsellingpolicytimeseries}
+    X^{time-series}(S_t\vert \theta^{low}) &= \begin{cases} 1 & \text{if } p_t < \pbar_t - \theta \text{ or } p_t > \pbar_t + \theta, \\ 1 & \text{if } t=T, \\ 0 & \text{otherwise.}\end{cases} \label{eq:assetsellingpolicytimeseries}
     \end{align}
     $$
 

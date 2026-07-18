@@ -306,20 +306,20 @@ We finish with a description of a hybrid policy that combines value function app
 A buy-low, sell-high policy works on the simple principle of charging the battery when the price falls below a lower limit, and selling when the price goes above an upper limit. The policy can be written as
 
 $$
-X^{low-high}(S_t|\theta) = \begin{cases} -1 & \text{if } p_t \leq \theta^{buy}, \\ 0 & \text{if } \theta^{buy} < p_t < \theta^{sell}, \\ +1 & \text{if } p_t \geq \theta^{sell}. \end{cases}
+X^{low-high}(S_t\vert \theta) = \begin{cases} -1 & \text{if } p_t \leq \theta^{buy}, \\ 0 & \text{if } \theta^{buy} < p_t < \theta^{sell}, \\ +1 & \text{if } p_t \geq \theta^{sell}. \end{cases}
 $$
 
 We now have to tune $\theta = (\theta^{buy}, \theta^{sell})$. We evaluate our policy by following a sample path of prices $p_t(\omega)$ (or we may be observing the changes in prices $\phat(\omega)$). Assuming we are generating sample paths from a mathematical model, we can generate sample paths $\omega^1, \ldots, \omega^N$. We can then simulate the performance of the policy over each sample path and take an average using
 
 $$
-\Fbar^{low-high} = \frac{1}{N} \sum_{n=1}^N C\big(S_t(\omega^n),X^{low-high}(S_t(\omega^n)|\theta)\big).
+\Fbar^{low-high} = \frac{1}{N} \sum_{n=1}^N C\big(S_t(\omega^n),X^{low-high}(S_t(\omega^n)\vert \theta)\big).
 $$
 
 Tuning $\theta$ requires solving the problem
 
 $$
 \begin{align}
-\max_\theta \Fbar^{low-high}(\theta|S_0). \label{eq:buylowpolicysearch}
+\max_\theta \Fbar^{low-high}(\theta\vert S_0). \label{eq:buylowpolicysearch}
 \end{align}
 $$
 
@@ -327,7 +327,7 @@ Since $\theta$ has only two dimensions, one strategy is to do a full grid search
 
 We note that a brute-force grid search only works if we run enough simulations $N$ so that the variance in the estimate $\Fbar^\pi(\theta)$ is relatively small. However, we have methods for doing the search for $\theta$ even with noisy estimates of the performance of the policy, as presented in [Chapter 7](/sdam/chapter-7/).
 
-We are going to see the optimization problem given by $\eqref{eq:buylowpolicysearch}$ repeatedly, since the simplest policies always feature tunable parameters. The problem $\eqref{eq:buylowpolicysearch}$ can be solved using derivative-based methods if we are able to compute (or approximate) derivatives of $\Fbar^{low-high}(\theta|S_0)$ with respect to $\theta$. When this is not possible, we have to use derivative-free methods, which is precisely the problem we faced in [Chapter 2](/sdam/chapter-2/).
+We are going to see the optimization problem given by $\eqref{eq:buylowpolicysearch}$ repeatedly, since the simplest policies always feature tunable parameters. The problem $\eqref{eq:buylowpolicysearch}$ can be solved using derivative-based methods if we are able to compute (or approximate) derivatives of $\Fbar^{low-high}(\theta\vert S_0)$ with respect to $\theta$. When this is not possible, we have to use derivative-free methods, which is precisely the problem we faced in [Chapter 2](/sdam/chapter-2/).
 
 ### Backward dynamic programming
 
@@ -335,14 +335,14 @@ Backward dynamic programming involves directly solving Bellman's equation
 
 $$
 \begin{align}
-V_t(s_t) = \max_{x_t} \left(C_t(s,x_t)+  \E\{V_{t+1}(S_{t+1})|S_t,x_t\} \right), \label{eq:energystoragebellman}
+V_t(s_t) = \max_{x_t} \left(C_t(s,x_t)+  \E\{V_{t+1}(S_{t+1})\vert S_t,x_t\} \right), \label{eq:energystoragebellman}
 \end{align}
 $$
 
 where $S_{t+1} = S^M(s_t,x_t,W_{t+1})$, and where the expectation is over the random variable $W_{t+1}$. Assume that $W_{t+1}$ is discrete, taking values in $\Wcal = \{w_1, w_2, \ldots, W_M\}$, and represent the probability distribution using
 
 $$
-f^W(w|s_t,x_t) = Prob[W_{t+1} = w|s_t,x_t].
+f^W(w\vert s_t,x_t) = Prob[W_{t+1} = w\vert s_t,x_t].
 $$
 
 We write the distribution as depending on the state $s_t$ and decision $x_t$, but this depends on the problem. For example, we might reasonably assume that the change in the price $p_{t+1}-p_t$ depends on the current price $p_t$ (if prices are very high they are more likely to drop), which would be a reason to condition on $s_t$. We might even need the dependence on $x_t$ if purchasing a large quantity of electricity from the grid drives up prices.
@@ -350,7 +350,7 @@ We write the distribution as depending on the state $s_t$ and decision $x_t$, bu
 We can then rewrite equation $\eqref{eq:energystoragebellman}$ as
 
 $$
-V_t(s_t) = \max_{x_t} \left(C_t(s_t,x_t)+  \sum_{w\in\Wcal} f^W(w|s_t,x_t)V_{t+1}(S^M(s_t,x_t,w)) \right).
+V_t(s_t) = \max_{x_t} \left(C_t(s_t,x_t)+  \sum_{w\in\Wcal} f^W(w\vert s_t,x_t)V_{t+1}(S^M(s_t,x_t,w)) \right).
 $$
 
 A vanilla implementation of backward dynamic programming exhibits four loops:
@@ -365,7 +365,7 @@ A vanilla implementation of backward dynamic programming exhibits four loops:
 <p><strong>Step 0. Initialization:</strong> Initialize the terminal contribution $V_{T+1}(S_{T+1})=0$ for all states $S_{t+1}$.</p>
 <p><strong>Step 1.</strong> Do for $t=T, T-1, \ldots, 1, 0$:</p>
 <p style="margin-left: 1.5rem;"><strong>Step 2.</strong> For all $s\in\Scal$, compute</p>
-<p style="margin-left: 1.5rem;">$$V_t(s_t) = \max_{x_t} \left(C_t(s_t,x_t)+  \sum_{w\in\Wcal} f^W(w|s_t,x_t)V_{t+1}(S^M(s_t,x_t,w)) \right)$$</p>
+<p style="margin-left: 1.5rem;">$$V_t(s_t) = \max_{x_t} \left(C_t(s_t,x_t)+  \sum_{w\in\Wcal} f^W(w\vert s_t,x_t)V_{t+1}(S^M(s_t,x_t,w)) \right)$$</p>
 </div>
 
 It is useful to consider the range of values that each loop might take. For an energy problem, we might optimize a storage device in hourly increments over a day, giving us 24 time steps. If we use 5-minute time steps (some grid operators update prices every 5-minutes), then a 24 hour horizon would imply 288 time periods (multiply by seven if we want to plan over a week). If we are doing frequency regulation, then we have to make decisions every 2 seconds, which translates to 43,200 time periods over a day.
@@ -469,7 +469,7 @@ $$
 We simulate the policy forward, where we let $\omega^n$ represent a sample path of the exogenous information (that is, the set of changes in prices). It is frequently the case that we are going to test our policy on historical data, in which case there is only a single sample path. However, if we have developed a mathematical model of the uncertain prices, we can create a sample path $\omega$ that we use to approximate the value of a policy (we could also create multiple sample paths and take an average):
 
 $$
-\Fbar^{VFA}(\omega|S_0) = \sum_{t=0}^T C\big(S_t(\omega),X^{VFA}(S_t(\omega))\big).
+\Fbar^{VFA}(\omega\vert S_0) = \sum_{t=0}^T C\big(S_t(\omega),X^{VFA}(S_t(\omega))\big).
 $$
 
 This means that the method is well suited to approximating even high-dimensional problems that might arise in logistics.
@@ -477,20 +477,20 @@ This means that the method is well suited to approximating even high-dimensional
 When we are building a value function approximation (which belongs in the lookahead class of policies), we typically no longer have a step where we tune the policy. However, this does not mean that we cannot try. Assume that our value function is given by the linear model in equation $\eqref{eq:energylinearvfa}$. We can now write our policy using
 
 $$
-X^{VFA}(S_t|\theta) = \argmax_x \left(C(S_t,x) + \sum_{f=1}^F \theta_f \phi_f(S_t)\right).
+X^{VFA}(S_t\vert \theta) = \argmax_x \left(C(S_t,x) + \sum_{f=1}^F \theta_f \phi_f(S_t)\right).
 $$
 
 It makes sense to use one of our backward or forward ADP algorithms to get an initial estimate of $\theta$, but as we noted above, there is no guarantee that the resulting policy is high quality. However, we can always make it better by using this as a starting point,
 
 $$
-\Fhat^{VFA}(\theta,\omega|S_0) = \sum_{t=0}^T C\big(S_t(\omega),X^{VFA}(S_t(\omega)|\theta)\big).
+\Fhat^{VFA}(\theta,\omega\vert S_0) = \sum_{t=0}^T C\big(S_t(\omega),X^{VFA}(S_t(\omega)\vert \theta)\big).
 $$
 
 Now, we just have to solve the policy search problem that we might pose as
 
 $$
 \begin{align}
-\max_\theta \Fbar^{VFA}(\theta,\omega|S_0).  \label{eq:optthetavfa}
+\max_\theta \Fbar^{VFA}(\theta,\omega\vert S_0).  \label{eq:optthetavfa}
 \end{align}
 $$
 
@@ -531,7 +531,7 @@ The idea of tuning a value function approximation, as we did in equation $\eqref
 <li>Write out the five elements of the basic model for the energy storage problem as they are given in the text. Write out the objective function assuming that the policy is the buy-low, sell-high policy
 
 $$
-X^{low-high}(S_t|\theta) = \begin{cases} -1 & \text{if } p_t < \theta^{buy}, \\ 0 & \text{if } \theta^{buy} \leq p_t \leq \theta^{sell}, \\ +1 & \text{if } p_t > \theta^{sell}. \end{cases}
+X^{low-high}(S_t\vert \theta) = \begin{cases} -1 & \text{if } p_t < \theta^{buy}, \\ 0 & \text{if } \theta^{buy} \leq p_t \leq \theta^{sell}, \\ +1 & \text{if } p_t > \theta^{sell}. \end{cases}
 $$
 
 Write the objective function in terms of searching over the parameters of the policy. Also, write the expectation in the objective function using the nested form that reflects each random variable.</li>

@@ -35,14 +35,14 @@ Policy-search policies can be divided between two classes:
     - A parameterized function such as the "high-low" policy given in [Chapter 2](/sdam/chapter-2/), which we repeat here
 
     $$
-    X^{high-low}(S_t|\theta^{high-low}) = \begin{cases} 1 & \text{if } p_t < \theta^{low} \text{ or } p_t > \theta^{high}, \\ 1 & \text{if } t=T, \\ 0 & \text{otherwise.}\end{cases}
+    X^{high-low}(S_t\vert \theta^{high-low}) = \begin{cases} 1 & \text{if } p_t < \theta^{low} \text{ or } p_t > \theta^{high}, \\ 1 & \text{if } t=T, \\ 0 & \text{otherwise.}\end{cases}
     $$
 
     where $\theta^{sell-low} = (\theta^{low},\theta^{high})$. Other examples are the order-up-to policy we saw in [Chapter 1](/sdam/chapter-1/), and the adjusted forecast policy.
     - A linear function, such as
 
     $$
-    X^\pi(S_t|\theta) = \theta_0 + \theta_1 \phi_1(S_t) + \theta_1 \phi_1(S_t) + \ldots + \theta_F \phi_F(S_t)
+    X^\pi(S_t\vert \theta) = \theta_0 + \theta_1 \phi_1(S_t) + \theta_1 \phi_1(S_t) + \ldots + \theta_F \phi_F(S_t)
     $$
 
     where $(\phi_f(S_t)),~f=1, \ldots, F$ is a set of features ("linear" means linear in the parameter vector $\theta$ – the features $\phi_f(S_t)$ can be highly nonlinear in $S_t$). For example, we might be trying to decide how much to bid to have a movie advertised on a website, and a feature might be the genre of the movie or the name of the lead actor or actress.
@@ -53,7 +53,7 @@ Policy-search policies can be divided between two classes:
     - A simple example of a parameterized cost function approximation is the interval estimation policy we introduced in [Chapter 4](/sdam/chapter-4/) and repeat here
 
     $$
-    X^{IE}(S^n|\theta^{IE}) = \argmax_{x\in\Xcal} \left(\mubar^n_x + \theta^{IE} \sigmabar^n_x \right).
+    X^{IE}(S^n\vert \theta^{IE}) = \argmax_{x\in\Xcal} \left(\mubar^n_x + \theta^{IE} \sigmabar^n_x \right).
     $$
 
     - Parameterized optimization models – We saw this in [Chapter 6](/sdam/chapter-6/) when we chose the $\theta$-percentile of the link costs. This is a widely used heuristic in industry that has been overlooked by the research literature. Airlines use this idea to optimize the movement of their aircraft and crews in the presence of significant weather delays. Grid operators planning the scheduling of energy generators will insert reserve capacity to make sure that demand can be covered if a generator fails.
@@ -73,13 +73,13 @@ $$
   There are many problems where the transition to $S_{t+1}$ involves information (contained in $W_{t+1}$) that is not known at time $t$, which means $S_{t+1}$ is a random variable at time $t$. In this case, we have to insert an expectation as we did earlier which gives us
 
 $$
-V_t(S_t) = \min_{x\in\Xcal_s} \big(C(S_t,x) + \E \{V_{t+1}(S_{t+1})|S_t,x\} \big).
+V_t(S_t) = \min_{x\in\Xcal_s} \big(C(S_t,x) + \E \{V_{t+1}(S_{t+1})\vert S_t,x\} \big).
 $$
 
   In practice, we typically have to replace the value function $V_{t+1}(S_{t+1})$ with an approximation $\Vbar_{t+1}(S_{t+1})$, as we did in the approximate dynamic programming section of [Chapter 5](/sdam/chapter-5/). The field that studies these approximations goes under names such as approximate dynamic programming, reinforcement learning (which originated in computer science), and adaptive dynamic programming (the term used in the engineering controls community). In this case, the policy would be given by
 
 $$
-X^\pi(S_t) = \argmin_{x\in\Xcal_s} \big(C(S_t,x) + \E \{\Vbar_{t+1}(S_{t+1})|S_t,x\} \big).
+X^\pi(S_t) = \argmin_{x\in\Xcal_s} \big(C(S_t,x) + \E \{\Vbar_{t+1}(S_{t+1})\vert S_t,x\} \big).
 $$
 
   If we use the post-decision state $S^x_t$, we can write our policy as
@@ -96,7 +96,7 @@ $$
 
 $$
 \begin{align}
-\Vbar^x_t(S^x_t|\theta^{VFA}) = \sum_{f\in\Fcal} \theta^{VFA}_f \phi_f(S^x_t), \label{eq:hybridlinearvfa}
+\Vbar^x_t(S^x_t\vert \theta^{VFA}) = \sum_{f\in\Fcal} \theta^{VFA}_f \phi_f(S^x_t), \label{eq:hybridlinearvfa}
 \end{align}
 $$
 
@@ -106,7 +106,7 @@ $$
 
 $$
 \begin{align}
-X^{VFA}_t(S_t|\theta^{VFA}) &= \argmax_x \big(C(S_t,x) + \Vbar^x_t(S^x_t|\theta^{VFA})\big) \nonumber \\
+X^{VFA}_t(S_t\vert \theta^{VFA}) &= \argmax_x \big(C(S_t,x) + \Vbar^x_t(S^x_t\vert \theta^{VFA})\big) \nonumber \\
                             &= \argmax_x \left(C(S_t,x) + \sum_{f\in\Fcal} \theta^{VFA}_f \phi_f(S^x_t)\right).
 \label{eq:linearvfa}
 \end{align}
@@ -124,7 +124,7 @@ $$
 $$
 \begin{align}
 X^{*}(S_t) &= \argmin_{x_t\in\Xcal}\Big(C(S_t,x_t) + {} \nonumber \\
-& \quad \E_{W_{t+1}} \Big\{\min_{\pi} \E_{W_{t+2}, \ldots, W_T} \Big\{\sum_{t'=t+1}^T C(S_{t'},X^\pi(S_{t'}))\Big|S_{t+1}\Big\} \Big|S_t,x_t\Big\}\Big). \label{eq:policiesDLA}
+& \quad \E_{W_{t+1}} \Big\{\min_{\pi} \E_{W_{t+2}, \ldots, W_T} \Big\{\sum_{t'=t+1}^T C(S_{t'},X^\pi(S_{t'}))\Big\vert S_{t+1}\Big\} \Big\vert S_t,x_t\Big\}\Big). \label{eq:policiesDLA}
 \end{align}
 $$
 
@@ -149,7 +149,7 @@ $$
 $$
 \begin{align}
 X^{DLA}(S_t) &= \argmin_{x_t\in\Xcal}\Big(C(S_t,x_t) + {} \nonumber \\
-& \ \Etilde_{\Wtilde_{t,t+1}} \Big\{\min_{\tilde \pi} \E_{\Wtilde_{t,t+2}, \ldots, \Wtilde_{tT}} \Big\{\sum_{t'=t+1}^T C(\Stilde_{tt'},\Xtilde^{\tilde \pi}_t(\Stilde_{tt'}))\Big|\Stilde_{t,t+1}\Big\} \Big|S_t,x_t\Big\}\Big). \label{eq:policiesapproximateDLA}
+& \ \Etilde_{\Wtilde_{t,t+1}} \Big\{\min_{\tilde \pi} \E_{\Wtilde_{t,t+2}, \ldots, \Wtilde_{tT}} \Big\{\sum_{t'=t+1}^T C(\Stilde_{tt'},\Xtilde^{\tilde \pi}_t(\Stilde_{tt'}))\Big\vert \Stilde_{t,t+1}\Big\} \Big\vert S_t,x_t\Big\}\Big). \label{eq:policiesapproximateDLA}
 \end{align}
 $$
 
@@ -321,13 +321,13 @@ Our six application settings (and in some cases the extensions) were chosen to e
 **Chapter 1 –** We introduced two inventory problems. One used an order-up-to policy of the form
 
 $$
-X^\pi(S_t|\theta) = \begin{cases} \theta^{max} - R_t & \text{if } R_t < \theta^{min}, \\ 0 & \text{otherwise,}\end{cases}
+X^\pi(S_t\vert \theta) = \begin{cases} \theta^{max} - R_t & \text{if } R_t < \theta^{min}, \\ 0 & \text{otherwise,}\end{cases}
 $$
 
 while the second used a policy of bringing the inventory up to the forecasted demand plus a buffer
 
 $$
-X^\pi(S_t|\theta) = \max\{0,f^D_{t,t+1}-R_t\} + \theta.
+X^\pi(S_t\vert \theta) = \max\{0,f^D_{t,t+1}-R_t\} + \theta.
 $$
 
 Both of these policies involve one or two tunable parameters. Both are analytical functions that do not have an embedded optimization operator ($\min$ or $\max$). These are the distinguishing characteristics of a policy function approximation (PFA).
@@ -335,13 +335,13 @@ Both of these policies involve one or two tunable parameters. Both are analytica
 **Chapter 2 –** This chapter addressed the problem of determining when to sell an asset. Several policies were suggested, but representative samples are the "sell-low" policy given by
 
 $$
-X^{sell-low}(S_t|\theta^{low}) = \begin{cases} 1 & \text{if } p_t < \theta^{low} \text{ and } R_t = 1, \\ 1 & \text{if } t=T, \\ 0 & \text{otherwise.}\end{cases}
+X^{sell-low}(S_t\vert \theta^{low}) = \begin{cases} 1 & \text{if } p_t < \theta^{low} \text{ and } R_t = 1, \\ 1 & \text{if } t=T, \\ 0 & \text{otherwise.}\end{cases}
 $$
 
 and the "tracking policy"
 
 $$
-X^{track}(S_t|\theta^{track}) = \begin{cases} 1 & \text{if } p_t \geq \pbar_t + \theta^{track}, \\ 1 & \text{if } t=T, \\ 0 & \text{otherwise.}\end{cases}
+X^{track}(S_t\vert \theta^{track}) = \begin{cases} 1 & \text{if } p_t \geq \pbar_t + \theta^{track}, \\ 1 & \text{if } t=T, \\ 0 & \text{otherwise.}\end{cases}
 $$
 
 Both of these policies are similar to our "order-up-to" inventory ordering policy in that they are parametric functions with tunable parameters, which means they are additional examples of policy function approximation (PFA). While this is hardly the only way to solve an asset selling problem, this class of policy is fairly popular on Wall St.
@@ -363,7 +363,7 @@ $$
 where we have written this as a parameterized function (that is, a form of PFA). We also illustrated an adaptive (state-dependent) policy given by equation $\eqref{eq:adaptivealpharevisited}$ where we replaced $n$ with a counter $N^n$ that counts how many times the gradient changes direction (or we could count how many times the objective function does not improve). We would write this policy as
 
 $$
-\alpha^\pi_n(S^n|\theta) = \frac{\theta}{\theta+N^n-1},
+\alpha^\pi_n(S^n\vert \theta) = \frac{\theta}{\theta+N^n-1},
 $$
 
 where our state $S^n$ carries the information $N^n$.
@@ -373,19 +373,19 @@ Side note: PFA-style policies are universally used in stochastic gradient algori
 **Chapter 4 –** Learning the best diabetes treatment – This is a pure learning problem which we have approached using the highly popular class of policies known as upper confidence bounding. Perhaps the best known UCB policy is given by
 
 $$
-X^{UCB}(S^n|\theta^{UCB}) = \argmax_{x\in\Xcal} \left(\mubar^n_x + \theta^{UCB} \sqrt{\frac{\log n}{N^n_x}}\right).
+X^{UCB}(S^n\vert \theta^{UCB}) = \argmax_{x\in\Xcal} \left(\mubar^n_x + \theta^{UCB} \sqrt{\frac{\log n}{N^n_x}}\right).
 $$
 
 Another variant which works very well was originally introduced as interval estimation which is given by
 
 $$
-X^{IE}(S^n|\theta^{IE}) = \argmax_{x\in\Xcal} \left(\mubar^n_x + \theta^{IE} \sigmabar^n_x \right).
+X^{IE}(S^n\vert \theta^{IE}) = \argmax_{x\in\Xcal} \left(\mubar^n_x + \theta^{IE} \sigmabar^n_x \right).
 $$
 
 Finally, a variant that was originally discovered in 1933 and then re-discovered a few years ago is Thompson sampling, which is given by
 
 $$
-X^{TS}(S^n|\theta^{TS}) = \argmax_{x\in\Xcal} \muhat^n_x.
+X^{TS}(S^n\vert \theta^{TS}) = \argmax_{x\in\Xcal} \muhat^n_x.
 $$
 
 where $\muhat^n_x$ is randomly sampled from a normal distribution with mean $\mubar^n_x$ and variance $\theta^{TS} \sigmabar^n_x$.
@@ -429,17 +429,17 @@ There are entire fields dealing with sequential decision problems that are separ
 
 ### Online (cumulative reward) optimization
 
-It is typically the case when doing policy search that we have a parameterized policy that we can write as $X^\pi(S_t|\theta)$. The decision $x_t = X^\pi(S_t|\theta)$ might be the price of a product, the choice of a blood-pressure drug or the bid placed to maximize ad-clicks. In all these cases, we have to learn as we go, which means we need to maximize performance as we are learning.
+It is typically the case when doing policy search that we have a parameterized policy that we can write as $X^\pi(S_t\vert \theta)$. The decision $x_t = X^\pi(S_t\vert \theta)$ might be the price of a product, the choice of a blood-pressure drug or the bid placed to maximize ad-clicks. In all these cases, we have to learn as we go, which means we need to maximize performance as we are learning.
 
-Let $C(S_t,x_t)$ be our performance metric (revenue, reduction in blood-pressure, or net revenue from ad-clicks). We want to find $\theta$ that produces the policy $X^\pi(S_t|\theta)$ that solves the optimization problem
+Let $C(S_t,x_t)$ be our performance metric (revenue, reduction in blood-pressure, or net revenue from ad-clicks). We want to find $\theta$ that produces the policy $X^\pi(S_t\vert \theta)$ that solves the optimization problem
 
 $$
 \begin{align}
-\max_\theta F^\pi(\theta) = \E_{S_0} \E_{W_1, \ldots, W_T|S_0} \left\{\sum_{t=0}^T C(S_t,X^\pi(S_t|\theta))|S_0\right\}, \label{eq:derivativebasedonline}
+\max_\theta F^\pi(\theta) = \E_{S_0} \E_{W_1, \ldots, W_T\vert S_0} \left\{\sum_{t=0}^T C(S_t,X^\pi(S_t\vert \theta))\vert S_0\right\}, \label{eq:derivativebasedonline}
 \end{align}
 $$
 
-where $S_{t+1} = S^M(S_t, X^\pi(S_t|\theta),W_{t+1})$. The expectation in $\eqref{eq:derivativebasedonline}$ is over all possible realizations of $W_1, \ldots, W_T$, as well as over the possible values of uncertain parameters (such as uncertain initial beliefs about market responses or how someone responds to a drug) that are contained in the initial state $S_0$.
+where $S_{t+1} = S^M(S_t, X^\pi(S_t\vert \theta),W_{t+1})$. The expectation in $\eqref{eq:derivativebasedonline}$ is over all possible realizations of $W_1, \ldots, W_T$, as well as over the possible values of uncertain parameters (such as uncertain initial beliefs about market responses or how someone responds to a drug) that are contained in the initial state $S_0$.
 
 Equation $\eqref{eq:derivativebasedonline}$ is an example of an "online" or "cumulative reward" objective function, since we want to maximize the sum of all the rewards over some horizon. This is of particular interest in online learning problems where we have to learn the performance, such as revenue from a price or the performance of a drug for a particular patient, which means balancing the process of learning while also trying to do as well as we can.
 
@@ -453,11 +453,11 @@ $$
 
 where $x$ is the quantity of resource we order at a unit cost $c$, which is then used to meet the demand $W$ (which is unknown when we choose $x$). We assume the distribution of $W$ is unknown.
 
-Let $x^n = X^\pi(S^n|\theta)$ be our choice of $x$ given what we know which is captured by $S^n$, where our policy $X^\pi(S^n|\theta)$ depends on one or more parameters in $\theta$. After we implement $x^n$, we observe $W^{n+1}$, update $S^{n+1}$ and then repeat the process. After $N$ iterations, we obtain a final design we denote $x^{\pi,N}(\theta)$.
+Let $x^n = X^\pi(S^n\vert \theta)$ be our choice of $x$ given what we know which is captured by $S^n$, where our policy $X^\pi(S^n\vert \theta)$ depends on one or more parameters in $\theta$. After we implement $x^n$, we observe $W^{n+1}$, update $S^{n+1}$ and then repeat the process. After $N$ iterations, we obtain a final design we denote $x^{\pi,N}(\theta)$.
 
 We now have to evaluate our final design $x^{\pi,N}(\theta)$. To perform this evaluation, we have to consider two, and possibly three, sources of uncertainty. The first is that we may have uncertainty in unknown parameters such as the mean of $W$. For example, $W$ might come from a Poisson distribution with mean $\mu$, and we may assume that $\mu \in \{\mu_1, \ldots, \mu_K\}$ where $p_k = Prob[\mu = \mu_k]$. The distribution $(p_k)_{k=1}^K$ is contained in the initial state $S_0$.
 
-Then we have the random arrivals of demands $W^1, \ldots, W^N$ which would be sampled from a distribution with mean $\mu$. We use these observations, and the policy $X^\pi(S^n|\theta)$, to compute $x^{\pi,N}(\theta)$. It is important to recognize that $x^{\pi,N}(\theta)$ is a random variable that depends on any information in $S^0$ (regardless of whether it is deterministic or random).
+Then we have the random arrivals of demands $W^1, \ldots, W^N$ which would be sampled from a distribution with mean $\mu$. We use these observations, and the policy $X^\pi(S^n\vert \theta)$, to compute $x^{\pi,N}(\theta)$. It is important to recognize that $x^{\pi,N}(\theta)$ is a random variable that depends on any information in $S^0$ (regardless of whether it is deterministic or random).
 
 Once we have computed $x^{\pi,N}(\theta)$, we have to run a final set of simulations to evaluate how well it works. We introduce a new random variable, $\What$, to represent samples of $W$ used for evaluating our final design.
 
@@ -465,7 +465,7 @@ This notation allows us to write our objective function for offline learning as
 
 $$
 \begin{align}
-\max_\theta F^\pi(\theta) = \E_{S^0} \E_{W^1, \ldots, W^N|S^0} \E_{\What|S^0} F(x^{\pi,N}(\theta),\What).\label{eq:derivativebasedoffline}
+\max_\theta F^\pi(\theta) = \E_{S^0} \E_{W^1, \ldots, W^N\vert S^0} \E_{\What\vert S^0} F(x^{\pi,N}(\theta),\What).\label{eq:derivativebasedoffline}
 \end{align}
 $$
 
@@ -477,7 +477,7 @@ The objective functions for cumulative reward (given in $\eqref{eq:derivativebas
 
 Whenever we have to take an expectation, it helps to assume that we are going to estimate the expectation through sampling. We first illustrate how to do this for the cumulative reward objective as given in $\eqref{eq:derivativebasedonline}$. Here, we might have an uncertain quantity in the initial state $S_0$, such as uncertainty in how a market responds to price, the production of methane by an oil well, or how a patient might respond to a drug. Then, we have the exogenous information $W_1, \ldots, W_T$, which could be observations of sales, the change in atmospheric temperatures, or how a patient responds to medication.
 
-Let $\omega$ be a sample realization of all of these uncertain quantities. Assume that we generate a set of samples of all of these uncertain quantities and store them in a set $\Omega = \{\omega^1, \ldots, \omega^K\}$. So, any time we write $W_t(\omega)$, this is a sample realization of what we observe at time $t$. If we are using a policy $X^\pi(S_t|\theta)$, then we would follow the sample path of states $S_t(\omega)$, decisions $x_t(\omega) = X^\pi(S_t(\omega)|\theta)$ and exogenous information $W_{t+1}(\omega)$ governed by our transition function
+Let $\omega$ be a sample realization of all of these uncertain quantities. Assume that we generate a set of samples of all of these uncertain quantities and store them in a set $\Omega = \{\omega^1, \ldots, \omega^K\}$. So, any time we write $W_t(\omega)$, this is a sample realization of what we observe at time $t$. If we are using a policy $X^\pi(S_t\vert \theta)$, then we would follow the sample path of states $S_t(\omega)$, decisions $x_t(\omega) = X^\pi(S_t(\omega)\vert \theta)$ and exogenous information $W_{t+1}(\omega)$ governed by our transition function
 
 $$
 S_{t+1}(\omega) = S^M(S_t(\omega), x_t(\omega), W_{t+1}(\omega)).
@@ -487,13 +487,13 @@ Using our set of sample observations $\Omega$, we can approximate our expectatio
 
 $$
 \begin{align}
-\Fbar^\pi(\theta) = \frac{1}{K} \sum_{k=1}^K \sum_{t=0}^T C(S_t(\omega^k),X^\pi(S_t(\omega^k)|\theta)). \label{eq:simulatedcumulativereward}
+\Fbar^\pi(\theta) = \frac{1}{K} \sum_{k=1}^K \sum_{t=0}^T C(S_t(\omega^k),X^\pi(S_t(\omega^k)\vert \theta)). \label{eq:simulatedcumulativereward}
 \end{align}
 $$
 
-If we are using a final reward objective, we need to first estimate $x^{\pi,N}(\theta)$. If we follow sample path $\omega$, then we would write our final design as $x^{\pi,N}(\omega|\theta)$, where $\omega$ captures everything we used to perform the training given by $(S_0(\omega), W_1(\omega), \ldots, W_T(\omega))$.
+If we are using a final reward objective, we need to first estimate $x^{\pi,N}(\theta)$. If we follow sample path $\omega$, then we would write our final design as $x^{\pi,N}(\omega\vert \theta)$, where $\omega$ captures everything we used to perform the training given by $(S_0(\omega), W_1(\omega), \ldots, W_T(\omega))$.
 
-We then need to evaluate our design $x^{\pi,N}(\omega|\theta)$ using the testing data captured in $\What$. Let $\psi$ be a sample realization of $\What$, and just as we assumed that we have a sample set $\Omega$ for $\omega$, let's assume we create a set of sample outcomes of $\What$ given by $\Psi = \{\psi^1, \ldots, \psi^L\}$. Keep in mind that $\What$ represents any simulated information that we need to evaluate our design $x^{\pi,N}$. It may be a set of random variables (patient attributes, weather, market conditions), and it may even represent information that evolves over time. In other words... anything.
+We then need to evaluate our design $x^{\pi,N}(\omega\vert \theta)$ using the testing data captured in $\What$. Let $\psi$ be a sample realization of $\What$, and just as we assumed that we have a sample set $\Omega$ for $\omega$, let's assume we create a set of sample outcomes of $\What$ given by $\Psi = \{\psi^1, \ldots, \psi^L\}$. Keep in mind that $\What$ represents any simulated information that we need to evaluate our design $x^{\pi,N}$. It may be a set of random variables (patient attributes, weather, market conditions), and it may even represent information that evolves over time. In other words... anything.
 
 Now we would write the estimate of the performance of the policy in a final reward setting as
 
@@ -596,7 +596,7 @@ We can form beliefs using any of the following:
 - **Parametric model** – We might estimate a linear model of the form
 
   $$
-  F(\theta|\eta) \approx \eta_0 + \eta_1 \phi_1(\theta) + \eta_2 \phi_2(\theta) + \ldots
+  F(\theta\vert \eta) \approx \eta_0 + \eta_1 \phi_1(\theta) + \eta_2 \phi_2(\theta) + \ldots
   $$
 
   where $\phi_f(\theta)$ are features computed from the vector $\theta$, which might consist of terms such as $\theta,$ $\theta^2$, or $\ln \theta$. Note that a "linear model" means that it is linear in the coefficients $\eta$; the features $\phi_f(\theta)$ may be nonlinear functions of $\theta$.
@@ -634,7 +634,7 @@ We can model the process of performing derivative-free search using the five ele
   where the superscript "$\pi$" in $\theta^{\pi,N}$ reflects the type of search policy $\pi$ used when estimating $\mubar^N_x$. The optimization problem to search for the best policy $\pi$ would be written
 
   $$
-  \max_{\pi} \E_{S^0}\E_{W^1, \ldots, W^N|S^0} \E_{\What|S^0} F(\theta^{\pi,N},\What).
+  \max_{\pi} \E_{S^0}\E_{W^1, \ldots, W^N\vert S^0} \E_{\What\vert S^0} F(\theta^{\pi,N},\What).
   $$
 
 Remember that we calculate expectations using simulation, as we showed above, in equation $\eqref{eq:simulatedcumulativereward}$ for cumulative reward, or $\eqref{eq:simulatedfinalreward}$ for final reward.
@@ -647,11 +647,11 @@ For our purposes, we are going to illustrate two policies that are relatively si
 
   $$
   \begin{align}
-  \Theta^{IE}(S^n|\theta^{IE}) = \argmax_{\theta\in\Theta} \left(\mubar^n_\theta + \theta^{IE} \sigmabar^n_\theta \right). \label{eq:thetaIE}
+  \Theta^{IE}(S^n\vert \theta^{IE}) = \argmax_{\theta\in\Theta} \left(\mubar^n_\theta + \theta^{IE} \sigmabar^n_\theta \right). \label{eq:thetaIE}
   \end{align}
   $$
 
-  Now we have to search for the best value of $\theta^{IE}$. Think of this as a sequential decision problem (finding the best $\theta^{IE}$) to solve a sequential decision problem (to find the best $\theta$ for our policy $X^\pi(S_t|\theta)$). We note that in the search community, the tuning of the parameter $\theta^{IE}$ is typically overlooked in the research literature, but practitioners are aware that it has to be done.
+  Now we have to search for the best value of $\theta^{IE}$. Think of this as a sequential decision problem (finding the best $\theta^{IE}$) to solve a sequential decision problem (to find the best $\theta$ for our policy $X^\pi(S_t\vert \theta)$). We note that in the search community, the tuning of the parameter $\theta^{IE}$ is typically overlooked in the research literature, but practitioners are aware that it has to be done.
 - **Classic response surface methods** – For problems where $x$ is continuous, it makes sense to fit a parametric model to the function $\E F(x,W)$. While it may be tempting today to use neural networks, keep in mind that these are high dimensional models that tend to overfit any noise. There are many problems where $F(x,W)$ is expensive; for example, it might be a computer simulation that could take an hour or more, or it could require field experiments.
 
   For these reasons, a popular strategy is to use a linear model of the form
@@ -695,7 +695,7 @@ For our purposes, we are going to illustrate two policies that are relatively si
 
   The knowledge gradient is too complex for our presentation here, but there is a very simple way of getting the same behavior. Instead of taking our current estimate of the apparent optimum $x^n$ as we do in $\eqref{eq:responsesurfacegreedy}$, we perturb it by an amount $\rho$, but there are two ways of doing this:
 
-    - **An optimum-deviation policy** – The idea here is to pick a point $x^n$ that is a distance $\rho$ from the optimum $\xbar^n = \argmax_x \Fbar^n(x|\thetabar^n)$. If $x$ is a $k$-dimensional vector, this deviation can be created by sampling $k$ normally distributed random variables $Z_1, \ldots, Z_K$, each with mean 0 and variance 1, and then normalizing them so that
+    - **An optimum-deviation policy** – The idea here is to pick a point $x^n$ that is a distance $\rho$ from the optimum $\xbar^n = \argmax_x \Fbar^n(x\vert \thetabar^n)$. If $x$ is a $k$-dimensional vector, this deviation can be created by sampling $k$ normally distributed random variables $Z_1, \ldots, Z_K$, each with mean 0 and variance 1, and then normalizing them so that
 
       $$
       \sqrt{\sum_{k=1}^K Z^2_k} = \rho.
@@ -714,7 +714,7 @@ For our purposes, we are going to illustrate two policies that are relatively si
       x^n_k = \Xbar^n_k + \rho Z^n_k.
       $$
 
-      While the optimum-deviation policy forces $x^n$ to be a distance $\rho$ from the optimum $\xbar^n$, an excitation policy simply introduces a random perturbation with mean 0, which means the most likely point to sample is the optimum of $\fbar^n(x|\thetabar^n)$.
+      While the optimum-deviation policy forces $x^n$ to be a distance $\rho$ from the optimum $\xbar^n$, an excitation policy simply introduces a random perturbation with mean 0, which means the most likely point to sample is the optimum of $\fbar^n(x\vert \thetabar^n)$.
 
   We suggest that the optimum-deviation policy is better suited for offline, final-reward objectives, while the excitation policy is better when we are in an online setting optimizing cumulative reward.
 
@@ -762,13 +762,13 @@ $$
 where $\theta = (\theta_1, \theta_2, \ldots, \theta_H)$ is the vector of weights for each 15-minute increment for six hours into the future (24 increments). Let $x_t = 1$ indicate a decision to sell at time $t$, $x_t = -1$ is a decision to buy, and $x_t = 0$ is to hold, where the policy is
 
 $$
-X^\pi(S_t|\theta) = \begin{cases} +1 & \text{if } \fbar_t(\theta) \geq p_t + 1.0, \\ 0 & \text{if } p_t - 1.0 < \fbar_t(\theta) < p_t + 1.0, \\ -1 & \text{if } \fbar_t(\theta) \leq p_t - 1.0. \end{cases}
+X^\pi(S_t\vert \theta) = \begin{cases} +1 & \text{if } \fbar_t(\theta) \geq p_t + 1.0, \\ 0 & \text{if } p_t - 1.0 < \fbar_t(\theta) < p_t + 1.0, \\ -1 & \text{if } \fbar_t(\theta) \leq p_t - 1.0. \end{cases}
 $$
 
 The challenge is to optimize the weight vector $\theta$.
   <ol type="a">
     <li>At time $t$, what is the state of this system?</li>
-    <li>What class of policy would $X^\pi(S_t|\theta)$ fall in? Explain.</li>
+    <li>What class of policy would $X^\pi(S_t\vert \theta)$ fall in? Explain.</li>
     <li>Assume that you can simulate the policy using historical data in a simulator. Let $F(\theta)$ be the expected performance of the policy given parameter vector $\theta$. Write out this objective assuming that you are going to simulate the policy using a single sample of history.</li>
     <li>Describe how to compute a numerical derivative using your simulator. Just write the numerical derivative for a single element $\theta_\tau$.</li>
   </ol>

@@ -223,7 +223,7 @@ The optimization problem in $\eqref{eq:bloodmyopic}$ is a simple linear program.
 
 ### A VFA policy
 
-As a traditional dynamic program, the optimization problem posed in equation $\eqref{eq:bloodobjective}$ is quite daunting. The state variable $S_t$ has $|\Acal| + |\Bcal| = 8 \times 6 + 8 \times 2 \times 2 = 80$ dimensions. The random variables $\Rhat$ and $\Dhat$ also have a combined 80 dimensions. The decision vector $x_t$ has $27 + 8 = 35$ dimensions.
+As a traditional dynamic program, the optimization problem posed in equation $\eqref{eq:bloodobjective}$ is quite daunting. The state variable $S_t$ has $\vert \Acal\vert  + \vert \Bcal\vert  = 8 \times 6 + 8 \times 2 \times 2 = 80$ dimensions. The random variables $\Rhat$ and $\Dhat$ also have a combined 80 dimensions. The decision vector $x_t$ has $27 + 8 = 35$ dimensions.
 
 It is natural to use value function approximations to determine the allocation vector $x_t$ using
 
@@ -408,7 +408,7 @@ $$
 Finally let $\omega$ represent a sample path $W_1(\omega), \ldots, W_T(\omega)$ of donations and new patients over our $T$-week horizon. Assume that we have created a set of simulations of $W_t$, and let $\Omega=(\omega_1, \ldots, \omega_N)$ be this set of sample realizations.
   <ol type="a">
     <li>How many dimensions does the state variable $S_t$ have?</li>
-    <li>Let $X^\pi(S_t|\theta)$ be the result of solving the linear program given the state $S_t$, where $\theta$ is the vector of all the bonuses and penalties for different assignments. Let $D^{urgent}_t(x_t)$ be the number of urgent patients that were covered given the decision vector $x_t$, and let $D^{elective}_t(x_t)$ be the number of elective patients that were covered. Write the problem of finding the best value of $\theta$ as an optimization problem, where instead of our usual expectation you are going to write it as an average over the sample paths in $\Omega$.</li>
+    <li>Let $X^\pi(S_t\vert \theta)$ be the result of solving the linear program given the state $S_t$, where $\theta$ is the vector of all the bonuses and penalties for different assignments. Let $D^{urgent}_t(x_t)$ be the number of urgent patients that were covered given the decision vector $x_t$, and let $D^{elective}_t(x_t)$ be the number of elective patients that were covered. Write the problem of finding the best value of $\theta$ as an optimization problem, where instead of our usual expectation you are going to write it as an average over the sample paths in $\Omega$.</li>
     <li>We are going to consider a dataset where there is a probability that demand occasionally surges. You can set this probability in the spreadsheet. Set this surge probability to 50 percent. There is a special penalty for using blood to cover elective surgery to encourage the myopic model to save blood for urgent surgery that might have an increase in demand later on. Find the best value of this penalty in the set $\{-4,-9,-14,-19,-24\}$ after running 20 testing iterations.</li>
     <li>Without doing any additional numerical work, imagine now that the penalty on the O-negative blood needs to depend on the week to handle seasonal variations. Since you are simulating 15 weeks, describe a method for optimizing over a 15-dimensional vector (we have described two core strategies in prior assignments - you may pick one, or invent a new one).</li>
   </ol>

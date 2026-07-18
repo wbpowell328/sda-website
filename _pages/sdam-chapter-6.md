@@ -102,7 +102,7 @@ Finally, we update the physical state $N_t$ using
 
 $$
 \begin{align}
-N_{t+1} = \{j|x_{t,N_t,j} = 1\}. \label{eq:shortestpathdynamictransition2}
+N_{t+1} = \{j\vert x_{t,N_t,j} = 1\}. \label{eq:shortestpathdynamictransition2}
 \end{align}
 $$
 
@@ -120,7 +120,7 @@ We now write our objective function as
 
 $$
 \begin{align}
-\min_\pi F^\pi(S_0) = \E \left\{\sum_{t=0}^T \sum_{(i,j)\in\Ncal} \chat_{t+1,i,j}X^\pi(S_t)|S_0 \right\}. \label{eq:shortestpathdynamicobjective}
+\min_\pi F^\pi(S_0) = \E \left\{\sum_{t=0}^T \sum_{(i,j)\in\Ncal} \chat_{t+1,i,j}X^\pi(S_t)\vert S_0 \right\}. \label{eq:shortestpathdynamicobjective}
 \end{align}
 $$
 
@@ -211,11 +211,11 @@ Next, we are going to propose a minor tweak to make this approach work better un
 
 A simple strategy for handling uncertainty in our dynamic shortest path problem would be to replace our point estimate $\ctilde_{tt'k\ell}=\cbar_{tk\ell}$ for the cost of traversing link $(k,\ell)$ at time $t$ with, say, the $\theta$-percentile of the costs, suggesting that we write the costs as $\ctilde_{tt',k\ell}(\theta) = \cbar_{tij}(\theta)$. This logic could, for example, avoid a path through an area that sometimes becomes very congested, where the cost *might* be quite high.
 
-This policy still produces a deterministic shortest path problem which is as easy to solve as when we used the point estimates $\cbar_t$. We simply modify equations $\eqref{eq:shortestpathdetlookahead}$–$\eqref{eq:shortestpathbellmandetlookahead}$ above by using the $\theta$-percentile link costs. We then designate the value functions $\Vtilde_{tt'}(i|\theta)$ to indicate the dependence on the parameter $\theta$, which is computed using
+This policy still produces a deterministic shortest path problem which is as easy to solve as when we used the point estimates $\cbar_t$. We simply modify equations $\eqref{eq:shortestpathdetlookahead}$–$\eqref{eq:shortestpathbellmandetlookahead}$ above by using the $\theta$-percentile link costs. We then designate the value functions $\Vtilde_{tt'}(i\vert \theta)$ to indicate the dependence on the parameter $\theta$, which is computed using
 
 $$
 \begin{align}
-\Vtilde_{tt'}(i|\theta) = \min_{j\in\Ncal^+_i} \big(\ctilde_{tt',ij}(\theta) + \Vtilde_{t,t'+1}(j|\theta)\big). \label{eq:shortestpaththetalookahead}
+\Vtilde_{tt'}(i\vert \theta) = \min_{j\in\Ncal^+_i} \big(\ctilde_{tt',ij}(\theta) + \Vtilde_{t,t'+1}(j\vert \theta)\big). \label{eq:shortestpaththetalookahead}
 \end{align}
 $$
 
@@ -223,25 +223,25 @@ Our lookahead policy is then given by
 
 $$
 \begin{align}
-\Xtilde^\pi_{tt'}(\Stilde_{tt'}=i|\theta) = \argmin_{j\in\Ncal^+_i} \big(\ctilde_{tt',ij}(\theta) + \Vtilde_{tt'}(\Stilde_{t,t'+1}=j)\big). \label{eq:shortestpathbellmanthetalookahead}
+\Xtilde^\pi_{tt'}(\Stilde_{tt'}=i\vert \theta) = \argmin_{j\in\Ncal^+_i} \big(\ctilde_{tt',ij}(\theta) + \Vtilde_{tt'}(\Stilde_{t,t'+1}=j)\big). \label{eq:shortestpathbellmanthetalookahead}
 \end{align}
 $$
 
 We then write our parameterized policy for the base model (which gives the decisions that are actually implemented) using
 
 $$
-X^\pi_t(S_t = i|\theta) = \Xtilde_{tt}(S_t = i|\theta).
+X^\pi_t(S_t = i\vert \theta) = \Xtilde_{tt}(S_t = i\vert \theta).
 $$
 
 This is equivalent to our original deterministic lookahead model, with one major exception: we need to tune $\theta$ by optimizing
 
 $$
 \begin{align}
-\min_\theta F^\pi(\theta|S_0) = \E \left\{\sum_{t=0}^T C(S_t,X^\pi(S_t|\theta))|S_0\right\}. \label{eq:tuneshortestpathcfa}
+\min_\theta F^\pi(\theta\vert S_0) = \E \left\{\sum_{t=0}^T C(S_t,X^\pi(S_t\vert \theta))\vert S_0\right\}. \label{eq:tuneshortestpathcfa}
 \end{align}
 $$
 
-where $S_{t+1} = S^M(S_t,X^\pi(S_t|\theta), W_{t+1})$ (see equations $\eqref{eq:shortestpathdynamictransition1}$–$\eqref{eq:shortestpathdynamictransition2}$) using some method for generating random realizations of $W_1, \ldots, W_T$.
+where $S_{t+1} = S^M(S_t,X^\pi(S_t\vert \theta), W_{t+1})$ (see equations $\eqref{eq:shortestpathdynamictransition1}$–$\eqref{eq:shortestpathdynamictransition2}$) using some method for generating random realizations of $W_1, \ldots, W_T$.
 
 The optimization problem in $\eqref{eq:tuneshortestpathcfa}$ is itself a challenging problem, but it is helped because $\theta$ is a scalar between 0 and 1. Practical algorithms for optimizing the objective function in $\eqref{eq:tuneshortestpathcfa}$ typically involve running simulations to get noisy observations of the function.
 
@@ -282,10 +282,10 @@ These exercises use the Python module *StochasticShortestPath_Dynamic* on [tinyu
 <ol class="book-exercises" style="counter-reset: exercise 9;">
 <li>We are going to use a deterministic lookahead model as was done in the notes, but instead of using the expected cost on each link, we are going to use a percentile that we designate by $\theta^{cost}$. For example, if $\theta^{cost} = 0.8$, then we would use the 80th percentile of the cost (think of this as using an estimate of how large the cost might be). Let $\cbar_{tij}(\theta^{cost})$ be the $\theta^{cost}$-percentile cost of link $(i,j)$ given what we know at time $t$.
   <ol type="a">
-    <li>Write out the lookahead model, which would be a deterministic shortest path using costs $\cbar_{tij}(\theta^{cost})$ (as is done in the book). Use this model to formally define a lookahead policy $X^{DLA}(S_{tj}|\theta^{cost})$.</li>
+    <li>Write out the lookahead model, which would be a deterministic shortest path using costs $\cbar_{tij}(\theta^{cost})$ (as is done in the book). Use this model to formally define a lookahead policy $X^{DLA}(S_{tj}\vert \theta^{cost})$.</li>
     <li>What is the state variable for the dynamic problem? Remember that the state variable includes all dynamically varying information used to make a decision (which includes computing costs and constraints), as well as computing the transition from $t$ to $t + 1$.</li>
     <li>Write out the objective function used to evaluate our lookahead policy.</li>
-    <li>We now have a policy $X^{DLA}(S_{tj}|\theta^{cost})$ parameterized by $\theta^{cost}$. Using the python module <em>StochasticShortestPath_Dynamic</em>, simulate the policy for $\theta^{cost} = (0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)$. Simulate each version of the policy 100 times and take an average of the total actual cost (not the $\theta^{cost}$-percentile). Also consider the risk of being "late," i.e., the total actual cost being greater than a given threshold. Plot the results and compare them.</li>
+    <li>We now have a policy $X^{DLA}(S_{tj}\vert \theta^{cost})$ parameterized by $\theta^{cost}$. Using the python module <em>StochasticShortestPath_Dynamic</em>, simulate the policy for $\theta^{cost} = (0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)$. Simulate each version of the policy 100 times and take an average of the total actual cost (not the $\theta^{cost}$-percentile). Also consider the risk of being "late," i.e., the total actual cost being greater than a given threshold. Plot the results and compare them.</li>
   </ol>
 </li>
 </ol>

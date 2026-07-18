@@ -124,19 +124,19 @@ $$
 
 The performance of both the field and central managers depends on the number of trailers $x_{tq'q}$ that the central manager gives to the field. This decision, however, depends on the decision made by the field manager.
 
-The decisions of the field manager are made with the policy $X_{tq}(S_t|\theta_q)$, where $\theta_q$ is one or more tunable parameters that are used to solve
+The decisions of the field manager are made with the policy $X_{tq}(S_t\vert \theta_q)$, where $\theta_q$ is one or more tunable parameters that are used to solve
 
 $$
 \begin{align}
-\min_{\theta_q}\E \left\{\sum_{t=0}^T C_{tq}(S_{tq},X_{tq}(S_t|\theta_q))|S_0\right\}.  \label{eq:fieldobjective}
+\min_{\theta_q}\E \left\{\sum_{t=0}^T C_{tq}(S_{tq},X_{tq}(S_t\vert \theta_q))\vert S_0\right\}.  \label{eq:fieldobjective}
 \end{align}
 $$
 
-Similarly, the decisions of the central manager are made with the policy $X_{tq'}(S_t|\theta_{q'})$ where $\theta_{q'}$ is one or more tunable parameters that solve
+Similarly, the decisions of the central manager are made with the policy $X_{tq'}(S_t\vert \theta_{q'})$ where $\theta_{q'}$ is one or more tunable parameters that solve
 
 $$
 \begin{align}
-\min_{\theta_{q'}}\E \left\{\sum_{t=0}^T C_{t{q'}}(S_{tq'},X_{tq'}(S_t|\theta_{q'}))|S_0\right\}. \label{eq:centralobjective}
+\min_{\theta_{q'}}\E \left\{\sum_{t=0}^T C_{t{q'}}(S_{tq'},X_{tq'}(S_t\vert \theta_{q'}))\vert S_0\right\}. \label{eq:centralobjective}
 \end{align}
 $$
 
@@ -181,7 +181,7 @@ We need to use our estimates of the differences between $R^{est}_t$ and $\Rhat_t
 
 $$
 \begin{align}
-X_{tqq'}(S_t|\theta_q) = R^{est}_t - \delta^{est}_{t-1,q} - \delta_{t-1,q}  + \theta_q. \label{eq:fieldpolicy}
+X_{tqq'}(S_t\vert \theta_q) = R^{est}_t - \delta^{est}_{t-1,q} - \delta_{t-1,q}  + \theta_q. \label{eq:fieldpolicy}
 \end{align}
 $$
 
@@ -194,7 +194,7 @@ Since there is not an embedded optimization problem (that is, an $\argmax_x$ or 
 Our policy for the central manager is given by
 
 $$
-X_{tq'q}(S_t|\theta_{q'}) = x_{tqq'} - \delta_{t-1,q'} + \theta_{q'}.
+X_{tq'q}(S_t\vert \theta_{q'}) = x_{tqq'} - \delta_{t-1,q'} + \theta_{q'}.
 $$
 
 Here, we start with the request made by the field manager, subtract our best estimate of the difference between the field manager's request and what was eventually needed, $\delta_{tq'}$, and then add in $\theta_{q'}$ which is a tunable parameter for the central manager, where $\theta_{q'}$ may be negative.

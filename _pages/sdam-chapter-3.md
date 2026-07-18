@@ -63,7 +63,7 @@ The unknown case is what arises more often in practice, which introduces the dim
 If $W$ was deterministic (and if $p > c$), then the solution is easily verified to be $x = W$. Now imagine that $W$ is a random variable with probability distribution $f^W(w)$ ($W$ may be discrete or continuous). Let $F^W(w) = Prob[W \leq w]$ be the cumulative distribution of $W$. If $W$ is continuous, and if we could compute $F(x) = \E F(x,W)$, then the optimal solution $x^*$ would satisfy
 
 $$
-\left.\frac{d F(x)}{dx}\right|_{x=x^*} = 0.
+\left.\frac{d F(x)}{dx}\right\vert _{x=x^*} = 0.
 $$
 
 Now consider what is known as the *stochastic gradient*, where we take the derivative of $F(x,W)$ assuming we know $W$, which is given by
@@ -98,7 +98,7 @@ We are going to tackle the problem where the demand distribution is unknown. Our
 
 $$
 \begin{align}
-x^{n+1} = \max\left\{0,x^n + \alpha_n \left.\frac{d F(x,W^{n+1})}{dx}\right|_{x=x^n} \right\},  \label{eq:stochasticgradientalgorithm}
+x^{n+1} = \max\left\{0,x^n + \alpha_n \left.\frac{d F(x,W^{n+1})}{dx}\right\vert _{x=x^n} \right\},  \label{eq:stochasticgradientalgorithm}
 \end{align}
 $$
 
@@ -121,7 +121,7 @@ The trick with this problem is recognizing the decision variable. It is tempting
 Normally we introduce policies later, but to help with understanding the model, we are going to start with a basic stepsize policy called a *harmonic stepsize rule* given by
 
 $$
-\alpha^{harmonic}(S^n|\theta^{step}) = \frac{\theta^{step}}{\theta^{step}+n-1}.
+\alpha^{harmonic}(S^n\vert \theta^{step}) = \frac{\theta^{step}}{\theta^{step}+n-1}.
 $$
 
 This is a simple deterministic stepsize rule, which means that we know in advance the stepsize $\alpha_n$ once we know $n$. Below we introduce a more interesting stochastic stepsize policy that requires a richer state variable.
@@ -138,7 +138,7 @@ The transition equation, for the setting where $x$ is unconstrained, is given by
 
 $$
 \begin{align}
-x^{n+1} = x^n + \alpha_n \left.\frac{d F(x,W^{n+1})}{dx}\right|_{x=x^n}.  \label{eq:stochasticgradientaltransition1}
+x^{n+1} = x^n + \alpha_n \left.\frac{d F(x,W^{n+1})}{dx}\right\vert _{x=x^n}.  \label{eq:stochasticgradientaltransition1}
 \end{align}
 $$
 
@@ -160,7 +160,7 @@ If we are experiencing our decisions in the field, we want to maximize the *cumu
 
 $$
 \begin{align}
-\max_\pi \E \left\{\sum_{n=0}^{N-1} F(X^\pi(S^n|\theta),W^{n+1})|S^0\right\}. \label{eq:newsvendorobjectivecumulativereward}
+\max_\pi \E \left\{\sum_{n=0}^{N-1} F(X^\pi(S^n\vert \theta),W^{n+1})\vert S^0\right\}. \label{eq:newsvendorobjectivecumulativereward}
 \end{align}
 $$
 
@@ -219,7 +219,7 @@ We have already introduced two choices of stepsize policies which we write as $\
 A wide range of stepsize policies (often called stepsize rules) have been suggested in the literature. One of the simplest and most popular is the harmonic stepsize policy given by
 
 $$
-\alpha^{harmonic}(S^n|\theta^{step}) = \frac{\theta^{step}}{\theta^{step}+n-1}.
+\alpha^{harmonic}(S^n\vert \theta^{step}) = \frac{\theta^{step}}{\theta^{step}+n-1}.
 $$
 
 Figure 3.1 illustrates the behavior of the harmonic stepsize rule for different values of $\theta^{step}$.
@@ -232,7 +232,7 @@ Figure 3.1 illustrates the behavior of the harmonic stepsize rule for different 
 The harmonic stepsize policy is also known as a deterministic policy, because we know its value for a given $n$ in advance. The challenge with deterministic policies is that they are not allowed to adapt to the data. For this reason, it is often useful to use a stochastic rule. One of the earliest and simplest examples is Kesten's rule
 
 $$
-\alpha^{kesten}(S^n|\theta^{step}) = \frac{\theta^{step}}{\theta^{step}+K^n-1},
+\alpha^{kesten}(S^n\vert \theta^{step}) = \frac{\theta^{step}}{\theta^{step}+K^n-1},
 $$
 
 where $K^n$ is a counter that counts how many times the gradient has switched direction. We determine this by asking if the product (or inner product, if $x$ is a vector) $(\nabla_x F(x^n,W^{n+1}))^T \nabla_x F(x^{n-1},W^n) < 0$. If the gradient is switching directions, then it means that we are in the vicinity of the optimum and are stepping past it, so we need to reduce the stepsize. This formula is written
@@ -287,29 +287,29 @@ Figure 3.2 illustrates different rates of convergence for different stepsize rul
 **1)** Imagine that we do not know $\mu$, but let's assume that $\mu$ can take on one of the values $(\mu_1, \mu_2, \ldots, \mu_K)$. Let $H^n$ be the history of observations up through the $n$th experiment, and let $H^0$ be the initial empty history. We assume we start with an initial prior probability on $\mu$ that we write as
 
 $$
-p^0_k = Prob[\mu = \mu_k|H^0].
+p^0_k = Prob[\mu = \mu_k\vert H^0].
 $$
 
 After we have observed $W^1, \ldots, W^n$, we would write our updated distribution as
 
 $$
-p^n_k = Prob[\mu = \mu_k|H^n].
+p^n_k = Prob[\mu = \mu_k\vert H^n].
 $$
 
 We can update $p^n = (p^n_k)_{k=1}^K$ using Bayes theorem
 
 $$
 \begin{align}
-p^{n+1}_k &= Prob[\mu=\mu_k|W^{n+1}=w,H^n] \\
-          &= \frac{Prob[W^{n+1}=w|\mu=\mu_k,H^n]Prob[\mu=\mu_k|H^n]}{Prob[W^{n+1}=w|H^n]}\\
-          &= \frac{Prob[W^{n+1}=w|\mu=\mu_k]p^n_k}{Prob[W^{n+1}=w|H^n]},
+p^{n+1}_k &= Prob[\mu=\mu_k\vert W^{n+1}=w,H^n] \\
+          &= \frac{Prob[W^{n+1}=w\vert \mu=\mu_k,H^n]Prob[\mu=\mu_k\vert H^n]}{Prob[W^{n+1}=w\vert H^n]}\\
+          &= \frac{Prob[W^{n+1}=w\vert \mu=\mu_k]p^n_k}{Prob[W^{n+1}=w\vert H^n]},
 \end{align}
 $$
 
 where
 
 $$
-Prob[W^{n+1}=w|H^n] = \sum_{k=1}^K Prob[W^{n+1}=w|\mu=\mu_k]p^n_k.
+Prob[W^{n+1}=w\vert H^n] = \sum_{k=1}^K Prob[W^{n+1}=w\vert \mu=\mu_k]p^n_k.
 $$
 
 With this extension to the basic model, we have two probability distributions: the belief on the true mean $\mu$, and the random demand $W$ given $\mu$. To include this extension, we would have to insert $p^n$ into our state variable, so we would write
@@ -358,10 +358,10 @@ $$
 
 We are able to observe the different prices and loads, but we do not know their probability distribution. Our goal is to minimize costs over a year.
 
-Assume that $x_t$ is discrete with values $x_1, \ldots, x_M$. Let $(\mubar_{tx}, \beta_{tx})$ be the mean and precision of our estimate of $\E C(S_t,W_{t+1})$ and assume that we use a policy called *interval estimation*, $X^{IE}(S_t|\theta)$, to choose $x_t$:
+Assume that $x_t$ is discrete with values $x_1, \ldots, x_M$. Let $(\mubar_{tx}, \beta_{tx})$ be the mean and precision of our estimate of $\E C(S_t,W_{t+1})$ and assume that we use a policy called *interval estimation*, $X^{IE}(S_t\vert \theta)$, to choose $x_t$:
 
 $$
-X^{IE}(S_t|\theta^{IE}) = \argmin_x \left(\mubar_{tx} - \theta^{IE} \sqrt{\frac{1}{\beta_{tx}}}\right).
+X^{IE}(S_t\vert \theta^{IE}) = \argmin_x \left(\mubar_{tx} - \theta^{IE} \sqrt{\frac{1}{\beta_{tx}}}\right).
 $$
 
   <ol type="a">
@@ -419,26 +419,26 @@ Of course, we do not want to discretize $p$ too finely. If we discretize prices 
 
 $$
 \begin{align}
-x^{\pi,N}(p|\theta) = \theta_0 + \theta_1 p + \theta_2 p^{\theta_3}. \label{eq:parametricorderquantity}
+x^{\pi,N}(p\vert \theta) = \theta_0 + \theta_1 p + \theta_2 p^{\theta_3}. \label{eq:parametricorderquantity}
 \end{align}
 $$
 
 When we use a parametric function such as this, we are no longer trying to find the order quantity $x^{\pi,N}$; instead, we are trying to find $\theta$ that determines the function (in this case, $\eqref{eq:parametricorderquantity}$). Our stochastic gradient algorithm now becomes
 
 $$
-\theta^{n+1} = \theta^n + \alpha_n \frac{d F^n(x^{\pi,N}(p^n|\theta^n),W^{n+1})}{d \theta} = \theta^n + \alpha_n \frac{d F^n(x^{\pi,N}(p^n|\theta^n),W^{n+1})}{d x} \frac{d x^{\pi,N}(p^n|\theta^n)}{d \theta},
+\theta^{n+1} = \theta^n + \alpha_n \frac{d F^n(x^{\pi,N}(p^n\vert \theta^n),W^{n+1})}{d \theta} = \theta^n + \alpha_n \frac{d F^n(x^{\pi,N}(p^n\vert \theta^n),W^{n+1})}{d x} \frac{d x^{\pi,N}(p^n\vert \theta^n)}{d \theta},
 $$
 
 Remember that $\theta^n$ is a four-element column vector, while $x^n$ is a scalar. The first derivative is our original stochastic gradient
 
 $$
-\frac{d F^n(x^{\pi,N}(p^n|\theta^n),W^{n+1})}{d x} = \begin{cases} p-c & x \leq W, \\ -c & x > W. \end{cases}
+\frac{d F^n(x^{\pi,N}(p^n\vert \theta^n),W^{n+1})}{d x} = \begin{cases} p-c & x \leq W, \\ -c & x > W. \end{cases}
 $$
 
 The second derivative is computed directly from the policy $\eqref{eq:parametricorderquantity}$, which is given by
 
 $$
-\frac{d x^{\pi,N}(p^n|\theta^n)}{d \theta} = \begin{pmatrix} \frac{d x^{\pi,N}(p^n|\theta^n)}{d \theta_0} \\ \frac{d x^{\pi,N}(p^n|\theta^n)}{d \theta_1} \\ \frac{d x^{\pi,N}(p^n|\theta^n)}{d \theta_2} \\ \frac{d x^{\pi,N}(p^n|\theta^n)}{d \theta_3} \end{pmatrix} = \begin{pmatrix} 1 \\ p^n \\ (p^n)^{\theta_3} \\ \theta_2(p^n)^{\theta_3} \ln{p^n} \end{pmatrix}.
+\frac{d x^{\pi,N}(p^n\vert \theta^n)}{d \theta} = \begin{pmatrix} \frac{d x^{\pi,N}(p^n\vert \theta^n)}{d \theta_0} \\ \frac{d x^{\pi,N}(p^n\vert \theta^n)}{d \theta_1} \\ \frac{d x^{\pi,N}(p^n\vert \theta^n)}{d \theta_2} \\ \frac{d x^{\pi,N}(p^n\vert \theta^n)}{d \theta_3} \end{pmatrix} = \begin{pmatrix} 1 \\ p^n \\ (p^n)^{\theta_3} \\ \theta_2(p^n)^{\theta_3} \ln{p^n} \end{pmatrix}.
 $$
 
 Using the parametric model can be very effective if the parametric form matches the true form of the function $x^{\pi,N}(p)$. The lookup table representation is more general, which can be a feature, but if the discretization is too fine, then it will require a much larger number of iterations to solve.
@@ -532,7 +532,7 @@ $$
     <li>Repeat (b), but instead of a lookup table for $x_t(p_t)$, approximate the functional form for the policy using
 
     $$
-    x_t(p_t|\theta) = \theta_0 + \theta_1 p_t + \theta_2 \ln{p_t} + \theta_3 \exp{\{\theta_4 p_t\}}.
+    x_t(p_t\vert \theta) = \theta_0 + \theta_1 p_t + \theta_2 \ln{p_t} + \theta_3 \exp{\{\theta_4 p_t\}}.
     $$
 
     Again describe the steps of an adaptive algorithm to find $\theta$.</li>

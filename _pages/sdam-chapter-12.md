@@ -47,14 +47,14 @@ The answers to our three framing questions are:
 We are going to assume that we use some sort of parameterized model to capture the probability that a customer clicks on an ad. At a minimum this probability will depend on how much we bid for an ad – the more we bid, the higher the ad will appear in the sponsored ad list, which increases the likelihood that a customer will click on it. Let $K^n = 1$ if the $n$th customer clicks on the ad. Let
 
 $$
-P^{click}(\theta_k,x) = Prob[K^{n+1}=1|\theta=\theta_k,x]
+P^{click}(\theta_k,x) = Prob[K^{n+1}=1\vert \theta=\theta_k,x]
 $$
 
-where $Prob[K^{n+1}=1|\theta=\theta_k,x]$ will be described by a logistic function given by
+where $Prob[K^{n+1}=1\vert \theta=\theta_k,x]$ will be described by a logistic function given by
 
 $$
 \begin{align}
-Prob[K^{n+1}=1|\theta=\theta_k,x^n, H^n] = \frac{e^{\theta^{const,n}_k + \theta^{bid,n}_k x^n}}{1+e^{\theta^{const,n}_k + \theta^{bid,n}_k x^n}}. \label{eq:adclicklogisticregression}
+Prob[K^{n+1}=1\vert \theta=\theta_k,x^n, H^n] = \frac{e^{\theta^{const,n}_k + \theta^{bid,n}_k x^n}}{1+e^{\theta^{const,n}_k + \theta^{bid,n}_k x^n}}. \label{eq:adclicklogisticregression}
 \end{align}
 $$
 
@@ -127,15 +127,15 @@ $$
 We use this to write
 
 $$
-p^n_k = Prob[\theta=\theta_k|H^n].
+p^n_k = Prob[\theta=\theta_k\vert H^n].
 $$
 
 The way to read the conditioning on the history $H^n$ is "$p^n_k$ is the probability $\theta = \theta_k$ given what we know after $n$ observations." We then use Bayes theorem to write
 
 $$
 \begin{align}
-p^{n+1}_k &= Prob[\theta=\theta_k|W^{n+1}, H^n] \nonumber\\
-          &= \frac{Prob[K^{n+1}|\theta=\theta_k,H^n]Prob[\theta=\theta_k|H^n]}{Prob[K^{n+1}|H^n]}. \label{eq:adclicktransition2}
+p^{n+1}_k &= Prob[\theta=\theta_k\vert W^{n+1}, H^n] \nonumber\\
+          &= \frac{Prob[K^{n+1}\vert \theta=\theta_k,H^n]Prob[\theta=\theta_k\vert H^n]}{Prob[K^{n+1}\vert H^n]}. \label{eq:adclicktransition2}
 \end{align}
 $$
 
@@ -143,7 +143,7 @@ Remember that the history $H^n$ includes the decision $x^n$ which, given a polic
 
 $$
 \begin{align}
-Prob[K^{n+1}=1|\theta=\theta_k,H^n] &= Prob[K^{n+1}=1|\theta=\theta_k, x^n]\nonumber\\
+Prob[K^{n+1}=1\vert \theta=\theta_k,H^n] &= Prob[K^{n+1}=1\vert \theta=\theta_k, x^n]\nonumber\\
    &= \frac{e^{\theta^{const}_k + \theta^{bid}_k x^n}}{1+e^{\theta^{const}_k + \theta^{bid}_k x^n}}. \label{eq:adclicktransition2a}
 \end{align}
 $$
@@ -152,7 +152,7 @@ We then note that
 
 $$
 \begin{align}
-Prob[\theta=\theta_k|H^n]  = p^n_k. \label{eq:adclicktransition2b}
+Prob[\theta=\theta_k\vert H^n]  = p^n_k. \label{eq:adclicktransition2b}
 \end{align}
 $$
 
@@ -160,7 +160,7 @@ Finally, we note that the denominator can be computed using
 
 $$
 \begin{align}
-Prob[K^{n+1}|H^n] = \sum_{k=1}^K Prob[K^{n+1}|\theta=\theta_k,H^n] p^n_k. \label{eq:adclicktransition2c}
+Prob[K^{n+1}\vert H^n] = \sum_{k=1}^K Prob[K^{n+1}\vert \theta=\theta_k,H^n] p^n_k. \label{eq:adclicktransition2c}
 \end{align}
 $$
 
@@ -185,31 +185,31 @@ which means we make nothing if the customer does not click on the ad ($K^{n+1} =
 We will end up taking the expected contribution, which we write as
 
 $$
-\E \{C(S^n,x^n,W^{n+1})|S^n\} = \E \{(\Rhat^{n+1} - x^n) K^{n+1} |S^n\}.
+\E \{C(S^n,x^n,W^{n+1})\vert S^n\} = \E \{(\Rhat^{n+1} - x^n) K^{n+1} \vert S^n\}.
 $$
 
 There are three random variables hidden in the expectation:
 
 - $\theta$, with distribution $p^n = (p^n_1, \ldots, p^n_K)$ (contained in $S^n$).
-- $K^{n+1}$, where $P^{click}(\theta,x) = Prob[K^{n+1}=1|\theta,x]$.
+- $K^{n+1}$, where $P^{click}(\theta,x) = Prob[K^{n+1}=1\vert \theta,x]$.
 - $\Rhat^{n+1}$, which we observe from some unknown distribution if $K^{n+1}=1$, and where $\Rhat^{n+1}=0$ if $K^{n+1}=0$ (we do not get any revenue if the customer does not click on the ad).
 
 We can then break the expectation into three nested expectations:
 
 $$
-\E \{(\Rhat^{n+1} - x^n) K^{n+1} |S^n\} = \E_{\theta} \E_{K|\theta} \E_{\Rhat} \{(\Rhat^{n+1} - x^n) K^{n+1} |S^n\}.
+\E \{(\Rhat^{n+1} - x^n) K^{n+1} \vert S^n\} = \E_{\theta} \E_{K\vert \theta} \E_{\Rhat} \{(\Rhat^{n+1} - x^n) K^{n+1} \vert S^n\}.
 $$
 
-We start by taking the expectation over $\Rhat$ where we just use $\E \{\Rhat^{n+1}|S^n\} = \Rbar^n$ (remember that $\Rbar^n$ is in the state variable $S^n$), which allows us to write
+We start by taking the expectation over $\Rhat$ where we just use $\E \{\Rhat^{n+1}\vert S^n\} = \Rbar^n$ (remember that $\Rbar^n$ is in the state variable $S^n$), which allows us to write
 
 $$
-\E \{(\Rhat^{n+1} - x^n) K^{n+1} |S^n\} = \E_{\theta} \E_{K|\theta} \{(\Rbar^n - x^n) K^{n+1} |S^n\}.
+\E \{(\Rhat^{n+1} - x^n) K^{n+1} \vert S^n\} = \E_{\theta} \E_{K\vert \theta} \{(\Rbar^n - x^n) K^{n+1} \vert S^n\}.
 $$
 
 Next we are going to take the expectation over $K^{n+1}$ for a given $\theta$ using
 
 $$
-\E_{K|\theta} \{(\Rbar^n - x^n) K^{n+1} |S^n\} =  (\Rbar^n - x^n) P^{click}(\theta,x).
+\E_{K\vert \theta} \{(\Rbar^n - x^n) K^{n+1} \vert S^n\} =  (\Rbar^n - x^n) P^{click}(\theta,x).
 $$
 
 where we have used the fact that $(\Rbar^n - x^n) K^{n+1}=0$ if $K^{n+1}=0$.
@@ -217,19 +217,19 @@ where we have used the fact that $(\Rbar^n - x^n) K^{n+1}=0$ if $K^{n+1}=0$.
 Finally we take the expectation over $\theta$ using
 
 $$
-\E_{\theta}  \{(\Rbar^n - x^n) P^{click}(\theta,x^n) |S^n\} = \sum_{k=1}^K (\Rbar^n - x^n) P^{click}(\theta=\theta_k,x^n) p^n_k.
+\E_{\theta}  \{(\Rbar^n - x^n) P^{click}(\theta,x^n) \vert S^n\} = \sum_{k=1}^K (\Rbar^n - x^n) P^{click}(\theta=\theta_k,x^n) p^n_k.
 $$
 
 We are going to let $\Cbar(S^n,x)$ be the expected contribution, which is to say
 
 $$
-\Cbar(S^n,x)   =  \E_{\theta} \E_{K|\theta} \{(\Rbar^n - x^n) K^{n+1} |S^n\}.
+\Cbar(S^n,x)   =  \E_{\theta} \E_{K\vert \theta} \{(\Rbar^n - x^n) K^{n+1} \vert S^n\}.
 $$
 
 Our objective function can now be written as
 
 $$
-\max_\pi \E_{S^0} \E_{W^1, \ldots, W^n|S^0} \left\{\sum_{n=0}^N C(S^n,X^\pi(S^n),W^{n+1})|S_0\right\}.
+\max_\pi \E_{S^0} \E_{W^1, \ldots, W^n\vert S^0} \left\{\sum_{n=0}^N C(S^n,X^\pi(S^n),W^{n+1})\vert S_0\right\}.
 $$
 
 Note that the conditioning on $S_0$ is how we communicate our prior $p^0_k = Prob[\theta=\theta_k]$ to the model. As before, we would approximate the expectation by averaging over simulated samples of the true value of $\theta$, and the observed clicks $K^n$ and revenues $R^n$.
@@ -240,7 +240,7 @@ We have three forms of uncertainty: the ad-click $K^{n+1}$, the revenue we recei
 
 $$
 \begin{align}
-P^{click}(\theta,x) &= P[K^{n+1} = 1|\theta,x=x^n] \nonumber \\
+P^{click}(\theta,x) &= P[K^{n+1} = 1\vert \theta,x=x^n] \nonumber \\
                    &= \frac{e^{\theta^{const} + \theta^{bid} x}}{1+e^{\theta^{const} + \theta^{bid} x}}, \label{eq:adclicklogistic}
 \end{align}
 $$
@@ -262,7 +262,7 @@ We are going to explore three policies for learning:
 The starting point of any online policy should be pure exploitation, which means doing the best that we can. To compute this we start by using
 
 $$
-\E \{\Rhat^{n+1} K^{n+1}\} = \E \{\Rhat^{n+1}|K^{n+1} = 1\} Prob[K^{n+1}=1|\theta=\theta_k] = \Rbar^n P^{click}(\theta,x).
+\E \{\Rhat^{n+1} K^{n+1}\} = \E \{\Rhat^{n+1}\vert K^{n+1} = 1\} Prob[K^{n+1}=1\vert \theta=\theta_k] = \Rbar^n P^{click}(\theta,x).
 $$
 
 To find the best bid, we find (after a bit of algebra) the derivative with respect to the bid $x$
@@ -280,10 +280,10 @@ $$
 Now we want to find the bid $x^*$ where
 
 $$
-\left.\frac{d \Cbar(x)}{d x}\right|_{x=x^*} = 0.
+\left.\frac{d \Cbar(x)}{d x}\right\vert _{x=x^*} = 0.
 $$
 
-Figure 12.3 shows $\frac{d \Cbar(x|\theta)}{d x}$ versus the bid $x$, showing the behavior that it starts positive and transitions to negative. The point where it is equal to zero would be the optimal bid, a point which can be found numerically quite easily. Let $X^{explt}(S^n)$ be the bid $x^*$ satisfying $d \Cbar(x)/dx = 0$.
+Figure 12.3 shows $\frac{d \Cbar(x\vert \theta)}{d x}$ versus the bid $x$, showing the behavior that it starts positive and transitions to negative. The point where it is equal to zero would be the optimal bid, a point which can be found numerically quite easily. Let $X^{explt}(S^n)$ be the bid $x^*$ satisfying $d \Cbar(x)/dx = 0$.
 
 This means that we have to run a numerical algorithm to compute the policy. This is a greedy policy which falls in the CFA class, but without any tunable parameters.
 
@@ -297,7 +297,7 @@ This means that we have to run a numerical algorithm to compute the policy. This
 A potential limitation of our pure exploitation policy is that it ignores the value of trying a wider range of bids to help with the process of learning the correct values of $\theta$. A popular strategy is to add a noise term, known in engineering as "excitation," giving us the policy
 
 $$
-X^{excite}(S^n|\rho) = X^{explt}(S^n) + \varepsilon(\rho)
+X^{excite}(S^n\vert \rho) = X^{explt}(S^n) + \varepsilon(\rho)
 $$
 
 where $\varepsilon(\rho) \sim N(0,\rho^2)$. In this policy, $\rho$ is our tunable parameter which controls the amount of exploration in the policy. If it is too small, then there may not be enough exploration. If it is too large, then we will choose bids that are far from optimal, possibly without any benefit from learning.
@@ -320,9 +320,9 @@ $$
 
 where the double-superscript $(n,n+1)$ means that this is the information in a lookahead model created at time $n$, looking at what might happen at time $n+1$. The random variable $\Ktilde^{n,n+1}$ is the ad-click that we are simulating *might* happen in our lookahead model, rather than the actual observation of whether someone clicked on the ad. Just remember that we use tilde for any variable in our lookahead model, and these variables will be indexed by $n$ (the time at which we are initiating the lookahead model), and $n+1$ (since we are looking one time period forward in the lookahead model).
 
-We next use our updating equation $\eqref{eq:adclicktransition2}$ for the probabilities $p^n_k = Prob[\theta=\theta_k|H^n]$. We can write these updated probabilities as $\ptilde^{n,n+1}_k(\Ktilde^{n,n+1})$ to capture the dependence of the updating on $\Ktilde^{n,n+1}$ (equation $\eqref{eq:adclicktransition2}$ is written for $\Ktilde^{n,n+1}=1$). Since $\Ktilde^{n,n+1}$ can take on two outcomes (0 or 1) we will have two possible values for $\ptilde^{n,n+1}_k(\Ktilde^{n,n+1})$.
+We next use our updating equation $\eqref{eq:adclicktransition2}$ for the probabilities $p^n_k = Prob[\theta=\theta_k\vert H^n]$. We can write these updated probabilities as $\ptilde^{n,n+1}_k(\Ktilde^{n,n+1})$ to capture the dependence of the updating on $\Ktilde^{n,n+1}$ (equation $\eqref{eq:adclicktransition2}$ is written for $\Ktilde^{n,n+1}=1$). Since $\Ktilde^{n,n+1}$ can take on two outcomes (0 or 1) we will have two possible values for $\ptilde^{n,n+1}_k(\Ktilde^{n,n+1})$.
 
-Now imagine that we perform our pure exploitation policy $X^{explt}(S^n|\theta^n)$ that we described above, but we are going to do it in our approximate lookahead model (this is where we ignore changes in $\Rbar^n$). Let $\Stilde^{n,n+1}$ represent our state in the lookahead model given by
+Now imagine that we perform our pure exploitation policy $X^{explt}(S^n\vert \theta^n)$ that we described above, but we are going to do it in our approximate lookahead model (this is where we ignore changes in $\Rbar^n$). Let $\Stilde^{n,n+1}$ represent our state in the lookahead model given by
 
 $$
 \Stilde^{n,n+1}(\Ktilde^{n,n+1}) = (\Rbar^n, \ptilde^{n,n+1}(\Ktilde^{n,n+1})).
@@ -365,13 +365,13 @@ Assume that we know the location of a customer down to a region or the nearest m
 An alternative approach would be to specify a model of the form
 
 $$
-Prob^n[K^{n+1}=1|\theta] = \frac{e^{U(x,L|\theta)}}{1+e^{U(x,L|\theta)}}.
+Prob^n[K^{n+1}=1\vert \theta] = \frac{e^{U(x,L\vert \theta)}}{1+e^{U(x,L\vert \theta)}}.
 $$
 
 where we are now going to use as our utility function
 
 $$
-U(x,L|\theta) = \theta^{const} + \theta^{bid}x + \sum_{\ell=1}^L \theta^{loc}_\ell I_{\ell=L}.
+U(x,L\vert \theta) = \theta^{const} + \theta^{bid}x + \sum_{\ell=1}^L \theta^{loc}_\ell I_{\ell=L}.
 $$
 
 This is a more compact model because we now assume that the constant term $\theta^{const}$ and bid coefficient $\theta^{bid}$ do not depend on the location. Instead, we are just adding a shift $\theta^{loc}_\ell$. So, we still have 1,000 parameters to estimate (the location coefficients), but before we had 2,000 parameters to estimate – $\theta^{const}_\ell$ and $\theta^{bid}_\ell$ for each location $\ell \in \{1, \ldots, L\}$.
@@ -404,11 +404,11 @@ This is a more compact model because we now assume that the constant term $\thet
 
 Imagine that we are recommending text articles. Assume that the article we recommend for the $n$th customer has attributes $b=b^n$ that includes: $b_1$, news, sports, arts, business, cooking, real-estate (6 types); $b_2$, subcategory: if news, then international, national (by country), regional (region within a country); if sports, then by sport, and then by team (or athlete); and so on (a total of 500); $b_3$, source (website, newspaper, ...) (5 sources); $b_4$, author (2,000); and $b_5$, unique ID for article (6 million).
 
-We would like to estimate $P(b^n|a^n)$, the probability that the $n$th customer with attribute $a^n$ clicks on the link of an article with attribute $b^n$.
+We would like to estimate $P(b^n\vert a^n)$, the probability that the $n$th customer with attribute $a^n$ clicks on the link of an article with attribute $b^n$.
 
 When customer $a^n$ arrives, we are going to assume that we have to choose a news article from a set $\Bcal^n$, which is the set of articles available when the $n$th customer arrives (this set changes over time). We would like to choose an article with attribute $b\in\Bcal^n$ that maximizes the probability that our customer will click on this news article. Our policy has to choose a particular article with attribute $b^n$.
 
-Ideally, we want $P(b^n_5|a^n_5)$ which is the probability that user $a^n_5$ would select article $b^n_5$, but there are too many users and too many articles to get reasonable estimates of this probability. If we only consider the elements $a_1, a_2, a_3$ and $a_4$, there would be 9,600 combinations, with an average of approximately 10,000 people for each of these first four elements. Below, we are going to assume we just use $a_1$ and $a_2$, which means 16 types of people.
+Ideally, we want $P(b^n_5\vert a^n_5)$ which is the probability that user $a^n_5$ would select article $b^n_5$, but there are too many users and too many articles to get reasonable estimates of this probability. If we only consider the elements $a_1, a_2, a_3$ and $a_4$, there would be 9,600 combinations, with an average of approximately 10,000 people for each of these first four elements. Below, we are going to assume we just use $a_1$ and $a_2$, which means 16 types of people.
 
 We are going to create a set of features $\Fcal$ which are constructed from the elements of $a$ and $b$ that we wish to consider. We are just going to use the elements $\{a_1,a_2,b_1,b_2,b_3\}$ from which we are going to construct a set of feature variables $\phi_f(a,b),~f\in\Fcal$. Since these five elements are all categorical, the most elementary features are indicator variables. For example, for the gender attribute $a_1$ we have two genders from which we create two features:
 
@@ -424,17 +424,17 @@ If $a^n$ is the attributes of the $n$th customer, then our decision is to choose
 
 Our first challenge is to develop a belief model:
   <ol type="a">
-    <li>If we use a lookup table belief model for $P(b|a)$ using the attributes $\{a_1,a_2, b_1,b_2,b_3\}$, how many parameters are we trying to estimate?</li>
+    <li>If we use a lookup table belief model for $P(b\vert a)$ using the attributes $\{a_1,a_2, b_1,b_2,b_3\}$, how many parameters are we trying to estimate?</li>
     <li>Instead, consider using a logistic regression. First define a utility function
 
     $$
-    U(a,b|\theta) = \sum_{f\in\Fcal} \theta_f \phi_f(b|a),
+    U(a,b\vert \theta) = \sum_{f\in\Fcal} \theta_f \phi_f(b\vert a),
     $$
 
     where $\Fcal$ is the set of elementary features that we can construct from the elements $\{a_1,a_2,b_1,b_2,b_3\}$. Now create a logistic regression model for the probability of clicking on an article using
 
     $$
-    P(Y=1|a,b,\theta) = \frac{e^{U(a,b|\theta)}}{1+e^{U(a,b|\theta)}}.
+    P(Y=1\vert a,b,\theta) = \frac{e^{U(a,b\vert \theta)}}{1+e^{U(a,b\vert \theta)}}.
     $$
 
     What is the dimensionality of the vector $\theta$ assuming that we just use elementary indicator variables?</li>

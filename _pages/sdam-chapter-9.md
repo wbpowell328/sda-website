@@ -209,13 +209,13 @@ We then assume that the changes in the forecasts $\fhat^X_{t+1,t'}$ are correlat
 
 $$
 \begin{align}
-Cov(\fhat^X_{t+1,t'},\fhat^X_{t+1,t''}) = \sigma^2_X e^{-\beta|t''-t'|}. \label{eq:forecastcovariancefunction}
+Cov(\fhat^X_{t+1,t'},\fhat^X_{t+1,t''}) = \sigma^2_X e^{-\beta\vert t''-t'\vert }. \label{eq:forecastcovariancefunction}
 \end{align}
 $$
 
 The covariance function $Cov(\fhat^X_{t+1,t'},\fhat^X_{t+1,t''})$ in equation $\eqref{eq:forecastcovariancefunction}$ captures the property that the covariance across time exhibits correlations that decrease with the difference between the two points in time. This simple model introduces the tunable parameter $\beta$ that has to be estimated from data, or possibly by judgment. For example, it might be possible to plot the covariance values for different values of $\beta$ and choose one that seems reasonable.
 
-We can use this covariance function to create a covariance matrix $\Sigma^X$ with element $\Sigma^X_{t't''} = \sigma^2_X e^{-\beta|t''-t'|}$. There is a simple way of creating a correlated sample of changes in forecasts using a method called *Cholesky decomposition*. It begins by creating what we might call the "square root" of the covariance matrix $\Sigma^X$ which we store in a lower triangular matrix $L$. In python, using the NumPy package, we would use the python command
+We can use this covariance function to create a covariance matrix $\Sigma^X$ with element $\Sigma^X_{t't''} = \sigma^2_X e^{-\beta\vert t''-t'\vert }$. There is a simple way of creating a correlated sample of changes in forecasts using a method called *Cholesky decomposition*. It begins by creating what we might call the "square root" of the covariance matrix $\Sigma^X$ which we store in a lower triangular matrix $L$. In python, using the NumPy package, we would use the python command
 
 ```
 L = scipy.linalg.cholesky(Sigma_X, lower=True)
@@ -250,13 +250,13 @@ Replicating crossing times using standard time series modeling proved unsuccessf
 
 **Step 1** – Comparing the actual process to the benchmark, find the times at which the actual process moves above or below the benchmark, and output a dataset that captures whether the process was above (A) or below (B) and for how long. Aggregate these periods into three buckets (S/M/L) for short/medium/long, and label each segment with A or B and S/M/L, creating six states. These are called "hidden states" because, while we will know at time $t$ if the actual process is above or below the benchmark, we will not know if the length is short, medium or long until after the process crosses the benchmark.
 
-**Step 2** – Using the historical sequence of $S^C_t$, compute a one-step transition matrix $P^C[S^C_{t+1}|S^C_t]$, the probability that the crossing process takes on value $S^C_{t+1}$ given that it is currently in state $S^C_t$.
+**Step 2** – Using the historical sequence of $S^C_t$, compute a one-step transition matrix $P^C[S^C_{t+1}\vert S^C_t]$, the probability that the crossing process takes on value $S^C_{t+1}$ given that it is currently in state $S^C_t$.
 
 **Step 3** – Aggregate the actual process (e.g. wind speed) into, say, five buckets based on the empirical cumulative distribution. Let $W^g_t$ be the aggregated wind speed (a number from 1 to 5).
 
-**Step 4** – From history, compute the conditional distribution of wind speed given $W^g_t$ and $S^C_t$, $F^W[W_{t+1}|W^g_t, S^C_t]$, the empirical cumulative distribution of the wind speed $W_{t+1}$ given $W^g_t$ and $S^C_t$.
+**Step 4** – From history, compute the conditional distribution of wind speed given $W^g_t$ and $S^C_t$, $F^W[W_{t+1}\vert W^g_t, S^C_t]$, the empirical cumulative distribution of the wind speed $W_{t+1}$ given $W^g_t$ and $S^C_t$.
 
-Using the one-step transition matrix $P^C[S^C_{t+1}|S^C_t]$ and the conditional cumulative distribution $F^W[W_{t+1}|W^g_t, S^C_t]$, we can now simulate our stochastic process by first simulating the hidden state variable $S^C_{t+1}$ given $S^C_t$ (note that there are only 30 of these). Then, from a wind speed $W_t$, we can find the aggregated wind speed $W^g_t$, and then sample the actual wind speed $W_{t+1}$ from the conditional cumulative distribution $F^W[W_{t+1}|W^g_t, S^C_t]$.
+Using the one-step transition matrix $P^C[S^C_{t+1}\vert S^C_t]$ and the conditional cumulative distribution $F^W[W_{t+1}\vert W^g_t, S^C_t]$, we can now simulate our stochastic process by first simulating the hidden state variable $S^C_{t+1}$ given $S^C_t$ (note that there are only 30 of these). Then, from a wind speed $W_t$, we can find the aggregated wind speed $W^g_t$, and then sample the actual wind speed $W_{t+1}$ from the conditional cumulative distribution $F^W[W_{t+1}\vert W^g_t, S^C_t]$.
 
 This logic has been found to accurately reproduce both the error distribution (actual vs. benchmark), as well as both up-crossing and down-crossing distributions across a range of datasets modeling wind as well as grid prices. Figure 9.4 illustrates these distributions on a particular dataset.
 
@@ -287,7 +287,7 @@ We are going to use the same notational style we first introduced in [Chapter 6]
 Recall that the canonical formulation of our base model is
 
 $$
-\max_\pi \E \left\{\sum_{t=0}^T C(S_t,X^\pi(S_t))|S_0\right\},
+\max_\pi \E \left\{\sum_{t=0}^T C(S_t,X^\pi(S_t))\vert S_0\right\},
 $$
 
 where $S_{t+1} = S^M(S_t,X^\pi(S_t),W_{t+1})$, and where we have an exogenous information process $(S_0, W_1, W_2, \ldots, W_T)$. Note that the variables $W_t$ may depend on the state $S_t$ and/or decision $x_t$; if this is the case, then the variable $W_{t+1}$ has to be generated on the fly after we know $S_t$ and $x_t$.
@@ -365,7 +365,7 @@ $$
 
 Note that we have introduced parameters to modify the right hand side of constraints $\eqref{eq:energydetlookaheadmod2}$ and $\eqref{eq:energydetlookaheadmod5}$ where we have introduced coefficients $\theta^L_{t'-t}$ and $\theta^W_{t'-t}$ to modify the forecasts of load and wind, where the coefficients are indexed by how many time periods we are forecasting into the future. Then, we modified the constraint $\eqref{eq:energydetlookaheadmod3}$ with the idea that we may want to restrict our ability to use all the energy in storage in order to maintain a reserve.
 
-Let $X^{DLA-P}(S_t|\theta)$ represent the lookahead policy that is solved subject to the parameterized constraints $\eqref{eq:energydetlookaheadmod1}$–$\eqref{eq:energydetlookaheadmod8}$. Once we have decided how to introduce these parameterizations (this is the art behind any parametric model), there is the problem of finding the best value for $\theta$. This is the problem of parameter search that we addressed in [Chapter 7](/sdam/chapter-7/).
+Let $X^{DLA-P}(S_t\vert \theta)$ represent the lookahead policy that is solved subject to the parameterized constraints $\eqref{eq:energydetlookaheadmod1}$–$\eqref{eq:energydetlookaheadmod8}$. Once we have decided how to introduce these parameterizations (this is the art behind any parametric model), there is the problem of finding the best value for $\theta$. This is the problem of parameter search that we addressed in [Chapter 7](/sdam/chapter-7/).
 
 We computed the relative improvement from using an optimized, parameterized deterministic lookahead, where we search for the best values of the vector $\theta=(\theta^L, \theta^W)$, versus a basic policy that sets these parameters equal to 1.0. In our experiments, we set $\theta^L_{t'-t} = 1$, and just optimized the coefficient of the wind forecast, $\theta^W_{t'-t}$.
 

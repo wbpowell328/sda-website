@@ -234,7 +234,7 @@ We start by identifying two computational challenges:
 
 $$
 \begin{align}
-V_t(S_t) = \min_{x\in\Xcal_s} \big(C(S_t,x) + \E \{V_{t+1}(S_{t+1})|S_t,x\} \big). \label{eq:shortestpathbellman6}
+V_t(S_t) = \min_{x\in\Xcal_s} \big(C(S_t,x) + \E \{V_{t+1}(S_{t+1})\vert S_t,x\} \big). \label{eq:shortestpathbellman6}
 \end{align}
 $$
 
@@ -249,7 +249,7 @@ Now assume that the decision $x$ takes us to node $j$, after which we face a cho
 
 $$
 \begin{align}
-\E \{V_{t+1}(S_{t+1})|S_t,x\} &= \sum_{\ell_1=1}^L p_{jk_1}(c_{\ell_1}) \sum_{\ell_2=1}^L p_{jk_2}(c_{\ell_2}) \sum_{\ell_3=1}^L p_{jk_3}(c_{\ell_3}) \nonumber \\
+\E \{V_{t+1}(S_{t+1})\vert S_t,x\} &= \sum_{\ell_1=1}^L p_{jk_1}(c_{\ell_1}) \sum_{\ell_2=1}^L p_{jk_2}(c_{\ell_2}) \sum_{\ell_3=1}^L p_{jk_3}(c_{\ell_3}) \nonumber \\
           & \quad \times V_{t+1}(S_{t+1} = (j, (c_{\ell_1},c_{\ell_2},c_{\ell_3}))). \label{eq:shortestpathexpectation}
 \end{align}
 $$
@@ -294,7 +294,7 @@ We are not out of the woods. We still have to compute $V^x_t(S^x_t)$, which is d
 
 $$
 \begin{align}
-V^x_t(S^x_t) = \E \{V_{t+1}(S_{t+1})|S_t,x\}. \label{eq:shortestpathbellman6b}
+V^x_t(S^x_t) = \E \{V_{t+1}(S_{t+1})\vert S_t,x\}. \label{eq:shortestpathbellman6b}
 \end{align}
 $$
 
@@ -313,10 +313,10 @@ Using post-decision state variables solves the problem of computing the expectat
 We are going to construct approximations $\Vbar^x_t(j)$ of the value of being at node $j$, where
 
 $$
-\Vbar^{x,n}_t(S^x_t = j) \approx \E \{V_{t+1}(S_{t+1})|S^x_t\}.
+\Vbar^{x,n}_t(S^x_t = j) \approx \E \{V_{t+1}(S_{t+1})\vert S^x_t\}.
 $$
 
-Let $\Vbar^{x,n}_t(j)$ be our approximation of $\E \{V_{t+1}(S_{t+1})|S^x_t\}$ after observing $n$ samples. One way to build this approximation is to use samples of the value of being at node $j$. Imagine that we are going to pass forward through the network, making decisions using approximations $\Vbar^{x,n-1}_t(S^x_t)$ obtained from previous iterations, along with sampled costs $\chat^n_{tij}$. We can obtain a sampled estimate of the value of being in state $S_t$ using
+Let $\Vbar^{x,n}_t(j)$ be our approximation of $\E \{V_{t+1}(S_{t+1})\vert S^x_t\}$ after observing $n$ samples. One way to build this approximation is to use samples of the value of being at node $j$. Imagine that we are going to pass forward through the network, making decisions using approximations $\Vbar^{x,n-1}_t(S^x_t)$ obtained from previous iterations, along with sampled costs $\chat^n_{tij}$. We can obtain a sampled estimate of the value of being in state $S_t$ using
 
 $$
 \begin{align}

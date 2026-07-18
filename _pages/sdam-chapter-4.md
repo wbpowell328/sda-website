@@ -147,7 +147,7 @@ We write the problem of finding the best policy as
 
 $$
 \begin{align}
-\max_\pi \E \left\{\sum_{n=0}^{N-1} W^{n+1}_{x^n}|S_0\right\}, \label{eq:diabetesobjective1}
+\max_\pi \E \left\{\sum_{n=0}^{N-1} W^{n+1}_{x^n}\vert S_0\right\}, \label{eq:diabetesobjective1}
 \end{align}
 $$
 
@@ -167,14 +167,14 @@ where $\varepsilon^{n+1}$ is normally distributed with mean 0 and a variance (wh
 
 $$
 \begin{align}
-\mu_x|S^n \sim N(\mubar^n_x, \beta^n_x) \label{eq:mugivenS}
+\mu_x\vert S^n \sim N(\mubar^n_x, \beta^n_x) \label{eq:mugivenS}
 \end{align}
 $$
 
 where the right hand side of $\eqref{eq:mugivenS}$ reads "the mean $\mu_x$ given the state $S^n$" which means we assume we know that the mean $\mu_x$ is given by $\mubar^n_x$. We use the precision $\beta^n_x$ (which is one over the variance) instead of the more customary variance when we write our normal distribution. We then write the distribution of $W^{n+1}$ as conditioned on $\mu_x$ using
 
 $$
-W^{n+1}|\mu_x \sim N(\mu_x, \beta^W_x).
+W^{n+1}\vert \mu_x \sim N(\mu_x, \beta^W_x).
 $$
 
 This means that we have to simulate two random variables: the true performance of drug $x$ on our patient, given by $\mu_x$ (given our beliefs after $n$ experiments), and then the noise $\varepsilon^{n+1}$ when we try to observe $\mu_x$. This just means that instead of generating one normally distributed random variable, as we did in our asset selling problem, we have to generate two.
@@ -193,7 +193,7 @@ where $N^n_x$ is the number of times we have tried drug $x$ (recall that "$\argm
 
 $$
 \begin{align}
-X^{UCB}(S^n|\theta^{UCB}) = \argmax_{x\in\Xcal} \left(\mubar^n_x + \theta^{UCB} \sqrt{\frac{\log n}{N^n_x}}\right). \label{eq:diabetesUCB2}
+X^{UCB}(S^n\vert \theta^{UCB}) = \argmax_{x\in\Xcal} \left(\mubar^n_x + \theta^{UCB} \sqrt{\frac{\log n}{N^n_x}}\right). \label{eq:diabetesUCB2}
 \end{align}
 $$
 
@@ -201,7 +201,7 @@ A popular variant that we have found works surprisingly well was originally intr
 
 $$
 \begin{align}
-X^{IE}(S^n|\theta^{IE}) = \argmax_{x\in\Xcal} \left(\mubar^n_x + \theta^{IE} \sigmabar^n_x \right), \label{eq:diabetesIE}
+X^{IE}(S^n\vert \theta^{IE}) = \argmax_{x\in\Xcal} \left(\mubar^n_x + \theta^{IE} \sigmabar^n_x \right), \label{eq:diabetesIE}
 \end{align}
 $$
 
@@ -221,26 +221,26 @@ Now choose the drug to try next using
 
 $$
 \begin{align}
-X^{TS}(S^n|\theta^{TS}) = \argmax_{x\in\Xcal} \muhat^n_x. \label{eq:thompsonsampling}
+X^{TS}(S^n\vert \theta^{TS}) = \argmax_{x\in\Xcal} \muhat^n_x. \label{eq:thompsonsampling}
 \end{align}
 $$
 
 Thompson sampling favors choices where the estimated performance $\mubar^n_x$, given what we know after $n$ observations (across all drugs), but randomizes the performance. The randomization encourages exploration, since drugs whose estimated impact on A1c may not be the highest, still have a chance of coming out with the highest sampled value $\muhat^n_x$.
 
-We note that all three of these policies, $X^{UCB}(S^n|\theta^{UCB})$, $X^{IE}(S^n|\theta^{IE})$, and $X^{TS}(S^n|\theta^{TS})$, all share two characteristics: the policy itself requires solving an optimization problem (the "$\argmax_x$"), and they all have tunable parameters. For this reason, these are all examples of *cost function approximations* (or CFAs).
+We note that all three of these policies, $X^{UCB}(S^n\vert \theta^{UCB})$, $X^{IE}(S^n\vert \theta^{IE})$, and $X^{TS}(S^n\vert \theta^{TS})$, all share two characteristics: the policy itself requires solving an optimization problem (the "$\argmax_x$"), and they all have tunable parameters. For this reason, these are all examples of *cost function approximations* (or CFAs).
 
 ## Policy evaluation
 
 We originally wrote our objective function as
 
 $$
-\max_\pi F^\pi(S_0) = \E \left\{\sum_{n=0}^{N-1} W^{n+1}_{x^n}|S_0\right\},
+\max_\pi F^\pi(S_0) = \E \left\{\sum_{n=0}^{N-1} W^{n+1}_{x^n}\vert S_0\right\},
 $$
 
 but writing the expectation in this way is a bit vague. Recall that we have two sets of random variables: the true values of $\mu_x$ for all $x\in\Xcal$, and the observations $W^1, \ldots, W^N$ (or more precisely, the noise when we try to observe $\mu_x$). We can express this nested dependence by writing the objective function as
 
 $$
-\max_\pi F^\pi(S_0) = \E_\mu \E_{W^1, \ldots, W^N|\mu} \left\{\sum_{n=0}^{N-1} W^{n+1}_{x^n}|S_0\right\}.
+\max_\pi F^\pi(S_0) = \E_\mu \E_{W^1, \ldots, W^N\vert \mu} \left\{\sum_{n=0}^{N-1} W^{n+1}_{x^n}\vert S_0\right\}.
 $$
 
 There are two ways to simulate the value of a policy:
@@ -278,11 +278,11 @@ $$
 \Fbar^\pi(S_0) = \frac{1}{L}\sum_{\ell=1}^L \sum_{n=0}^{N-1} W^{n+1}_{x^n}(\omega_\ell).
 $$
 
-If we use one of our parameterized policies where $\theta$ is the tunable parameter, we might write the expected performance as $\Fbar^\pi(\theta|S_0)$. Then, the optimization problem would be
+If we use one of our parameterized policies where $\theta$ is the tunable parameter, we might write the expected performance as $\Fbar^\pi(\theta\vert S_0)$. Then, the optimization problem would be
 
 $$
 \begin{align}
-\max_\theta \Fbar^\pi(\theta|S_0), \label{eq:diabetestuningpolicy}
+\max_\theta \Fbar^\pi(\theta\vert S_0), \label{eq:diabetestuningpolicy}
 \end{align}
 $$
 
@@ -369,7 +369,7 @@ where $\phi_f(a,x)$ for $f\in\Fcal$ is a set of features that we (as analysts) w
 We begin with a learning policy known as interval estimation given by
 
 $$
-X^{IE}(S^n|\theta^{IE}) = \argmax_{x\in\Xcal} (\mubar^n_x + \theta^{IE} \sigmabar^n_x).
+X^{IE}(S^n\vert \theta^{IE}) = \argmax_{x\in\Xcal} (\mubar^n_x + \theta^{IE} \sigmabar^n_x).
 $$
 
 We use a Bayesian belief model where it is convenient to use the concept of *precision* which is simply one over the variance. So, the precision in our initial estimate of the true value $\mu_x$ is given by
@@ -405,7 +405,7 @@ Answer the following:
   <ol type="a">
     <li>Using a Bayesian belief model, what is the state variable?</li>
     <li>What is the transition function for the belief model?</li>
-    <li>Write out the expected value of a policy $X^\pi(S^n)$ using the expectation operator $\E$. Be sure to index the operator to indicate which random variables are involved, as in $\E_\mu$ or $\E_W$ (or $\E_{W_1,\ldots,M}$). You can show conditioning by using $\E_{W|\mu}$ (this is the expectation over the observed reduction $W$ given we know the true mean $\mu$).</li>
+    <li>Write out the expected value of a policy $X^\pi(S^n)$ using the expectation operator $\E$. Be sure to index the operator to indicate which random variables are involved, as in $\E_\mu$ or $\E_W$ (or $\E_{W_1,\ldots,M}$). You can show conditioning by using $\E_{W\vert \mu}$ (this is the expectation over the observed reduction $W$ given we know the true mean $\mu$).</li>
   </ol>
 </li>
 <li>We might reasonably think that the parameter $\theta^{IE}$ should depend on the number of experiments remaining in our budget, which means that $\theta^{IE}$ needs to be a function of $n$ (or equivalently, it would be a function of the remaining experiments $N-n$). There are two ways to represent this function. Discuss (without any programming) the strengths of each approach, and the computational challenges that would be involved.

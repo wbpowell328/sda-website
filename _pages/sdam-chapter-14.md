@@ -158,7 +158,7 @@ $$
 Our objective function, then, would be our canonical objective which we state as
 
 $$
-\max_\pi \E \left\{\sum_{t=0}^T C(S_t, X^\pi(S_t))|S_0\right\},
+\max_\pi \E \left\{\sum_{t=0}^T C(S_t, X^\pi(S_t))\vert S_0\right\},
 $$
 
 where we recognize that our policy is a composition of the patient enrollment policy $X^{\pi^{enroll}}(S_t)$, the trial continuation policy $X^{\pi^{trial}}(S_t)$, and the drug success/failure policy $X^{\pi^{drug}}(S_t)$.
@@ -196,16 +196,16 @@ $$
 be the expected number of patients that will volunteer for the trial (given $R_t$) and
 
 $$
-P_{\Rhat_{t+1}}(r|x^{enroll}_t, \Rbar_t) = Prob[\Rhat_{t+1}(x^{enroll}_t)=r|\Rbar_t].
+P_{\Rhat_{t+1}}(r\vert x^{enroll}_t, \Rbar_t) = Prob[\Rhat_{t+1}(x^{enroll}_t)=r\vert \Rbar_t].
 $$
 
-We write $P_{\Rhat_{t+1}}(r|x^{enroll}_t, \Rbar_t)$ as a function of $x^{enroll}_t$ and $\Rbar_t$ to reflect its dependence on the decision and on the number $R_{t+1} = R_t + x^{enroll}_t$.
+We write $P_{\Rhat_{t+1}}(r\vert x^{enroll}_t, \Rbar_t)$ as a function of $x^{enroll}_t$ and $\Rbar_t$ to reflect its dependence on the decision and on the number $R_{t+1} = R_t + x^{enroll}_t$.
 
 The truncated Poisson distribution is then given by
 
 $$
 \begin{align}
-P_{\Rhat_{t+1}}(r|x^{enroll}_t, \Rbar_t) = \begin{cases} \dfrac{(\Rbar_t)^r e^{-\Rbar_t}}{r!}, & r=0, \ldots, x^{enroll}_t -1 \\[6pt] 1-\displaystyle\sum_{r=0}^{x^{enroll}_t -1} P_{\Rhat_{t+1}}(r|x^{enroll}_t, \Rbar_t) & r=R_t+x^{enroll}_t \end{cases} \label{eq:clinicaltrialpoisson2}
+P_{\Rhat_{t+1}}(r\vert x^{enroll}_t, \Rbar_t) = \begin{cases} \dfrac{(\Rbar_t)^r e^{-\Rbar_t}}{r!}, & r=0, \ldots, x^{enroll}_t -1 \\[6pt] 1-\displaystyle\sum_{r=0}^{x^{enroll}_t -1} P_{\Rhat_{t+1}}(r\vert x^{enroll}_t, \Rbar_t) & r=R_t+x^{enroll}_t \end{cases} \label{eq:clinicaltrialpoisson2}
 \end{align}
 $$
 
@@ -228,14 +228,14 @@ The random number of successes $\Xhat_{t+1}$, given what we know at time $t$, de
 Given that $r$ patients enter the trial and assuming that the probability of success is $\rho_k$, the number of successes $\Xhat_{t+1}$ is the sum of $r$ Bernoulli (that is, 0/1) random variables. The sum of $r$ Bernoulli random variables is given by a binomial distribution, which means
 
 $$
-Prob[\Xhat_{t+1} = s|\Rhat_{t+1}=r, \rho^{true} = \rho_k] = \binom{r}{s} \rho^s_k (1-\rho_k)^{r-s}.
+Prob[\Xhat_{t+1} = s\vert \Rhat_{t+1}=r, \rho^{true} = \rho_k] = \binom{r}{s} \rho^s_k (1-\rho_k)^{r-s}.
 $$
 
 We can find the unconditional distribution of $\Xhat_{t+1}$ by just summing over $r$ and $k$ and multiplying by the appropriate probabilities, giving us
 
 $$
 \begin{align}
-Prob[\Xhat_{t+1} = s|\Rbar_t] = \sum_{k=1}^K \left(\sum_{r=0}^{R_t} Prob[\Xhat_{t+1} = s|\Rhat_{t+1}=r, \rho^{true}=\rho_k] P_{\Rhat_{t+1}}(r|x^{enroll}_t, \Rbar_t)\right) p^\rho_{tk}. \label{eq:clinicaltrialsuccessdist}
+Prob[\Xhat_{t+1} = s\vert \Rbar_t] = \sum_{k=1}^K \left(\sum_{r=0}^{R_t} Prob[\Xhat_{t+1} = s\vert \Rhat_{t+1}=r, \rho^{true}=\rho_k] P_{\Rhat_{t+1}}(r\vert x^{enroll}_t, \Rbar_t)\right) p^\rho_{tk}. \label{eq:clinicaltrialsuccessdist}
 \end{align}
 $$
 
@@ -260,7 +260,7 @@ We are going to use this problem to really understand our full stochastic lookah
 $$
 \begin{align}
 X^{*}(S_t) &= \argmax_{x_t\in\Xcal}\Big(C(S_t,x_t) + {} \nonumber \\
-& \quad \E_{W_{t+1}} \Big\{\max_\pi \E_{W_{t+2}, \ldots, W_T} \Big\{\sum_{t'=t+1}^T C(S_{t'},X^\pi_{t'}(S_{t'}))\Big|S_{t+1}\Big\} \Big|S_t,x_t\Big\}\Big). \label{eq:optDLAclinicaltrials}
+& \quad \E_{W_{t+1}} \Big\{\max_\pi \E_{W_{t+2}, \ldots, W_T} \Big\{\sum_{t'=t+1}^T C(S_{t'},X^\pi_{t'}(S_{t'}))\Big\vert S_{t+1}\Big\} \Big\vert S_t,x_t\Big\}\Big). \label{eq:optDLAclinicaltrials}
 \end{align}
 $$
 
@@ -279,20 +279,20 @@ $$
 Now introduce the parameters $\theta^{stop-low}$ and $\theta^{stop-high}$, where we are going to stop the trial and declare success if $\bar\rho_t > \theta^{stop-high}$, while we will stop the trial and declare failure if $\bar\rho_t < \theta^{stop-low}$. Let $\theta^{stop} = (\theta^{stop-low}, \theta^{stop-high})$. We use these rules to define the policy for stopping the trial as
 
 $$
-X^{trial}_t(S_t|\theta^{stop}) = \begin{cases} 1 & \text{if } \theta^{stop-low} \leq \bar\rho_t \leq \theta^{stop-high}, \\ 0 & \text{otherwise.} \end{cases}
+X^{trial}_t(S_t\vert \theta^{stop}) = \begin{cases} 1 & \text{if } \theta^{stop-low} \leq \bar\rho_t \leq \theta^{stop-high}, \\ 0 & \text{otherwise.} \end{cases}
 $$
 
 If we stop the trial, then the policy for declaring success (1) or failure (0) is given by
 
 $$
-X^{drug}_t(S_t|\theta^{stop}) = \begin{cases} 1 & \text{if } \bar\rho_t > \theta^{stop-high}, \\ 0 & \text{if } \bar\rho_t < \theta^{stop-low}. \end{cases}
+X^{drug}_t(S_t\vert \theta^{stop}) = \begin{cases} 1 & \text{if } \bar\rho_t > \theta^{stop-high}, \\ 0 & \text{if } \bar\rho_t < \theta^{stop-low}. \end{cases}
 $$
 
 ### The patient enrollment policy
 
 It is often the case that problems with a physical state (such as $R_t$) need a lookahead policy, just as we used with our stochastic shortest path problem. But, as we saw with the stochastic shortest path problem, we get to choose what to put in our stochastic lookahead model.
 
-One choice we have to make is the stopping policy $X^{trial}(S_t|\theta^{stop})$ and the success/failure policy $X^{drug}(S_t|\theta^{stop})$, where we propose to use the same parameter vector $\theta^{stop}$ in our lookahead model as we do in our base model. We can refer to these as $\Xtilde^{trial}(\Stilde_t|\theta^{stop})$ and $\Xtilde^{drug}(\Stilde_t|\theta^{stop})$, since these now apply only to the lookahead model.
+One choice we have to make is the stopping policy $X^{trial}(S_t\vert \theta^{stop})$ and the success/failure policy $X^{drug}(S_t\vert \theta^{stop})$, where we propose to use the same parameter vector $\theta^{stop}$ in our lookahead model as we do in our base model. We can refer to these as $\Xtilde^{trial}(\Stilde_t\vert \theta^{stop})$ and $\Xtilde^{drug}(\Stilde_t\vert \theta^{stop})$, since these now apply only to the lookahead model.
 
 The problem of determining how many new potential patients to enroll is somewhat more difficult, since it is necessary to pay an upfront cost to acquire more potential patients, and we have to do this under uncertainty about the willingness of patients to join the trial (given by the unknown parameter $\lambda^{response}$).
 
@@ -359,7 +359,7 @@ $$
 \tilde\Rhat_{t,t'+1} = \lfloor \bar\lambda^{response}_t (\Rtilde_{tt'} + \xtilde^{enroll}_{tt'})\rfloor,
 $$
 
-where $\lfloor x \rfloor$ means to round $x$ down to the nearest integer. We then compute the distribution of $\tilde\Xhat_{t,t'+1}$ using $Prob[\Xhat_{t+1} = s|\Rbar_t]$ but where we replace $\Rbar_t$ with $\tilde\Rbar_{tt'}$.
+where $\lfloor x \rfloor$ means to round $x$ down to the nearest integer. We then compute the distribution of $\tilde\Xhat_{t,t'+1}$ using $Prob[\Xhat_{t+1} = s\vert \Rbar_t]$ but where we replace $\Rbar_t$ with $\tilde\Rbar_{tt'}$.
 
 We still have to generate the number of successes $\tilde\Xhat_{t,t'+1}$ from a simulated truth $\tilde\rho_{tt'}$, from which we will update $(\tilde\alpha_{tt'}, \tilde\beta_{tt'})$ which we do using
 
@@ -367,22 +367,22 @@ $$
 \tilde\alpha_{t,t'+1} = \tilde\alpha_{tt'}+ \tilde\Xhat_{t,t'+1}, \qquad \tilde\beta_{t,t'+1}  = \tilde\beta_{tt'} + \tilde\Rbar_{tt'}-\tilde\Xhat_{t,t'+1}.
 $$
 
-We model the distribution of $\tilde\Xhat_{t,t'+1}$ using $Prob[\tilde\Xhat_{t,t'+1} = s|\tilde\Rbar_{tt'}]$ in equation $\eqref{eq:clinicaltrialsuccessdist}$ but conditioning on $\tilde\Rbar_{tt'}$ instead of $\Rbar_t$ (remember that we can also use the sampled distribution using the Monte Carlo method above instead of the Poisson distribution).
+We model the distribution of $\tilde\Xhat_{t,t'+1}$ using $Prob[\tilde\Xhat_{t,t'+1} = s\vert \tilde\Rbar_{tt'}]$ in equation $\eqref{eq:clinicaltrialsuccessdist}$ but conditioning on $\tilde\Rbar_{tt'}$ instead of $\Rbar_t$ (remember that we can also use the sampled distribution using the Monte Carlo method above instead of the Poisson distribution).
 
 We can solve the lookahead model by adapting Bellman's equation for Model A in equation $\eqref{eq:clinicaltrialbellmanModelA}$ for $t'=t, \ldots, t+H$:
 
 $$
 \begin{align}
-\Vtilde_{tt'}(\Stilde_{tt'}) = \min_{\xtilde^{enroll}_{tt'}} \left(\Ctilde(\Stilde_{tt'},\xtilde^{enroll}_{tt'}) + \sum_{s=0}^{\tilde\Rbar_{tt'}} Prob[\tilde\Xhat_{t,t'+1} = s|\tilde\Rbar_{tt'}] \Vtilde_{t,t'+1}(\Stilde_{t,t'+1}|\tilde\Xhat_{t,t'+1} = s)\right),   \label{eq:clinicaltrialbellmanModelB}
+\Vtilde_{tt'}(\Stilde_{tt'}) = \min_{\xtilde^{enroll}_{tt'}} \left(\Ctilde(\Stilde_{tt'},\xtilde^{enroll}_{tt'}) + \sum_{s=0}^{\tilde\Rbar_{tt'}} Prob[\tilde\Xhat_{t,t'+1} = s\vert \tilde\Rbar_{tt'}] \Vtilde_{t,t'+1}(\Stilde_{t,t'+1}\vert \tilde\Xhat_{t,t'+1} = s)\right),   \label{eq:clinicaltrialbellmanModelB}
 \end{align}
 $$
 
-where $\Stilde_{t,t'+1} = (\Rtilde_{t,t'+1},\tilde\alpha_{t,t'+1})$ is conditioned on the number of successes $\tilde\Xhat_{t,t'+1} = s$, and where $Prob[\tilde\Xhat_{t,t'+1} = s|\tilde\Rbar_{tt'}]$ comes from equation $\eqref{eq:clinicaltrialsuccessdist}$. We have to keep in mind that the evolution of $\Rtilde_{tt'}$ has to reflect if we have decided to stop or continue the trial within the lookahead model.
+where $\Stilde_{t,t'+1} = (\Rtilde_{t,t'+1},\tilde\alpha_{t,t'+1})$ is conditioned on the number of successes $\tilde\Xhat_{t,t'+1} = s$, and where $Prob[\tilde\Xhat_{t,t'+1} = s\vert \tilde\Rbar_{tt'}]$ comes from equation $\eqref{eq:clinicaltrialsuccessdist}$. We have to keep in mind that the evolution of $\Rtilde_{tt'}$ has to reflect if we have decided to stop or continue the trial within the lookahead model.
 
 Our physical state variable (total potential patients) $\Rtilde_{t,t'+1}$ is given by
 
 $$
-\Rtilde_{t,t'+1}  = \begin{cases} \Rtilde_{tt'} + \xtilde^{enroll}_{tt'} & \text{if } \Xtilde^{trial}(\Stilde_{tt'}|\theta^{stop}) = 1, \\ 0 & \text{otherwise.} \end{cases}
+\Rtilde_{t,t'+1}  = \begin{cases} \Rtilde_{tt'} + \xtilde^{enroll}_{tt'} & \text{if } \Xtilde^{trial}(\Stilde_{tt'}\vert \theta^{stop}) = 1, \\ 0 & \text{otherwise.} \end{cases}
 $$
 
 Note that as with our base model, the number of potential patients drops to zero if we stop the trial in the lookahead model.
@@ -399,10 +399,10 @@ $$
 \tilde\alpha_{t,t'+1} = \tilde\alpha_{tt'} + s, \qquad \tilde\beta_{t,t'+1}  = \tilde\beta_{tt'} + (\tilde\Rbar_{tt'} - s).
 $$
 
-We now have to solve the lookahead model using Bellman's equation in equation $\eqref{eq:clinicaltrialbellmanModelB}$. For this problem, it makes sense to use a large-enough horizon $H$ so that we can confidently assume that we would have stopped the trial by then (that is $\Xtilde^{trial}(\Stilde_{tt'}|\theta^{stop}) = 0$). This means we can assume that $\Vtilde_{t,t+H}(\Stilde_{t,t+H}) = 0$, and work backward from there to time $t$. Once we have solved the dynamic program, we can pull out our enrollment decision using
+We now have to solve the lookahead model using Bellman's equation in equation $\eqref{eq:clinicaltrialbellmanModelB}$. For this problem, it makes sense to use a large-enough horizon $H$ so that we can confidently assume that we would have stopped the trial by then (that is $\Xtilde^{trial}(\Stilde_{tt'}\vert \theta^{stop}) = 0$). This means we can assume that $\Vtilde_{t,t+H}(\Stilde_{t,t+H}) = 0$, and work backward from there to time $t$. Once we have solved the dynamic program, we can pull out our enrollment decision using
 
 $$
-X^{enroll}_{t}(S_t) = \argmin_{\xtilde^{enroll}_{tt}} \left(\Ctilde(\Stilde_{tt},\xtilde^{enroll}_{tt}) + \sum_{s=0}^{\tilde\Rhat_{t,t+1}} Prob[\tilde\Xhat_{t,t'+1} = s|\tilde\Rbar_{tt}] \Vtilde_{t,t+1}(\Stilde_{t,t+1}|\tilde\Xhat_{t,t'+1} = s)\right).
+X^{enroll}_{t}(S_t) = \argmin_{\xtilde^{enroll}_{tt}} \left(\Ctilde(\Stilde_{tt},\xtilde^{enroll}_{tt}) + \sum_{s=0}^{\tilde\Rhat_{t,t+1}} Prob[\tilde\Xhat_{t,t'+1} = s\vert \tilde\Rbar_{tt}] \Vtilde_{t,t+1}(\Stilde_{t,t+1}\vert \tilde\Xhat_{t,t'+1} = s)\right).
 $$
 
 ### Model C
@@ -439,7 +439,7 @@ Model C is almost the same as the base model, since we are modeling all the diff
 $$
 \begin{align}
 X^{*}(S_t) &= \argmax_{x_t\in\Xcal}\Big(C(S_t,x_t) + {} \nonumber \\
-& \quad \E_{W_{t+1}} \Big\{\max_\pi \E_{W_{t+2}, \ldots, W_T} \Big\{\sum_{t'=t+1}^T C(S_{t'},X^\pi_{t'}(S_{t'}))\Big|S_{t+1}\Big\} \Big|S_t,x_t\Big\}\Big). \label{eq:optDLAclinicaltrials2}
+& \quad \E_{W_{t+1}} \Big\{\max_\pi \E_{W_{t+2}, \ldots, W_T} \Big\{\sum_{t'=t+1}^T C(S_{t'},X^\pi_{t'}(S_{t'}))\Big\vert S_{t+1}\Big\} \Big\vert S_t,x_t\Big\}\Big). \label{eq:optDLAclinicaltrials2}
 \end{align}
 $$
 
@@ -454,7 +454,7 @@ If we could actually compute this, we would have an optimal policy. We are going
 $$
 \begin{align}
 X^{DLA}(S_t) &= \argmin_{x_t\in\Xcal}\Big(C(S_t,x_t) + {} \nonumber \\
-& \ \Etilde_{\Wtilde_{t,t+1}} \Big\{\min_{\tilde \pi} \E_{\Wtilde_{t,t+2}, \ldots, \Wtilde_{tT}} \Big\{\sum_{t'=t+1}^T C(\Stilde_{tt'},\Xtilde^{\tilde \pi}_t(\Stilde_{tt'}))\Big|\Stilde_{t,t+1}\Big\} \Big|S_t,x_t\Big\}\Big). \label{eq:policiesapproximateDLA3}
+& \ \Etilde_{\Wtilde_{t,t+1}} \Big\{\min_{\tilde \pi} \E_{\Wtilde_{t,t+2}, \ldots, \Wtilde_{tT}} \Big\{\sum_{t'=t+1}^T C(\Stilde_{tt'},\Xtilde^{\tilde \pi}_t(\Stilde_{tt'}))\Big\vert \Stilde_{t,t+1}\Big\} \Big\vert S_t,x_t\Big\}\Big). \label{eq:policiesapproximateDLA3}
 \end{align}
 $$
 
