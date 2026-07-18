@@ -80,6 +80,9 @@ window.CASTLE_MATH_MACROS = {
   Thetahat:       "\\hat \\Theta",
   deltabar:       "\\bar \\delta",
   mubar:          "\\bar \\mu",
+  etabar:         "\\bar \\eta",
+  etahat:         "\\hat \\eta",
+  etatilde:       "\\tilde \\eta",
 
   // ---- x-hat (lowercase) ----
   ahat: "\\hat a", bhat: "\\hat b", chat: "\\hat c", dhat: "\\hat d",
