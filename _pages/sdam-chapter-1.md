@@ -346,11 +346,11 @@ $$
 
 We have divided the initial state into three types of variables:
 
-- Initial values of the resource state $R^{inv}_0$.
+- Initial values of the resource state $R^{inv}\_0$.
 - Values of constant parameters $c$ and $p$.
 - Our belief about the demands, given by a normal distribution with mean $\Dbar$ and standard deviation $\sigmabar^D$.
 
-The dynamic state variable $S_t$ is our inventory which we are going to call $R^{inv}_t$. For now, this is the only element of the dynamic state variable, so
+The dynamic state variable $S_t$ is our inventory which we are going to call $R^{inv}\_t$. For now, this is the only element of the dynamic state variable, so
 
 $$
 S_t = R^{inv}_t.
@@ -455,7 +455,7 @@ $$
 
 We then have the information that evolves over time which makes up our dynamic state variable $S_t$:
 
-- Current inventory $R^{inv}_t$ – The inventory for the beginning of time interval $(t,t+1)$.
+- Current inventory $R^{inv}\_t$ – The inventory for the beginning of time interval $(t,t+1)$.
 - Purchase cost $c_t$ – This is the cost of sausage purchased at time $t$ which is given to us at time $t$.
 - Demand forecast $f^D_{t,t+1}$ – This is the forecast of $\Dhat_{t+1}$ given what we know at time $t$.
 - Current estimate of the standard deviation of the demand – $\sigmabar^D_t$.
@@ -528,7 +528,7 @@ c_{t+1} = \chat_{t+1}.\label{eq:introcomplexinventorytransition6}
 \end{align}
 $$
 
-Equation $\eqref{eq:introcomplexinventorytransition6}$ is an example of a state variable that we observe rather than compute, as we did with the inventory $R^{inv}_t$ in $\eqref{eq:introcomplexinventorytransition1}$. Equation $\eqref{eq:introcomplexinventorytransition1}$ is sometimes referred to as "model based," since it reflects the physics of how inventories are updated, while equation $\eqref{eq:introcomplexinventorytransition6}$ is called "model free," since we do not make any attempt at modeling the underlying process that produces the change in costs.
+Equation $\eqref{eq:introcomplexinventorytransition6}$ is an example of a state variable that we observe rather than compute, as we did with the inventory $R^{inv}\_t$ in $\eqref{eq:introcomplexinventorytransition1}$. Equation $\eqref{eq:introcomplexinventorytransition1}$ is sometimes referred to as "model based," since it reflects the physics of how inventories are updated, while equation $\eqref{eq:introcomplexinventorytransition6}$ is called "model free," since we do not make any attempt at modeling the underlying process that produces the change in costs.
 
 Our transition function $S_{t+1} = S^M(S_t,x_t,W_{t+1})$ consists of the equations $\eqref{eq:introcomplexinventorytransition1}$–$\eqref{eq:introcomplexinventorytransition6}$.
 
@@ -852,7 +852,7 @@ By now the reader has probably realized that $W_{t+1}$ is usually a collection o
 - Actual weight loss (from any program).
 - Actual change in blood sugar.
 
-Each of these are separate flows of information. We can model these by introducing the set $\Ical_t$, the set of information processes at time $t$ (the set may change as we change strategies, opening up new flows of information). We can now express the different flavors of information using $W_{t+1,i}$, the realization of information from source $i\in\Ical_t$, so that $W_{t+1} = (W_{t+1,i})_{i\in\Ical_t}$.
+Each of these are separate flows of information. We can model these by introducing the set $\Ical_t$, the set of information processes at time $t$ (the set may change as we change strategies, opening up new flows of information). We can now express the different flavors of information using $W_{t+1,i}$, the realization of information from source $i\in\Ical_t$, so that $W_{t+1} = (W_{t+1,i})\_{i\in\Ical_t}$.
 
 We are going to continue using $W_{t+1}$ to represent the new information arriving, but the reader has to remember that in real applications, it is typically going to include an entire set of information sources, each with their own behaviors.
 

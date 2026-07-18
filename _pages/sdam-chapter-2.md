@@ -98,7 +98,7 @@ R^{asset}_{t+1} = R^{asset}_t - x_t,  \label{eq:assetsellingR}
 \end{align}
 $$
 
-where we have the constraint that $x_t \leq R^{asset}_t$ to ensure that we do not sell the asset when we no longer own it.
+where we have the constraint that $x_t \leq R^{asset}\_t$ to ensure that we do not sell the asset when we no longer own it.
 
 Next we have to write how the price process evolves over time. If we use the $\phat_t$ notation, the transition function for the price $p_t$ would be given by
 
@@ -287,7 +287,7 @@ X^{track}(S_t\vert \theta^{track}) &= \begin{cases} 1 & \text{if } p_t \geq \pba
 \end{align}
 $$
 
-In all the cases, we can only sell the asset (that is, $X^{track}(S_t\vert \theta^{track}) =1$) if we are still holding the asset (which means $R^{asset}_t = 1$).
+In all the cases, we can only sell the asset (that is, $X^{track}(S_t\vert \theta^{track}) =1$) if we are still holding the asset (which means $R^{asset}\_t = 1$).
 
 For this policy, we are going to need to tweak our model because we now need $\pbar_t$ in order to make a decision. This means we would now write our state as
 
@@ -491,7 +491,7 @@ $$
 p_{t+1} = p_t + L \hat{Z}.
 $$
 
-For this problem, our state variable is given by $S_t = (R_t,p_t)$ where $R_t = (R_{ti})_{i\in\Ical}$ captures how many shares of each asset we own, while $p_t$ is our current vector of prices. The covariance matrix $\Sigma$ is not in the state variable because we assume it is static (which means we put it in $S_0$). The answer changes if we were to update the covariance matrix with each new observation, in which case we would write the covariance matrix as $\Sigma_t$ to capture its dependence on time. Since it now varies dynamically, the state variable would be $S_t = (R_t, p_t, \Sigma_t)$.
+For this problem, our state variable is given by $S_t = (R_t,p_t)$ where $R_t = (R_{ti})\_{i\in\Ical}$ captures how many shares of each asset we own, while $p_t$ is our current vector of prices. The covariance matrix $\Sigma$ is not in the state variable because we assume it is static (which means we put it in $S_0$). The answer changes if we were to update the covariance matrix with each new observation, in which case we would write the covariance matrix as $\Sigma_t$ to capture its dependence on time. Since it now varies dynamically, the state variable would be $S_t = (R_t, p_t, \Sigma_t)$.
 
 ## What did we learn?
 

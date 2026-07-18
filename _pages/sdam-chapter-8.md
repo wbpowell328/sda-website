@@ -189,7 +189,7 @@ $$
 \phi_t = \begin{pmatrix} p_t \\ p_{t-1} \\ p_{t-2} \end{pmatrix}
 $$
 
-is our vector of prices. We assume that the noise $\varepsilon \sim N(0,\sigma^2_\epsilon)$ for a given $\sigma^2_\epsilon$.
+is our vector of prices. We assume that the noise $\varepsilon \sim N(0,\sigma^2\_\epsilon)$ for a given $\sigma^2\_\epsilon$.
 
 The vector of coefficients $\thetabar_t = (\thetabar_{t0},\thetabar_{t1},\thetabar_{t2})^T$ can be estimated recursively. Assume that we start with an initial estimate $\thetabar_0$ of the vector of coefficients. We are also going to need a three-by-three matrix $M_0$ that for now we can assume is a scaled identity matrix (we provide a better idea below).
 
@@ -199,7 +199,7 @@ $$
 \thetabar_{t+1} = \thetabar_t - H_t\phi_t \varepsilon_{t+1},
 $$
 
-The error $\hat{\varepsilon}_t$ is computed using
+The error $\hat{\varepsilon}\_t$ is computed using
 
 $$
 \varepsilon_{t+1} = \thetabar^T_{t}\phi_t - p_{t+1}.
@@ -233,7 +233,7 @@ $$
 
 Finally let $M_0 = [(X_0)^T X_0]^{-1}$, which shows that the matrix $M_t$ is the time $t$ estimate of $[(X_t)^T X_t]^{-1}$.
 
-There are entire families of time series models that capture the relationship of variables over time. If we were to just apply these methods directly to price data, the results would be quite poor. First, the prices are not normally distributed. Second, while prices may go negative, this is fairly rare. However, a direct application of this model would be very likely to produce negative prices if the variance $\sigma^2_\epsilon$ was calibrated to the high-noise of this type of data. Finally, the behavior of the jumps in prices over time would not be realistic.
+There are entire families of time series models that capture the relationship of variables over time. If we were to just apply these methods directly to price data, the results would be quite poor. First, the prices are not normally distributed. Second, while prices may go negative, this is fairly rare. However, a direct application of this model would be very likely to produce negative prices if the variance $\sigma^2\_\epsilon$ was calibrated to the high-noise of this type of data. Finally, the behavior of the jumps in prices over time would not be realistic.
 
 ### Jump diffusion
 
@@ -243,9 +243,9 @@ $$
 p_{t+1} = \thetabar_{t0} p_t + \thetabar_{t1} p_{t-1} + \thetabar_{t2} p_{t-2} + \varepsilon_{t+1} + \mathbb{I}_t \varepsilon^J_{t+1}.
 $$
 
-Here, the indicator variable $\mathbb{I}_t = 1$ with some probability $p^{jump}$, and the noise $\varepsilon^J_{t+1}$ is normally distributed with mean $\mu^{jump}$ (which is typically much larger than zero) and variance $(\sigma^{jump})^2$ which is quite large.
+Here, the indicator variable $\mathbb{I}\_t = 1$ with some probability $p^{jump}$, and the noise $\varepsilon^J_{t+1}$ is normally distributed with mean $\mu^{jump}$ (which is typically much larger than zero) and variance $(\sigma^{jump})^2$ which is quite large.
 
-We have to estimate the jump probability $p^{jump}$, and the mean and variance $(\mu^{jump}, (\sigma^{jump})^2)$. This is done by starting with a basic model where $p^{jump} = 0$. We use this basic model to estimate $\sigma^2_\epsilon$. We then choose some tolerance such as three standard deviations (that is, $3 \sigma_\epsilon$), and any observations outside of this range are due to a different source of noise. Let $p^{jump}$ be the fraction of time periods where these observations occur. Then, compute the mean and standard deviation of these observations to get $(\mu^{jump}, (\sigma^{jump})^2)$.
+We have to estimate the jump probability $p^{jump}$, and the mean and variance $(\mu^{jump}, (\sigma^{jump})^2)$. This is done by starting with a basic model where $p^{jump} = 0$. We use this basic model to estimate $\sigma^2\_\epsilon$. We then choose some tolerance such as three standard deviations (that is, $3 \sigma_\epsilon$), and any observations outside of this range are due to a different source of noise. Let $p^{jump}$ be the fraction of time periods where these observations occur. Then, compute the mean and standard deviation of these observations to get $(\mu^{jump}, (\sigma^{jump})^2)$.
 
 We do not stop here. After taking these extreme variations from the data, we should re-fit our linear model without these observations. Standard practice is to repeat this process several times until these estimates stop changing.
 
@@ -268,7 +268,7 @@ which is illustrated in Figure 8.4.
 
 We can create a continuous distribution $F_P(p)$ for any $p$ by finding the largest $\ptilde_t < p$ and setting $F_P(p)$ equal to this value, creating a step function. The function $F_P(p)$ is a form of *nonparametric* distribution, since we are not fitting the distribution to any known parametric form. The good news is that it will perfectly match the data, which means that we will accurately represent the extreme tails that occur with electricity prices. The downside is that we require a good dataset to create these distributions, and we have to retain the dataset to compute the distribution, rather than just storing a small number of parameters as we would if we fit a parametric model for the distribution.
 
-We can sample from this distribution by generating a random variable $U$ that is uniformly distributed between 0 and 1. Let's say we generate $U= 0.70$. Then we want to find the price $p^{.70}$ that corresponds to $F_P(p^{.70}) = 0.70$, as illustrated in Figure 8.4. We write this mathematically by defining the inverse function $F^{-1}_P(u)$ which returns the price $p$ that produces $F_P(p) = u$. We can sample repeatedly from our price distribution by just sampling the uniform random variable $U$ and then observing a price $p=F^{-1}_P(U)$.
+We can sample from this distribution by generating a random variable $U$ that is uniformly distributed between 0 and 1. Let's say we generate $U= 0.70$. Then we want to find the price $p^{.70}$ that corresponds to $F_P(p^{.70}) = 0.70$, as illustrated in Figure 8.4. We write this mathematically by defining the inverse function $F^{-1}\_P(u)$ which returns the price $p$ that produces $F_P(p) = u$. We can sample repeatedly from our price distribution by just sampling the uniform random variable $U$ and then observing a price $p=F^{-1}\_P(U)$.
 
 ### Hybrid time-series with transformed data
 
@@ -279,7 +279,7 @@ A powerful strategy is to combine the use of empirical distributions with classi
   <figcaption><span class="fig-num">Figure 8.5.</span> Transforming an empirical distribution to a normal distribution (and back).</figcaption>
 </figure>
 
-We can use this method to transform the highly non-normal prices $p_t$ to the sequence $z_t$ of values that are normally distributed with mean 0 and variance 1, where we can also capture correlations. We can then perform any time series modeling on the sequence $z_t$. After this, any estimates coming from this normalized model can be transformed back to prices by tracing the path in Figure 8.5 in the reverse direction: $u_t = \Phi(z_t)$, and then $p_t = F^{-1}_P(u_t)$.
+We can use this method to transform the highly non-normal prices $p_t$ to the sequence $z_t$ of values that are normally distributed with mean 0 and variance 1, where we can also capture correlations. We can then perform any time series modeling on the sequence $z_t$. After this, any estimates coming from this normalized model can be transformed back to prices by tracing the path in Figure 8.5 in the reverse direction: $u_t = \Phi(z_t)$, and then $p_t = F^{-1}\_P(u_t)$.
 
 This strategy is very effective when dealing with data that is not normally distributed, and performs much better than the jump diffusion model, which is popular in finance.
 
@@ -410,9 +410,9 @@ We have found backward ADP to work exceptionally well on a small set of problems
 
 ### Forward approximate dynamic programming
 
-Forward approximate dynamic programming works in an intuitive way. Imagine that we start with a value function approximation $\Vbar^{x,n-1}_t(S^x_t)$ around the post-decision state $S^x_t$ that we computed from the first $n-1$ iterations of our algorithm. We first introduced the idea of post-decision states in [Chapter 1](/sdam/chapter-1/), but this is the state immediately after we make a decision, but before any new information has arrived.
+Forward approximate dynamic programming works in an intuitive way. Imagine that we start with a value function approximation $\Vbar^{x,n-1}\_t(S^x_t)$ around the post-decision state $S^x_t$ that we computed from the first $n-1$ iterations of our algorithm. We first introduced the idea of post-decision states in [Chapter 1](/sdam/chapter-1/), but this is the state immediately after we make a decision, but before any new information has arrived.
 
-Now, imagine that we are in a particular state $S^n_t$ during the $n$th iteration of our algorithm, following a sample path $\omega^n$ that guides the sampling as we step forward in time. Assume we have a function $S^{x,n}_t = S^{M,x}(S^n_t,x)$ that takes us to the post-decision state. For our energy problem where $S^n_t = (R^n_t,p^n_t)$, the post-decision state would be
+Now, imagine that we are in a particular state $S^n_t$ during the $n$th iteration of our algorithm, following a sample path $\omega^n$ that guides the sampling as we step forward in time. Assume we have a function $S^{x,n}\_t = S^{M,x}(S^n_t,x)$ that takes us to the post-decision state. For our energy problem where $S^n_t = (R^n_t,p^n_t)$, the post-decision state would be
 
 $$
 S^{x,n} = (R^n_t+x^n_t, p^n_t).
@@ -430,11 +430,11 @@ $$
 S^n_{t+1} = (R^n_t+x^n_t, p^n_t + \phat^n_{t+1}(\omega)).
 $$
 
-Thus, we are just simulating our way forward in time, which means we do not care how complex the state variable is. There are different strategies for then updating the value function approximation $\Vbar^{n-1}_t$:
+Thus, we are just simulating our way forward in time, which means we do not care how complex the state variable is. There are different strategies for then updating the value function approximation $\Vbar^{n-1}\_t$:
 
 <div class="book-algorithm">
 <p><strong>Forward approximate dynamic programming</strong></p>
-<p><strong>Step 0. Initialization:</strong> Initialize $V^{\pi,0}_t,~t\in\Tcal$. Set $n = 1$. Initialize $S^1_0$.</p>
+<p><strong>Step 0. Initialization:</strong> Initialize $V^{\pi,0}\_t,~t\in\Tcal$. Set $n = 1$. Initialize $S^1\_0$.</p>
 <p><strong>Step 1.</strong> Do for $n = 1, 2, \ldots, N$:</p>
 <p style="margin-left: 1.5rem;"><strong>Step 2.</strong> Do for $m = 1, 2, \ldots, M$:</p>
 <p style="margin-left: 3rem;"><strong>Step 3.</strong> Choose a sample path $\omega^m$.</p>
@@ -450,8 +450,8 @@ Thus, we are just simulating our way forward in time, which means we do not care
 <p style="margin-left: 4.5rem;"><strong>Step 6b.</strong> Update approximate value of the policy starting at time $t$:</p>
 <p style="margin-left: 4.5rem;">$$\Vbar^{n,m}_{t-1} \leftarrow U^V(\Vbar^{n,m-1}_{t-1}, S^{x,n,m}_{t-1}, \vhat^m_t)$$</p>
 <p style="margin-left: 4.5rem;">where we typically use $\step_{m-1} = 1/m$.</p>
-<p style="margin-left: 1.5rem;"><strong>Step 7.</strong> Update the policy value function $V^{\pi,n}_t(S^x_t) = \Vbar^{n,M}_t(S^x_t)$ for all $t = 0, 1, \ldots, T$.</p>
-<p><strong>Step 8.</strong> Return the value functions $(V^{\pi,N}_t)_{t=1}^T$.</p>
+<p style="margin-left: 1.5rem;"><strong>Step 7.</strong> Update the policy value function $V^{\pi,n}\_t(S^x_t) = \Vbar^{n,M}\_t(S^x_t)$ for all $t = 0, 1, \ldots, T$.</p>
+<p><strong>Step 8.</strong> Return the value functions $(V^{\pi,N}\_t)\_{t=1}^T$.</p>
 </div>
 
 This leaves the actual update in an updating function $U^V(\cdot)$ since this depends on how we are approximating the value function.
@@ -565,7 +565,7 @@ where $\varepsilon_{t+1}$ follows an empirical distribution based on the price d
 <li>Download the spreadsheet "Chapter8_electricity_prices" from [tinyurl.com/sdamodelingsupplements](https://tinyurl.com/sdamodelingsupplements/). Use the data in the tab "electricity prices" for the following questions:
   <ol type="a">
     <li>Build an empirical cumulative distribution $F_P(p) = Prob[P \leq p]$ where $P$ is a randomly chosen price for a particular hour over the one-week period in the dataset.</li>
-    <li>Let $F^{-1}_P(u)$ be the inverse cumulative distribution, where $u$ is between 0 and 1. Find the price $p(u) = F^{-1}_P(u)$ corresponding to $u = 0, 0.1, 0.2, \ldots, 0.9, 1.0$. Giving each of these prices a probability of 1/11, find the cumulative distribution, and compare it to the cumulative distribution that you created in part (a). Do these appear to match?</li>
+    <li>Let $F^{-1}\_P(u)$ be the inverse cumulative distribution, where $u$ is between 0 and 1. Find the price $p(u) = F^{-1}\_P(u)$ corresponding to $u = 0, 0.1, 0.2, \ldots, 0.9, 1.0$. Giving each of these prices a probability of 1/11, find the cumulative distribution, and compare it to the cumulative distribution that you created in part (a). Do these appear to match?</li>
   </ol>
 </li>
 <li>Using the spreadsheet "Chapter8_electricity_prices," fit a mean reversion model of the form

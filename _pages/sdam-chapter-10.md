@@ -52,7 +52,7 @@ We will model the problem for both agents, since the information is not the same
 
 ### State variables
 
-The initial information available to the field manager is the estimate of the number of trailers that will be needed, which we represent using $R^{est}_{tq}$, the initial estimate of how many trailers are needed. This initial estimate may be biased, so we introduce an estimate of this bias using $\delta^{est}_{tq}$, the initial estimate of the difference between $R^{est}_{tq}$ and the true demand. We will also have to estimate how much the central manager reduces the request of the field manager, which we represent using $\delta_{tq}$, the estimate of how much the central manager will reduce the request of the field manager. Similarly, the central manager will learn the difference between the request made by the field manager and what the field manager eventually needs, which we represent by $\delta_{tq'}$, the estimate of the difference between what the field manager requests and what the field eventually needs.
+The initial information available to the field manager is the estimate of the number of trailers that will be needed, which we represent using $R^{est}\_{tq}$, the initial estimate of how many trailers are needed. This initial estimate may be biased, so we introduce an estimate of this bias using $\delta^{est}\_{tq}$, the initial estimate of the difference between $R^{est}\_{tq}$ and the true demand. We will also have to estimate how much the central manager reduces the request of the field manager, which we represent using $\delta_{tq}$, the estimate of how much the central manager will reduce the request of the field manager. Similarly, the central manager will learn the difference between the request made by the field manager and what the field manager eventually needs, which we represent by $\delta_{tq'}$, the estimate of the difference between what the field manager requests and what the field eventually needs.
 
 The state variable for each agent is the information they have before they make a decision. For the field manager, the state variable is
 
@@ -74,7 +74,7 @@ The decisions for each agent are given by $x_{tqq'}$, the number of trailers tha
 
 ### Exogenous information
 
-The exogenous information for the field manager can be thought of as the initial estimate of the trailers needed (although we put that in the state variable): $R^{est}_{tq}$, the initial estimate of how many trailers are needed. This estimate is known only to the field agent $q$.
+The exogenous information for the field manager can be thought of as the initial estimate of the trailers needed (although we put that in the state variable): $R^{est}\_{tq}$, the initial estimate of how many trailers are needed. This estimate is known only to the field agent $q$.
 
 After making the decision $x_{tqq'}$, we then receive two types of information: what the central manager grants us, and then the actual required demand: $x_{tq'q}$, the decision made by the central manager in response to the request of the field manager; and $\Rhat_{t+1}$, the actual number of trailers that field manager $q$ ends up needing (this information is available to the central manager as well).
 
@@ -84,7 +84,7 @@ $$
 W_{t+1,q} = (x_{tq'q},\Rhat_{t+1}).
 $$
 
-We note in passing that while this information is indexed at time $t+1$, the request granted by the central manager, $x_{tq'q}$, is indexed by $t$ since it depends on information available up through time $t$. The initial estimate $R^{est}_{tq}$ is new information, but it arrives before the decision is made so it is captured in the state variable for the field agent.
+We note in passing that while this information is indexed at time $t+1$, the request granted by the central manager, $x_{tq'q}$, is indexed by $t$ since it depends on information available up through time $t$. The initial estimate $R^{est}\_{tq}$ is new information, but it arrives before the decision is made so it is captured in the state variable for the field agent.
 
 The central manager receives the initial request $x_{tqq'}$ which arrives as exogenous information, but because this is received before she makes her decision, it enters through the state variable for the central manager. The only exogenous information for the central manager is the final demand which might then be used to update beliefs that influence future decisions. This means
 
@@ -94,7 +94,7 @@ $$
 
 ### Transition function
 
-For the field manager, there are three state variables: $R^{est}_{tq}$, the bias $\delta^{est}_{tq}$ between the estimate $R^{est}_{tq}$ and the actual $\Rhat_{t+1}$, and the bias $\delta_{tq}$ introduced by the central manager when the field makes a request. The first state variable, $R^{est}_{tq}$, arrives directly as exogenous information. The biases $\delta^{est}_{tq}$ and $\delta_{t,q}$ are updated using
+For the field manager, there are three state variables: $R^{est}\_{tq}$, the bias $\delta^{est}\_{tq}$ between the estimate $R^{est}\_{tq}$ and the actual $\Rhat_{t+1}$, and the bias $\delta_{tq}$ introduced by the central manager when the field makes a request. The first state variable, $R^{est}\_{tq}$, arrives directly as exogenous information. The biases $\delta^{est}\_{tq}$ and $\delta_{t,q}$ are updated using
 
 $$
 \delta^{est}_{t+1,q} =  (1-\alpha) \delta^{est}_{tq}   + \alpha (\Rhat_{t+1} - R^{est}_{tq}), \qquad \delta_{t+1,q} = (1-\alpha) \delta_{tq}  + \alpha (x_{tqq'} - x_{tq'q}),
@@ -146,12 +146,12 @@ The optimization problems in $\eqref{eq:fieldobjective}$ and $\eqref{eq:centralo
 
 This problem is data-driven, which means that we react to data as it arrives. There are three types of information, depending on which agent is involved:
 
-- The initial estimate $R^{est}_t$ of the resources required.
+- The initial estimate $R^{est}\_t$ of the resources required.
 - The request $x_{tqq'}$, made by the field manager, that arrives to the central manager. This decision involves logic introduced by the field manager, which may include randomization. This comes as information to the central manager.
 - The decision $x_{tq'q}$ made by the central manager that determines the number of trailers given to the field manager. This comes as information to the field manager.
 - The final realization $\Rhat_{t+1}$ of the number of trailers actually required, which is revealed (in this basic model) to both agents.
 
-If we wish to simulate the process, we only need to model the generation of $R^{est}_t$ and $\Rhat_t$. More precisely, we would have to generate $R^{est}_t$ from one distribution, and the error $\Rhat_t - R^{est}_t$ from another distribution.
+If we wish to simulate the process, we only need to model the generation of $R^{est}\_t$ and $\Rhat_t$. More precisely, we would have to generate $R^{est}\_t$ from one distribution, and the error $\Rhat_t - R^{est}\_t$ from another distribution.
 
 ## Designing policies
 
@@ -159,15 +159,15 @@ For our two-agent newsvendor problem, we have to develop policies for each agent
 
 ### Field manager
 
-The field manager starts with an estimate $R^{est}_t$, but has to account for three factors:
+The field manager starts with an estimate $R^{est}\_t$, but has to account for three factors:
 
-**1)** The estimate $R^{est}_t$ may have a bias $\delta^{est}$ (we cannot be sure about the source of the estimate $R^{est}_{tq}$). The bias is given by
+**1)** The estimate $R^{est}\_t$ may have a bias $\delta^{est}$ (we cannot be sure about the source of the estimate $R^{est}\_{tq}$). The bias is given by
 
 $$
 \delta^{est}_{tq}= \E \Rhat_{t+1} - R^{est}_{tq}.
 $$
 
-So, if $\delta^{est}_{tq} > 0$ then this means that $R^{est}_t$ is upwardly biased.
+So, if $\delta^{est}\_{tq} > 0$ then this means that $R^{est}\_t$ is upwardly biased.
 
 **2)** The true number of trailers needed, $\Rhat_{t+1}$, is random even once you have factored in the bias. The field manager has a higher cost of having too few trailers than too many, so he will want to introduce an upward bias to reflect the higher cost of being caught short.
 
@@ -177,7 +177,7 @@ $$
 \delta_{tq} =  x_{tq'q} - x_{tqq'}.
 $$
 
-We need to use our estimates of the differences between $R^{est}_t$ and $\Rhat_t$, the difference between $x_{tqq'}$ and $x_{tq'q}$, and the difference between $x_{tqq'}$ and $\Rhat_t$. We propose a policy for the field manager given by
+We need to use our estimates of the differences between $R^{est}\_t$ and $\Rhat_t$, the difference between $x_{tqq'}$ and $x_{tq'q}$, and the difference between $x_{tqq'}$ and $\Rhat_t$. We propose a policy for the field manager given by
 
 $$
 \begin{align}
@@ -185,7 +185,7 @@ X_{tqq'}(S_t\vert \theta_q) = R^{est}_t - \delta^{est}_{t-1,q} - \delta_{t-1,q} 
 \end{align}
 $$
 
-This policy starts with the initial estimate $R^{est}_t$, corrects for the bias in this initial estimate using $\delta^{est}_{t-1,q}$, then corrects for the bias from the central manager $\delta_{t-1,q}$, and then finally introduces a shift that can capture the different costs of over and under for the field manager. The parameter $\theta_q$ has to be tuned.
+This policy starts with the initial estimate $R^{est}\_t$, corrects for the bias in this initial estimate using $\delta^{est}\_{t-1,q}$, then corrects for the bias from the central manager $\delta_{t-1,q}$, and then finally introduces a shift that can capture the different costs of over and under for the field manager. The parameter $\theta_q$ has to be tuned.
 
 Since there is not an embedded optimization problem (that is, an $\argmax_x$ or $\argmin_x$), this is a classic parameterized policy function approximation (PFA).
 
@@ -212,7 +212,7 @@ This simulation provides an opportunity to explore how the decisions of each age
 - We introduce a basic multiagent problem we call the "two-agent newsvendor problem" where a field agent has to request resources from a central agent. While both agents are supposed to be working together, they each have their own costs of overage (having too many resources) and underage (having too few, producing unsatisfied demands).
 - We model information that is private to the field agent and information that is private to the central agent.
 - The problem introduces the dimension of estimating and anticipating the behavior of the central agent to help the field agent make decisions.
-- At each point in time, the field agent has a best estimate of what he wants to order given the estimate $R^{est}_{tq}$ and the history of the central agent adjusting the request. Given the uncertainty and the higher cost of running out than having excess, it is natural to expect that a good policy is to order what we expect to need plus a buffer for uncertainty, so we start by suggesting policies of this form.
+- At each point in time, the field agent has a best estimate of what he wants to order given the estimate $R^{est}\_{tq}$ and the history of the central agent adjusting the request. Given the uncertainty and the higher cost of running out than having excess, it is natural to expect that a good policy is to order what we expect to need plus a buffer for uncertainty, so we start by suggesting policies of this form.
 - This problem lays the foundation for building in a belief of how the central agent will respond to the adjustment being made by the field agent, since we assume that she ultimately sees the overage or underage.
 - While this problem seems quite simple, it lays the foundation for many more complex multiagent resource allocation problems.
 
@@ -249,7 +249,7 @@ These exercises use the Python module *TwoNewsvendor* on [tinyurl.com/sdagithub]
     <li>The total reward for the company (adding the field manager and central manager), for each of the combinations of the two biases. Discuss the differences in the optimal combinations from each of the three perspectives. Each player wants to maximize its reward.</li>
   </ol>
 </li>
-<li>Now we are going to use the interval estimation learning policy to learn each of the biases (see the discussion of policies in [Chapter 4](/sdam/chapter-4/)). Let $\theta^{IE}_q$ be the parameter for the IE policy for the field manager, and let $\theta^{IE}_{q'}$ be the parameter for the IE policy for the central manager. Instead of searching for the best bias, we are going to search for the best parameter to guide the policy for finding the bias.
+<li>Now we are going to use the interval estimation learning policy to learn each of the biases (see the discussion of policies in [Chapter 4](/sdam/chapter-4/)). Let $\theta^{IE}\_q$ be the parameter for the IE policy for the field manager, and let $\theta^{IE}\_{q'}$ be the parameter for the IE policy for the central manager. Instead of searching for the best bias, we are going to search for the best parameter to guide the policy for finding the bias.
   <ol type="a">
     <li>Run the Python module varying each learning parameter over the range $(0, 1, 2, 3, 4, 5)$. This means 36 total simulations (over a horizon $N = 20$, and for 1,000 sample paths). Plot the same three heat maps that you did for exercise 10.</li>
     <li>Compare the behavior of the heat maps from part (a), to the heat maps from exercise 10. Try to explain the behavior of the field and central agents by writing out the policies and thinking about how it should behave.</li>

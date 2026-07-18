@@ -210,7 +210,7 @@ $$
 f^W(w) = \frac{\mu^w e^{-\mu}}{w!}, \quad w=0, 1, 2, \ldots.
 $$
 
-We may assume that we know $\mu$, in which case we could solve this problem using the analytical solution given at the beginning of the chapter. Assume, instead, that $\mu$ is unknown, but with a known distribution $p^\mu_k = Prob[\mu=\mu_k]$. Note that this distribution $p^\mu = (p^\mu_k)_{k=1}^K$ would be modeled in our initial state $S^0$.
+We may assume that we know $\mu$, in which case we could solve this problem using the analytical solution given at the beginning of the chapter. Assume, instead, that $\mu$ is unknown, but with a known distribution $p^\mu_k = Prob[\mu=\mu_k]$. Note that this distribution $p^\mu = (p^\mu_k)\_{k=1}^K$ would be modeled in our initial state $S^0$.
 
 ## Designing policies
 
@@ -296,7 +296,7 @@ $$
 p^n_k = Prob[\mu = \mu_k\vert H^n].
 $$
 
-We can update $p^n = (p^n_k)_{k=1}^K$ using Bayes theorem
+We can update $p^n = (p^n_k)\_{k=1}^K$ using Bayes theorem
 
 $$
 \begin{align}
@@ -350,7 +350,7 @@ $$
 **Problem solving questions**
 
 <ol class="book-exercises" style="counter-reset: exercise 5;">
-<li>A major industrial gases company has to purchase contracts for electricity a month in advance using a "take or pay" contract. If the company contracts to purchase $x_t$ megawatt-hours for month $t+1$, it pays a price $p_t$ regardless of whether it needs the power or not. But if the load (demand) $L_{t+1}$ in month $t+1$ exceeds $x_t$, then the company has to purchase power from the grid at a spot price $p^{spot}_{t+1}$. The cost of satisfying the load in month $t+1$ is then
+<li>A major industrial gases company has to purchase contracts for electricity a month in advance using a "take or pay" contract. If the company contracts to purchase $x_t$ megawatt-hours for month $t+1$, it pays a price $p_t$ regardless of whether it needs the power or not. But if the load (demand) $L_{t+1}$ in month $t+1$ exceeds $x_t$, then the company has to purchase power from the grid at a spot price $p^{spot}\_{t+1}$. The cost of satisfying the load in month $t+1$ is then
 
 $$
 C(S_t,W_{t+1}) = p_t x_t + p^{spot}_{t+1} \max\{0, L_{t+1}-x_t\}.

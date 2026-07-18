@@ -64,7 +64,7 @@ This function is parameterized by $\theta = (\theta^{const}, \theta^{bid})$. We 
 
 The initial state $S^0$ includes $\Theta = \lbrace \theta_1, \ldots, \theta_K\rbrace $, the set of possible values that $\theta$ may take; and $\Rbar^0$, the initial estimate of revenue earned when a customer clicks on a link.
 
-The dynamic state variables $S^n$ include $p^n_k$, the probability that the true $\theta = \theta_k$, with $p^n = (p^n_k)_{k=1}^K$; and $\Rbar^n$, the estimate of revenue earned from an ad-click after $n$ auctions.
+The dynamic state variables $S^n$ include $p^n_k$, the probability that the true $\theta = \theta_k$, with $p^n = (p^n_k)\_{k=1}^K$; and $\Rbar^n$, the estimate of revenue earned from an ad-click after $n$ auctions.
 
 Our dynamic state variable, then, is
 
@@ -232,7 +232,7 @@ $$
 \max_\pi \E_{S^0} \E_{W^1, \ldots, W^n\vert S^0} \left\{\sum_{n=0}^N C(S^n,X^\pi(S^n),W^{n+1})\vert S_0\right\}.
 $$
 
-Note that the conditioning on $S_0$ is how we communicate our prior $p^0_k = Prob[\theta=\theta_k]$ to the model. As before, we would approximate the expectation by averaging over simulated samples of the true value of $\theta$, and the observed clicks $K^n$ and revenues $R^n$.
+Note that the conditioning on $S_0$ is how we communicate our prior $p^0\_k = Prob[\theta=\theta_k]$ to the model. As before, we would approximate the expectation by averaging over simulated samples of the true value of $\theta$, and the observed clicks $K^n$ and revenues $R^n$.
 
 ## Modeling uncertainty
 
@@ -320,7 +320,7 @@ $$
 
 where the double-superscript $(n,n+1)$ means that this is the information in a lookahead model created at time $n$, looking at what might happen at time $n+1$. The random variable $\Ktilde^{n,n+1}$ is the ad-click that we are simulating *might* happen in our lookahead model, rather than the actual observation of whether someone clicked on the ad. Just remember that we use tilde for any variable in our lookahead model, and these variables will be indexed by $n$ (the time at which we are initiating the lookahead model), and $n+1$ (since we are looking one time period forward in the lookahead model).
 
-We next use our updating equation $\eqref{eq:adclicktransition2}$ for the probabilities $p^n_k = Prob[\theta=\theta_k\vert H^n]$. We can write these updated probabilities as $\ptilde^{n,n+1}_k(\Ktilde^{n,n+1})$ to capture the dependence of the updating on $\Ktilde^{n,n+1}$ (equation $\eqref{eq:adclicktransition2}$ is written for $\Ktilde^{n,n+1}=1$). Since $\Ktilde^{n,n+1}$ can take on two outcomes (0 or 1) we will have two possible values for $\ptilde^{n,n+1}_k(\Ktilde^{n,n+1})$.
+We next use our updating equation $\eqref{eq:adclicktransition2}$ for the probabilities $p^n_k = Prob[\theta=\theta_k\vert H^n]$. We can write these updated probabilities as $\ptilde^{n,n+1}\_k(\Ktilde^{n,n+1})$ to capture the dependence of the updating on $\Ktilde^{n,n+1}$ (equation $\eqref{eq:adclicktransition2}$ is written for $\Ktilde^{n,n+1}=1$). Since $\Ktilde^{n,n+1}$ can take on two outcomes (0 or 1) we will have two possible values for $\ptilde^{n,n+1}\_k(\Ktilde^{n,n+1})$.
 
 Now imagine that we perform our pure exploitation policy $X^{explt}(S^n\vert \theta^n)$ that we described above, but we are going to do it in our approximate lookahead model (this is where we ignore changes in $\Rbar^n$). Let $\Stilde^{n,n+1}$ represent our state in the lookahead model given by
 
@@ -374,7 +374,7 @@ $$
 U(x,L\vert \theta) = \theta^{const} + \theta^{bid}x + \sum_{\ell=1}^L \theta^{loc}_\ell I_{\ell=L}.
 $$
 
-This is a more compact model because we now assume that the constant term $\theta^{const}$ and bid coefficient $\theta^{bid}$ do not depend on the location. Instead, we are just adding a shift $\theta^{loc}_\ell$. So, we still have 1,000 parameters to estimate (the location coefficients), but before we had 2,000 parameters to estimate – $\theta^{const}_\ell$ and $\theta^{bid}_\ell$ for each location $\ell \in \lbrace 1, \ldots, L\rbrace $.
+This is a more compact model because we now assume that the constant term $\theta^{const}$ and bid coefficient $\theta^{bid}$ do not depend on the location. Instead, we are just adding a shift $\theta^{loc}\_\ell$. So, we still have 1,000 parameters to estimate (the location coefficients), but before we had 2,000 parameters to estimate – $\theta^{const}\_\ell$ and $\theta^{bid}\_\ell$ for each location $\ell \in \lbrace 1, \ldots, L\rbrace $.
 
 ## What did we learn?
 
@@ -439,7 +439,7 @@ Our first challenge is to develop a belief model:
 
     What is the dimensionality of the vector $\theta$ assuming that we just use elementary indicator variables?</li>
     <li>Recognizing that the number of parameters in the parametric model in part (b) is much smaller than the number of parameters in the lookup table model in part (a), why would anyone use a lookup table belief model instead of a parametric model such as the logistic regression? Discuss the pros and cons of each type of belief model.</li>
-    <li>We now need to estimate $\theta$. Assume we generate a sample of possible values of the vector $\theta$ which we represent as $\lbrace \theta_1, \ldots, \theta_k, \ldots, \theta_K\rbrace $, where each $\theta_k$ is a vector with element $\theta_{kf},~f\in\Fcal$. Start with the prior probability $p^0_k = 1/K$. Next assume that we observe the attributes of the first customer $a^1$, and then we make the decision to display an article with attribute $b^1$ (this is our decision variable). Assuming you know $p^n_k$, write out Bayes theorem to compute $p^{n+1}_k$ after observing a customer with attribute $a^{n+1}$, and then choosing an article with attribute $b^{n+1}$ after which you observe the outcome $Y^{n+1} = 1$.</li>
+    <li>We now need to estimate $\theta$. Assume we generate a sample of possible values of the vector $\theta$ which we represent as $\lbrace \theta_1, \ldots, \theta_k, \ldots, \theta_K\rbrace $, where each $\theta_k$ is a vector with element $\theta_{kf},~f\in\Fcal$. Start with the prior probability $p^0\_k = 1/K$. Next assume that we observe the attributes of the first customer $a^1$, and then we make the decision to display an article with attribute $b^1$ (this is our decision variable). Assuming you know $p^n_k$, write out Bayes theorem to compute $p^{n+1}\_k$ after observing a customer with attribute $a^{n+1}$, and then choosing an article with attribute $b^{n+1}$ after which you observe the outcome $Y^{n+1} = 1$.</li>
   </ol>
 </li>
 <li>Recommender system part II - System model - Now we are going to model all five elements of the problem.

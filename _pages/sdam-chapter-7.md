@@ -100,7 +100,7 @@ $$
 \end{align}
 $$
 
-  where $(\phi_f(S^x_t))_{f\in\Fcal}$ is a user-defined set of features and $\theta^{VFA}$ is a set of parameters chosen using approximate dynamic programming algorithms.
+  where $(\phi_f(S^x_t))\_{f\in\Fcal}$ is a user-defined set of features and $\theta^{VFA}$ is a set of parameters chosen using approximate dynamic programming algorithms.
 
   We fit the linear model by collecting "observations" of the value $\vhat^n_t$ of being in state $S^n_t$ in the $n$th iteration. Let $\thetabar^{VFA,n-1}$ be the estimate of $\theta^{VFA}$ after $n-1$ updates. There are methods that allow us to use $\vhat^n_t$ to easily update $\thetabar^{VFA,n-1}$ and obtain $\thetabar^{VFA,n}$. This gives us a VFA policy that we can write as
 
@@ -142,7 +142,7 @@ $$
 (\Stilde_{tt}, \xtilde_{tt}, \Wtilde_{t,t+1}, \ldots, \Stilde_{tt'}, \xtilde_{tt'}, \Wtilde_{t,t'+1}, \ldots),
 $$
 
-  where $\Stilde_{tt'}$ is typically a simplified state variable for the lookahead model we create when making a decision at time $t$, for time $t'$ in the lookahead model. $\xtilde_{tt'}$ is our (possibly simplified) decision created for time $t'$ in the lookahead model, and $\Wtilde_{tt'}$ is the simplified information process at time $t'$ in the lookahead model. Decisions $\xtilde_{tt'}$ are made using a *lookahead policy* $\Xtilde^{\tilde \pi}_t(\Stilde_{tt'})$ which is typically a simplified policy chosen because it is easy to compute.
+  where $\Stilde_{tt'}$ is typically a simplified state variable for the lookahead model we create when making a decision at time $t$, for time $t'$ in the lookahead model. $\xtilde_{tt'}$ is our (possibly simplified) decision created for time $t'$ in the lookahead model, and $\Wtilde_{tt'}$ is the simplified information process at time $t'$ in the lookahead model. Decisions $\xtilde_{tt'}$ are made using a *lookahead policy* $\Xtilde^{\tilde \pi}\_t(\Stilde_{tt'})$ which is typically a simplified policy chosen because it is easy to compute.
 
   Our policy based on our approximate lookahead model would be written as
 
@@ -192,7 +192,7 @@ We need the two versions since if we have a system where we have specified the s
 
 It helps to do a tour through our applications up to now and review the state variables for each one. For each application, we are going to summarize the state variable, which we might write as $S_t$ or $S^n$ depending on the setting, and we are going to classify the elements as physical state variables $R_t$, informational variables $I_t$, and belief state variables $B_t$.
 
-**Chapter 1 –** This chapter introduced two inventory problems that were also designed to bring out different flavors of state variables. The simple inventory problem was characterized by a state variable $S_t$ that consists of just the inventory $R^{inv}_t$ at time $t$. This problem is one of the most widely used applications for illustrating dynamic programming.
+**Chapter 1 –** This chapter introduced two inventory problems that were also designed to bring out different flavors of state variables. The simple inventory problem was characterized by a state variable $S_t$ that consists of just the inventory $R^{inv}\_t$ at time $t$. This problem is one of the most widely used applications for illustrating dynamic programming.
 
 The more complex inventory problem required a state variable
 
@@ -200,7 +200,7 @@ $$
 S_t = (\underbrace{R^{inv}_t}_{R_t},\underbrace{c_t}_{I_t},\underbrace{f^D_{t,t+1},\sigmabar^D_t,\sigmabar^f_t}_{B_t}).
 $$
 
-This state variable illustrates all three classes of information in state variables: the physical state variables $R_t = R^{inv}_t$, other information $I_t = c_t$, and belief state variables $B_t = (f^D_{t,t+1}, \sigmabar^D_t, \sigmabar^f_t)$ where $(f^D_{t,t+1},\sigmabar^D_t,\sigmabar^f_t)$ captures the forecasted mean and standard deviation of the error of the future demand $\Dhat_{t+1}$, and the standard deviation in the change in forecasts from time $t$ to $t+1$ (we assume that the change in forecasts have mean zero).
+This state variable illustrates all three classes of information in state variables: the physical state variables $R_t = R^{inv}\_t$, other information $I_t = c_t$, and belief state variables $B_t = (f^D_{t,t+1}, \sigmabar^D_t, \sigmabar^f_t)$ where $(f^D_{t,t+1},\sigmabar^D_t,\sigmabar^f_t)$ captures the forecasted mean and standard deviation of the error of the future demand $\Dhat_{t+1}$, and the standard deviation in the change in forecasts from time $t$ to $t+1$ (we assume that the change in forecasts have mean zero).
 
 **Chapter 2 –** This chapter introduced a simple asset selling problem with state variable
 
@@ -402,7 +402,7 @@ $$
 
 where $S_t = N_t = i$ is the node where the traveler is located. The value functions $V_t(S_t)$ are computed by working backward in time, starting at $t=T$ where we set $V_T(S_T) = 0$ for all nodes $S_T$. This is a form of policy based on value function approximations, and this is a rare case where a VFA policy is actually optimal.
 
-We then transitioned to a harder problem where a traveler is allowed to see the costs $\chat_{tij}$ out of node $i = N_t$. For this problem, the state variable becomes $S_t = (N_t, (\chat_{t,N_t,j},~j\in\Ncal^+_i))$. For this problem we had to approximate the value function using the post-decision state $S^x_t = N^x_t$ where $N^x_t$ is the node we have chosen to go to after making our decision $x_t$ when we are at node $N_t$. In this case our policy looked like
+We then transitioned to a harder problem where a traveler is allowed to see the costs $\chat_{tij}$ out of node $i = N_t$. For this problem, the state variable becomes $S_t = (N_t, (\chat_{t,N_t,j},~j\in\Ncal^+\_i))$. For this problem we had to approximate the value function using the post-decision state $S^x_t = N^x_t$ where $N^x_t$ is the node we have chosen to go to after making our decision $x_t$ when we are at node $N_t$. In this case our policy looked like
 
 $$
 X^\pi_t(S_t=i) = \argmin_{j\in\Ncal^+_i} \big(\chat_{tij} + \Vbar^x_t(S^x_t)\big).
@@ -455,7 +455,7 @@ where $x$ is the quantity of resource we order at a unit cost $c$, which is then
 
 Let $x^n = X^\pi(S^n\vert \theta)$ be our choice of $x$ given what we know which is captured by $S^n$, where our policy $X^\pi(S^n\vert \theta)$ depends on one or more parameters in $\theta$. After we implement $x^n$, we observe $W^{n+1}$, update $S^{n+1}$ and then repeat the process. After $N$ iterations, we obtain a final design we denote $x^{\pi,N}(\theta)$.
 
-We now have to evaluate our final design $x^{\pi,N}(\theta)$. To perform this evaluation, we have to consider two, and possibly three, sources of uncertainty. The first is that we may have uncertainty in unknown parameters such as the mean of $W$. For example, $W$ might come from a Poisson distribution with mean $\mu$, and we may assume that $\mu \in \lbrace \mu_1, \ldots, \mu_K\rbrace $ where $p_k = Prob[\mu = \mu_k]$. The distribution $(p_k)_{k=1}^K$ is contained in the initial state $S_0$.
+We now have to evaluate our final design $x^{\pi,N}(\theta)$. To perform this evaluation, we have to consider two, and possibly three, sources of uncertainty. The first is that we may have uncertainty in unknown parameters such as the mean of $W$. For example, $W$ might come from a Poisson distribution with mean $\mu$, and we may assume that $\mu \in \lbrace \mu_1, \ldots, \mu_K\rbrace $ where $p_k = Prob[\mu = \mu_k]$. The distribution $(p_k)\_{k=1}^K$ is contained in the initial state $S_0$.
 
 Then we have the random arrivals of demands $W^1, \ldots, W^N$ which would be sampled from a distribution with mean $\mu$. We use these observations, and the policy $X^\pi(S^n\vert \theta)$, to compute $x^{\pi,N}(\theta)$. It is important to recognize that $x^{\pi,N}(\theta)$ is a random variable that depends on any information in $S^0$ (regardless of whether it is deterministic or random).
 

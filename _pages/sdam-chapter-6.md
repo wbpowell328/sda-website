@@ -38,7 +38,7 @@ For now, we are not going to try to model the cost if we arrive at a point in ti
 
 ### State variables
 
-A traveler at node $N_t = i$ at time $t$ is assumed to be given a set of forecasts $\cbar_{t} = (\cbar_{ttk\ell})_{k, \ell \in \Ncal}$, the vector of estimates of the cost to traverse link $(k, \ell)$ at time $t$, given what is known at time $t$. The traveler's state $S_t$ at time $t$ is then
+A traveler at node $N_t = i$ at time $t$ is assumed to be given a set of forecasts $\cbar_{t} = (\cbar_{ttk\ell})\_{k, \ell \in \Ncal}$, the vector of estimates of the cost to traverse link $(k, \ell)$ at time $t$, given what is known at time $t$. The traveler's state $S_t$ at time $t$ is then
 
 $$
 S_t = (N_t, \cbar_t).

@@ -48,7 +48,7 @@ We assume that we make decisions at the end of each week $t$, to be implemented 
 
 ### State variables
 
-We have the following state variables: $R_t$, the potential population of patients that are in the hospitals and clinics that have been signed up; $\alpha_t$, the number of successes for the treatment by week $t$ over the course of the clinical trial; $\beta_t$, the number of failures for the treatment by week $t$; and $\bar\lambda^{response}_t$, the estimated fraction of potential patients who elect to join the trial given what we know at time $t$.
+We have the following state variables: $R_t$, the potential population of patients that are in the hospitals and clinics that have been signed up; $\alpha_t$, the number of successes for the treatment by week $t$ over the course of the clinical trial; $\beta_t$, the number of failures for the treatment by week $t$; and $\bar\lambda^{response}\_t$, the estimated fraction of potential patients who elect to join the trial given what we know at time $t$.
 
 Using this information, we can estimate the probability that our treatment is successful using $\rho_t$, the probability that the treatment is successful given what we know by the end of week $t$, so that
 
@@ -66,7 +66,7 @@ It is reasonable to use $R_0 = 0$ as the initial value of $R_t$, but it helps to
 
 ### Decision variables
 
-We model the number of potential patients that are signed up using $x^{enroll}_t$, the increase in the potential population of patients that are acquired by adding new hospital facilities. The number of patients that actually join the clinical trial will be drawn from this population during week $t+1$.
+We model the number of potential patients that are signed up using $x^{enroll}\_t$, the increase in the potential population of patients that are acquired by adding new hospital facilities. The number of patients that actually join the clinical trial will be drawn from this population during week $t+1$.
 
 We also have the decision of when to stop the trial represented by
 
@@ -74,7 +74,7 @@ $$
 x^{trial}_t = \begin{cases} 1 & \text{continue the trial,}\\ 0 & \text{stop the trial.} \end{cases}
 $$
 
-If $x^{trial}_t = 0$, then we are going to set $R_{t+1} = 0$, which shuts down the trial. We assume that once we have stopped the trial, we cannot restart it, which means we will require that $x^{trial}_t = 0$ if $R_t = 0$.
+If $x^{trial}\_t = 0$, then we are going to set $R_{t+1} = 0$, which shuts down the trial. We assume that once we have stopped the trial, we cannot restart it, which means we will require that $x^{trial}\_t = 0$ if $R_t = 0$.
 
 If we stop the trial, we have to declare whether the drug is a success or a failure,
 
@@ -82,7 +82,7 @@ $$
 x^{drug}_t = \begin{cases} 1 & \text{if the drug is declared a success,}\\ 0 & \text{if the drug is declared a failure.} \end{cases}
 $$
 
-We will create policies $X^{\pi^{enroll}}(S_t)$, $X^{\pi^{trial}}(S_t)$, and $X^{\pi^{drug}}(S_t)$ which determine $x^{enroll}_t$, $x^{trial}_t$ and $x^{drug}_t$. We can then write
+We will create policies $X^{\pi^{enroll}}(S_t)$, $X^{\pi^{trial}}(S_t)$, and $X^{\pi^{drug}}(S_t)$ which determine $x^{enroll}\_t$, $x^{trial}\_t$ and $x^{drug}\_t$. We can then write
 
 $$
 X^\pi(S_t) = (X^{\pi^{enroll}}(S_t), X^{\pi^{trial}}(S_t), X^{\pi^{drug}}(S_t)).
@@ -92,7 +92,7 @@ As always, we design the policies later.
 
 ### Exogenous information
 
-We first identify new patients and patient withdrawals to and from the trial using $\Rhat_{t+1}$, the number of new patients joining the trial during week $t+1$, which depends on the potential population of patients that were signed up, given by $R_{t+1} = R_t + x^{enroll}_t$. We might, for example, assume that each patient in the population $R_{t+1}$ might sign up for the clinical trial with some probability $\lambda^{response}$ which has to be estimated from data.
+We first identify new patients and patient withdrawals to and from the trial using $\Rhat_{t+1}$, the number of new patients joining the trial during week $t+1$, which depends on the potential population of patients that were signed up, given by $R_{t+1} = R_t + x^{enroll}\_t$. We might, for example, assume that each patient in the population $R_{t+1}$ might sign up for the clinical trial with some probability $\lambda^{response}$ which has to be estimated from data.
 
 We next track our successes with $\Xhat_{t+1}$, the number of successes during week $t+1$, and $\Yhat_{t+1}$, the number of failures during week $t+1$. The number of failures during week $t$ can be calculated as
 
@@ -129,7 +129,7 @@ $$
 \end{align}
 $$
 
-Finally, we update our estimate of the number of patients who enroll in the trial by smoothing the current estimate $\bar\lambda^{response}_t$ with the latest ratio of the number who enrolled during week $t+1$, $\Rhat_{t+1}$, and the number who are currently signed up, $R_t + x^{enroll}_t$.
+Finally, we update our estimate of the number of patients who enroll in the trial by smoothing the current estimate $\bar\lambda^{response}\_t$ with the latest ratio of the number who enrolled during week $t+1$, $\Rhat_{t+1}$, and the number who are currently signed up, $R_t + x^{enroll}\_t$.
 
 $$
 \begin{align}
@@ -179,7 +179,7 @@ We address each of these below.
 
 ### The patient enrollment process
 
-We are going to use the simple model that we make choices (e.g. by signing up hospitals and clinics) that allow us to expect to sign up $x^{enroll}_t$ patients for week $t+1$, giving us a total population of $R_{t+1} = R_t + x^{enroll}_t$. The reality will be different. We propose to model the actual number of arrivals by assuming that they are Poisson with a mean of $\bar\lambda^{response} (R_t + x^{enroll}_t)$ where $0 < \bar\lambda^{response} < 1$ is the fraction of potential patients who elect to join the trial (which is unknown). This means that we can write
+We are going to use the simple model that we make choices (e.g. by signing up hospitals and clinics) that allow us to expect to sign up $x^{enroll}\_t$ patients for week $t+1$, giving us a total population of $R_{t+1} = R_t + x^{enroll}\_t$. The reality will be different. We propose to model the actual number of arrivals by assuming that they are Poisson with a mean of $\bar\lambda^{response} (R_t + x^{enroll}\_t)$ where $0 < \bar\lambda^{response} < 1$ is the fraction of potential patients who elect to join the trial (which is unknown). This means that we can write
 
 $$
 \begin{align}
@@ -187,7 +187,7 @@ Prob[\Rhat_{t+1}(R_t)=r] = \frac{(\bar\lambda^{response}_t(R_t + x^{enroll}_t))^
 \end{align}
 $$
 
-We can use a truncated Poisson distribution for $\Rhat_{t+1}$, where we have to recognize that the number of patients that join the trial is limited by the number of potential patients given by $R_{t+1} = R_t + x^{enroll}_t$. Let
+We can use a truncated Poisson distribution for $\Rhat_{t+1}$, where we have to recognize that the number of patients that join the trial is limited by the number of potential patients given by $R_{t+1} = R_t + x^{enroll}\_t$. Let
 
 $$
 \Rbar_t = \bar\lambda^{response}_t (R_t+x^{enroll}_t)
@@ -199,7 +199,7 @@ $$
 P_{\Rhat_{t+1}}(r\vert x^{enroll}_t, \Rbar_t) = Prob[\Rhat_{t+1}(x^{enroll}_t)=r\vert \Rbar_t].
 $$
 
-We write $P_{\Rhat_{t+1}}(r\vert x^{enroll}_t, \Rbar_t)$ as a function of $x^{enroll}_t$ and $\Rbar_t$ to reflect its dependence on the decision and on the number $R_{t+1} = R_t + x^{enroll}_t$.
+We write $P_{\Rhat_{t+1}}(r\vert x^{enroll}\_t, \Rbar_t)$ as a function of $x^{enroll}\_t$ and $\Rbar_t$ to reflect its dependence on the decision and on the number $R_{t+1} = R_t + x^{enroll}\_t$.
 
 The truncated Poisson distribution is then given by
 
@@ -241,7 +241,7 @@ $$
 
 Using explicit probability distributions such as the one for $\Xhat_{t+1}$ in equation $\eqref{eq:clinicaltrialsuccessdist}$ is nice when we can find (and compute) them, but there are many complex problems where this is not possible. For example, even equation $\eqref{eq:clinicaltrialsuccessdist}$ required that we use the trick of using a sampled representation of the continuous random variable $\rho^{true}$. Without this, we would have had to introduce an integral over the density for $\rho^{true}$.
 
-Another approach, which is much easier and extends to even more complicated situations, uses Monte Carlo sampling to generate $\Rhat_{t+1}$ and $\Xhat_{t+1}$. This process is outlined below, which produces a sample $\Xhat^1_{t+1}, \ldots, \Xhat^N_{t+1}$ (and corresponding $\Rhat^1_{t+1}, \ldots, \Rhat^N_{t+1}$). We can now approximate the random variable $\Xhat_{t+1}$ with the set of outcomes $\Xhat^1_{t+1}, \ldots, \Xhat^N_{t+1}$, each of which may occur with equal probability.
+Another approach, which is much easier and extends to even more complicated situations, uses Monte Carlo sampling to generate $\Rhat_{t+1}$ and $\Xhat_{t+1}$. This process is outlined below, which produces a sample $\Xhat^1\_{t+1}, \ldots, \Xhat^N_{t+1}$ (and corresponding $\Rhat^1\_{t+1}, \ldots, \Rhat^N_{t+1}$). We can now approximate the random variable $\Xhat_{t+1}$ with the set of outcomes $\Xhat^1\_{t+1}, \ldots, \Xhat^N_{t+1}$, each of which may occur with equal probability.
 
 <div class="book-algorithm">
 <p><strong>A Monte Carlo-based model of the clinical trial process</strong></p>
@@ -250,7 +250,7 @@ Another approach, which is much easier and extends to even more complicated situ
 <p style="margin-left: 1.5rem;"><strong>Step 2b.</strong> Generate a Monte Carlo sample of the true success probability $\rho^n \sim \rho^{true}$.</p>
 <p style="margin-left: 1.5rem;"><strong>Step 2c.</strong> Given $r^n$ and $\rho^n$, loop over our $r^n$ patients and generate a 0/1 random variable which is 1 (that is, the drug was a success) with probability $\rho^n$.</p>
 <p style="margin-left: 1.5rem;"><strong>Step 2d.</strong> Sum the successes and let this be a sample realization of $\Xhat^n_{t+1}$.</p>
-<p><strong>Step 3.</strong> Output the sample $\Xhat^1_{t+1}, \ldots, \Xhat^N_{t+1}$.</p>
+<p><strong>Step 3.</strong> Output the sample $\Xhat^1\_{t+1}, \ldots, \Xhat^N_{t+1}$.</p>
 </div>
 
 ## Designing policies
@@ -296,16 +296,16 @@ One choice we have to make is the stopping policy $X^{trial}(S_t\vert \theta^{st
 
 The problem of determining how many new potential patients to enroll is somewhat more difficult, since it is necessary to pay an upfront cost to acquire more potential patients, and we have to do this under uncertainty about the willingness of patients to join the trial (given by the unknown parameter $\lambda^{response}$).
 
-To create a full lookahead model as we described above, we would create variables such as $\tilde\lambda_{tt'}$ for the lookahead version of $\bar\lambda^{response}_t$, $\tilde\rho_{tt'}$ for $\bar\rho_t$, and $(\tilde\alpha_{tt'}, \tilde\beta_{tt'})$ for $(\alpha_t, \beta_t)$. Otherwise, all the logic would be the same as the original uncertainty model.
+To create a full lookahead model as we described above, we would create variables such as $\tilde\lambda_{tt'}$ for the lookahead version of $\bar\lambda^{response}\_t$, $\tilde\rho_{tt'}$ for $\bar\rho_t$, and $(\tilde\alpha_{tt'}, \tilde\beta_{tt'})$ for $(\alpha_t, \beta_t)$. Otherwise, all the logic would be the same as the original uncertainty model.
 
 While we can use the full uncertainty model, we can choose to simplify the model in different ways. These choices include:
 
-- The enrollment rate $\bar\lambda^{response}_t$ – We have two options: we can continue to estimate $\bar\lambda^{response}_t$, where we would introduce the notation $\tilde\lambda^{response}_{tt'}$ as the estimate at time $t'$ in the lookahead model of the enrollment rate $\lambda$; or we could fix $\tilde\lambda^{response}_{tt'} = \bar\lambda^{response}_t$, which is our estimate at time $t$ in the base model.
+- The enrollment rate $\bar\lambda^{response}\_t$ – We have two options: we can continue to estimate $\bar\lambda^{response}\_t$, where we would introduce the notation $\tilde\lambda^{response}\_{tt'}$ as the estimate at time $t'$ in the lookahead model of the enrollment rate $\lambda$; or we could fix $\tilde\lambda^{response}\_{tt'} = \bar\lambda^{response}\_t$, which is our estimate at time $t$ in the base model.
 - The drug success rate $\rho^{true}$ – We again have two options: we can continue to estimate the success rate, for which we would define the variables $(\tilde\alpha_{tt'}, \tilde\beta_{tt'})$ for accumulating successes and failures in the lookahead model; or alternatively we could fix $(\tilde\alpha_{tt'}, \tilde\beta_{tt'}) = (\alpha_t, \beta_t)$ within the lookahead model.
 
 Using our choices for modeling uncertainty, we can suggest three different strategies for designing a lookahead model:
 
-**Model A** – Deterministic lookahead model. Here, we are going to assume that the enrollment rate $\tilde\lambda^{response}_{tt'} = \bar\lambda^{response}_t$, which means that the enrollment rate is fixed at the estimate at time $t$ when we create the lookahead model. We then assume that the true drug success probability is fixed at
+**Model A** – Deterministic lookahead model. Here, we are going to assume that the enrollment rate $\tilde\lambda^{response}\_{tt'} = \bar\lambda^{response}\_t$, which means that the enrollment rate is fixed at the estimate at time $t$ when we create the lookahead model. We then assume that the true drug success probability is fixed at
 
 $$
 \tilde\rho_{tt'} = \bar\rho_t = \frac{\alpha_t}{\alpha_t + \beta_t},
@@ -313,7 +313,7 @@ $$
 
 which is our estimate at time $t$ in the base model.
 
-**Model B** – We fix our estimate of the enrollment rate at $\tilde\lambda_{tt'} = \bar\lambda^{response}_t$, but assume that we continue learning about the effectiveness of the drug.
+**Model B** – We fix our estimate of the enrollment rate at $\tilde\lambda_{tt'} = \bar\lambda^{response}\_t$, but assume that we continue learning about the effectiveness of the drug.
 
 **Model C** – We model the process of learning the enrollment rate $\tilde\lambda_{tt'}$ and the drug effectiveness $\tilde\rho_{tt'}$.
 
@@ -323,7 +323,7 @@ We are going to use these three models to illustrate the process of designing a 
 
 ### Model A
 
-Model A is a deterministic problem, since we are fixing both the estimated enrollment rate $\tilde\lambda_{tt'} = \bar\lambda^{response}_t$, and $\tilde\rho_{tt'} = \bar\rho_t$. The good news is that this is basically a deterministic shortest path problem, where the number of patients we have signed up (in the lookahead model), given by $\Rtilde_{tt'}$, is like a node in a network, and the decision $\xtilde^{enroll}_{tt'}$ is a link that takes us to node $\Rtilde_{t,t'+1} = \Rtilde_{tt'} + \xtilde^{enroll}_{tt'}$.
+Model A is a deterministic problem, since we are fixing both the estimated enrollment rate $\tilde\lambda_{tt'} = \bar\lambda^{response}\_t$, and $\tilde\rho_{tt'} = \bar\rho_t$. The good news is that this is basically a deterministic shortest path problem, where the number of patients we have signed up (in the lookahead model), given by $\Rtilde_{tt'}$, is like a node in a network, and the decision $\xtilde^{enroll}\_{tt'}$ is a link that takes us to node $\Rtilde_{t,t'+1} = \Rtilde_{tt'} + \xtilde^{enroll}\_{tt'}$.
 
 To see this, recall equation $\eqref{eq:shortestpathbellman1}$ for our deterministic shortest path problem, which we repeat here
 
@@ -331,7 +331,7 @@ $$
 v_i = \min_{j\in\Ncal^+_i} (c_{ij} + v_j).
 $$
 
-Now we just replace $v_i$ for the value at node $i$, with $\Vtilde_{tt'}(\Rtilde_{tt'})$ which is the value of having $\Rtilde_{tt'}$ patients signed up (remember we are in our lookahead model). The decision to go to node $j$ is replaced with the decision to sign up $\xtilde^{enroll}_{tt'}$ patients. Instead of this taking us to node $j$, it takes us to node $\Rtilde_{tt'} + \xtilde^{enroll}_{tt'}$. So Bellman's equation becomes
+Now we just replace $v_i$ for the value at node $i$, with $\Vtilde_{tt'}(\Rtilde_{tt'})$ which is the value of having $\Rtilde_{tt'}$ patients signed up (remember we are in our lookahead model). The decision to go to node $j$ is replaced with the decision to sign up $\xtilde^{enroll}\_{tt'}$ patients. Instead of this taking us to node $j$, it takes us to node $\Rtilde_{tt'} + \xtilde^{enroll}\_{tt'}$. So Bellman's equation becomes
 
 $$
 \begin{align}
@@ -339,11 +339,11 @@ $$
 \end{align}
 $$
 
-The one-period profit function $\Ctilde(\Rtilde_{tt'},\xtilde^{enroll}_{tt'})$ is adapted from the same function for our base model (see equation $\eqref{eq:clinicaltrialprofit}$).
+The one-period profit function $\Ctilde(\Rtilde_{tt'},\xtilde^{enroll}\_{tt'})$ is adapted from the same function for our base model (see equation $\eqref{eq:clinicaltrialprofit}$).
 
 There is only one problem with our deterministic lookahead model: we would never stop, because our policy for stopping requires that our estimate of $\tilde\rho_{tt'}$ moves into the "success" or "fail" regions (it would have to start in the "continue" region, since otherwise we would have stopped the base model). However, this does not mean that we cannot use the deterministic lookahead model: we just have to fix a horizon $H$ and stop when $t' = t+H$.
 
-Using this strategy, we solve our deterministic shortest path problem over the horizon $t'=t, \ldots, t+H$, and then from this find $\xtilde^\ast _{tt}$. Our enrollment policy is then
+Using this strategy, we solve our deterministic shortest path problem over the horizon $t'=t, \ldots, t+H$, and then from this find $\xtilde^\ast \_{tt}$. Our enrollment policy is then
 
 $$
 X^{\pi^{enroll}}(S_t) = \xtilde^\ast _{tt}.
@@ -353,7 +353,7 @@ We are not claiming that this will be an effective policy. We are primarily illu
 
 ### Model B
 
-Now we are going to fix our estimate of the response rate $\tilde\lambda_{tt'}$ at our estimate $\bar\lambda^{response}_t$ at time $t$ in the base model. To simplify our model, we are going to assume that the number of enrollments $\tilde\Rhat_{t,t'+1}$ equals the expected number of patients that will volunteer $\tilde\Rbar_{tt'}$. The enrollments $\tilde\Rhat_{t,t'+1}$ are generated deterministically from
+Now we are going to fix our estimate of the response rate $\tilde\lambda_{tt'}$ at our estimate $\bar\lambda^{response}\_t$ at time $t$ in the base model. To simplify our model, we are going to assume that the number of enrollments $\tilde\Rhat_{t,t'+1}$ equals the expected number of patients that will volunteer $\tilde\Rbar_{tt'}$. The enrollments $\tilde\Rhat_{t,t'+1}$ are generated deterministically from
 
 $$
 \tilde\Rhat_{t,t'+1} = \lfloor \bar\lambda^{response}_t (\Rtilde_{tt'} + \xtilde^{enroll}_{tt'})\rfloor,
@@ -484,7 +484,7 @@ $$
 These exercises use the Python module *ClinicalTrialsDriverScript.py* on [tinyurl.com/sdagithub](http://tinyurl.com/sdagithub/).
 
 <ol class="book-exercises" style="counter-reset: exercise 8;">
-<li>Set the trial size to $T = 50$, the lookahead horizon to $H = 5$ and run a simulation of Model A. Record the stopping time and explain why the deterministic lookahead model yields the same number of new potential patients $x^{enroll}_{t}$ at each time $t$.</li>
+<li>Set the trial size to $T = 50$, the lookahead horizon to $H = 5$ and run a simulation of Model A. Record the stopping time and explain why the deterministic lookahead model yields the same number of new potential patients $x^{enroll}\_{t}$ at each time $t$.</li>
 <li>Now set the lookahead horizon to $H = 50$. Modify the module *ClinicalTrialsDriverScript.py* to include a for-loop and run 10 simulations (testing iterations) of Model B. Compute the average revenue over all simulations.</li>
 <li>When choosing $\theta^{stop} = (\theta^{stop-low}, \theta^{stop-high})$ for our PFA for determining when to stop, we usually choose a large enough $\theta^{stop-high}$ to make sure the drug is successful. Conversely, we choose a large $\theta^{stop-low}$ so that, if the true success rate of the drug is low, we stop the trial early before we lose too much money. However, we cannot make $\theta^{stop-low}$ too high, or else we risk stopping the trial before we have enough information about the drug's true success rate.
 

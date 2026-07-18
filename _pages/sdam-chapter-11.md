@@ -74,11 +74,11 @@ We start by defining the state variable for agent $q$ using $S_{tq}$, the inform
 
 An action by $q$ on $q'$ at time $t$ may involve the movement of physical resources, but could also include sending information. The action by $q$ on $q'$ will arrive to $q'$ as an exogenous information process arriving to $q'$ at time $t+1$ (which is where any distortions would be captured), which we write as $W_{t+1,q,q'}$, information arriving to agent $q'$ at time $t+1$ from actions taken by agent $q$ (this can be information about resources or one involving the sending or sharing of information from $S_{tq}$).
 
-Finally, there will be times when agent $q$ needs to create an estimate of something known by agent $q'$. If we let $S_{tq'}$ represent something known by agent $q'$, we will let $\overleftarrow{S}_{t,q,q'}$ denote the estimate that agent $q$ creates of the information in $S_{tq'}$.
+Finally, there will be times when agent $q$ needs to create an estimate of something known by agent $q'$. If we let $S_{tq'}$ represent something known by agent $q'$, we will let $\overleftarrow{S}\_{t,q,q'}$ denote the estimate that agent $q$ creates of the information in $S_{tq'}$.
 
 ### State variables
 
-The state variables for agents $q=1, \ldots, Q-1$ are: $R^{inv}_{tq}$, the inventory left over after iteration $t$ after delivering product to the upstream vendor for agent $q$; and $R^{back}_{tq}$, backordered demand that has not yet been satisfied from inventory.
+The state variables for agents $q=1, \ldots, Q-1$ are: $R^{inv}\_{tq}$, the inventory left over after iteration $t$ after delivering product to the upstream vendor for agent $q$; and $R^{back}\_{tq}$, backordered demand that has not yet been satisfied from inventory.
 
 The manufacturer $q=Q$ is assumed to always have unlimited inventory.
 
@@ -86,9 +86,9 @@ In time we will learn that this is an incomplete statement of the state of the p
 
 ### Decision variables
 
-Agent $q$ has to make two decisions. The first (and most important) is how much to order from the downstream agent $q+1$ which we write as $x^{req}_{tq,q+1}$, the order placed by supplier $q$ to be passed to supplier $q+1$, made at the order instant in iteration $t$, which will be received by $q+1$ to be filled in iteration $t+1$.
+Agent $q$ has to make two decisions. The first (and most important) is how much to order from the downstream agent $q+1$ which we write as $x^{req}\_{tq,q+1}$, the order placed by supplier $q$ to be passed to supplier $q+1$, made at the order instant in iteration $t$, which will be received by $q+1$ to be filled in iteration $t+1$.
 
-The second is how much of the request from the upstream agent to fulfill from inventory. We write this as $x^{fill}_{tq,q-1}$, how much of the unsatisfied demand $R^{back}_{tq}$ to fill at time $t$ from inventory.
+The second is how much of the request from the upstream agent to fulfill from inventory. We write this as $x^{fill}\_{tq,q-1}$, how much of the unsatisfied demand $R^{back}\_{tq}$ to fill at time $t$ from inventory.
 
 These decisions are constrained for $q=1, \ldots, Q-1$ by:
 
@@ -100,7 +100,7 @@ x^{req}_{tq,q+1},x^{fill}_{tq,q-1} &\geq 0. \label{eq:beergameconstraint3}
 \end{align}
 $$
 
-Constraint $\eqref{eq:beergameconstraint1}$ reflects the reality that we cannot send inventory to agent $q-1$ that we do not have on hand. Constraint $\eqref{eq:beergameconstraint2}$ says we cannot send inventory to agent $q-1$ that has not been requested. Note that $R^{back}_{tq}$ includes new orders that have not yet been filled.
+Constraint $\eqref{eq:beergameconstraint1}$ reflects the reality that we cannot send inventory to agent $q-1$ that we do not have on hand. Constraint $\eqref{eq:beergameconstraint2}$ says we cannot send inventory to agent $q-1$ that has not been requested. Note that $R^{back}\_{tq}$ includes new orders that have not yet been filled.
 
 We then write our decision vector as
 
@@ -110,9 +110,9 @@ $$
 
 where our decisions will be made by some policy $X^\pi(S_t)$ which we will design later.
 
-In our basic game, we are always going to fill as much of the order from $q-1$ as we can from inventory, so technically $x^{fill}_{tq,q-1}$ is not really a decision since we will just set $x^{fill}_{tq,q-1} = \min\lbrace R^{back}_{tq},R^{inv}_{tq}\rbrace $. However, it is still an action made by $q$, and it opens the door for richer behaviors later.
+In our basic game, we are always going to fill as much of the order from $q-1$ as we can from inventory, so technically $x^{fill}\_{tq,q-1}$ is not really a decision since we will just set $x^{fill}\_{tq,q-1} = \min\lbrace R^{back}\_{tq},R^{inv}\_{tq}\rbrace $. However, it is still an action made by $q$, and it opens the door for richer behaviors later.
 
-If we are the retail market $q=0$, then the request $W_{t,0,1} = x^{req}_{t,0,1}$ made to agent $q=1$ comes from an exogenous information source.
+If we are the retail market $q=0$, then the request $W_{t,0,1} = x^{req}\_{t,0,1}$ made to agent $q=1$ comes from an exogenous information source.
 
 If we are the plant $q=Q$, we always fill the request from $q=Q-1$, so
 
@@ -122,7 +122,7 @@ $$
 
 ### Exogenous information
 
-There are two types of exogenous information for supplier $q$: $W^{fill}_{t+1,q+1,q}$, the amount of product received from supplier $q+1$ in response to the request made at time $t$ but arriving at time $t+1$; and $W^{req}_{t+1,q-1,q}$, the order made by supplier $q-1$ at time $t$ of supplier $q$, which would arrive at time $t+1$.
+There are two types of exogenous information for supplier $q$: $W^{fill}\_{t+1,q+1,q}$, the amount of product received from supplier $q+1$ in response to the request made at time $t$ but arriving at time $t+1$; and $W^{req}\_{t+1,q-1,q}$, the order made by supplier $q-1$ at time $t$ of supplier $q$, which would arrive at time $t+1$.
 
 It is important to recognize that the decisions made by agents $q+1$ and $q-1$ come to agent $q$ as exogenous information. This means we could write
 
@@ -136,11 +136,11 @@ $$
 W_{t+1,q} = (W^{fill}_{t+1,q+1,q},W^{req}_{t+1,q-1,q}).
 $$
 
-This describes the information process for the middle agents $q=1, \ldots, Q-1$. The information process $W_{t,0}$ refers to the market where we assume that there is an exogenous source of requests $x^{req}_{t,0,1} = W_{t,0,1}$ that are made to agent 1.
+This describes the information process for the middle agents $q=1, \ldots, Q-1$. The information process $W_{t,0}$ refers to the market where we assume that there is an exogenous source of requests $x^{req}\_{t,0,1} = W_{t,0,1}$ that are made to agent 1.
 
 ### Transition function
 
-Our state variables $R^{inv}_{tq}$ and $R^{back}_{tq}$ for $q=1, \ldots, Q-1$ evolve according to
+Our state variables $R^{inv}\_{tq}$ and $R^{back}\_{tq}$ for $q=1, \ldots, Q-1$ evolve according to
 
 $$
 \begin{align}
@@ -149,11 +149,11 @@ R^{back}_{t+1,q} &= R^{back}_{tq}-x^{fill}_{t,q,q-1} + W^{req}_{t+1,q-1,q}. \lab
 \end{align}
 $$
 
-Equation $\eqref{eq:beergametrans1}$ pulls the request $x^{fill}_{t,q,q-1}$ from inventory (it is not allowed to go negative) and then adds incoming inventory $W^{fill}_{t+1,q+1,q}$ from the downstream agent $q+1$ to create the inventory at time $t+1$. Equation $\eqref{eq:beergametrans2}$ fills orders that have been requested, held in $R^{back}_{tq}$, and then adds new orders $W^{req}_{t+1,q-1,q}$ to be filled in period $t+1$.
+Equation $\eqref{eq:beergametrans1}$ pulls the request $x^{fill}\_{t,q,q-1}$ from inventory (it is not allowed to go negative) and then adds incoming inventory $W^{fill}\_{t+1,q+1,q}$ from the downstream agent $q+1$ to create the inventory at time $t+1$. Equation $\eqref{eq:beergametrans2}$ fills orders that have been requested, held in $R^{back}\_{tq}$, and then adds new orders $W^{req}\_{t+1,q-1,q}$ to be filled in period $t+1$.
 
 ### Objective function
 
-Our objective function for agent $q$ assesses penalties for leftover inventory $R^{inv}_{tq}$ and unsatisfied demand $R^{back}_{tq}$. Let $c^{inv}_q$ be the unit cost of holding inventory for agent $q$, and $c^{back}_q$ be the unit cost of unsatisfied orders for agent $q$.
+Our objective function for agent $q$ assesses penalties for leftover inventory $R^{inv}\_{tq}$ and unsatisfied demand $R^{back}\_{tq}$. Let $c^{inv}\_q$ be the unit cost of holding inventory for agent $q$, and $c^{back}\_q$ be the unit cost of unsatisfied orders for agent $q$.
 
 These costs are assessed on inventories and backlogged demands after making decisions to fill a customer order but before new orders have arrived. So, our cost function for agent $q$ is given by
 
@@ -161,7 +161,7 @@ $$
 C(S_t,x_t) = c^{inv}(R^{inv}_{tq}-x^{fill}_{t,q,q-1}) + c^{back}(R^{back}_{tq}-x^{fill}_{t,q,q-1}).
 $$
 
-Keep in mind that $R^{inv}_{tq}$ is the current inventory, so $R^{inv}_{tq}-x^{fill}_{t,q,q-1}$ is the remaining inventory after we have filled orders for time $t$. Similarly, $R^{back}_{tq}$ includes new orders, as well as unfilled orders from previous periods. As a result, $R^{back}_{tq}-x^{fill}_{t,q,q-1}$ is the orders that were not filled right away.
+Keep in mind that $R^{inv}\_{tq}$ is the current inventory, so $R^{inv}\_{tq}-x^{fill}\_{t,q,q-1}$ is the remaining inventory after we have filled orders for time $t$. Similarly, $R^{back}\_{tq}$ includes new orders, as well as unfilled orders from previous periods. As a result, $R^{back}\_{tq}-x^{fill}\_{t,q,q-1}$ is the orders that were not filled right away.
 
 We now search for the best policy using
 
@@ -200,7 +200,7 @@ $$
 X^{\pi,req}_{t,q,q+1}(S_{tq}\vert \theta) = W^{req}_{t-1,q-1,q} + \theta_{q}.
 $$
 
-  This policy ignores how much we have in inventory; it is a pure tracking policy. This policy requires that we store the previous request $W^{req}_{t-1,q-1,q}$ in our state variable which becomes
+  This policy ignores how much we have in inventory; it is a pure tracking policy. This policy requires that we store the previous request $W^{req}\_{t-1,q-1,q}$ in our state variable which becomes
 
 $$
 S_{tq} = (R^{inv}_{tq},R^{back}_{tq}, W_{t-1,q-1,q}).
@@ -224,7 +224,7 @@ $$
 
 These are basic parameterized PFAs which are easy to implement, but of course require tuning. At the same time, they are quite simple, and ignore factors such as the history of past orders that have not yet been filled (in fact, each of these policies have fundamental flaws).
 
-Keep in mind that $R^{back}_{tq}$ is the orders by agent $q-1$ made to agent $q$ which $q$ has not yet filled. The orders placed by $q$ to $q+1$ that have not yet been filled are given by $R^{back}_{t,q+1}$, but this is not immediately known to agent $q$. Let $\overleftarrow{R}^{back}_{tq,q+1}$ be the estimate of $R^{back}_{t,q+1}$ made by agent $q$ of the back-ordered demands known by $q+1$. These are the unfilled orders that $q$ placed to $q+1$, which is a statistic normally maintained by $q+1$.
+Keep in mind that $R^{back}\_{tq}$ is the orders by agent $q-1$ made to agent $q$ which $q$ has not yet filled. The orders placed by $q$ to $q+1$ that have not yet been filled are given by $R^{back}\_{t,q+1}$, but this is not immediately known to agent $q$. Let $\overleftarrow{R}^{back}\_{tq,q+1}$ be the estimate of $R^{back}\_{t,q+1}$ made by agent $q$ of the back-ordered demands known by $q+1$. These are the unfilled orders that $q$ placed to $q+1$, which is a statistic normally maintained by $q+1$.
 
 Normally information known by one agent (such as $q+1$) cannot be known perfectly by another agent (such as $q$), but in this case, this is a statistic that $q$ can maintain on its own using
 
@@ -232,7 +232,7 @@ $$
 \overleftarrow{R}^{back}_{t+1,q,q+1} = \max\{0,\overleftarrow{R}^{back}_{tq,q+1}+x^{req}_{t,q,q+1} - W^{fill}_{t+1,q+1,q}\}.
 $$
 
-We can use this statistic to suggest an adjusted target inventory policy, where we are adding the unfilled orders captured by $\overleftarrow{R}^{back}_{t+1,q,q+1}$ to our current inventory $R^{inv}_{tq}$, which we write using:
+We can use this statistic to suggest an adjusted target inventory policy, where we are adding the unfilled orders captured by $\overleftarrow{R}^{back}\_{t+1,q,q+1}$ to our current inventory $R^{inv}\_{tq}$, which we write using:
 
 - Adjusted target inventory policy:
 
@@ -248,8 +248,8 @@ In 1989, John Sterman (MIT professor and expert on business dynamics) wrote a pa
 
 We begin by defining a set of state variables. The variables we actually use may depend on the policy.
 
-- **Physical state variables:** $R^{inv}_{tq}$, current inventory; $R^{back}_{tq}$, backlogged demand; and $R^{transit}_{tq}$, current in-transit inventory (we are not capturing how long the inventory has been in transit). The resource state is then $R_{tq} = (R^{inv}_{tq},R^{back}_{tq},R^{transit}_{tq})$.
-- **Information variables:** $F_{t-1,q,q-1}$, actual fill from $q$ to $q-1$ from previous time period, so $F_{t-1,q,q-1} = x^{fill}_{t-1,q,q-1}$; and $A_{t-1,q+1,q}$, actual arrivals to $q$ from $q+1$ in previous time period, so $A_{t-1,q+1,q} = x^{fill}_{t-1,q+1,q}$. The information state is then $I_{tq} = (F_{t-1,q-1,q},A_{t-1,q-1,q})$. With these variables we are "remembering" an activity from the previous time period. Their use depends on the policy.
+- **Physical state variables:** $R^{inv}\_{tq}$, current inventory; $R^{back}\_{tq}$, backlogged demand; and $R^{transit}\_{tq}$, current in-transit inventory (we are not capturing how long the inventory has been in transit). The resource state is then $R_{tq} = (R^{inv}\_{tq},R^{back}\_{tq},R^{transit}\_{tq})$.
+- **Information variables:** $F_{t-1,q,q-1}$, actual fill from $q$ to $q-1$ from previous time period, so $F_{t-1,q,q-1} = x^{fill}\_{t-1,q,q-1}$; and $A_{t-1,q+1,q}$, actual arrivals to $q$ from $q+1$ in previous time period, so $A_{t-1,q+1,q} = x^{fill}\_{t-1,q+1,q}$. The information state is then $I_{tq} = (F_{t-1,q-1,q},A_{t-1,q-1,q})$. With these variables we are "remembering" an activity from the previous time period. Their use depends on the policy.
 - **Belief state variables:** $\Abar_{t,q+1,q}$, estimated arrival rate of product from agent $q+1$ (this is an estimate of the rate at which product is arriving to $q$ from $q+1$); $\Fbar_{t,q,q-1}$, estimated fill rate delivered to agent $q-1$ (this is an estimate of the rate at which product is being shipped to $q-1$); and $\Dbar_{t,q-1,q}$, estimated demand rate from $q-1$ (this would equal $\Fbar_{t,q-1,q}$ if we completely filled every order, which means that $\Fbar_{t,q-1,q} \leq \Dbar_{t,q-1,q}$). The belief state is then $B_{tq} = (\Abar_{t,q+1,q},\Fbar_{t,q-1,q},\Dbar_{t,q-1,q})$. As with $I_t$, the use of these variables depends on the policy. Later we are going to propose different ways for computing these estimates.
 
 Our complete state variable is then
@@ -261,8 +261,8 @@ $$
 The estimated fill rate $\Fbar_{t,q,q-1}$ may be calculated in any of several ways:
 
 - Reactive: $\Fbar_{t,q-1,q} = F_{t-1,q-1,q}$.
-- Stable: $\Fbar_{t,q-1,q} = \theta^{trgt-fill}_q$, where $\theta^{trgt-fill}_q$ is a target fill rate set by agent $q$.
-- Regressive expectations: $\Fbar_{t,q-1,q} = (1-\gamma)\Fbar_{t-1,q-1,q} + \gamma \theta^{trgt-fill}_q$ for a specified smoothing factor $0 \leq \gamma \leq 1$.
+- Stable: $\Fbar_{t,q-1,q} = \theta^{trgt-fill}\_q$, where $\theta^{trgt-fill}\_q$ is a target fill rate set by agent $q$.
+- Regressive expectations: $\Fbar_{t,q-1,q} = (1-\gamma)\Fbar_{t-1,q-1,q} + \gamma \theta^{trgt-fill}\_q$ for a specified smoothing factor $0 \leq \gamma \leq 1$.
 - Adaptive expectations: $\Fbar_{t,q-1,q} = (1-\gamma)\Fbar_{t-1,q-1,q} + \gamma \Fbar_{t,q-1,q}$.
 
 The principle of "anchor-and-adjustment" applied to this setting is to choose an "anchor" which specifies how much we expect we should be ordering on average, with an "adjustment" to reflect current conditions.
@@ -273,7 +273,7 @@ $$
 X^{\pi,req}_{t,q,q+1}(S_{tq}) = \Fbar_{t,q-1,q}.
 $$
 
-- **Anchor-and-adjustment policy** – We are going to use our estimated order rate $\Fbar_{t,q-1,q}$ as our "anchor," which is what we expect we should order, but we are going to make adjustments based on our inventory on hand, and inventory in-transit. We represent these adjustments using $\delta R^{inv}_{tq}$, the adjustment based on the current inventory $R^{inv}_{tq}$; and $\delta R^{transit}_{tq}$, the adjustment based on the current in-transit inventory $R^{transit}_{tq}$.
+- **Anchor-and-adjustment policy** – We are going to use our estimated order rate $\Fbar_{t,q-1,q}$ as our "anchor," which is what we expect we should order, but we are going to make adjustments based on our inventory on hand, and inventory in-transit. We represent these adjustments using $\delta R^{inv}\_{tq}$, the adjustment based on the current inventory $R^{inv}\_{tq}$; and $\delta R^{transit}\_{tq}$, the adjustment based on the current in-transit inventory $R^{transit}\_{tq}$.
 
   We can use these to create an "anchor-and-adjustment" policy given by
 
@@ -281,15 +281,15 @@ $$
 X^{\pi,req}_{t,q,q+1}(S_{tq}\vert \theta_q) = \max\{0,\Fbar_{t,q-1,q} + \delta R^{inv}_{tq} + \delta R^{transit}_{tq}\}.
 $$
 
-  So now we have to design adjustment mechanisms. A possible strategy for $\delta R^{inv}_t$ might be
+  So now we have to design adjustment mechanisms. A possible strategy for $\delta R^{inv}\_t$ might be
 
 $$
 \delta R^{inv}_{tq} = \theta^{inv}_q (R^{inv-trgt}_q - R^{inv}_{tq}),
 $$
 
-  where $\theta^{inv}_q$ is a smoothing factor and the target inventory $R^{inv-trgt}$ are tunable parameters.
+  where $\theta^{inv}\_q$ is a smoothing factor and the target inventory $R^{inv-trgt}$ are tunable parameters.
 
-  A possible strategy for $\delta R^{transit}_{tq}$ might be
+  A possible strategy for $\delta R^{transit}\_{tq}$ might be
 
 $$
 \delta R^{transit}_{tq} = \theta^{transit} (R^{transit-trgt}_q - R^{transit}_{tq}).

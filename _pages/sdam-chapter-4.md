@@ -64,7 +64,7 @@ For our basic model, we are going to assume that we have five choices of medicat
 <p class="book-table-caption"><span class="fig-num">Table 4.1.</span> Metformin and the four drug classes and the average reduction over the full population.</p>
 </div>
 
-To create a model, let $\mubar^0_x$ be the mean reduction in the A1c for drug choice $x$ across the population, and let $\sigmabar^0_x$ be the standard deviation in the reduction in A1c for drug $x$. Our interest is learning the best drug for a particular individual. Although we can describe the patient using a set of attributes, for now we are only going to assume that the characteristics of the patient do not change our belief about the performance of each drug for an individual patient.
+To create a model, let $\mubar^0\_x$ be the mean reduction in the A1c for drug choice $x$ across the population, and let $\sigmabar^0\_x$ be the standard deviation in the reduction in A1c for drug $x$. Our interest is learning the best drug for a particular individual. Although we can describe the patient using a set of attributes, for now we are only going to assume that the characteristics of the patient do not change our belief about the performance of each drug for an individual patient.
 
 We do not know the reduction we can expect from each drug, so we represent it as a random variable $\mu_x$, where we assume that $\mu_x$ is normally distributed, which we write as
 
@@ -72,7 +72,7 @@ $$
 \mu_x \sim N(\mubar^0_x, (\sigmabar^0_x)^2).
 $$
 
-We refer to the normal distribution $N(\mubar^0_x, (\sigmabar^0_x)^2)$ as the *prior distribution of belief* about $\mu_x$.
+We refer to the normal distribution $N(\mubar^0\_x, (\sigmabar^0\_x)^2)$ as the *prior distribution of belief* about $\mu_x$.
 
 We index each iteration of prescribing a medication by $n$ which starts at 0, which refers to the time before we have run any experiments. Assume that we always observe a patient for a fixed period of time (say, a month). If we try a drug $x$ on a patient, we make a noisy observation of the true value $\mu_x$ of the patient's response to a medication. Assume we make a choice of drug $x^n$ using what we know after $n$ trials, after which we observe the outcome of the $n+1$st trial, which we denote $W^{n+1}$ (this is the reduction in the A1c level). This can be written
 
@@ -118,11 +118,11 @@ The decision is the choice of medication to try for a month, which we write as $
 
 ### Exogenous information
 
-After making the decision $x^n$, we observe $W^{n+1}_x$, the reduction in the A1c level resulting from the drug $x=x^n$ we prescribed for the $n+1$st trial. A reader might wonder why we write the information learned from the decision $x^n$ as $W^{n+1}_x$ rather than $W^n_x$. We do this to capture the information available in each variable. Thus, the decision $x^0$ depends only on the initial state $S^0$. The state $S^n$ for $n\geq 1$ depends on $S^0$ along with the observations $W^1_{x^0}, \ldots, W^n_{x^{n-1}}$, but not $W^{n+1}_{x^n}$, since we have not yet completed the $n+1$st experiment that would reveal $W^{n+1}_{x^n}$. By letting $W^{n+1}_{x^n}$ be the result of the prescription $x^n$, we know that $x^n$ cannot depend on $W^{n+1}$, which would be like seeing into the future.
+After making the decision $x^n$, we observe $W^{n+1}\_x$, the reduction in the A1c level resulting from the drug $x=x^n$ we prescribed for the $n+1$st trial. A reader might wonder why we write the information learned from the decision $x^n$ as $W^{n+1}\_x$ rather than $W^n_x$. We do this to capture the information available in each variable. Thus, the decision $x^0$ depends only on the initial state $S^0$. The state $S^n$ for $n\geq 1$ depends on $S^0$ along with the observations $W^1\_{x^0}, \ldots, W^n_{x^{n-1}}$, but not $W^{n+1}\_{x^n}$, since we have not yet completed the $n+1$st experiment that would reveal $W^{n+1}\_{x^n}$. By letting $W^{n+1}\_{x^n}$ be the result of the prescription $x^n$, we know that $x^n$ cannot depend on $W^{n+1}$, which would be like seeing into the future.
 
 ### Transition function
 
-The transition function captures how the observed reduction in A1c, $W^{n+1}_x$, affects our belief state $S^n$. Although it takes a little algebra, it is possible to show that if we try drug $x=x^n$ and observe $W^{n+1}_x$, we can update our estimate of the mean and precision using
+The transition function captures how the observed reduction in A1c, $W^{n+1}\_x$, affects our belief state $S^n$. Although it takes a little algebra, it is possible to show that if we try drug $x=x^n$ and observe $W^{n+1}\_x$, we can update our estimate of the mean and precision using
 
 $$
 \begin{align}
@@ -137,7 +137,7 @@ The transition function, which we earlier wrote as a generic function $S^{n+1} =
 
 ### Objective function
 
-Each time we prescribe a drug $x=x^n$, we observe the reduction in the A1c represented by $W^{n+1}_{x^n}$. We want to find a policy that chooses a drug $x^n = X^\pi(S^n)$ that maximizes the expected total reduction in A1c. Our canonical model used $C(S^n,x^n,W^{n+1})$ as our performance metric. For this problem, this would be
+Each time we prescribe a drug $x=x^n$, we observe the reduction in the A1c represented by $W^{n+1}\_{x^n}$. We want to find a policy that chooses a drug $x^n = X^\pi(S^n)$ that maximizes the expected total reduction in A1c. Our canonical model used $C(S^n,x^n,W^{n+1})$ as our performance metric. For this problem, this would be
 
 $$
 C(S^n,x^n,W^{n+1}) = W^{n+1}_{x^n}.
@@ -266,7 +266,7 @@ $$
 S^{n+1}(\psi_k,\omega_\ell) = S^M(S^n(\psi_k,\omega_\ell), X^\pi(S^n(\psi_k,\omega_\ell)), W^{n+1}(\psi_k,\omega_\ell)).
 $$
 
-If we use simultaneous sampling, then a sample $\omega$ determines both the truth $\mu(\omega)$ and the noise $\varepsilon(\omega)$, allowing us to write a sampled estimate of our observation $W^{n+1}_{x^n}$ as
+If we use simultaneous sampling, then a sample $\omega$ determines both the truth $\mu(\omega)$ and the noise $\varepsilon(\omega)$, allowing us to write a sampled estimate of our observation $W^{n+1}\_{x^n}$ as
 
 $$
 W^{n+1}_{x^n}(\omega_\ell) = \mu(\omega_\ell) + \varepsilon^n(\omega_\ell).
@@ -378,7 +378,7 @@ $$
 \beta^0_x = \frac{1}{(\sigma^0_x)^2},
 $$
 
-where $\sigma^0_x$ is given in Table 4.1.
+where $\sigma^0\_x$ is given in Table 4.1.
 
 After $n$ experiments, we are going to use our policy to make a decision $x^n$ which is the drug to try for the $n+1$st experiment. We do not know the true performance $\mu_x$ of drug $x$, but we can observe it using a noisy observation of the true value $\mu_x$ which we write using
 
@@ -386,7 +386,7 @@ $$
 W^{n+1}_x = \mu_x + \varepsilon^{n+1}_x.
 $$
 
-Assume that the standard deviation of a single experiment is $\sigma^W = 5$. We use the observation of $W^{n+1}_x$ to update our beliefs using:
+Assume that the standard deviation of a single experiment is $\sigma^W = 5$. We use the observation of $W^{n+1}\_x$ to update our beliefs using:
 
   <ol type="i">
     <li>If we try drug $x$:
@@ -410,11 +410,11 @@ Answer the following:
 </li>
 <li>We might reasonably think that the parameter $\theta^{IE}$ should depend on the number of experiments remaining in our budget, which means that $\theta^{IE}$ needs to be a function of $n$ (or equivalently, it would be a function of the remaining experiments $N-n$). There are two ways to represent this function. Discuss (without any programming) the strengths of each approach, and the computational challenges that would be involved.
   <ol type="a">
-    <li>Lookup table – Instead of searching over a scalar $\theta^{IE}$, we would have to search over a vector $\theta^{IE}_n$.</li>
+    <li>Lookup table – Instead of searching over a scalar $\theta^{IE}$, we would have to search over a vector $\theta^{IE}\_n$.</li>
     <li>Parametric – We might assume a function form such as $\theta^{IE} = \theta^{slope}(N-n)$, where now we just have to tune the scalar $\theta^{slope}$.</li>
   </ol>
 </li>
-<li>We have approached this problem as if we are solving the problem for each patient. Imagine that we have $I$ patients indexed by $i = 1, \ldots, I$, remembering that $I$ might be 10 million patients. Finding a vector of estimates $\mubar = (\mubar_x)_{x\in\Xcal}$ for each patient would be written $\mubar = (\mubar_{i})_{i=1}^I$ where each $\mubar_i = (\mubar_{ix})_{x\in\Xcal}$. Creating 10 million estimates seems a bit clumsy.
+<li>We have approached this problem as if we are solving the problem for each patient. Imagine that we have $I$ patients indexed by $i = 1, \ldots, I$, remembering that $I$ might be 10 million patients. Finding a vector of estimates $\mubar = (\mubar_x)\_{x\in\Xcal}$ for each patient would be written $\mubar = (\mubar_{i})\_{i=1}^I$ where each $\mubar_i = (\mubar_{ix})\_{x\in\Xcal}$. Creating 10 million estimates seems a bit clumsy.
 
 Imagine instead that each patient has a vector of attributes $a = (a_1,\ldots, a_M)$ where $a \in \Acal$. There may be a lot of attributes, in which case the set $\Acal$ would be quite large, but we may choose a small subset so that $\Acal$ is not as big, such as gender and whether they smoke. We can again use two different representations of $\mubar_{ax}$. As before, discuss the strengths and computational challenges of each of the following ways of modeling $\mubar_{ax}$:
   <ol type="a">
@@ -443,7 +443,7 @@ These exercises use the Python module *AdaptiveMarketPlanning* on [tinyurl.com/s
 </li>
 <li>Evaluate the IE policy given a budget $N = 20$ over the values $\theta^{IE} = (0, 0.2, 0.4, \ldots, 2.0)$ for two different sets of truths:
   <ol type="a">
-    <li>First assume that the prior is $\mu^0_x = 0.3$ for all drugs $x$ and where the initial standard deviation $\sigma^0_x = 0.10$. This means we are assuming that the truth $\mu_x \sim N(\mubar^0_x,(\sigmabar^0_x)^2)$. However, we are going to sample our truth using
+    <li>First assume that the prior is $\mu^0\_x = 0.3$ for all drugs $x$ and where the initial standard deviation $\sigma^0\_x = 0.10$. This means we are assuming that the truth $\mu_x \sim N(\mubar^0\_x,(\sigmabar^0\_x)^2)$. However, we are going to sample our truth using
 
     $$
     \muhat_x = .3 + \varepsilon
@@ -458,7 +458,7 @@ These exercises use the Python module *AdaptiveMarketPlanning* on [tinyurl.com/s
     \mu_x = \mubar^0_x + \varepsilon
     $$
 
-    where $\mubar^0$ is given in Table 4.2 ("A1c reduction") and where $\varepsilon$ is uniformly distributed in the interval $[-.5\mubar^0_x, +.5\mubar^0_x]$. Perform 10,000 repetitions of each value of $\theta^{IE}$ to compute the average performance. What conclusions can you draw from the plot?</li>
+    where $\mubar^0$ is given in Table 4.2 ("A1c reduction") and where $\varepsilon$ is uniformly distributed in the interval $[-.5\mubar^0\_x, +.5\mubar^0\_x]$. Perform 10,000 repetitions of each value of $\theta^{IE}$ to compute the average performance. What conclusions can you draw from the plot?</li>
   </ol>
 </li>
 </ol>

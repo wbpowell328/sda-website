@@ -55,9 +55,9 @@ The answers to our three framing questions are:
 
 ### State variables
 
-We start by modeling the snapshot of the system at time $t$ which includes $R_t$, the amount of energy (in MWh) stored in the battery at time $t$; $L_t$, the load (demand) for energy at time $t$ (in MW); $\tau_t$, the temperature at time $t$; $w_t$, the energy from wind at time $t$ (in MW); $p^{load}_t$, the amount we are paid per MWh to satisfy the load to the building at time $t$; and $c^{grid}_t$, the cost of purchasing power from the grid (this is the price we are paid if we sell back to the grid).
+We start by modeling the snapshot of the system at time $t$ which includes $R_t$, the amount of energy (in MWh) stored in the battery at time $t$; $L_t$, the load (demand) for energy at time $t$ (in MW); $\tau_t$, the temperature at time $t$; $w_t$, the energy from wind at time $t$ (in MW); $p^{load}\_t$, the amount we are paid per MWh to satisfy the load to the building at time $t$; and $c^{grid}\_t$, the cost of purchasing power from the grid (this is the price we are paid if we sell back to the grid).
 
-Since the underlying problem is very time-dependent (due to daily cycles), we are going to need to use forecasts, both to model the dynamics of the problem as well as to make decisions which need to anticipate what might happen in the future. We assume that we are given a rolling set of forecasts as illustrated for wind in Figure 9.2. We model the forecasts for load ($L$), temperature ($\tau$), wind ($w$), market prices ($p$), and grid prices ($G$) using: $f^L_{tt'}$, the forecast of the load $L_t$ (in MW) at time $t' > t$ given what we know at time $t$; $f^\tau_{tt'}$, the forecast of the temperature $\tau_t$ at time $t' > t$ given what we know at time $t$; $f^w_{tt'}$, the forecast of the wind power $w_t$ (in MW) at time $t' > t$ given what we know at time $t$; $f^p_{tt'}$, the forecast of market prices $p^{load}_t$ (in ＄/MWh) at $t' > t$ given what we know at time $t$; and $f^G_{tt'}$, the forecast of grid prices $c^{grid}_t$ (in ＄/MWh) at $t' > t$ given what we know at time $t$.
+Since the underlying problem is very time-dependent (due to daily cycles), we are going to need to use forecasts, both to model the dynamics of the problem as well as to make decisions which need to anticipate what might happen in the future. We assume that we are given a rolling set of forecasts as illustrated for wind in Figure 9.2. We model the forecasts for load ($L$), temperature ($\tau$), wind ($w$), market prices ($p$), and grid prices ($G$) using: $f^L_{tt'}$, the forecast of the load $L_t$ (in MW) at time $t' > t$ given what we know at time $t$; $f^\tau_{tt'}$, the forecast of the temperature $\tau_t$ at time $t' > t$ given what we know at time $t$; $f^w_{tt'}$, the forecast of the wind power $w_t$ (in MW) at time $t' > t$ given what we know at time $t$; $f^p_{tt'}$, the forecast of market prices $p^{load}\_t$ (in ＄/MWh) at $t' > t$ given what we know at time $t$; and $f^G_{tt'}$, the forecast of grid prices $c^{grid}\_t$ (in ＄/MWh) at $t' > t$ given what we know at time $t$.
 
 All forecasts are vectors over the horizon $t, t+1, \ldots, t+H$ where $H$ is a specified horizon (e.g. 24 hours). We let $f^X_t$ be the vector of forecasts for $X \in \Xcal = \lbrace L, T, W, P, G\rbrace $.
 
@@ -73,7 +73,7 @@ We quickly see that we have a relatively high-dimensional state variable. If we 
 
 ### Decision variables
 
-The decision variables for our system are now $x^{wr}_t$, the amount of power moved from the wind farm to the battery at time $t$; $x^{w\ell}_t$, the amount of power moved from the wind farm to the load (the building) at time $t$; $x^{gr}_t$, the amount of power moved from the grid to the battery at time $t$; $x^{rg}_t$, the amount of power moved from the battery to the grid at time $t$; $x^{g\ell}_t$, the amount of power moved from the grid to the load at time $t$; $x^{r\ell}_t$, the amount of power moved from the battery to the load at time $t$; and $x^{loss}_t$, uncovered load (known as "load shedding").
+The decision variables for our system are now $x^{wr}\_t$, the amount of power moved from the wind farm to the battery at time $t$; $x^{w\ell}\_t$, the amount of power moved from the wind farm to the load (the building) at time $t$; $x^{gr}\_t$, the amount of power moved from the grid to the battery at time $t$; $x^{rg}\_t$, the amount of power moved from the battery to the grid at time $t$; $x^{g\ell}\_t$, the amount of power moved from the grid to the load at time $t$; $x^{r\ell}\_t$, the amount of power moved from the battery to the load at time $t$; and $x^{loss}\_t$, uncovered load (known as "load shedding").
 
 These variables have to be determined subject to the constraints
 
@@ -139,7 +139,7 @@ R_{t+1} = R_t + \eta (x^{wr}_t + x^{gr}_t) - \frac{1}{\eta} (x^{rg}_t + x^{r\ell
 \end{align}
 $$
 
-Each of the variables $L_t$, $\tau_t$, $w_t$, $p^{load}_t$, and $c^{grid}_t$ evolve using the forecasts. For example, we would write the evolution of the load $L_t$ using
+Each of the variables $L_t$, $\tau_t$, $w_t$, $p^{load}\_t$, and $c^{grid}\_t$ evolve using the forecasts. For example, we would write the evolution of the load $L_t$ using
 
 $$
 \begin{align}
@@ -147,7 +147,7 @@ L_{t+1} = f^L_{t,t+1} + \varepsilon^L_{t+1}, \label{eq:energytransitionII2}
 \end{align}
 $$
 
-We could create similar equations for $\tau_t$, $w_t$, $p^{load}_t$, and $c^{grid}_t$.
+We could create similar equations for $\tau_t$, $w_t$, $p^{load}\_t$, and $c^{grid}\_t$.
 
 We write the evolution of the forecasts using
 
@@ -173,7 +173,7 @@ $$
 C(S_t,x_t) = (x^{w\ell}_t + x^{g\ell}_t + \eta x^{r\ell}_t) p^{load}_t - (x^{g\ell}_t + x^{gr}_t)c^{grid}_t,
 $$
 
-where the market price $p^{load}_t$ and grid price $c^{grid}_t$ are contained in the state variable $S_t$. Our objective function is still the canonical problem given by
+where the market price $p^{load}\_t$ and grid price $c^{grid}\_t$ are contained in the state variable $S_t$. Our objective function is still the canonical problem given by
 
 $$
 \max_\pi \E \sum_{t=0}^T  C(S_t,X^\pi(S_t))
@@ -215,7 +215,7 @@ $$
 
 The covariance function $Cov(\fhat^X_{t+1,t'},\fhat^X_{t+1,t''})$ in equation $\eqref{eq:forecastcovariancefunction}$ captures the property that the covariance across time exhibits correlations that decrease with the difference between the two points in time. This simple model introduces the tunable parameter $\beta$ that has to be estimated from data, or possibly by judgment. For example, it might be possible to plot the covariance values for different values of $\beta$ and choose one that seems reasonable.
 
-We can use this covariance function to create a covariance matrix $\Sigma^X$ with element $\Sigma^X_{t't''} = \sigma^2_X e^{-\beta\vert t''-t'\vert }$. There is a simple way of creating a correlated sample of changes in forecasts using a method called *Cholesky decomposition*. It begins by creating what we might call the "square root" of the covariance matrix $\Sigma^X$ which we store in a lower triangular matrix $L$. In python, using the NumPy package, we would use the python command
+We can use this covariance function to create a covariance matrix $\Sigma^X$ with element $\Sigma^X_{t't''} = \sigma^2\_X e^{-\beta\vert t''-t'\vert }$. There is a simple way of creating a correlated sample of changes in forecasts using a method called *Cholesky decomposition*. It begins by creating what we might call the "square root" of the covariance matrix $\Sigma^X$ which we store in a lower triangular matrix $L$. In python, using the NumPy package, we would use the python command
 
 ```
 L = scipy.linalg.cholesky(Sigma_X, lower=True)
@@ -296,7 +296,7 @@ We are going to create a policy by formulating a deterministic lookahead model, 
 
 Note that $x_t = \xtilde_{tt}$, $c_t = \ctilde_{tt}$ and so on.
 
-We create our deterministic lookahead policy $X^{DLA}_t(S_t)$ as the following linear program:
+We create our deterministic lookahead policy $X^{DLA}\_t(S_t)$ as the following linear program:
 
 $$
 \begin{align}
@@ -339,7 +339,7 @@ These equations mirror the ones in the base constraints $\eqref{eq:energysystem1
 
 The model described by equations $\eqref{eq:energydetlookahead0}$–$\eqref{eq:energydetlookahead8}$ is a relatively simple linear program, for which packages are now available in languages such as Matlab or python.
 
-Lookahead policies such as $X^{DLA}_t(S_t)$ are widely used in dynamic, time-varying problems such as this. They have to be solved on a rolling basis as we first illustrated for our deterministic shortest path problem. For this reason, these are sometimes called "rolling horizon procedures" or "receding horizon procedures." There is an entire field known as "model predictive control" which is based on these lookahead policies.
+Lookahead policies such as $X^{DLA}\_t(S_t)$ are widely used in dynamic, time-varying problems such as this. They have to be solved on a rolling basis as we first illustrated for our deterministic shortest path problem. For this reason, these are sometimes called "rolling horizon procedures" or "receding horizon procedures." There is an entire field known as "model predictive control" which is based on these lookahead policies.
 
 For applications such as this energy storage problem, the use of a deterministic lookahead model raises the concern that we are not accounting for uncertainties. For example, we might want to store extra energy in the battery to protect ourselves from a sudden drop in wind or a surge in prices on the grid. In the next section, we are going to describe how to use a deterministic lookahead model to handle uncertainty.
 

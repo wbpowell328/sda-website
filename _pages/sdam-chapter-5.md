@@ -44,7 +44,7 @@ We are going to assume that we are trying to traverse the network in Figure 5.2 
 
 ### Notation
 
-Shortest path problems build on a fundamental dynamic programming recursion. Let $\Ncal$ be the set of all nodes in the network (the nodes $1, 2, \ldots, 11$), $\Ncal^+_i$ be the set of all nodes that can be reached directly from node $i$, $\Ncal^-_j$ be the set of all nodes that are connected to node $j$, $\Lcal$ be the set of all links $(i,j)$ in the network, and $c_{ij}$ be the cost of traversing link $(i,j)$, where $j$ is assumed to be in the set $\Ncal^+_i$.
+Shortest path problems build on a fundamental dynamic programming recursion. Let $\Ncal$ be the set of all nodes in the network (the nodes $1, 2, \ldots, 11$), $\Ncal^+\_i$ be the set of all nodes that can be reached directly from node $i$, $\Ncal^-\_j$ be the set of all nodes that are connected to node $j$, $\Lcal$ be the set of all links $(i,j)$ in the network, and $c_{ij}$ be the cost of traversing link $(i,j)$, where $j$ is assumed to be in the set $\Ncal^+\_i$.
 
 Let $v_i$ be the minimum cost from node $i$ to the destination node 11. The values $v_i$ for all nodes $i\in\Ncal$ should satisfy
 
@@ -149,7 +149,7 @@ If we update our estimates in this way, then it means that the vector of estimat
 
 ## Designing policies
 
-Our "policy" for this deterministic problem is a function that maps the "state" (that is, what node we are at) to an action (which link we move over). We can solve this problem by optimizing the linear program represented by equations $\eqref{shortestpathobjective1}$–$\eqref{shortestpathobjective5}$, which gives us the vector $x^\ast _{ij}$ for all links $(i,j)$. We can think of this as a function where given the state (node $i$) we choose an action, which is the link $(i,j)$ for which $x_{ij} = 1$. We can write this policy as a function $X^\pi(S_t)$ using
+Our "policy" for this deterministic problem is a function that maps the "state" (that is, what node we are at) to an action (which link we move over). We can solve this problem by optimizing the linear program represented by equations $\eqref{shortestpathobjective1}$–$\eqref{shortestpathobjective5}$, which gives us the vector $x^\ast \_{ij}$ for all links $(i,j)$. We can think of this as a function where given the state (node $i$) we choose an action, which is the link $(i,j)$ for which $x_{ij} = 1$. We can write this policy as a function $X^\pi(S_t)$ using
 
 $$
 X^\pi(S_t=N_t=i) = j \quad \text{if } x_{ij} = 1.
@@ -298,7 +298,7 @@ V^x_t(S^x_t) = \E \{V_{t+1}(S_{t+1})\vert S_t,x\}. \label{eq:shortestpathbellman
 \end{align}
 $$
 
-So, we still have to compute that expectation, and it has not gotten any easier. Assume that our decision $x$ is to go to node $j$ (which means that $x_{ij}=1$), and let $\chat_{t+1,j} = (\chat_{t+1,jk},~k\in\Ncal^+_j)$ be the set of link costs out of node $j$. Our next pre-decision state $S_{t+1}$ would then be
+So, we still have to compute that expectation, and it has not gotten any easier. Assume that our decision $x$ is to go to node $j$ (which means that $x_{ij}=1$), and let $\chat_{t+1,j} = (\chat_{t+1,jk},~k\in\Ncal^+\_j)$ be the set of link costs out of node $j$. Our next pre-decision state $S_{t+1}$ would then be
 
 $$
 S_{t+1} = (j, \chat_{t+1,j}).
@@ -316,7 +316,7 @@ $$
 \Vbar^{x,n}_t(S^x_t = j) \approx \E \{V_{t+1}(S_{t+1})\vert S^x_t\}.
 $$
 
-Let $\Vbar^{x,n}_t(j)$ be our approximation of $\E \lbrace V_{t+1}(S_{t+1})\vert S^x_t\rbrace $ after observing $n$ samples. One way to build this approximation is to use samples of the value of being at node $j$. Imagine that we are going to pass forward through the network, making decisions using approximations $\Vbar^{x,n-1}_t(S^x_t)$ obtained from previous iterations, along with sampled costs $\chat^n_{tij}$. We can obtain a sampled estimate of the value of being in state $S_t$ using
+Let $\Vbar^{x,n}\_t(j)$ be our approximation of $\E \lbrace V_{t+1}(S_{t+1})\vert S^x_t\rbrace $ after observing $n$ samples. One way to build this approximation is to use samples of the value of being at node $j$. Imagine that we are going to pass forward through the network, making decisions using approximations $\Vbar^{x,n-1}\_t(S^x_t)$ obtained from previous iterations, along with sampled costs $\chat^n_{tij}$. We can obtain a sampled estimate of the value of being in state $S_t$ using
 
 $$
 \begin{align}
@@ -324,7 +324,7 @@ $$
 \end{align}
 $$
 
-We are then going to use $\vhat^{x,n}_t(i)$, which is the value of being in state $S_t$ (which includes both the node $i$ and the costs $\chat^n_{tij}$ for all $j$ out of node $i$), to update the previous post-decision state $S^x_{t-1}$, which we do using
+We are then going to use $\vhat^{x,n}\_t(i)$, which is the value of being in state $S_t$ (which includes both the node $i$ and the costs $\chat^n_{tij}$ for all $j$ out of node $i$), to update the previous post-decision state $S^x_{t-1}$, which we do using
 
 $$
 \begin{align}
@@ -343,9 +343,9 @@ where $\theta^\alpha$ is a tunable parameter. For example, if we set $\theta^\al
 We pause to note two advantages of the use of the post-decision state $S^x_t$:
 
 - We no longer have to deal with the expectation when optimizing over the choice of output links from a node (see equation $\eqref{eq:vhatsinglepass}$).
-- Approximating the value function $\Vbar^{x,n}_t(S^x_t = i)$ is much simpler since the post-decision state $S^x_t$ is now just a scalar, which is much easier to estimate than a higher-dimensional function.
+- Approximating the value function $\Vbar^{x,n}\_t(S^x_t = i)$ is much simpler since the post-decision state $S^x_t$ is now just a scalar, which is much easier to estimate than a higher-dimensional function.
 
-One challenge with equation $\eqref{eq:vhatsinglepass}$ is that we are going to need initial values for $\Vbar^{x,0}_t(i)$. A natural choice would be to solve the deterministic version of this problem where the costs $\chat_{tij}$ are set equal to estimates of their means, and then obtain initial estimates of the cost incurred to get from each node to the destination.
+One challenge with equation $\eqref{eq:vhatsinglepass}$ is that we are going to need initial values for $\Vbar^{x,0}\_t(i)$. A natural choice would be to solve the deterministic version of this problem where the costs $\chat_{tij}$ are set equal to estimates of their means, and then obtain initial estimates of the cost incurred to get from each node to the destination.
 
 An alternative method is to use the estimates $\Vbar^{x,n-1}(i)$ to make decisions using
 
@@ -355,7 +355,7 @@ x^n_t(i) = \argmin_{j\in\Ncal^+_i} \big(\chat^n_{tij} + \Vbar^{x,n-1}_t(j)\big).
 \end{align}
 $$
 
-The decision $i^n_t = x^n_t(i)$ gives us the next node after node $i$ based on the sampled costs $\chat^n_{tij}$ and the estimates of the cost $\Vbar^{x,n-1}_t(j)$ to get from node $j$ to the destination node $r$. When we arrive at $r$, we have an entire path consisting of the nodes
+The decision $i^n_t = x^n_t(i)$ gives us the next node after node $i$ based on the sampled costs $\chat^n_{tij}$ and the estimates of the cost $\Vbar^{x,n-1}\_t(j)$ to get from node $j$ to the destination node $r$. When we arrive at $r$, we have an entire path consisting of the nodes
 
 $$
 (q, i^n_1, i^n_2, \ldots, r).
@@ -390,7 +390,7 @@ This method is very robust with respect to complex pre-decision states. For exam
 <ol class="book-exercises">
 <li>In the original stochastic shortest path problem where we only observe the actual cost after we traverse the link, explain why this can be solved exactly as a simple deterministic shortest path problem.</li>
 <li>For the version where we observe the actual cost over a link before we choose which direction to move, give the pre-decision and post-decision state variables.</li>
-<li>In equation $\eqref{eq:vhatsmoothing}$, we use the sampled value $\vhat^{x,n}_t(i)$ of being in state $S_t$ to update the estimated value of being at the previous post-decision state given by $\Vbar^{x,n}_{t-1}(i)$. Create a small numerical example to illustrate this equation.</li>
+<li>In equation $\eqref{eq:vhatsmoothing}$, we use the sampled value $\vhat^{x,n}\_t(i)$ of being in state $S_t$ to update the estimated value of being at the previous post-decision state given by $\Vbar^{x,n}\_{t-1}(i)$. Create a small numerical example to illustrate this equation.</li>
 </ol>
 
 **Problem solving questions**
