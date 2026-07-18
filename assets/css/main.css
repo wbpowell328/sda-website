@@ -610,6 +610,29 @@ img, video { max-width: 100%; height: auto; display: block; }
   text-align: left;
   padding-top: 0.5rem;
 }
+/* Table caption written as a <p> below .book-table-wrap instead of a
+   real <caption> element (used in the SDAM book, where captions often
+   need to sit outside the scrolling wrapper). Same look as the rule above. */
+.book-table-caption {
+  font-size: 0.9rem;
+  color: #6b5a3f;
+  text-align: left;
+  margin-top: 0.5rem;
+}
+
+/* Pseudocode / algorithm boxes (SDAM chapters). Matches the book's
+   parchment palette; a plain bordered box since these are prose-heavy
+   step lists, not tables or figures. */
+.book-algorithm {
+  border: 1px solid #c9b98a;
+  background: #f7efd8;
+  border-radius: 4px;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  font-size: 0.92rem;
+}
+.book-algorithm p { margin: 0 0 0.5rem; }
+.book-algorithm p:last-child { margin-bottom: 0; }
 .book-table th, .book-table td {
   border: 1px solid #d9c9a3;
   padding: 0.25rem 0.7rem;
