@@ -559,7 +559,7 @@ We used this problem to illustrate different types of PFA policies:
 <li>You need to run a simulation of electricity prices, which are notoriously heavy-tailed. You collect the data shown in the table below.
 
 <div class="book-table-wrap">
-<table class="book-table">
+<table class="book-table is-narrow">
 <thead><tr><th>Time</th><th>Price</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>20</td></tr>

@@ -660,6 +660,16 @@ img, video { max-width: 100%; height: auto; display: block; }
   padding-right: 0.5rem;
 }
 
+/* Narrow, fully-centered numeric tables (e.g. chapter 2's exercise time/
+   price table) -- the default 100%-width table with a left-aligned first
+   column is overkill for a short list of numbers where every column should
+   be centered and no wider than the numbers need. */
+.book-table.is-narrow { width: auto; }
+.book-table.is-narrow th, .book-table.is-narrow td {
+  width: 1in;
+  text-align: center;
+}
+
 /* Rating cells for H/M/L/N interaction-matrix tables (impact of a decision
    or uncertainty on a metric: High/Medium/Low/None). Colors follow the
    author's original spreadsheet convention: red=H, orange=M, yellow=L,
