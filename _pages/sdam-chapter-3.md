@@ -79,7 +79,12 @@ This is a gradient (that is, a derivative) of $F(x,W)$ given the random variable
 Taking expectations of both sides of $\eqref{eq:newsvendorstochasticgradient}$ gives
 
 $$
-\E \frac{d F(x,W)}{dx} = (p-c) Prob[x \leq W] - c Prob[x > W] = (p-c) (1-F^W(x)) - c F^W(x) = (p-c) - pF^W(x) = 0 \quad \text{for } x = x^\ast .
+\begin{align*}
+\E \frac{d F(x,W)}{dx} &= (p-c) Prob[x \leq W] - c Prob[x > W] \\
+&= (p-c) (1-F^W(x)) - c F^W(x) \\
+&= (p-c) - pF^W(x) \\
+&= 0 \quad \text{for } x = x^\ast .
+\end{align*}
 $$
 
 We can now solve for $F^W(x^\ast )$ giving
