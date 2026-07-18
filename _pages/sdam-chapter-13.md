@@ -160,7 +160,7 @@ The models represented by Figure 13.1 are quite useful for resource allocation p
 
 There is no real "cost" to assigning blood of one type to demand of another type (we are not considering steps such as spending money to encourage additional donations, or transporting inventories from one hospital to another). Instead, we use the contribution function to capture the preferences of the doctor. We would like to capture the natural preference that it is generally better not to substitute, and that satisfying an urgent demand is more important than an elective demand.
 
-For example, we might use the contributions described in Table 13.2. Thus, if we use $O-$ blood to satisfy the needs for an elective patient with $A+$ blood, we would pick up a -\$10 contribution (penalty since it is negative) for substituting blood, a +\$5 for using $O-$ blood (something the hospitals like to encourage), and a +\$20 contribution for serving an elective demand, for a total contribution of +\$15.
+For example, we might use the contributions described in Table 13.2. Thus, if we use $O-$ blood to satisfy the needs for an elective patient with $A+$ blood, we would pick up a -＄10 contribution (penalty since it is negative) for substituting blood, a +＄5 for using $O-$ blood (something the hospitals like to encourage), and a +＄20 contribution for serving an elective demand, for a total contribution of +＄15.
 
 <div class="book-table-wrap">
 <table class="book-table is-list-table">
@@ -211,7 +211,7 @@ We are going to start with a basic myopic policy, and then transition to one tha
 
 The most obvious way to solve this problem is a simple myopic policy, where we maximize the contribution at each point in time without regard to the effect of our decisions on the future. We can obtain a family of myopic policies by adjusting the one-period contributions.
 
-For example, our bonus of \$5 for using $O-$ blood (in Table 13.2), is actually a type of myopic policy. We encourage using $O-$ blood since it is generally more available than other blood types. By changing this bonus, we obtain different types of myopic policies that we can represent by the set $\Pi^M$, where for $\pi\in\Pi^M$ our decision function would be given by
+For example, our bonus of ＄5 for using $O-$ blood (in Table 13.2), is actually a type of myopic policy. We encourage using $O-$ blood since it is generally more available than other blood types. By changing this bonus, we obtain different types of myopic policies that we can represent by the set $\Pi^M$, where for $\pi\in\Pi^M$ our decision function would be given by
 
 $$
 \begin{align}

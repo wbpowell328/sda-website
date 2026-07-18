@@ -22,6 +22,13 @@ window.CASTLE_MATH_MACROS = {
   argmin:   "\\operatorname*{arg\\,min}",
   Var:      "\\textit{Var}",
   Cov:      "\\operatorname{Cov}",
+  // Literal dollar sign in math, e.g. "$\theta = \Doll 42$". A raw "\$" in
+  // the markdown source gets its backslash silently stripped by kramdown
+  // (its own escape-char handling, unaware of math context) before MathJax
+  // ever sees it, leaving a bare "$" that reopens/closes math mid-sentence.
+  // This macro is a letter-only name, so kramdown's punctuation-escape
+  // stripping never touches it.
+  Doll:     "\\$",
 
   // ---- Book shortcuts ----
   discount:   "\\gamma",

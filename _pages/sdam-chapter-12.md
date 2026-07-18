@@ -82,7 +82,7 @@ but this is a statistic that we can compute from the information in $S^n$, so we
 
 ### Decision variables
 
-Our only decision variable is the bid which we define as $x^n$, the bid (in \$ per click) for the $(n+1)$st auction. As before, we let $X^\pi(S^n)$ be our generic policy that gives us the bid $x^n$ as a function of the information available to us, represented by $S^n$, which means that we would write
+Our only decision variable is the bid which we define as $x^n$, the bid (in ＄ per click) for the $(n+1)$st auction. As before, we let $X^\pi(S^n)$ be our generic policy that gives us the bid $x^n$ as a function of the information available to us, represented by $S^n$, which means that we would write
 
 $$
 x^n = X^\pi(S^n).

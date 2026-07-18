@@ -309,13 +309,13 @@ $$
 \Fhat^\pi(\omega) = \sum_{t=0}^{T-1} p_t(\omega)X^\pi(S_t(\omega)),
 $$
 
-where $\omega$ is used to represent a sample path of realizations of whatever exogenous random variables are used in the model. Table 2.2 illustrates a series of sample paths of prices. For example, imagine that we are using the "sell-low" policy with $\theta^{sell-low} = \$42$. Now consider testing it on sample path $\omega^5$. The result would be
+where $\omega$ is used to represent a sample path of realizations of whatever exogenous random variables are used in the model. Table 2.2 illustrates a series of sample paths of prices. For example, imagine that we are using the "sell-low" policy with $\theta^{sell-low} = \Doll 42$. Now consider testing it on sample path $\omega^5$. The result would be
 
 $$
 \Fhat^{sell-low}(\omega^5) = \$41.53,
 $$
 
-since $\$41.53$ is the first price that falls below $\$42$. If none of the prices fall below our sell point, then all of our policies are designed to sell at the end.
+since $\Doll 41.53$ is the first price that falls below $\Doll 42$. If none of the prices fall below our sell point, then all of our policies are designed to sell at the end.
 
 <div class="book-table-wrap">
 <table class="book-table">
@@ -523,7 +523,7 @@ We used this problem to illustrate different types of PFA policies:
 **Problem solving questions**
 
 <ol class="book-exercises" style="counter-reset: exercise 4;">
-<li>Using the prices in Table 2.2, use the policy that you will sell when the price falls below \$44.00. Compute the objective function $\Fhat(\omega^n)$ for $n=1,\ldots, 10$. Compute the average selling price and its variance.</li>
+<li>Using the prices in Table 2.2, use the policy that you will sell when the price falls below ＄44.00. Compute the objective function $\Fhat(\omega^n)$ for $n=1,\ldots, 10$. Compute the average selling price and its variance.</li>
 <li>The questions below walk you through the steps of modeling the selling of an asset (say, a single share of a stock).
   <ol type="a">
     <li>Assume that you are simulating your prices using data from a mathematical model given by $p_{t+1} = \eta_0 p_t + \eta_1 p_{t-1} + \varepsilon_{t+1}$, where $\varepsilon \sim N(0, 6^2)$.

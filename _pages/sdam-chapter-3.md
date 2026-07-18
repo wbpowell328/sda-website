@@ -547,7 +547,7 @@ These exercises use the Python module *AdaptiveMarketPlanning* on [tinyurl.com/s
 <ol class="book-exercises" style="counter-reset: exercise 14;">
 <li>A major industrial gas company, which converts air to liquified oxygen and nitrogen, has to sign contracts for natural gas for the production of electricity. The contracts provide a quantity of gas for the upcoming month, signed a month in advance. Let $W_{t+1}$ be the demand for electricity (in mega-watt-hours) for month $t+1$, and let $x_t$ be the quantity of gas, decided at the beginning of month $t$, to be purchased in month $t + 1$ (we could have indexed this $x_{t,t+1}$).
 
-Assume that we purchase gas (normally measured in units of millions of btus) at a price of \$20 per equivalent megawatt-hour (mwh), and sell it at a price of \$26 per equivalent mwh (later we are going to introduce uncertainty into these prices).
+Assume that we purchase gas (normally measured in units of millions of btus) at a price of ＄20 per equivalent megawatt-hour (mwh), and sell it at a price of ＄26 per equivalent mwh (later we are going to introduce uncertainty into these prices).
 
 For simplicity, we are going to assume that the random variables $W_1,W_2, \ldots, W_t,$ are stationary, which means they all have the same distribution, but the distribution is unknown. Your profits for month $t$ are given by
 

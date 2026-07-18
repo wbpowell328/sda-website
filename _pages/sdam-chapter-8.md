@@ -25,7 +25,7 @@ New Jersey is looking to develop 3,500 megawatts (MW) of off-shore wind generati
 
 Energy from wind power has become popular in regions where wind is high, such as the midwestern United States, coastal regions off of Europe, the northeast of Brazil, and northern regions of China (to name just a few). Sometimes communities (and companies) have invested in renewables (wind or solar) to help reduce their carbon footprint and minimize their dependence on the grid.
 
-It is quite rare, however, that these projects allow a community to eliminate the grid from their portfolio. Common practice is to let the renewable source (wind or solar) sell directly to the grid, while a company may purchase from the grid. This can be useful as a hedge since the company will make a lot of money during price spikes (prices may jump from \$20 per megawatt-hour (mwh) to \$300 per mwh or more) that offsets the cost of purchasing power during those periods.
+It is quite rare, however, that these projects allow a community to eliminate the grid from their portfolio. Common practice is to let the renewable source (wind or solar) sell directly to the grid, while a company may purchase from the grid. This can be useful as a hedge since the company will make a lot of money during price spikes (prices may jump from ＄20 per megawatt-hour (mwh) to ＄300 per mwh or more) that offsets the cost of purchasing power during those periods.
 
 The major difficulty with renewables is handling the variability. While one solution is to simply pump any energy from a renewable source into the grid and use the capacity of the grid to handle this variability, there has been considerable interest in using storage (in particular, battery storage) to smooth out the peaks and valleys. In addition to smoothing the variability in the renewable source, there has also been interest in using batteries to take advantage of price spikes, buying power when it is cheap (prices can even go negative) and selling it back when they are high. Exploiting the variability in power prices on the grid to buy when prices are low and sell when they are high is known as battery arbitrage.
 
@@ -43,7 +43,7 @@ We are going to use the configuration shown in Figure 8.2 to illustrate a number
 
 Energy storage is a particularly rich form of inventory problem. While we are not going to consider all possible variations (which are endless), our problem will exhibit the following characteristics:
 
-- Electricity prices on the grid can be highly volatile. In the early 2000s, typical energy prices ran around \$20-\$25 per mwh, but often spiked to over \$300, and could exceed \$1000, typically during extreme weather events.
+- Electricity prices on the grid can be highly volatile. In the early 2000s, typical energy prices ran around ＄20-＄25 per mwh, but often spiked to over ＄300, and could exceed ＄1000, typically during extreme weather events.
 - Energy from wind can be forecasted, although not very well. Rolling forecasts are available to update these estimates.
 - Solar energy exhibits three types of variability: the highly predictable process of the diurnal cycle of the sun rising and setting, the presence of very sunny or very cloudy days (these can typically be predicted a day or more in advance), and the variability of spot clouds that are difficult to predict even an hour into the future, but which can create severe power surges on the grid.
 - The demand for energy is variable, but relatively predictable, since it primarily depends on temperature (and, to a lesser extent, humidity).
@@ -370,7 +370,7 @@ A vanilla implementation of backward dynamic programming exhibits four loops:
 
 It is useful to consider the range of values that each loop might take. For an energy problem, we might optimize a storage device in hourly increments over a day, giving us 24 time steps. If we use 5-minute time steps (some grid operators update prices every 5-minutes), then a 24 hour horizon would imply 288 time periods (multiply by seven if we want to plan over a week). If we are doing frequency regulation, then we have to make decisions every 2 seconds, which translates to 43,200 time periods over a day.
 
-Our state variable consists of $S_t = (R_t,p_t)$, which means we have to replace the loop over all states, with nested loops over all values of $R_t$, and then all values of $p_t$. Since both are continuous, each will have to be discretized. The resource variable $R_t$ would have to be divided into increments based on how much we might charge or discharge in a single time increment. We then have to discretize the grid price $p_t$. Grid prices can go as low as -\$100, and as high as \$10,000 (in extreme cases). A reasonable strategy might be to construct an empirical distribution, and then represent prices corresponding to, say, each increment of two percent of the cumulative distribution, giving us 50 possible prices.
+Our state variable consists of $S_t = (R_t,p_t)$, which means we have to replace the loop over all states, with nested loops over all values of $R_t$, and then all values of $p_t$. Since both are continuous, each will have to be discretized. The resource variable $R_t$ would have to be divided into increments based on how much we might charge or discharge in a single time increment. We then have to discretize the grid price $p_t$. Grid prices can go as low as -＄100, and as high as ＄10,000 (in extreme cases). A reasonable strategy might be to construct an empirical distribution, and then represent prices corresponding to, say, each increment of two percent of the cumulative distribution, giving us 50 possible prices.
 
 The number of charge-discharge decisions might be as small as three (charge, discharge or do nothing), or much larger if we can charge or discharge at different rates.
 
@@ -549,7 +549,7 @@ The book describes the updating equations for the coefficient vector $\thetabar_
 These exercises use the Python module *EnergyStorage_I* on [tinyurl.com/sdagithub](http://tinyurl.com/sdagithub/).
 
 <ol class="book-exercises" style="counter-reset: exercise 7;">
-<li>Using the python module run a grid search for the parameter vector $\theta = (\theta^{buy}, \theta^{sell})$ by varying $\theta^{sell}$ over the range from 1.0 to 100.0 in increments of \$1 for prices, and varying $\theta^{buy}$ over the range from 1.0 to $\theta^{sell}$, also in increments of \$1. The prices will be actual historical hourly prices for an 8 day period.</li>
+<li>Using the python module run a grid search for the parameter vector $\theta = (\theta^{buy}, \theta^{sell})$ by varying $\theta^{sell}$ over the range from 1.0 to 100.0 in increments of ＄1 for prices, and varying $\theta^{buy}$ over the range from 1.0 to $\theta^{sell}$, also in increments of ＄1. The prices will be actual historical hourly prices for an 8 day period.</li>
 <li>Solve for an optimal policy by using the backward dynamic programming strategy described above (the algorithm has already been implemented in the python module). Assume that the price process evolves according to
 
 $$
@@ -558,8 +558,8 @@ $$
 
 where $\varepsilon_{t+1}$ follows an empirical distribution based on the price differences of the actual historical prices.
   <ol type="a">
-    <li>Run the algorithm where prices are discretized in increments of \$1, then \$0.50 and finally \$0.25. Compute the size of the state space for each of the three levels of discretization, and plot the run times against the size of the state space.</li>
-    <li>Using the optimal value function for the discretization of \$1 and compare the performance against the best buy-sell policy you found in part (a).</li>
+    <li>Run the algorithm where prices are discretized in increments of ＄1, then ＄0.50 and finally ＄0.25. Compute the size of the state space for each of the three levels of discretization, and plot the run times against the size of the state space.</li>
+    <li>Using the optimal value function for the discretization of ＄1 and compare the performance against the best buy-sell policy you found in part (a).</li>
   </ol>
 </li>
 <li>Download the spreadsheet "Chapter8_electricity_prices" from [tinyurl.com/sdamodelingsupplements](https://tinyurl.com/sdamodelingsupplements/). Use the data in the tab "electricity prices" for the following questions:

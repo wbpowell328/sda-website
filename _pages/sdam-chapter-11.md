@@ -29,7 +29,7 @@ Each level of the supply chain is known as an *echelon*. Typically there are fou
 
 It is possible that the retailer, or any of the middle suppliers, may not be able to fill the request for more inventory (or the market demand at the retail level). In this case, the unsatisfied demand sits in an order backlog waiting to be filled as new inventory arrives.
 
-After filling orders, everyone (for that supply chain) has to stop and record either their inventory (the number of cases of beer sitting in inventory) or their order backlog. Order backlog carries a penalty of \$4 per case. Excess inventory carries a holding cost of \$1 per case.
+After filling orders, everyone (for that supply chain) has to stop and record either their inventory (the number of cases of beer sitting in inventory) or their order backlog. Order backlog carries a penalty of ＄4 per case. Excess inventory carries a holding cost of ＄1 per case.
 
 The steps of the process are illustrated in Figure 11.1. There are five steps:
 
@@ -346,7 +346,7 @@ There are many ways we can modify this problem. Some ideas include:
 
 **3)** Each agent reacts to outages, and responds by maintaining higher inventories. An agent $q$ could introduce some noise in their orders to $q+1$ so that $q+1$ will maintain higher inventories so that the orders from $q$ are more likely to be filled.
 
-**4)** Much of the sensitivity of the game is due to the high penalty for stocking out versus holding inventory (recall that it costs \$4 per case per day of backlogged orders, and \$1 per case per day to hold inventory). Try changing the stockout cost from \$4 to \$1, and then to \$0.50.
+**4)** Much of the sensitivity of the game is due to the high penalty for stocking out versus holding inventory (recall that it costs ＄4 per case per day of backlogged orders, and ＄1 per case per day to hold inventory). Try changing the stockout cost from ＄4 to ＄1, and then to ＄0.50.
 
 ## What did we learn?
 
