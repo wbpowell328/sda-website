@@ -27,7 +27,7 @@ chapters:
     url: "/sdam/chapter-4/"
   - num: "5"
     title: "Stochastic shortest path problems - Static"
-    url: ""
+    url: "/sdam/chapter-5/"
   - num: "6"
     title: "Stochastic shortest path problems - Dynamic"
     url: ""
