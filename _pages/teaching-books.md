@@ -46,7 +46,7 @@ W. B. Powell, *Sequential Decision Analytics and Modeling (SDAM)*, 2nd edition, 
 
 SDAM is recommended as a starting point for readers interested in an introduction to the general area of sequential decision problems. It uses a teach-by-example style. Each of the application chapters (every chapter except 1 and 7) follows the same outline: narrative, framing (metrics, decisions, uncertainties), the five elements of the universal modeling framework, a section on modeling uncertainty (typically brief), and a section suggesting policies that might be effective for making decisions.
 
-[Click here for book webpage.](/sdamodeling/)
+[Click here for an online version of the book.](/sdam/) [Click here for the book's webpage with a downloadable PDF and course materials.](/sdamodeling/)
 
 <br clear="all" />
 
