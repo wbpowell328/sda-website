@@ -297,7 +297,10 @@ Imagine that we would like to use information from different patients to learn a
 We start with a knowledge state $K^0$ that is our vector $(\mubar^0, \beta^0)$ introduced earlier in the chapter. The first patient will have gender $G^1$, which means our state variable (that is, everything we know) after the first patient arrives is $S^1 = (K^0,G^1)$. We then make a decision $x^1$ regarding the treatment of patient 1, after which we observe an outcome $W^1$ describing how the treatment worked. We use this information to obtain an updated knowledge state $K^1$, after which the process repeats:
 
 $$
-(K^0, G^1, S^1=(K^0,G^1), x^1, W^1, K^{1}, G^2, S^2=(K^1,G^2), \ldots,\ K^{n-1}, G^n, S^n=(K^{n-1},G^n), x^n, W^{n}, K^{n}, G^{n+1}, \ldots)
+\begin{align*}
+&(K^0, G^1, S^1=(K^0,G^1), x^1, W^1, K^{1}, G^2, S^2=(K^1,G^2), \ldots, \\
+&\hspace{0.75in} K^{n-1}, G^n, S^n=(K^{n-1},G^n), x^n, W^{n}, K^{n}, G^{n+1}, \ldots)
+\end{align*}
 $$
 
 We pause for a moment and note that our indexing is different from what we used in the basic model. In our basic model, the index $n$ referred to visits by a patient. We make a decision $x^n$ *after* the $n$th visit using what is known from the first $n$ visits. We let $W^{n+1}$ be the outcome of this treatment, incrementing $n$ to $n+1$ to emphasize that $x^n$ was computed without knowing $W^{n+1}$.
