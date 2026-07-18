@@ -15,7 +15,7 @@ chapters:
     url: "/sdam/preface/"
   - num: "1"
     title: "Modeling sequential decision problems"
-    url: ""
+    url: "/sdam/chapter-1/"
   - num: "2"
     title: "An asset selling problem"
     url: ""
