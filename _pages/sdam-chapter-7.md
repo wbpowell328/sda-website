@@ -749,7 +749,7 @@ For our purposes, we are going to illustrate two policies that are relatively si
   </ol>
 
 <figure class="book-figure">
-  <img src="/assets/images/sdam/statevariablemaxarccost.png" alt="A deterministic graph." style="max-width: 500px;">
+  <img src="/assets/images/sdam/statevariablemaxarccost.jpg" alt="A deterministic graph." style="max-width: 500px;">
   <figcaption><span class="fig-num">Figure 7.3.</span> A deterministic graph.</figcaption>
 </figure>
 </li>
