@@ -339,7 +339,7 @@ V_t(s_t) = \max_{x_t} \left(C_t(s,x_t)+  \E\{V_{t+1}(S_{t+1})\vert S_t,x_t\} \ri
 \end{align}
 $$
 
-where $S_{t+1} = S^M(s_t,x_t,W_{t+1})$, and where the expectation is over the random variable $W_{t+1}$. Assume that $W_{t+1}$ is discrete, taking values in $\Wcal = \{w_1, w_2, \ldots, W_M\}$, and represent the probability distribution using
+where $S_{t+1} = S^M(s_t,x_t,W_{t+1})$, and where the expectation is over the random variable $W_{t+1}$. Assume that $W_{t+1}$ is discrete, taking values in $\Wcal = \lbrace w_1, w_2, \ldots, W_M\rbrace $, and represent the probability distribution using
 
 $$
 f^W(w\vert s_t,x_t) = Prob[W_{t+1} = w\vert s_t,x_t].

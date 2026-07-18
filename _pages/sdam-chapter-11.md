@@ -68,7 +68,7 @@ We are going to model a supplier other than one of the endpoints (retailer or be
 
 Before we get started, we need to establish our notational system for who knows what, and the process of sharing information.
 
-We are going to label the different decision-making agents in the supply chain by $\Qcal = \{1, 2, \ldots, Q\}$. We are going to let $q=0$ describe the market, which is a source of information but does not make decisions. We are going to let $q=Q$ refer to the manufacturing plant which we assume (at least initially) can always make enough product to fill demand.
+We are going to label the different decision-making agents in the supply chain by $\Qcal = \lbrace 1, 2, \ldots, Q\rbrace $. We are going to let $q=0$ describe the market, which is a source of information but does not make decisions. We are going to let $q=Q$ refer to the manufacturing plant which we assume (at least initially) can always make enough product to fill demand.
 
 We start by defining the state variable for agent $q$ using $S_{tq}$, the information known to agent $q$ at time $t$ (this may include beliefs). If agent $q$ acts on agent $q'$, we will use $x_{tqq'}$, the action by agent $q$ on agent $q'$. We note that the decision $x_{tqq'}$ is determined by $q$, but arrives to $q'$ as information.
 
@@ -110,7 +110,7 @@ $$
 
 where our decisions will be made by some policy $X^\pi(S_t)$ which we will design later.
 
-In our basic game, we are always going to fill as much of the order from $q-1$ as we can from inventory, so technically $x^{fill}_{tq,q-1}$ is not really a decision since we will just set $x^{fill}_{tq,q-1} = \min\{R^{back}_{tq},R^{inv}_{tq}\}$. However, it is still an action made by $q$, and it opens the door for richer behaviors later.
+In our basic game, we are always going to fill as much of the order from $q-1$ as we can from inventory, so technically $x^{fill}_{tq,q-1}$ is not really a decision since we will just set $x^{fill}_{tq,q-1} = \min\lbrace R^{back}_{tq},R^{inv}_{tq}\rbrace $. However, it is still an action made by $q$, and it opens the door for richer behaviors later.
 
 If we are the retail market $q=0$, then the request $W_{t,0,1} = x^{req}_{t,0,1}$ made to agent $q=1$ comes from an exogenous information source.
 

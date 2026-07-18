@@ -295,7 +295,7 @@ $$
 S_t = (R^{asset}_t, p_t, \pbar_t).
 $$
 
-We can write our classes of policies as the set $\Fcal = \{$"sell-low," "high-low," "track"$\}$. For each of these classes, we have a set of parameters that we can write as $\theta^f$ for $f\in\Fcal$. For the "sell-low" and "track" policies there is a single parameter, while $\theta^{high-low}$ has two parameters.
+We can write our classes of policies as the set $\Fcal = \lbrace $"sell-low," "high-low," "track"$\rbrace $. For each of these classes, we have a set of parameters that we can write as $\theta^f$ for $f\in\Fcal$. For the "sell-low" and "track" policies there is a single parameter, while $\theta^{high-low}$ has two parameters.
 
 Now we can write our search over policies $\pi$ in a more practical way as searching over function classes $f\in\Fcal$, and then searching over parameters $\theta^f \in \Theta^f$, where $\Theta^f$ tells us the range of possible values (capturing at the same time the dimensionality of $\theta^f$).
 

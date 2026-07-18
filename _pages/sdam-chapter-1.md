@@ -986,7 +986,7 @@ V_t(S_t) = \max_{x_t} \big(C(S_t,x_t) + \E_{W_{t+1}} \left\{V_{t+1}(S_{t+1})\ver
 \end{align}
 $$
 
-  Here we have inserted the expectation $\E_{W_{t+1}}\{\cdot\}$ which literally means to average over all the random outcomes of $W_{t+1}$.
+  Here we have inserted the expectation $\E_{W_{t+1}}\lbrace \cdot\rbrace $ which literally means to average over all the random outcomes of $W_{t+1}$.
 
   The stochastic version of Bellman's equation in $\eqref{eq:bellmanstochastic}$ is extremely general. The state $S_t$ does not just mean a node in a graph; it captures any (and all) information relevant to the problem. The difficulty is that we can no longer compute the value function $V_t(S_t)$, which in turn means we will not have access to $V_{t+1}(S_{t+1})$ that we assumed we knew in equations $\eqref{eq:bellmangraph}$ and $\eqref{eq:bellmanstochastic}$.
 

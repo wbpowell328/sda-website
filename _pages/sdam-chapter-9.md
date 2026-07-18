@@ -59,7 +59,7 @@ We start by modeling the snapshot of the system at time $t$ which includes $R_t$
 
 Since the underlying problem is very time-dependent (due to daily cycles), we are going to need to use forecasts, both to model the dynamics of the problem as well as to make decisions which need to anticipate what might happen in the future. We assume that we are given a rolling set of forecasts as illustrated for wind in Figure 9.2. We model the forecasts for load ($L$), temperature ($\tau$), wind ($w$), market prices ($p$), and grid prices ($G$) using: $f^L_{tt'}$, the forecast of the load $L_t$ (in MW) at time $t' > t$ given what we know at time $t$; $f^\tau_{tt'}$, the forecast of the temperature $\tau_t$ at time $t' > t$ given what we know at time $t$; $f^w_{tt'}$, the forecast of the wind power $w_t$ (in MW) at time $t' > t$ given what we know at time $t$; $f^p_{tt'}$, the forecast of market prices $p^{load}_t$ (in \$/MWh) at $t' > t$ given what we know at time $t$; and $f^G_{tt'}$, the forecast of grid prices $c^{grid}_t$ (in \$/MWh) at $t' > t$ given what we know at time $t$.
 
-All forecasts are vectors over the horizon $t, t+1, \ldots, t+H$ where $H$ is a specified horizon (e.g. 24 hours). We let $f^X_t$ be the vector of forecasts for $X \in \Xcal = \{L, T, W, P, G\}$.
+All forecasts are vectors over the horizon $t, t+1, \ldots, t+H$ where $H$ is a specified horizon (e.g. 24 hours). We let $f^X_t$ be the vector of forecasts for $X \in \Xcal = \lbrace L, T, W, P, G\rbrace $.
 
 Our state variable is then
 

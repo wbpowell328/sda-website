@@ -316,7 +316,7 @@ $$
 \Vbar^{x,n}_t(S^x_t = j) \approx \E \{V_{t+1}(S_{t+1})\vert S^x_t\}.
 $$
 
-Let $\Vbar^{x,n}_t(j)$ be our approximation of $\E \{V_{t+1}(S_{t+1})\vert S^x_t\}$ after observing $n$ samples. One way to build this approximation is to use samples of the value of being at node $j$. Imagine that we are going to pass forward through the network, making decisions using approximations $\Vbar^{x,n-1}_t(S^x_t)$ obtained from previous iterations, along with sampled costs $\chat^n_{tij}$. We can obtain a sampled estimate of the value of being in state $S_t$ using
+Let $\Vbar^{x,n}_t(j)$ be our approximation of $\E \lbrace V_{t+1}(S_{t+1})\vert S^x_t\rbrace $ after observing $n$ samples. One way to build this approximation is to use samples of the value of being at node $j$. Imagine that we are going to pass forward through the network, making decisions using approximations $\Vbar^{x,n-1}_t(S^x_t)$ obtained from previous iterations, along with sampled costs $\chat^n_{tij}$. We can obtain a sampled estimate of the value of being in state $S_t$ using
 
 $$
 \begin{align}

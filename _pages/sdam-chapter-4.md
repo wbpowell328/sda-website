@@ -48,7 +48,7 @@ Our challenge is to find a policy for identifying the medication that achieves t
 
 ## Basic model
 
-For our basic model, we are going to assume that we have five choices of medications: metformin, or a drug (other than metformin) drawn from one of the four major drug groups. Let $\Xcal = \{x_1, x_2, x_3, x_4, x_5\}$ be the five choices. From observing the performance of each drug over hundreds or thousands of patients, it is possible to construct a probability distribution of the reduction in A1c levels across all patients. The results of this analysis are shown in Table 4.1 which reports the average reduction and the standard deviation across all patients. We assume that the distribution of reductions in A1c across the population is normally distributed, with means and standard deviations as given in the table.
+For our basic model, we are going to assume that we have five choices of medications: metformin, or a drug (other than metformin) drawn from one of the four major drug groups. Let $\Xcal = \lbrace x_1, x_2, x_3, x_4, x_5\rbrace $ be the five choices. From observing the performance of each drug over hundreds or thousands of patients, it is possible to construct a probability distribution of the reduction in A1c levels across all patients. The results of this analysis are shown in Table 4.1 which reports the average reduction and the standard deviation across all patients. We assume that the distribution of reductions in A1c across the population is normally distributed, with means and standard deviations as given in the table.
 
 <div class="book-table-wrap">
 <table class="book-table">
@@ -114,7 +114,7 @@ We are using what is known as a *Bayesian belief model*. In this model, we treat
 
 ### Decision variables
 
-The decision is the choice of medication to try for a month, which we write as $x^n$, the choice of medication, where $x^n \in \Xcal = \{x_1, \ldots, x_5\}$. We are going to determine $x^n$ using a policy $X^\pi(S^n)$ that depends only on the state variable $S^n$ (along with the assumption of the normal distribution in $S^0$).
+The decision is the choice of medication to try for a month, which we write as $x^n$, the choice of medication, where $x^n \in \Xcal = \lbrace x_1, \ldots, x_5\rbrace $. We are going to determine $x^n$ using a policy $X^\pi(S^n)$ that depends only on the state variable $S^n$ (along with the assumption of the normal distribution in $S^0$).
 
 ### Exogenous information
 

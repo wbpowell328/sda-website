@@ -455,7 +455,7 @@ where $x$ is the quantity of resource we order at a unit cost $c$, which is then
 
 Let $x^n = X^\pi(S^n\vert \theta)$ be our choice of $x$ given what we know which is captured by $S^n$, where our policy $X^\pi(S^n\vert \theta)$ depends on one or more parameters in $\theta$. After we implement $x^n$, we observe $W^{n+1}$, update $S^{n+1}$ and then repeat the process. After $N$ iterations, we obtain a final design we denote $x^{\pi,N}(\theta)$.
 
-We now have to evaluate our final design $x^{\pi,N}(\theta)$. To perform this evaluation, we have to consider two, and possibly three, sources of uncertainty. The first is that we may have uncertainty in unknown parameters such as the mean of $W$. For example, $W$ might come from a Poisson distribution with mean $\mu$, and we may assume that $\mu \in \{\mu_1, \ldots, \mu_K\}$ where $p_k = Prob[\mu = \mu_k]$. The distribution $(p_k)_{k=1}^K$ is contained in the initial state $S_0$.
+We now have to evaluate our final design $x^{\pi,N}(\theta)$. To perform this evaluation, we have to consider two, and possibly three, sources of uncertainty. The first is that we may have uncertainty in unknown parameters such as the mean of $W$. For example, $W$ might come from a Poisson distribution with mean $\mu$, and we may assume that $\mu \in \lbrace \mu_1, \ldots, \mu_K\rbrace $ where $p_k = Prob[\mu = \mu_k]$. The distribution $(p_k)_{k=1}^K$ is contained in the initial state $S_0$.
 
 Then we have the random arrivals of demands $W^1, \ldots, W^N$ which would be sampled from a distribution with mean $\mu$. We use these observations, and the policy $X^\pi(S^n\vert \theta)$, to compute $x^{\pi,N}(\theta)$. It is important to recognize that $x^{\pi,N}(\theta)$ is a random variable that depends on any information in $S^0$ (regardless of whether it is deterministic or random).
 
@@ -477,7 +477,7 @@ The objective functions for cumulative reward (given in $\eqref{eq:derivativebas
 
 Whenever we have to take an expectation, it helps to assume that we are going to estimate the expectation through sampling. We first illustrate how to do this for the cumulative reward objective as given in $\eqref{eq:derivativebasedonline}$. Here, we might have an uncertain quantity in the initial state $S_0$, such as uncertainty in how a market responds to price, the production of methane by an oil well, or how a patient might respond to a drug. Then, we have the exogenous information $W_1, \ldots, W_T$, which could be observations of sales, the change in atmospheric temperatures, or how a patient responds to medication.
 
-Let $\omega$ be a sample realization of all of these uncertain quantities. Assume that we generate a set of samples of all of these uncertain quantities and store them in a set $\Omega = \{\omega^1, \ldots, \omega^K\}$. So, any time we write $W_t(\omega)$, this is a sample realization of what we observe at time $t$. If we are using a policy $X^\pi(S_t\vert \theta)$, then we would follow the sample path of states $S_t(\omega)$, decisions $x_t(\omega) = X^\pi(S_t(\omega)\vert \theta)$ and exogenous information $W_{t+1}(\omega)$ governed by our transition function
+Let $\omega$ be a sample realization of all of these uncertain quantities. Assume that we generate a set of samples of all of these uncertain quantities and store them in a set $\Omega = \lbrace \omega^1, \ldots, \omega^K\rbrace $. So, any time we write $W_t(\omega)$, this is a sample realization of what we observe at time $t$. If we are using a policy $X^\pi(S_t\vert \theta)$, then we would follow the sample path of states $S_t(\omega)$, decisions $x_t(\omega) = X^\pi(S_t(\omega)\vert \theta)$ and exogenous information $W_{t+1}(\omega)$ governed by our transition function
 
 $$
 S_{t+1}(\omega) = S^M(S_t(\omega), x_t(\omega), W_{t+1}(\omega)).
@@ -493,7 +493,7 @@ $$
 
 If we are using a final reward objective, we need to first estimate $x^{\pi,N}(\theta)$. If we follow sample path $\omega$, then we would write our final design as $x^{\pi,N}(\omega\vert \theta)$, where $\omega$ captures everything we used to perform the training given by $(S_0(\omega), W_1(\omega), \ldots, W_T(\omega))$.
 
-We then need to evaluate our design $x^{\pi,N}(\omega\vert \theta)$ using the testing data captured in $\What$. Let $\psi$ be a sample realization of $\What$, and just as we assumed that we have a sample set $\Omega$ for $\omega$, let's assume we create a set of sample outcomes of $\What$ given by $\Psi = \{\psi^1, \ldots, \psi^L\}$. Keep in mind that $\What$ represents any simulated information that we need to evaluate our design $x^{\pi,N}$. It may be a set of random variables (patient attributes, weather, market conditions), and it may even represent information that evolves over time. In other words... anything.
+We then need to evaluate our design $x^{\pi,N}(\omega\vert \theta)$ using the testing data captured in $\What$. Let $\psi$ be a sample realization of $\What$, and just as we assumed that we have a sample set $\Omega$ for $\omega$, let's assume we create a set of sample outcomes of $\What$ given by $\Psi = \lbrace \psi^1, \ldots, \psi^L\rbrace $. Keep in mind that $\What$ represents any simulated information that we need to evaluate our design $x^{\pi,N}$. It may be a set of random variables (patient attributes, weather, market conditions), and it may even represent information that evolves over time. In other words... anything.
 
 Now we would write the estimate of the performance of the policy in a final reward setting as
 
@@ -586,9 +586,9 @@ Derivative-free policy search is simply another example of a sequential decision
 
 We can form beliefs using any of the following:
 
-- **Lookup tables** – Assume that we can discretize the set of possible values of $\theta$ into a set $\Theta = \{\theta_1, \ldots, \theta_K\}$. Define a random variable $\mu_\theta = F(\theta) = \E F(\theta,W)$ which is a random variable because we do not know $F(\theta)$ (or $\mu_\theta$). Assume that we can run experiments to sample $\Fhat^{n+1} = F(\theta^n, W^{n+1})$. We can use these samples to create estimates $\mubar^n_\theta$ for each discrete value of $\theta \in \Theta$. This would be a lookup table belief model.
+- **Lookup tables** – Assume that we can discretize the set of possible values of $\theta$ into a set $\Theta = \lbrace \theta_1, \ldots, \theta_K\rbrace $. Define a random variable $\mu_\theta = F(\theta) = \E F(\theta,W)$ which is a random variable because we do not know $F(\theta)$ (or $\mu_\theta$). Assume that we can run experiments to sample $\Fhat^{n+1} = F(\theta^n, W^{n+1})$. We can use these samples to create estimates $\mubar^n_\theta$ for each discrete value of $\theta \in \Theta$. This would be a lookup table belief model.
 
-  The simplest belief model is a lookup table with independent beliefs, which we first saw in [Chapter 4](/sdam/chapter-4/) with our diabetes application. Let $\mubar^n_\theta$ be our estimate of $\E F(\theta)$ for some $\theta \in \{\theta_1, \ldots, \theta_K\}$ after $n$ samples (across all experiments). Let $\sigmabar^n_{\theta_k}$ be the standard deviation of the estimate $\mubar^n_{\theta_k}$ and let $\beta^n_{\theta_k}$ be the precision given by
+  The simplest belief model is a lookup table with independent beliefs, which we first saw in [Chapter 4](/sdam/chapter-4/) with our diabetes application. Let $\mubar^n_\theta$ be our estimate of $\E F(\theta)$ for some $\theta \in \lbrace \theta_1, \ldots, \theta_K\rbrace $ after $n$ samples (across all experiments). Let $\sigmabar^n_{\theta_k}$ be the standard deviation of the estimate $\mubar^n_{\theta_k}$ and let $\beta^n_{\theta_k}$ be the precision given by
 
   $$
   \beta^n_{\theta_k} = \frac{1}{(\sigmabar^n_{\theta_k})^2}.

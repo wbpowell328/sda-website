@@ -58,11 +58,11 @@ Prob[K^{n+1}=1\vert \theta=\theta_k,x^n, H^n] = \frac{e^{\theta^{const,n}_k + \t
 \end{align}
 $$
 
-This function is parameterized by $\theta = (\theta^{const}, \theta^{bid})$. We do not know what $\theta$ is, but we are going to assume that it is one of a sampled set $\Theta = \{\theta_1, \ldots,\theta_K\}$.
+This function is parameterized by $\theta = (\theta^{const}, \theta^{bid})$. We do not know what $\theta$ is, but we are going to assume that it is one of a sampled set $\Theta = \lbrace \theta_1, \ldots,\theta_K\rbrace $.
 
 ### State variables
 
-The initial state $S^0$ includes $\Theta = \{\theta_1, \ldots, \theta_K\}$, the set of possible values that $\theta$ may take; and $\Rbar^0$, the initial estimate of revenue earned when a customer clicks on a link.
+The initial state $S^0$ includes $\Theta = \lbrace \theta_1, \ldots, \theta_K\rbrace $, the set of possible values that $\theta$ may take; and $\Rbar^0$, the initial estimate of revenue earned when a customer clicks on a link.
 
 The dynamic state variables $S^n$ include $p^n_k$, the probability that the true $\theta = \theta_k$, with $p^n = (p^n_k)_{k=1}^K$; and $\Rbar^n$, the estimate of revenue earned from an ad-click after $n$ auctions.
 
@@ -200,7 +200,7 @@ $$
 \E \{(\Rhat^{n+1} - x^n) K^{n+1} \vert S^n\} = \E_{\theta} \E_{K\vert \theta} \E_{\Rhat} \{(\Rhat^{n+1} - x^n) K^{n+1} \vert S^n\}.
 $$
 
-We start by taking the expectation over $\Rhat$ where we just use $\E \{\Rhat^{n+1}\vert S^n\} = \Rbar^n$ (remember that $\Rbar^n$ is in the state variable $S^n$), which allows us to write
+We start by taking the expectation over $\Rhat$ where we just use $\E \lbrace \Rhat^{n+1}\vert S^n\rbrace  = \Rbar^n$ (remember that $\Rbar^n$ is in the state variable $S^n$), which allows us to write
 
 $$
 \E \{(\Rhat^{n+1} - x^n) K^{n+1} \vert S^n\} = \E_{\theta} \E_{K\vert \theta} \{(\Rbar^n - x^n) K^{n+1} \vert S^n\}.
@@ -247,7 +247,7 @@ $$
 
 but it is important to recognize that this is just a fitted curve. The values of $K^{n+1}$ are observed from data, which means we have no guarantee that the distribution precisely matches our logistic regression.
 
-Finally, we assume that $\theta \in \Theta = \{\theta_1, \ldots, \theta_K\}$ which is also an approximation. There are ways to relax the requirement of a sampled set, but the logic becomes somewhat more complicated without adding much educational value.
+Finally, we assume that $\theta \in \Theta = \lbrace \theta_1, \ldots, \theta_K\rbrace $ which is also an approximation. There are ways to relax the requirement of a sampled set, but the logic becomes somewhat more complicated without adding much educational value.
 
 ## Designing policies
 
@@ -344,7 +344,7 @@ $$
 \Cbar^n(x) = \sum_{k=1}^K \big(P^{click}(\theta=\theta_k,x) \Ctilde^{n,n+1}(1) + (1-P^{click}(\theta=\theta_k,x)) \Ctilde^{n,n+1}(0)\big) p^n_k.
 $$
 
-Our policy, then, is to pick the bid $x$ that maximizes $\Cbar^n(x)$. Assume that we discretize our bids into a set $\Xcal = \{x_1, \ldots, x_M\}$. Our value of information policy would be written as
+Our policy, then, is to pick the bid $x$ that maximizes $\Cbar^n(x)$. Assume that we discretize our bids into a set $\Xcal = \lbrace x_1, \ldots, x_M\rbrace $. Our value of information policy would be written as
 
 $$
 X^{VoI}(S^n) = \argmax_{x\in\Xcal} \Cbar^n(x).
@@ -374,7 +374,7 @@ $$
 U(x,L\vert \theta) = \theta^{const} + \theta^{bid}x + \sum_{\ell=1}^L \theta^{loc}_\ell I_{\ell=L}.
 $$
 
-This is a more compact model because we now assume that the constant term $\theta^{const}$ and bid coefficient $\theta^{bid}$ do not depend on the location. Instead, we are just adding a shift $\theta^{loc}_\ell$. So, we still have 1,000 parameters to estimate (the location coefficients), but before we had 2,000 parameters to estimate – $\theta^{const}_\ell$ and $\theta^{bid}_\ell$ for each location $\ell \in \{1, \ldots, L\}$.
+This is a more compact model because we now assume that the constant term $\theta^{const}$ and bid coefficient $\theta^{bid}$ do not depend on the location. Instead, we are just adding a shift $\theta^{loc}_\ell$. So, we still have 1,000 parameters to estimate (the location coefficients), but before we had 2,000 parameters to estimate – $\theta^{const}_\ell$ and $\theta^{bid}_\ell$ for each location $\ell \in \lbrace 1, \ldots, L\rbrace $.
 
 ## What did we learn?
 
@@ -410,7 +410,7 @@ When customer $a^n$ arrives, we are going to assume that we have to choose a new
 
 Ideally, we want $P(b^n_5\vert a^n_5)$ which is the probability that user $a^n_5$ would select article $b^n_5$, but there are too many users and too many articles to get reasonable estimates of this probability. If we only consider the elements $a_1, a_2, a_3$ and $a_4$, there would be 9,600 combinations, with an average of approximately 10,000 people for each of these first four elements. Below, we are going to assume we just use $a_1$ and $a_2$, which means 16 types of people.
 
-We are going to create a set of features $\Fcal$ which are constructed from the elements of $a$ and $b$ that we wish to consider. We are just going to use the elements $\{a_1,a_2,b_1,b_2,b_3\}$ from which we are going to construct a set of feature variables $\phi_f(a,b),~f\in\Fcal$. Since these five elements are all categorical, the most elementary features are indicator variables. For example, for the gender attribute $a_1$ we have two genders from which we create two features:
+We are going to create a set of features $\Fcal$ which are constructed from the elements of $a$ and $b$ that we wish to consider. We are just going to use the elements $\lbrace a_1,a_2,b_1,b_2,b_3\rbrace $ from which we are going to construct a set of feature variables $\phi_f(a,b),~f\in\Fcal$. Since these five elements are all categorical, the most elementary features are indicator variables. For example, for the gender attribute $a_1$ we have two genders from which we create two features:
 
 $$
 \phi_{male}(a) = \begin{cases} 1 & \text{if } a_1 = male, \\ 0 & \text{otherwise.} \end{cases} \qquad \phi_{female}(a) = \begin{cases} 1 & \text{if } a_1 = female, \\ 0 & \text{otherwise.} \end{cases}
@@ -424,14 +424,14 @@ If $a^n$ is the attributes of the $n$th customer, then our decision is to choose
 
 Our first challenge is to develop a belief model:
   <ol type="a">
-    <li>If we use a lookup table belief model for $P(b\vert a)$ using the attributes $\{a_1,a_2, b_1,b_2,b_3\}$, how many parameters are we trying to estimate?</li>
+    <li>If we use a lookup table belief model for $P(b\vert a)$ using the attributes $\lbrace a_1,a_2, b_1,b_2,b_3\rbrace $, how many parameters are we trying to estimate?</li>
     <li>Instead, consider using a logistic regression. First define a utility function
 
     $$
     U(a,b\vert \theta) = \sum_{f\in\Fcal} \theta_f \phi_f(b\vert a),
     $$
 
-    where $\Fcal$ is the set of elementary features that we can construct from the elements $\{a_1,a_2,b_1,b_2,b_3\}$. Now create a logistic regression model for the probability of clicking on an article using
+    where $\Fcal$ is the set of elementary features that we can construct from the elements $\lbrace a_1,a_2,b_1,b_2,b_3\rbrace $. Now create a logistic regression model for the probability of clicking on an article using
 
     $$
     P(Y=1\vert a,b,\theta) = \frac{e^{U(a,b\vert \theta)}}{1+e^{U(a,b\vert \theta)}}.
@@ -439,7 +439,7 @@ Our first challenge is to develop a belief model:
 
     What is the dimensionality of the vector $\theta$ assuming that we just use elementary indicator variables?</li>
     <li>Recognizing that the number of parameters in the parametric model in part (b) is much smaller than the number of parameters in the lookup table model in part (a), why would anyone use a lookup table belief model instead of a parametric model such as the logistic regression? Discuss the pros and cons of each type of belief model.</li>
-    <li>We now need to estimate $\theta$. Assume we generate a sample of possible values of the vector $\theta$ which we represent as $\{\theta_1, \ldots, \theta_k, \ldots, \theta_K\}$, where each $\theta_k$ is a vector with element $\theta_{kf},~f\in\Fcal$. Start with the prior probability $p^0_k = 1/K$. Next assume that we observe the attributes of the first customer $a^1$, and then we make the decision to display an article with attribute $b^1$ (this is our decision variable). Assuming you know $p^n_k$, write out Bayes theorem to compute $p^{n+1}_k$ after observing a customer with attribute $a^{n+1}$, and then choosing an article with attribute $b^{n+1}$ after which you observe the outcome $Y^{n+1} = 1$.</li>
+    <li>We now need to estimate $\theta$. Assume we generate a sample of possible values of the vector $\theta$ which we represent as $\lbrace \theta_1, \ldots, \theta_k, \ldots, \theta_K\rbrace $, where each $\theta_k$ is a vector with element $\theta_{kf},~f\in\Fcal$. Start with the prior probability $p^0_k = 1/K$. Next assume that we observe the attributes of the first customer $a^1$, and then we make the decision to display an article with attribute $b^1$ (this is our decision variable). Assuming you know $p^n_k$, write out Bayes theorem to compute $p^{n+1}_k$ after observing a customer with attribute $a^{n+1}$, and then choosing an article with attribute $b^{n+1}$ after which you observe the outcome $Y^{n+1} = 1$.</li>
   </ol>
 </li>
 <li>Recommender system part II - System model - Now we are going to model all five elements of the problem.
