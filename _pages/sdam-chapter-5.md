@@ -421,7 +421,7 @@ This method is very robust with respect to complex pre-decision states. For exam
 <li>Figure 5.5 illustrates the choices that an Uber driver might face. At node 1, she has a choice of trips (2-4) and (3-5). Assume that trips are at least 15 minutes, and trips are expected to be served within 10 minutes or they are lost. This means the trips out of nodes 6, 7 and 8 only become known after trips (2-4) and (3-5) would have been completed.
 
 <figure class="book-figure">
-  <img src="/assets/images/sdam/uber_driver.png" alt="A decision tree illustrating the choices facing an Uber driver." style="max-width: 500px;">
+  <img src="/assets/images/sdam/uber_driver.jpg" alt="A decision tree illustrating the choices facing an Uber driver." style="max-width: 500px;">
   <figcaption><span class="fig-num">Figure 5.5.</span> A decision tree illustrating the choices facing an Uber driver.</figcaption>
 </figure>
 
