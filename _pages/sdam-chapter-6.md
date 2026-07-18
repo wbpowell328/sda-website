@@ -193,7 +193,7 @@ $$
 This is the policy that we are using when we follow a navigation system. Making decisions based on a deterministic lookahead model is one of the most widely used methods for making decisions in sequential decision problems under uncertainty.
 
 <figure class="book-figure">
-  <img src="/assets/images/sdam/rhpdeterministic123.png" alt="Illustration of simulating a direct lookahead policy, using a deterministic model of the future." style="max-width: 450px;">
+  <img src="/assets/images/sdam/rhpdeterministic123.jpg" alt="Illustration of simulating a direct lookahead policy, using a deterministic model of the future." style="max-width: 450px;">
   <figcaption><span class="fig-num">Figure 6.1.</span> Illustration of simulating a direct lookahead policy, using a deterministic model of the future.</figcaption>
 </figure>
 
