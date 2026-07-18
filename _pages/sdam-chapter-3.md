@@ -431,7 +431,10 @@ $$
 When we use a parametric function such as this, we are no longer trying to find the order quantity $x^{\pi,N}$; instead, we are trying to find $\theta$ that determines the function (in this case, $\eqref{eq:parametricorderquantity}$). Our stochastic gradient algorithm now becomes
 
 $$
-\theta^{n+1} = \theta^n + \alpha_n \frac{d F^n(x^{\pi,N}(p^n\vert \theta^n),W^{n+1})}{d \theta} = \theta^n + \alpha_n \frac{d F^n(x^{\pi,N}(p^n\vert \theta^n),W^{n+1})}{d x} \frac{d x^{\pi,N}(p^n\vert \theta^n)}{d \theta},
+\begin{align*}
+\theta^{n+1} &= \theta^n + \alpha_n \frac{d F^n(x^{\pi,N}(p^n\vert \theta^n),W^{n+1})}{d \theta} \\
+&= \theta^n + \alpha_n \frac{d F^n(x^{\pi,N}(p^n\vert \theta^n),W^{n+1})}{d x} \frac{d x^{\pi,N}(p^n\vert \theta^n)}{d \theta},
+\end{align*}
 $$
 
 Remember that $\theta^n$ is a four-element column vector, while $x^n$ is a scalar. The first derivative is our original stochastic gradient
