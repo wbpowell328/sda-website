@@ -405,7 +405,7 @@ This method is very robust with respect to complex pre-decision states. For exam
   </ol>
 
 <figure class="book-figure">
-  <img src="/assets/images/sdam/statevariableminproductprobability.png" alt="A shortest path problem to maximize the probability of completing a path." style="max-width: 500px;">
+  <img src="/assets/images/sdam/statevariableminproductprobability.jpg" alt="A shortest path problem to maximize the probability of completing a path." style="max-width: 500px;">
   <figcaption><span class="fig-num">Figure 5.4.</span> A shortest path problem to maximize the probability of completing a path.</figcaption>
 </figure>
 </li>
