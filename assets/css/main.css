@@ -664,7 +664,7 @@ img, video { max-width: 100%; height: auto; display: block; }
    price table) -- the default 100%-width table with a left-aligned first
    column is overkill for a short list of numbers where every column should
    be centered and no wider than the numbers need. */
-.book-table.is-narrow { width: auto; }
+.book-table.is-narrow { width: auto; margin-left: auto; margin-right: auto; }
 .book-table.is-narrow th, .book-table.is-narrow td {
   width: 1in;
   text-align: center;
