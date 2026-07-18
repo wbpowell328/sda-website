@@ -30,7 +30,7 @@ It is quite rare, however, that these projects allow a community to eliminate th
 The major difficulty with renewables is handling the variability. While one solution is to simply pump any energy from a renewable source into the grid and use the capacity of the grid to handle this variability, there has been considerable interest in using storage (in particular, battery storage) to smooth out the peaks and valleys. In addition to smoothing the variability in the renewable source, there has also been interest in using batteries to take advantage of price spikes, buying power when it is cheap (prices can even go negative) and selling it back when they are high. Exploiting the variability in power prices on the grid to buy when prices are low and sell when they are high is known as battery arbitrage.
 
 <figure class="book-figure">
-  <img src="/assets/images/sdam/storagegrid.png" alt="Grid-to-storage system for power stabilization and battery arbitrage." style="max-width: 500px;">
+  <img src="/assets/images/sdam/storagegrid.jpg" alt="Grid-to-storage system for power stabilization and battery arbitrage." style="max-width: 500px;">
   <figcaption><span class="fig-num">Figure 8.2.</span> Grid-to-storage system for power stabilization and battery arbitrage.</figcaption>
 </figure>
 
