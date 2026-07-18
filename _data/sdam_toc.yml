@@ -42,7 +42,7 @@ chapters:
     url: "/sdam/chapter-9/"
   - num: "10"
     title: "Supply chain management I: The two-agent newsvendor problem"
-    url: ""
+    url: "/sdam/chapter-10/"
   - num: "11"
     title: "Supply chain management II: The beer game"
     url: ""
