@@ -100,7 +100,7 @@ I taught this course at Princeton University from 2008 through 2019 to undergrad
 
 ## The Decision Factory {#decision-factory}
 
-Adam DeJans Jr. and John Brandon Elam, *The Decision Factory: A Novel About Decisions Under Uncertainty* (with a foreword by W. B. Powell), First Edition.
+[Adam DeJans Jr.](https://www.adamdejans.com) and John Brandon Elam, *The Decision Factory: A Novel About Decisions Under Uncertainty* (with a foreword by W. B. Powell), First Edition.
 
 *The Decision Factory*, coauthored by Adam DeJans and John Elam, is a book written in the conversational style of Eli Goldratt's *The Goal*, centered on a fictitious company "Fulcrum" that is dealing with a complex operational problem. Using no mathematics, TDF outlines how the focus on policies applies to everyday problems, drawing on the Universal Modeling Framework. As I point out in my foreword, even simple rules which capture years of operational knowledge are examples of policy function approximations.
 
