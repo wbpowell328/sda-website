@@ -24,7 +24,7 @@ In this chapter we are going to start with a shortest path problem where the tra
 You are trying to create a navigation system that will guide a driverless vehicle to a destination over a congested network. We assume that our system has access to both historical and real-time link costs, from which we can create estimates of the mean and variance of the cost of traversing a link. We can think of this as a shortest path problem where we see distributions rather than actual costs, as depicted in Figure 5.2.
 
 <figure class="book-figure">
-  <img src="/assets/images/sdam/stochasticgraph1.png" alt="Network for a stochastic shortest path problem where distributions are known, but costs are not observed until after decisions are made." style="max-width: 500px;">
+  <img src="/assets/images/sdam/stochasticgraph1.jpg" alt="Network for a stochastic shortest path problem where distributions are known, but costs are not observed until after decisions are made." style="max-width: 500px;">
   <figcaption><span class="fig-num">Figure 5.2.</span> Network for a stochastic shortest path problem where distributions are known, but costs are not observed until after decisions are made.</figcaption>
 </figure>
 
