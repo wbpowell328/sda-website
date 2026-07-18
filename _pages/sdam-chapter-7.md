@@ -156,7 +156,7 @@ $$
   Equation $\eqref{eq:policiesapproximateDLA}$ is illustrated using the decision tree in Figure 7.1, which illustrates the use of approximate states, decisions and uncertainties as we look into the future. Creating these approximations requires a blending of art and science. We want to strike a balance between accurately modeling the future while balancing computational requirements.
 
 <figure class="book-figure">
-  <img src="/assets/images/sdam/stochasticdla.png" alt="A stochastic decision tree using approximations of states, decisions and uncertainties." style="max-width: 500px;">
+  <img src="/assets/images/sdam/stochasticdla.jpg" alt="A stochastic decision tree using approximations of states, decisions and uncertainties." style="max-width: 500px;">
   <figcaption><span class="fig-num">Figure 7.1.</span> A stochastic decision tree using approximations of states, decisions and uncertainties, in addition to an approximate policy for making decisions in the future. Square nodes are where we make decisions, while circles are where we observe the exogenous information.</figcaption>
 </figure>
 
