@@ -38,7 +38,7 @@ When people find they have high blood sugar, typically evaluated using a metric 
 The most popular drug is a type of sensitizer called metformin, which is almost always the first medication that is prescribed for a new diabetic, but this does not always work. Prior to working with a particular patient, a physician may have a belief about the potential of metformin, and drugs from each of the four groups, to reduce blood sugar that is illustrated in Figure 4.1.
 
 <figure class="book-figure">
-  <img src="/assets/images/sdam/diabeteslearning2.png" alt="Beliefs about the potential that each drug might have on the reduction of blood sugar." style="max-width: 420px;">
+  <img src="/assets/images/sdam/diabeteslearning2.jpg" alt="Beliefs about the potential that each drug might have on the reduction of blood sugar." style="max-width: 420px;">
   <figcaption><span class="fig-num">Figure 4.1.</span> Beliefs about the potential that each drug might have on the reduction of blood sugar.</figcaption>
 </figure>
 
