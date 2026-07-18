@@ -13,7 +13,7 @@ date: 2026-07-17
 Shortest path problems over graphs are both an important application area (arising in transportation, logistics, and communication), but are also a fundamental problem class that arises in many other settings. The most familiar shortest path problem is the classical deterministic problem illustrated in Figure 5.1, where we have to find the best path from node 1 to node 11, where the cost of traversing each arc is known in advance.
 
 <figure class="book-figure">
-  <img src="/assets/images/sdam/deterministicgraph.png" alt="Network for a deterministic shortest path problem." style="max-width: 500px;">
+  <img src="/assets/images/sdam/deterministicgraph.jpg" alt="Network for a deterministic shortest path problem." style="max-width: 500px;">
   <figcaption><span class="fig-num">Figure 5.1.</span> Network for a deterministic shortest path problem.</figcaption>
 </figure>
 
