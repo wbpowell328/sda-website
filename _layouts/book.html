@@ -83,13 +83,13 @@
         <div class="book-nav-prev">
           {% if prev_c %}
             <span class="book-nav-label">{% if prev_c.is_toc %}{{ book.book_title }}{% else %}Previous chapter{% endif %}</span>
-            <a href="{{ prev_c.url | relative_url }}">&larr; {% if prev_c.is_toc %}Table of contents{% else %}Chapter {{ prev_c.num }}: {{ prev_c.title }}{% endif %}</a>
+            <a href="{{ prev_c.url | relative_url }}">&larr; {% if prev_c.is_toc %}Table of contents{% elsif prev_c.num != "" %}Chapter {{ prev_c.num }}: {{ prev_c.title }}{% else %}{{ prev_c.title }}{% endif %}</a>
           {% endif %}
         </div>
         <div class="book-nav-next">
           {% if next_c %}
             <span class="book-nav-label">{% if next_c.is_toc %}{{ book.book_title }}{% else %}Next chapter{% endif %}</span>
-            <a href="{{ next_c.url | relative_url }}">{% if next_c.is_toc %}Table of contents{% else %}Chapter {{ next_c.num }}: {{ next_c.title }}{% endif %} &rarr;</a>
+            <a href="{{ next_c.url | relative_url }}">{% if next_c.is_toc %}Table of contents{% elsif next_c.num != "" %}Chapter {{ next_c.num }}: {{ next_c.title }}{% else %}{{ next_c.title }}{% endif %} &rarr;</a>
           {% endif %}
         </div>
       </nav>
