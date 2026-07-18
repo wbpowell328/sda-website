@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% if page.title %}{{ page.title }} — {% endif %}{{ site.data.bridging_vol1_toc.book_title }}</title>
-  <meta name="description" content="{{ site.data.bridging_vol1_toc.book_title }}: {{ site.data.bridging_vol1_toc.book_subtitle }}, by {{ site.data.bridging_vol1_toc.author }}.">
+  {% assign book_data_key = page.book_data | default: "bridging_vol1_toc" %}
+  {% assign book_home = page.book_home | default: "/bridging-vol1/" %}
+  {% assign book = site.data[book_data_key] %}
+  <title>{% if page.title %}{{ page.title }} — {% endif %}{{ book.book_title }}</title>
+  <meta name="description" content="{{ book.book_title }}: {{ book.book_subtitle }}, by {{ book.author }}.">
   <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/book.css' | relative_url }}">
   {% seo title=false %}
@@ -22,7 +25,7 @@
 </head>
 <body class="book-reader">
 
-{% assign chapters = site.data.bridging_vol1_toc.chapters %}
+{% assign chapters = book.chapters %}
 {% assign reachable = chapters | where_exp: "c", "c.url != ''" %}
 {% assign current_index = -1 %}
 {% for c in reachable %}
@@ -32,9 +35,9 @@
 {% if current_index >= 0 %}{% assign current_chapter = reachable[current_index] %}{% endif %}
 
 <header class="book-topbar" data-chapter-num="{% if current_chapter %}{{ current_chapter.num }}{% endif %}">
-  <a class="book-topbar-title" href="{{ '/bridging-vol1/' | relative_url }}">
-    {{ site.data.bridging_vol1_toc.book_title }}
-    <span class="book-topbar-subtitle" id="book-topbar-subtitle" data-default-text="{{ site.data.bridging_vol1_toc.book_subtitle }}">{{ site.data.bridging_vol1_toc.book_subtitle }}</span>
+  <a class="book-topbar-title" href="{{ book_home | relative_url }}">
+    {{ book.book_title }}
+    <span class="book-topbar-subtitle" id="book-topbar-subtitle" data-default-text="{{ book.book_subtitle }}">{{ book.book_subtitle }}</span>
   </a>
   <div class="book-topbar-actions">
     <button type="button" class="book-toc-toggle" aria-controls="book-toc-drawer" aria-expanded="false">
@@ -79,13 +82,13 @@
       <nav class="book-nav" aria-label="Chapter navigation">
         <div class="book-nav-prev">
           {% if prev_c %}
-            <span class="book-nav-label">{% if prev_c.is_toc %}{{ site.data.bridging_vol1_toc.book_title }}{% else %}Previous chapter{% endif %}</span>
+            <span class="book-nav-label">{% if prev_c.is_toc %}{{ book.book_title }}{% else %}Previous chapter{% endif %}</span>
             <a href="{{ prev_c.url | relative_url }}">&larr; {% if prev_c.is_toc %}Table of contents{% else %}Chapter {{ prev_c.num }}: {{ prev_c.title }}{% endif %}</a>
           {% endif %}
         </div>
         <div class="book-nav-next">
           {% if next_c %}
-            <span class="book-nav-label">{% if next_c.is_toc %}{{ site.data.bridging_vol1_toc.book_title }}{% else %}Next chapter{% endif %}</span>
+            <span class="book-nav-label">{% if next_c.is_toc %}{{ book.book_title }}{% else %}Next chapter{% endif %}</span>
             <a href="{{ next_c.url | relative_url }}">{% if next_c.is_toc %}Table of contents{% else %}Chapter {{ next_c.num }}: {{ next_c.title }}{% endif %} &rarr;</a>
           {% endif %}
         </div>
@@ -95,7 +98,7 @@
 </main>
 
 <footer class="book-footer">
-  <p>&copy; {{ site.time | date: "%Y" }} {{ site.data.bridging_vol1_toc.author }} &middot; <a href="{{ '/teaching-books/' | relative_url }}">Back to the Sequential Decision Analytics site</a></p>
+  <p>&copy; {{ site.time | date: "%Y" }} {{ book.author }} &middot; <a href="{{ '/teaching-books/' | relative_url }}">Back to the Sequential Decision Analytics site</a></p>
 </footer>
 
 <script>
