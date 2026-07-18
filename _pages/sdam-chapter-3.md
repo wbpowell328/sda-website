@@ -60,10 +60,10 @@ There are two important variations of the newsvendor problem:
 
 The unknown case is what arises more often in practice, which introduces the dimension that each time we run an iteration of choosing $x$ and then observing the smaller of $x$ and $W$, we learn something about the distribution of $W$.
 
-If $W$ was deterministic (and if $p > c$), then the solution is easily verified to be $x = W$. Now imagine that $W$ is a random variable with probability distribution $f^W(w)$ ($W$ may be discrete or continuous). Let $F^W(w) = Prob[W \leq w]$ be the cumulative distribution of $W$. If $W$ is continuous, and if we could compute $F(x) = \E F(x,W)$, then the optimal solution $x^*$ would satisfy
+If $W$ was deterministic (and if $p > c$), then the solution is easily verified to be $x = W$. Now imagine that $W$ is a random variable with probability distribution $f^W(w)$ ($W$ may be discrete or continuous). Let $F^W(w) = Prob[W \leq w]$ be the cumulative distribution of $W$. If $W$ is continuous, and if we could compute $F(x) = \E F(x,W)$, then the optimal solution $x^\ast $ would satisfy
 
 $$
-\left.\frac{d F(x)}{dx}\right\vert _{x=x^*} = 0.
+\left.\frac{d F(x)}{dx}\right\vert _{x=x^\ast } = 0.
 $$
 
 Now consider what is known as the *stochastic gradient*, where we take the derivative of $F(x,W)$ assuming we know $W$, which is given by
@@ -79,18 +79,18 @@ This is a gradient (that is, a derivative) of $F(x,W)$ given the random variable
 Taking expectations of both sides of $\eqref{eq:newsvendorstochasticgradient}$ gives
 
 $$
-\E \frac{d F(x,W)}{dx} = (p-c) Prob[x \leq W] - c Prob[x > W] = (p-c) (1-F^W(x)) - c F^W(x) = (p-c) - pF^W(x) = 0 \quad \text{for } x = x^*.
+\E \frac{d F(x,W)}{dx} = (p-c) Prob[x \leq W] - c Prob[x > W] = (p-c) (1-F^W(x)) - c F^W(x) = (p-c) - pF^W(x) = 0 \quad \text{for } x = x^\ast .
 $$
 
-We can now solve for $F^W(x^*)$ giving
+We can now solve for $F^W(x^\ast )$ giving
 
 $$
-F^W(x^*) = \frac{p-c}{p}.
+F^W(x^\ast ) = \frac{p-c}{p}.
 $$
 
-Thus, as $c$ decreases to 0, we want to order an amount $x^*$ that will satisfy demand with probability 1. As $c$ approaches $p$, then the optimal order quantity will satisfy demand with a probability approaching 0.
+Thus, as $c$ decreases to 0, we want to order an amount $x^\ast $ that will satisfy demand with probability 1. As $c$ approaches $p$, then the optimal order quantity will satisfy demand with a probability approaching 0.
 
-This means that we compute $(p-c)/p$, which is a number between 0 and 1, and then find the quantity $x^*$ that corresponds to the order quantity where the probability that the random demand is less than $x^*$ is equal to $(p-c)/p$.
+This means that we compute $(p-c)/p$, which is a number between 0 and 1, and then find the quantity $x^\ast $ that corresponds to the order quantity where the probability that the random demand is less than $x^\ast $ is equal to $(p-c)/p$.
 
 We have just seen two situations where we can find the order quantity exactly: when we know $W$ in advance (we might call this the perfect forecast) or when we know the distribution of $W$. This result has been known since the 1950's, sparking a number of papers for estimating the distribution of $W$ from observed data, handling the situation where we cannot observe $W$ directly when $x < W$ (that is, we only observe sales, rather than demand, a situation known as "censored demands").
 
@@ -344,7 +344,7 @@ $$
 <li>Give examples of searching over classes of policies (give two examples) and the tunable parameters for each class of policy.</li>
 <li>Write out what is meant by a <em>cumulative reward</em> objective and a <em>final reward</em> objective.</li>
 <li>When searching over the tunable parameter $\theta^{step}$ for the harmonic stepsize rule, how do you think the optimal value of $\theta^{step}$ obtained using a cumulative reward would compare to the optimal value when using a final reward?</li>
-<li>Assuming that we do not know the distribution of the demand $W$, argue why it does not make sense to find the optimal $x^*$ in a simulator. Given this, it makes more sense to use the simulator to optimize the learning policy. If we use a simulator to optimize the learning policy, what objective function would be appropriate for this learning exercise?</li>
+<li>Assuming that we do not know the distribution of the demand $W$, argue why it does not make sense to find the optimal $x^\ast $ in a simulator. Given this, it makes more sense to use the simulator to optimize the learning policy. If we use a simulator to optimize the learning policy, what objective function would be appropriate for this learning exercise?</li>
 </ol>
 
 **Problem solving questions**
@@ -403,7 +403,7 @@ The only difference between equations $\eqref{eq:newsvendorextension2}$ and $\eq
     <li>Give the stochastic gradient algorithm for this problem. Unlike the previous problem, this gradient will be a function of $p^n$.</li>
   </ol>
 
-The situation where the gradient depends on the price $p^n$ is a fairly significant complication. What is happening here is that instead of trying to find an optimal solution $x^*$ (or more precisely, $x^{\pi,N}$), we are trying to find a function $x^{\pi,N}(p)$.
+The situation where the gradient depends on the price $p^n$ is a fairly significant complication. What is happening here is that instead of trying to find an optimal solution $x^\ast $ (or more precisely, $x^{\pi,N}$), we are trying to find a function $x^{\pi,N}(p)$.
 
 The trick here is to pick a functional form for $x^{\pi,N}(p)$. We suggest two alternatives:
 
@@ -500,7 +500,7 @@ Your challenge is to decide on the stepsize parameter $\theta^{step}$ and the sm
 We are going to begin by finding the optimal solution assuming that we know the distribution for $M_{t+1}$:
   <ol type="a">
     <li>What is $\frac{dC(x_t,M_{t+1})}{dx_t}$? Remember that this is computed after $M_{t+1}$ becomes known.</li>
-    <li>Find the optimal static solution by setting the derivative (from part (a)) equal to zero, and then solving for $x^*$. Assume that the cumulative distribution function $F^M(m) = Prob(M_{t+1} \leq m)$ is known.</li>
+    <li>Find the optimal static solution by setting the derivative (from part (a)) equal to zero, and then solving for $x^\ast $. Assume that the cumulative distribution function $F^M(m) = Prob(M_{t+1} \leq m)$ is known.</li>
   </ol>
 
 Now we are going to model the sequential learning problem where we will not assume that the distribution of $M_{t+1}$ is known:

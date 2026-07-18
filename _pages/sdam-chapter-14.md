@@ -259,7 +259,7 @@ We are going to use this problem to really understand our full stochastic lookah
 
 $$
 \begin{align}
-X^{*}(S_t) &= \argmax_{x_t\in\Xcal}\Big(C(S_t,x_t) + {} \nonumber \\
+X^{\ast }(S_t) &= \argmax_{x_t\in\Xcal}\Big(C(S_t,x_t) + {} \nonumber \\
 & \quad \E_{W_{t+1}} \Big\{\max_\pi \E_{W_{t+2}, \ldots, W_T} \Big\{\sum_{t'=t+1}^T C(S_{t'},X^\pi_{t'}(S_{t'}))\Big\vert S_{t+1}\Big\} \Big\vert S_t,x_t\Big\}\Big). \label{eq:optDLAclinicaltrials}
 \end{align}
 $$
@@ -343,10 +343,10 @@ The one-period profit function $\Ctilde(\Rtilde_{tt'},\xtilde^{enroll}_{tt'})$ i
 
 There is only one problem with our deterministic lookahead model: we would never stop, because our policy for stopping requires that our estimate of $\tilde\rho_{tt'}$ moves into the "success" or "fail" regions (it would have to start in the "continue" region, since otherwise we would have stopped the base model). However, this does not mean that we cannot use the deterministic lookahead model: we just have to fix a horizon $H$ and stop when $t' = t+H$.
 
-Using this strategy, we solve our deterministic shortest path problem over the horizon $t'=t, \ldots, t+H$, and then from this find $\xtilde^*_{tt}$. Our enrollment policy is then
+Using this strategy, we solve our deterministic shortest path problem over the horizon $t'=t, \ldots, t+H$, and then from this find $\xtilde^\ast _{tt}$. Our enrollment policy is then
 
 $$
-X^{\pi^{enroll}}(S_t) = \xtilde^*_{tt}.
+X^{\pi^{enroll}}(S_t) = \xtilde^\ast _{tt}.
 $$
 
 We are not claiming that this will be an effective policy. We are primarily illustrating the types of modeling approximations that can be made in a lookahead model.
@@ -438,7 +438,7 @@ Model C is almost the same as the base model, since we are modeling all the diff
 
 $$
 \begin{align}
-X^{*}(S_t) &= \argmax_{x_t\in\Xcal}\Big(C(S_t,x_t) + {} \nonumber \\
+X^{\ast }(S_t) &= \argmax_{x_t\in\Xcal}\Big(C(S_t,x_t) + {} \nonumber \\
 & \quad \E_{W_{t+1}} \Big\{\max_\pi \E_{W_{t+2}, \ldots, W_T} \Big\{\sum_{t'=t+1}^T C(S_{t'},X^\pi_{t'}(S_{t'}))\Big\vert S_{t+1}\Big\} \Big\vert S_t,x_t\Big\}\Big). \label{eq:optDLAclinicaltrials2}
 \end{align}
 $$

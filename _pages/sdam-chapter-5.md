@@ -149,7 +149,7 @@ If we update our estimates in this way, then it means that the vector of estimat
 
 ## Designing policies
 
-Our "policy" for this deterministic problem is a function that maps the "state" (that is, what node we are at) to an action (which link we move over). We can solve this problem by optimizing the linear program represented by equations $\eqref{shortestpathobjective1}$–$\eqref{shortestpathobjective5}$, which gives us the vector $x^*_{ij}$ for all links $(i,j)$. We can think of this as a function where given the state (node $i$) we choose an action, which is the link $(i,j)$ for which $x_{ij} = 1$. We can write this policy as a function $X^\pi(S_t)$ using
+Our "policy" for this deterministic problem is a function that maps the "state" (that is, what node we are at) to an action (which link we move over). We can solve this problem by optimizing the linear program represented by equations $\eqref{shortestpathobjective1}$–$\eqref{shortestpathobjective5}$, which gives us the vector $x^\ast _{ij}$ for all links $(i,j)$. We can think of this as a function where given the state (node $i$) we choose an action, which is the link $(i,j)$ for which $x_{ij} = 1$. We can write this policy as a function $X^\pi(S_t)$ using
 
 $$
 X^\pi(S_t=N_t=i) = j \quad \text{if } x_{ij} = 1.

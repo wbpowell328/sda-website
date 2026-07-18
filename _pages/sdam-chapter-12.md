@@ -277,13 +277,13 @@ $$
 \frac{d P^{click}(\theta,x)}{d x} = \frac{\theta_1 e^{-\theta_0 - \theta_1 x}}{(1+e^{-\theta_0 - \theta_1 x})^2}.
 $$
 
-Now we want to find the bid $x^*$ where
+Now we want to find the bid $x^\ast $ where
 
 $$
-\left.\frac{d \Cbar(x)}{d x}\right\vert _{x=x^*} = 0.
+\left.\frac{d \Cbar(x)}{d x}\right\vert _{x=x^\ast } = 0.
 $$
 
-Figure 12.3 shows $\frac{d \Cbar(x\vert \theta)}{d x}$ versus the bid $x$, showing the behavior that it starts positive and transitions to negative. The point where it is equal to zero would be the optimal bid, a point which can be found numerically quite easily. Let $X^{explt}(S^n)$ be the bid $x^*$ satisfying $d \Cbar(x)/dx = 0$.
+Figure 12.3 shows $\frac{d \Cbar(x\vert \theta)}{d x}$ versus the bid $x$, showing the behavior that it starts positive and transitions to negative. The point where it is equal to zero would be the optimal bid, a point which can be found numerically quite easily. Let $X^{explt}(S^n)$ be the bid $x^\ast $ satisfying $d \Cbar(x)/dx = 0$.
 
 This means that we have to run a numerical algorithm to compute the policy. This is a greedy policy which falls in the CFA class, but without any tunable parameters.
 

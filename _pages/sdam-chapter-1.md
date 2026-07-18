@@ -765,7 +765,7 @@ $$
 S_{t+1}(\omega) = S^M(S_t(\omega), X^\pi_t(S_t(\omega)), W_{t+1}(\omega)).
 $$
 
-Let $\theta^*$ be the value of $\theta$ that we found by optimizing $\eqref{eq:optimizingtheta}$. The proper way to write this optimal value is as a function $\theta^*(S_0)$ that depends on the information in $S_0$ (it also depends on the sample path $\omega$). This helps to communicate the reality that if we change the input data to our problem, represented by $S_0$, then this may have an impact on the best values of our policy parameters $\theta$. In fact, we might even have to change our choice of policy!
+Let $\theta^\ast $ be the value of $\theta$ that we found by optimizing $\eqref{eq:optimizingtheta}$. The proper way to write this optimal value is as a function $\theta^\ast (S_0)$ that depends on the information in $S_0$ (it also depends on the sample path $\omega$). This helps to communicate the reality that if we change the input data to our problem, represented by $S_0$, then this may have an impact on the best values of our policy parameters $\theta$. In fact, we might even have to change our choice of policy!
 
 ### Variations
 
