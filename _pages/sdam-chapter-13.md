@@ -145,7 +145,7 @@ $$
 Figure 13.1 illustrates the transitions that are occurring in week $t$. We either have to decide which type of blood to use to satisfy a demand (Figure 13.1a), or to hold the blood until the following week. If we use blood to satisfy a demand, it is assumed lost from the system. If we hold the blood until the following week, it is transformed into blood that is one week older. Blood that is six weeks old may not be used to satisfy any demands, so we can view the bucket of blood that is six weeks old as a sink for unusable blood (the value of this blood would be zero). Note that blood donations are assumed to arrive with an age of 0.
 
 <figure class="book-figure">
-  <img src="/assets/images/sdam/bloodnetworkdemands.png" alt="Assigning blood supplies to demands in week t." style="max-width: 450px;">
+  <img src="/assets/images/sdam/bloodnetworkdemands.jpg" alt="Assigning blood supplies to demands in week t." style="max-width: 450px;">
   <figcaption><span class="fig-num">Figure 13.1a.</span> Assigning blood supplies to demands in week $t$. Solid lines represent assigning blood to a demand, dotted lines represent holding blood.</figcaption>
 </figure>
 
