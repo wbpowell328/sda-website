@@ -675,6 +675,7 @@ img, video { max-width: 100%; height: auto; display: block; }
    (not something reachable by styling a wrapper's own text-align), so
    this has to target that element specifically. */
 .eq-flush-left mjx-mtable { text-align: left !important; }
+.eq-flush-left mjx-container[display="true"] { margin-left: -0.375in; }
 
 /* Narrow, fully-centered numeric tables (e.g. chapter 2's exercise time/
    price table) -- the default 100%-width table with a left-aligned first
