@@ -400,9 +400,33 @@ This is a more compact model because we now assume that the constant term $\thet
 **Problem solving questions**
 
 <ol class="book-exercises" style="counter-reset: exercise 7;">
-<li>Recommender system part I - Belief model - You are going to help design a recommender system that recommends products to advertise when a customer is scrolling through a website. Since the customer has to sign in, we can identify the $n$th customer by a vector of attributes $a=a^n$ that includes: $a_1$, gender (2 types); $a_2$, age range $(0$–$10, 11$–$20, \ldots, 70$–$100)$ (8 types); $a_3$, device type (smartphone, laptop, tablet) (3 types); $a_4$, region (200); and $a_5$, unique ID (email address) (100 million).
+<li>Recommender system part I - Belief model - You are going to help design a recommender system that recommends products to advertise when a customer is scrolling through a website. Since the customer has to sign in, we can identify the $n$th customer by a vector of attributes $a=a^n$ that includes:
 
-Imagine that we are recommending text articles. Assume that the article we recommend for the $n$th customer has attributes $b=b^n$ that includes: $b_1$, news, sports, arts, business, cooking, real-estate (6 types); $b_2$, subcategory: if news, then international, national (by country), regional (region within a country); if sports, then by sport, and then by team (or athlete); and so on (a total of 500); $b_3$, source (website, newspaper, ...) (5 sources); $b_4$, author (2,000); and $b_5$, unique ID for article (6 million).
+<div class="book-table-wrap">
+<table class="book-table is-list-table">
+<tbody>
+<tr><td>$a_1$</td><td>Gender (2 types).</td></tr>
+<tr><td>$a_2$</td><td>Age range $(0$–$10, 11$–$20, \ldots, 70$–$100)$ (8 types).</td></tr>
+<tr><td>$a_3$</td><td>Device type (smartphone, laptop, tablet) (3 types).</td></tr>
+<tr><td>$a_4$</td><td>Region (200).</td></tr>
+<tr><td>$a_5$</td><td>Unique ID (email address) (100 million).</td></tr>
+</tbody>
+</table>
+</div>
+
+Imagine that we are recommending text articles. Assume that the article we recommend for the $n$th customer has attributes $b=b^n$ that includes:
+
+<div class="book-table-wrap">
+<table class="book-table is-list-table">
+<tbody>
+<tr><td>$b_1$</td><td>News, sports, arts, business, cooking, real-estate (6 types).</td></tr>
+<tr><td>$b_2$</td><td>Subcategory: if news, then international, national (by country), regional (region within a country); if sports, then by sport, and then by team (or athlete); and so on (a total of 500).</td></tr>
+<tr><td>$b_3$</td><td>Source (website, newspaper, ...) (5 sources).</td></tr>
+<tr><td>$b_4$</td><td>Author (2,000).</td></tr>
+<tr><td>$b_5$</td><td>Unique ID for article (6 million).</td></tr>
+</tbody>
+</table>
+</div>
 
 We would like to estimate $P(b^n\vert a^n)$, the probability that the $n$th customer with attribute $a^n$ clicks on the link of an article with attribute $b^n$.
 
