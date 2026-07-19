@@ -15,6 +15,12 @@ date: 2026-07-17
   (function () {
     var splash = document.getElementById('book-cover-splash');
     if (!splash) return;
+    if (window.location.hash === '#toc') {
+      // Arrived via the "Table of contents" nav entry -- skip the cover
+      // entirely so it lands directly on the contents list below.
+      splash.style.display = 'none';
+      return;
+    }
     document.body.classList.add('book-cover-active');
     function dismiss() {
       splash.classList.add('is-hidden');
@@ -37,6 +43,7 @@ The book is also available as a [downloadable PDF](/assets/papers/sdam-2nd-editi
 <br clear="all" />
 
 ## Table of contents
+{: #toc}
 
 <ul class="book-toc-list">
 {% for c in site.data.sdam_toc.chapters %}

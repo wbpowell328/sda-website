@@ -7,8 +7,11 @@ book_subtitle: "2nd edition"
 author: "Warren B. Powell"
 chapters:
   - num: ""
-    title: "Table of contents"
+    title: "Front cover"
     url: "/sdam/"
+  - num: ""
+    title: "Table of contents"
+    url: "/sdam/#toc"
     is_toc: true
   - num: ""
     title: "Preface and acknowledgements"
