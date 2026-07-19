@@ -7,8 +7,16 @@ book_subtitle: "Framing the Problem"
 author: "Warren B. Powell"
 chapters:
   - num: ""
-    title: "Table of contents"
+    title: "Front cover"
     url: "/bridging-vol1/"
+    no_expand: true
+  - num: ""
+    title: "About this book"
+    url: "/bridging-vol1/about/"
+    no_expand: true
+  - num: ""
+    title: "Table of contents"
+    url: "/bridging-vol1/contents/"
     is_toc: true
   - num: "1"
     title: "The Fundamentals of Framing"

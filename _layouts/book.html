@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {% assign book_data_key = page.book_data | default: "bridging_vol1_toc" %}
-  {% assign book_home = page.book_home | default: "/bridging-vol1/" %}
+  {% assign book_home = page.book_home | default: "/bridging-vol1/contents/" %}
   {% assign book = site.data[book_data_key] %}
   <title>{% if page.title %}{{ page.title }} — {% endif %}{{ book.book_title }}</title>
   <meta name="description" content="{{ book.book_title }}: {{ book.book_subtitle }}, by {{ book.author }}.">
