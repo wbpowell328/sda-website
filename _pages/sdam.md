@@ -7,6 +7,25 @@ permalink: /sdam/
 date: 2026-07-17
 ---
 
+<div class="book-cover-splash" id="book-cover-splash" role="button" tabindex="0" aria-label="Click to continue to the book">
+  <img src="/assets/images/sdam/cover.jpg" alt="Cover of Sequential Decision Analytics and Modeling, 2nd edition, by Warren B. Powell" />
+  <p class="book-cover-splash-hint">Click to enter</p>
+</div>
+<script>
+  (function () {
+    var splash = document.getElementById('book-cover-splash');
+    if (!splash) return;
+    document.body.classList.add('book-cover-active');
+    function dismiss() {
+      splash.classList.add('is-hidden');
+      document.body.classList.remove('book-cover-active');
+      document.removeEventListener('keydown', dismiss);
+    }
+    splash.addEventListener('click', dismiss);
+    document.addEventListener('keydown', dismiss);
+  })();
+</script>
+
 <img src="/assets/images/sdam/cover.jpg" alt="Cover of Sequential Decision Analytics and Modeling, 2nd edition, by Warren B. Powell" width="200" align="right" style="max-width: 100%; height: auto; margin-left: 1.5rem; margin-bottom: 1rem;" />
 
 This is a web edition of *Sequential Decision Analytics and Modeling* (2nd edition), read directly in your browser rather than as a PDF.
