@@ -416,23 +416,23 @@ Let $\sigma^R_{t'-t}$ be the standard deviation of the error between the actual 
 These exercises use the Python module *BloodManagement* on [tinyurl.com/sdagithub](http://tinyurl.com/sdagithub/).
 
 <ol class="book-exercises" style="counter-reset: exercise 9;">
-<li>Our goal is to manage the assignment of different blood types to different patients, who are characterized first by their own blood type, and second by whether the surgery is urgent or elective.
+<li><p>Our goal is to manage the assignment of different blood types to different patients, who are characterized first by their own blood type, and second by whether the surgery is urgent or elective.</p>
 
-This exercise will have you working with two classes of policies: a myopic parametric cost function approximation, and a policy based on value function approximations.
+<p>This exercise will have you working with two classes of policies: a myopic parametric cost function approximation, and a policy based on value function approximations.</p>
 
-We are going to begin by assuming that you are just going to match different blood types to different demands. Blood is described by blood type (of which there are eight) and age, which will range from 0 to 2 weeks (3 week-old blood is discarded). Patients are described by blood type and whether the surgery is urgent or elective. There are various bonuses and penalties that guide assignments. For example, there are positive bonuses for covering urgent patients (this is highest). There is also a bonus for matching blood types exactly (e.g. A-positive blood with an A-positive patient), and a penalty for discarding blood after it becomes too old.
+<p>We are going to begin by assuming that you are just going to match different blood types to different demands. Blood is described by blood type (of which there are eight) and age, which will range from 0 to 2 weeks (3 week-old blood is discarded). Patients are described by blood type and whether the surgery is urgent or elective. There are various bonuses and penalties that guide assignments. For example, there are positive bonuses for covering urgent patients (this is highest). There is also a bonus for matching blood types exactly (e.g. A-positive blood with an A-positive patient), and a penalty for discarding blood after it becomes too old.</p>
 
-If we ignore the impact of decisions now on the future, we have a simple linear program that matches supplies and demands, with costs given by this set of bonuses. The problem is that by ignoring the impact of decisions now on the future, we may find that we are not doing the best that we can. One issue that arises is when we use blood now for elective surgery, we are ignoring that this might be useful to hold onto in case we run out of blood for urgent surgery later on. Alternatively, we may use O- blood now rather than hold it for the future when we might run out of other blood types.
+<p>If we ignore the impact of decisions now on the future, we have a simple linear program that matches supplies and demands, with costs given by this set of bonuses. The problem is that by ignoring the impact of decisions now on the future, we may find that we are not doing the best that we can. One issue that arises is when we use blood now for elective surgery, we are ignoring that this might be useful to hold onto in case we run out of blood for urgent surgery later on. Alternatively, we may use O- blood now rather than hold it for the future when we might run out of other blood types.</p>
 
-Let $R_{ta}$ be the supply of blood with attribute $a$ for week $t$, and let $R_t = (R_{ta})_{a\in\Acal}$ where $\Acal$ is the set of all the different blood attributes (blood type and age). Similarly let $D_{tb}$ be the attributes of a patient where $b$ captures the blood type and whether the surgery is urgent or elective, and let $D_t = (D_{tb})_{b\in\Bcal}$. The state of our system is $S_t = (R_t,D_t)$.
+<p>Let $R_{ta}$ be the supply of blood with attribute $a$ for week $t$, and let $R_t = (R_{ta})_{a\in\Acal}$ where $\Acal$ is the set of all the different blood attributes (blood type and age). Similarly let $D_{tb}$ be the attributes of a patient where $b$ captures the blood type and whether the surgery is urgent or elective, and let $D_t = (D_{tb})_{b\in\Bcal}$. The state of our system is $S_t = (R_t,D_t)$.</p>
 
-Now let $\Rhat_{t+1,a}$ be the number of units of blood with attribute $a$ that were donated between weeks $t$ and $t+1$. Similarly let $\Dhat_{t+1,b}$ be the number of new patient arrivals with attribute $b$. We would write
+<p>Now let $\Rhat_{t+1,a}$ be the number of units of blood with attribute $a$ that were donated between weeks $t$ and $t+1$. Similarly let $\Dhat_{t+1,b}$ be the number of new patient arrivals with attribute $b$. We would write</p>
 
 $$
 W_{t+1} = (\Rhat_{t+1,a},\Dhat_{t+1,b}).
 $$
 
-Finally let $\omega$ represent a sample path $W_1(\omega), \ldots, W_T(\omega)$ of donations and new patients over our $T$-week horizon. Assume that we have created a set of simulations of $W_t$, and let $\Omega=(\omega_1, \ldots, \omega_N)$ be this set of sample realizations.
+<p>Finally let $\omega$ represent a sample path $W_1(\omega), \ldots, W_T(\omega)$ of donations and new patients over our $T$-week horizon. Assume that we have created a set of simulations of $W_t$, and let $\Omega=(\omega_1, \ldots, \omega_N)$ be this set of sample realizations.</p>
   <ol type="a">
     <li>How many dimensions does the state variable $S_t$ have?</li>
     <li>Let $X^\pi(S_t\vert \theta)$ be the result of solving the linear program given the state $S_t$, where $\theta$ is the vector of all the bonuses and penalties for different assignments. Let $D^{urgent}_t(x_t)$ be the number of urgent patients that were covered given the decision vector $x_t$, and let $D^{elective}_t(x_t)$ be the number of elective patients that were covered. Write the problem of finding the best value of $\theta$ as an optimization problem, where instead of our usual expectation you are going to write it as an average over the sample paths in $\Omega$.</li>
