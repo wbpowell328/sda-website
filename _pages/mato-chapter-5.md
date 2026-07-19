@@ -94,7 +94,7 @@ In the teaching notes below, we argue that the optimization problem in $\eqref{e
 
 ### 1.2 Nonlinear models
 
-Next we transition from a linear model (where $f(x|\theta)$ is linear in the parameters) to a nonlinear model. One example is a logistic regression such as
+Next we transition from a linear model (where $f(x\|\theta)$ is linear in the parameters) to a nonlinear model. One example is a logistic regression such as
 
 $$
 f\left( x \middle| \theta \right) = \frac{e^{\theta_{0} + \theta_{1}x}}{1 + e^{\theta_{0} + \theta_{1}x}},
@@ -175,7 +175,7 @@ $$
 \min_{\theta}\mathbb{E}_{X}\mathbb{E}_{Y|X}\left( Y - f\left( X \middle| \theta \right) \right)^{2}. \tag{1.6}\label{eq:mato-1-6}
 $$
 
-Here we view $X$, the explanatory variables (also known as independent variables or covariates), and the response $Y = f(X|\theta)$, as random variables. We assume we are given a sample of these variables
+Here we view $X$, the explanatory variables (also known as independent variables or covariates), and the response $Y = f(X\|\theta)$, as random variables. We assume we are given a sample of these variables
 
 $$
 \left( x^{1},y^{1} \right),\ \left( x^{2},y^{2} \right),\ldots,\left( x^{N},y^{N} \right),
@@ -211,7 +211,7 @@ Strategy 2 -- Lookahead approximations -- We estimate the value of a decision by
 
 Note that sequential decision problems arise throughout human activities. PFAs are the simplest class and are the most widely used. Most important, these are parameterized functions, just like the parametric models in statistics that we saw in Topic 2.
 
-Below is the slide I use to present the elements of a sequential decision problem. It illustrates the notation of states $S\_{t}$ (what we know at time t), decisions $x\_{t}$ (what decision we choose from a set of feasible decisions), and the exogenous information $W\_{t + 1}$ that we learn only after we make the decision $x\_{t}$. Decisions are made with a method (policy) that we designate as $X^{\pi}(S\_{t}|\theta)$ that often depends on tunable parameters $\theta$. Also shown is the contribution (if we are maximizing) or cost (if minimizing) $C(S\_{t},x\_{t})$ which may depend on information in the state $S\_{t}$ (such as dynamically changing prices or costs) in addition to the decision $x\_{t}$. The transition function $S^{M}(S\_{t},\ x\_{t},\ W\_{t + 1})$ gives the updated state $S\_{t + 1}$ given the information in $S\_{t}$, the decision $x\_{t}$, and the exogenous information $W\_{t + 1}$.
+Below is the slide I use to present the elements of a sequential decision problem. It illustrates the notation of states $S\_{t}$ (what we know at time t), decisions $x\_{t}$ (what decision we choose from a set of feasible decisions), and the exogenous information $W\_{t + 1}$ that we learn only after we make the decision $x\_{t}$. Decisions are made with a method (policy) that we designate as $X^{\pi}(S\_{t}\|\theta)$ that often depends on tunable parameters $\theta$. Also shown is the contribution (if we are maximizing) or cost (if minimizing) $C(S\_{t},x\_{t})$ which may depend on information in the state $S\_{t}$ (such as dynamically changing prices or costs) in addition to the decision $x\_{t}$. The transition function $S^{M}(S\_{t},\ x\_{t},\ W\_{t + 1})$ gives the updated state $S\_{t + 1}$ given the information in $S\_{t}$, the decision $x\_{t}$, and the exogenous information $W\_{t + 1}$.
 
 <figure class="book-figure">
   <img src="/assets/images/mato/sequential-decision-notation.png" alt="Slide illustrating the notation of a sequential decision problem: states, decisions, and exogenous information." style="max-width: 560px;">
@@ -263,13 +263,13 @@ $$
 \bar{p}_{t} = .5p_{t} + .35p_{t - 1} + 0.15p_{t - 2} \tag{2.2}\label{eq:mato-2-2}
 $$
 
-is a smoothed estimate of prices. The variable $S\_{t}$, which is called the "state variable," captures all the information we know at time t, that we need to make a decision (that is, compute our policy $X^{\pi\_{1}}\left( S\_{t} \middle| \theta \right)$), as well as any other information we might need. For this problem, the state variable consists of
+is a smoothed estimate of prices. The variable $S\_{t}$, which is called the "state variable," captures all the information we know at time t, that we need to make a decision (that is, compute our policy $X^{\pi\_{1}}\left( S\_{t} \middle\| \theta \right)$), as well as any other information we might need. For this problem, the state variable consists of
 
 $$
 S_{t} = (p_{t},p_{t - 1},p_{t - 2}).
 $$
 
-It is easy to see that our policy $X^{\pi\_{1}}\left( S\_{t} \middle| \theta \right)$ is one of many possible strategies we could use. This policy has two tunable parameters. To tune the parameters, we need an objective function.
+It is easy to see that our policy $X^{\pi\_{1}}\left( S\_{t} \middle\| \theta \right)$ is one of many possible strategies we could use. This policy has two tunable parameters. To tune the parameters, we need an objective function.
 
 The objective function we would use to perform our tuning would look like
 
@@ -392,7 +392,7 @@ $$
 \max_{x}{F\left( x \middle| D \right) = p\min\left\{ x,D \right\} - cx}. \tag{3.3}\label{eq:mato-3-3}
 $$
 
-The function $F(x|D)$ assumes we know the demand $D$, but we do not. What we have to do is to find the quantity $x$ that maximizes the expected value of $F(x|D)$ over the random quantity $D$. This would be written
+The function $F(x\|D)$ assumes we know the demand $D$, but we do not. What we have to do is to find the quantity $x$ that maximizes the expected value of $F(x\|D)$ over the random quantity $D$. This would be written
 
 $$
 \max_{x}{g(x) = \mathbb{E}_{D}F\left( x \middle| D \right) = \mathbb{E}_{D}\left\{ p\min\left\{ x,D \right\} - cx \right\}} \tag{3.4}\label{eq:mato-3-4}
@@ -420,7 +420,7 @@ $$
 g\left( x \middle| D^{n + 1} \right) = p\min\left\{ x,D^{n + 1} \right\} - cx. \tag{3.6}\label{eq:mato-3-6}
 $$
 
-Next we are just going to take the derivative of $g\left( x \middle| D^{n + 1} \right)$ with respect to $x$:
+Next we are just going to take the derivative of $g\left( x \middle\| D^{n + 1} \right)$ with respect to $x$:
 
 $$
 \nabla g\left( x|D^{n + 1} \right) = \frac{dg\left( x \middle| D^{n + 1} \right)}{dx} = \begin{cases} p - c & \text{if } x \leq D^{n + 1} \\ -c & \text{if } x > D^{n + 1} \end{cases}. \tag{3.7}\label{eq:mato-3-7}
@@ -492,7 +492,7 @@ $$
 X^{IE}\left( S^{n} \middle| \theta^{IE} \right) = \arg\max_{x \in X}\left( \bar{\mu}_{x}^{n} + \theta^{IE}\bar{\sigma}_{x}^{n} \right) \tag{4.1}\label{eq:mato-4-1}
 $$
 
-where $x^{n} = X^{IE}\left( S^{n} \middle| \theta^{IE} \right)$ is the design we are going to choose for the $n + 1^{\text{st}}$ experiment, which produces an observation $W^{n + 1}$.
+where $x^{n} = X^{IE}\left( S^{n} \middle\| \theta^{IE} \right)$ is the design we are going to choose for the $n + 1^{\text{st}}$ experiment, which produces an observation $W^{n + 1}$.
 
 With our inventory problem, we updated our state variable (the inventory) using the inventory equation $\eqref{eq:mato-2-4}$. With a learning problem, we have to update our beliefs, which we are going to do using some simple recursions. Assume that we observe performance $W\_{x}^{n + 1}$ when we test choice $x = x^{n}$. First, we are going to replace the variances $\left( \bar{\sigma}\_{x}^{n} \right)^{2}$ with their inverses which we call the *precision* given by
 
@@ -526,13 +526,13 @@ $$
 W_{x}^{n + 1} = \mu_{x^{n}} + \varepsilon. \tag{4.6}\label{eq:mato-4-6}
 $$
 
-We can use the methods we presented for the inventory planning problem (see equations $\eqref{eq:mato-2-5}$-$\eqref{eq:mato-2-7}$) to generate random observations of $\varepsilon$. Now, create $N$ (say, $N$=100) observations of $W\_{x}^{n}$ for each alternative $x$ and store these. Now, simulate our interval estimation policy $X^{IE}(S^{n}|\theta^{IE})$ which we evaluate using
+We can use the methods we presented for the inventory planning problem (see equations $\eqref{eq:mato-2-5}$-$\eqref{eq:mato-2-7}$) to generate random observations of $\varepsilon$. Now, create $N$ (say, $N$=100) observations of $W\_{x}^{n}$ for each alternative $x$ and store these. Now, simulate our interval estimation policy $X^{IE}(S^{n}\|\theta^{IE})$ which we evaluate using
 
 $$
 F(\theta) = \sum_{n = 1}^{N}W_{x^{n}}^{n} \tag{4.7}\label{eq:mato-4-7}
 $$
 
-where $x^{n} = X^{IE}(S^{n}|\theta^{IE})$ and where the state variable $S^{n}$ is updated using equations $\eqref{eq:mato-4-4}$ and $\eqref{eq:mato-4-5}$. Note that we have written $\eqref{eq:mato-4-7}$ as if we are running a single simulation. We can do this, but it will be noisy. Instead of pre-generating the outcomes of $W\_{x}^{n}$ and using these in the simulation of the policy, it makes more sense to generate them on the fly (this is very fast using any programming language such as Python). Now compute the sum in $\eqref{eq:mato-4-7}$, say, 1000 times and take an average. Finally, repeat this for a discrete set of values of $\theta$ such as 0, 0.1, 0.2, ..., 4.0 and choose the value of $\theta^{IE}$ that works the best.
+where $x^{n} = X^{IE}(S^{n}\|\theta^{IE})$ and where the state variable $S^{n}$ is updated using equations $\eqref{eq:mato-4-4}$ and $\eqref{eq:mato-4-5}$. Note that we have written $\eqref{eq:mato-4-7}$ as if we are running a single simulation. We can do this, but it will be noisy. Instead of pre-generating the outcomes of $W\_{x}^{n}$ and using these in the simulation of the policy, it makes more sense to generate them on the fly (this is very fast using any programming language such as Python). Now compute the sum in $\eqref{eq:mato-4-7}$, say, 1000 times and take an average. Finally, repeat this for a discrete set of values of $\theta$ such as 0, 0.1, 0.2, ..., 4.0 and choose the value of $\theta^{IE}$ that works the best.
 
 ## Topic 5: Shortest path problems
 
@@ -605,7 +605,7 @@ Let's introduce a twist. Imagine that we have a goal of reaching our destination
 
 Let $\theta^{pctile}$ be the percentile of the travel time for a link, and let $c\_{tij}\left( \theta^{pctile} \right)$ be the travel time corresponding to the $\theta^{pctile}$ of the travel times.
 
-Now we use $c\_{tij}\left( \theta^{pctile} \right)$ for the travel times (instead of the means $c\_{tij}$). We would then write our policy as $X\_{t}^{\pi}\left( S\_{t}|\theta^{pctile} \right)$ to express the dependence on $\theta^{pctile}$. The performance of the policy $X\_{t}^{\pi}\left( S\_{t}|\theta^{pctile} \right)$ depends on both the actual travel time, but also how late the traveler is for their appointment. Typically we would add a penalty $\theta^{late}$ times how late the traveler is.
+Now we use $c\_{tij}\left( \theta^{pctile} \right)$ for the travel times (instead of the means $c\_{tij}$). We would then write our policy as $X\_{t}^{\pi}\left( S\_{t}\|\theta^{pctile} \right)$ to express the dependence on $\theta^{pctile}$. The performance of the policy $X\_{t}^{\pi}\left( S\_{t}\|\theta^{pctile} \right)$ depends on both the actual travel time, but also how late the traveler is for their appointment. Typically we would add a penalty $\theta^{late}$ times how late the traveler is.
 
 Now we have another tuning problem just like we saw with PFAs (Topic 2), and solved using the same methods we saw in Topic 1. To evaluate our policy, let $\hat{c}\_{tij}^{n}$ be the sample realization of the actual time to traverse link $(ij)$ that we reach at time $t$. These samples are not used to plan a path -- they are only used to evaluate the policy for making decisions. We can generate $\hat{c}\_{tij}^{n}$ using the Monte Carlo simulation methods we introduced in section 2.3.
 
@@ -615,7 +615,7 @@ $$
 \hat{F}^{n}(\theta) = \sum_{t = 1}^{T}{\sum_{ij}{X_{tij}^{\pi}(S_{t}|\theta)\hat{c}_{tij}^{n}}}.
 $$
 
-$\hat{F}^{n}(\theta)$ is the actual travel time we experience in our $n^{\text{th}}$ trip following policy $X\_{t}^{\pi}(S\_{t}|\theta)$ while experiencing link costs $\hat{c}\_{tij}^{n}$. Let's say that we have to finish the trip in time $\tau$ to arrive in time for our appointment. Let $\eta$ be the penalty per unit time for being late.
+$\hat{F}^{n}(\theta)$ is the actual travel time we experience in our $n^{\text{th}}$ trip following policy $X\_{t}^{\pi}(S\_{t}\|\theta)$ while experiencing link costs $\hat{c}\_{tij}^{n}$. Let's say that we have to finish the trip in time $\tau$ to arrive in time for our appointment. Let $\eta$ be the penalty per unit time for being late.
 
 The total cost (time plus late penalty) for the $n^{\text{th}}$ trip is then
 
@@ -834,7 +834,7 @@ Our modeling framework can be used to model *any* sequential decision problem, a
 
 ### 6.3 Designing policies
 
-Above, we wrote our policy as $X^{\pi}(S\_{t}|\theta)$ which seems to imply that we already have some functional form for the policy, and then have to tune the parameters $\theta$. However, just as we have to choose between different models in machine learning (such as the linear and nonlinear models we saw in Topic 1), we also have to choose among different functional forms for policies. However, the set of choices becomes much broader.
+Above, we wrote our policy as $X^{\pi}(S\_{t}\|\theta)$ which seems to imply that we already have some functional form for the policy, and then have to tune the parameters $\theta$. However, just as we have to choose between different models in machine learning (such as the linear and nonlinear models we saw in Topic 1), we also have to choose among different functional forms for policies. However, the set of choices becomes much broader.
 
 We can divide all the different types of policies into four classes which cover every possible method for making decisions. These are organized into two broad strategies as follows:
 
@@ -1355,7 +1355,7 @@ $$
 
 Note that our DLA policy in $\eqref{eq:mato-7-15}$-$\eqref{eq:mato-7-18}$ is still not an optimal policy, but it might be quite good. One challenge is that we have to tune the parameters $\theta = (\theta^{R},\theta^{D})$.
 
-We need to first write out how we would simulate our policy $X\_{t}^{\pi}\left( S\_{t} \middle| \theta \right)$. This requires identifying how random events (e.g. random demands, travel times, ...) affect how the solution $x\_{t}$ behaves in practice. This is a key step that is almost always overlooked when modeling and solving linear programs. What you have to do is to imagine that you are simulating the process. These equations represent the transition function in our sequential decision model which we represent compactly as
+We need to first write out how we would simulate our policy $X\_{t}^{\pi}\left( S\_{t} \middle\| \theta \right)$. This requires identifying how random events (e.g. random demands, travel times, ...) affect how the solution $x\_{t}$ behaves in practice. This is a key step that is almost always overlooked when modeling and solving linear programs. What you have to do is to imagine that you are simulating the process. These equations represent the transition function in our sequential decision model which we represent compactly as
 
 $$
 S_{t + 1} = S^{M}\left( S_{t},x_{t},W_{t + 1} \right).
@@ -1373,7 +1373,7 @@ $$
 F^{n}(\theta) = \sum_{t = 0}^{T}{C(S_{t}(\omega^{n}),X_{t}^{\pi}(S_{t}(\omega^{n})|\theta))},
 $$
 
-where $X\_{t}^{\pi}(S\_{t}(\omega^{n})|\theta)$ is the policy computed from $\eqref{eq:mato-7-15}$-$\eqref{eq:mato-7-18}$. If we generate $n = 1,\ \ldots,\ N$ sample paths, we can evaluate the policy by taking an average
+where $X\_{t}^{\pi}(S\_{t}(\omega^{n})\|\theta)$ is the policy computed from $\eqref{eq:mato-7-15}$-$\eqref{eq:mato-7-18}$. If we generate $n = 1,\ \ldots,\ N$ sample paths, we can evaluate the policy by taking an average
 
 $$
 \bar{F}^{\pi}(\theta) = \frac{1}{N}\sum_{n = 1}^{N}{\sum_{t = 0}^{T}{C(S_{t}(\omega^{n}),X_{t}^{\pi}(S_{t}(\omega^{n})|\theta))}}.
@@ -1420,7 +1420,7 @@ Now, to handle uncertainty, we insert a coefficient $\theta\_{t' - t}$ for our f
 
 This closely parallels the idea of solving a shortest path with modified costs. We solved that problem using our shortest path algorithm. This time, we need the full power of a linear program that we introduced in Topic 7.
 
-Our next challenge is to tune the parameter vector $\theta$ which could be a scalar (if we use one parameter for all the forecasts) or, in our case, a 24-dimensional vector (one for each hour into the future). We first need to write out how we are going to evaluate our policy. If $X\_{t}^{D-LA}\left( S\_{t} \middle| \theta \right)$ is our policy above, assume that it returns a decision vector $x\_{t}$ that determines what to do right now.
+Our next challenge is to tune the parameter vector $\theta$ which could be a scalar (if we use one parameter for all the forecasts) or, in our case, a 24-dimensional vector (one for each hour into the future). We first need to write out how we are going to evaluate our policy. If $X\_{t}^{D-LA}\left( S\_{t} \middle\| \theta \right)$ is our policy above, assume that it returns a decision vector $x\_{t}$ that determines what to do right now.
 
 Let $C(S\_{t},x\_{t})$ be our performance metric (e.g. total costs) that occur just at time $t$. Now let $W\_{1},\ W\_{2},\ldots,\ W\_{t},\ldots,\ W\_{T}$ be a sample realization of all the new information arriving, where $W\_{t}$ is the information that arrives between $t-1$ and $t$. This would include energy from the wind farm, the grid price, along with the latest set of rolling forecasts of demands, grid prices and the energy from wind. If we have access to real data, we could use that. Otherwise, we would likely use Monte Carlo simulation which we described in Topic 2.
 
@@ -1430,9 +1430,9 @@ $$
 S_{t + 1} = S^{M}(S_{t},\ x_{t},W_{t + 1}),
 $$
 
-where $S\_{t}$ captures everything we know at time $t$, our decision comes from our policy $x\_{t} = X\_{t}^{D-LA}\left( S\_{t} \middle| \theta \right)$, and the new information $W\_{t + 1}$ comes from our historical data or simulation. The transition function describes how our state variable changes over time (for example, this is where we update how much energy is in our storage device).
+where $S\_{t}$ captures everything we know at time $t$, our decision comes from our policy $x\_{t} = X\_{t}^{D-LA}\left( S\_{t} \middle\| \theta \right)$, and the new information $W\_{t + 1}$ comes from our historical data or simulation. The transition function describes how our state variable changes over time (for example, this is where we update how much energy is in our storage device).
 
-Running the simulation on the data $W\_{t}$, with decisions from the policy $X\_{t}^{D-LA}\left( S\_{t} \middle| \theta \right)$, allows us to estimate the performance of the policy:
+Running the simulation on the data $W\_{t}$, with decisions from the policy $X\_{t}^{D-LA}\left( S\_{t} \middle\| \theta \right)$, allows us to estimate the performance of the policy:
 
 $$
 F^{D-LA}(\theta) = \sum_{t = 0}^{T}{C(S_{t},x_{t} = X_{t}^{D-LA}\left( S_{t} \middle| \theta \right))}.
@@ -1813,7 +1813,7 @@ $$
 \sum_{k \in I^{retail}}x_{jk}^{trans} \leq \theta^{facility}q^{facility}R_{t-1,j}^{facility} \quad \text{for all } j \in I^{facility}. \tag{10.25}\label{eq:mato-10-25}
 $$
 
-Our facility policy $X\_{t}^{facility}\left( S\_{t}^{facility} \right)$ (equation $\eqref{eq:mato-10-20}$) now depends on the parameter $\theta^{facility}$, which means we should write it as a parameterized policy $X\_{t}^{facility}\left( S\_{t}^{facility}|\theta^{facility} \right)$. We would then write our objective function as
+Our facility policy $X\_{t}^{facility}\left( S\_{t}^{facility} \right)$ (equation $\eqref{eq:mato-10-20}$) now depends on the parameter $\theta^{facility}$, which means we should write it as a parameterized policy $X\_{t}^{facility}\left( S\_{t}^{facility}\|\theta^{facility} \right)$. We would then write our objective function as
 
 $$
 \hat{F}(\theta^{facility}) = \sum_{t = 0}^{T}\left( C^{facility}\left( S_{t}^{facility},X_{t}^{facility}\left( S_{t}^{facility}|\theta^{facility} \right) \right) + C^{trans}\left( S_{t+1}^{trans},X_{t+1}^{trans}\left( S_{t+1}^{trans} \right),\hat{D}_{t+1} \right) \right). \tag{10.26}\label{eq:mato-10-26}
@@ -1918,7 +1918,7 @@ $$
 C^{trans}(x) = \sum_{i}{c_{i}^{trans}|x_{i}|}, \tag{11.2}\label{eq:mato-11-2}
 $$
 
-where we take the absolute value since buying and selling transactions cost the same. To eliminate the absolute value (which complicates the formulation as an optimization problem), we first introduce a variable $x\_{i}^{trans} = |x\_{i}|$ that we compute by introducing two constraints:
+where we take the absolute value since buying and selling transactions cost the same. To eliminate the absolute value (which complicates the formulation as an optimization problem), we first introduce a variable $x\_{i}^{trans} = \|x\_{i}\|$ that we compute by introducing two constraints:
 
 $$
 x_{i}^{trans} \geq x_{i}, \tag{11.3}\label{eq:mato-11-3}
