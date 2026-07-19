@@ -243,7 +243,6 @@ body.book-cover-active { overflow: hidden; }
   inset: 0;
   z-index: 9999;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   background: #ddcfa8;
@@ -258,22 +257,30 @@ body.book-cover-active { overflow: hidden; }
 .book-cover-splash img {
   /* 720px matches .book-page's max-width -- on tall/wide viewports the
      cover can grow to the same width as the reading column; max-height
-     keeps it (plus the hint below) fitting within the viewport with no
-     scrolling on shorter screens, where it'll be the binding constraint
-     instead. */
-  max-width: min(92vw, 720px);
-  max-height: 84vh;
+     keeps it fitting within the viewport with no scrolling on shorter
+     screens, where it'll be the binding constraint instead. The hint
+     below is positioned absolutely (not stacked in normal flow) so it
+     doesn't take a share of this budget -- the image gets nearly the
+     full viewport height. */
+  max-width: min(96vw, 720px);
+  max-height: 97vh;
   width: auto;
   height: auto;
   box-shadow: 0 1.5rem 3rem rgba(43, 36, 25, 0.35);
   border-radius: 2px;
 }
 .book-cover-splash-hint {
-  margin-top: 1.25rem;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.75rem;
+  margin: 0;
+  text-align: center;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 0.9rem;
   letter-spacing: 0.04em;
   color: #6b5a3f;
+  text-shadow: 0 0 6px #ddcfa8, 0 0 10px #ddcfa8;
   animation: book-cover-hint-pulse 2.2s ease-in-out infinite;
 }
 @keyframes book-cover-hint-pulse {
