@@ -9,7 +9,7 @@ date: 2026-07-17
 
 {% raw %}
 <figure class="book-figure">
-  <img src="/assets/images/sdam/renewablegridstorageload.png" alt="Energy system to serve a load (building) from a wind farm, the grid, and a battery storage device." style="max-width: 500px;">
+  <img src="/assets/images/sdam/renewablegridstorageload.jpg" alt="Energy system to serve a load (building) from a wind farm, the grid, and a battery storage device." style="max-width: 500px;">
   <figcaption><span class="fig-num">Figure 9.1.</span> Energy system to serve a load (building) from a wind farm (with variable wind speeds), the grid (with variable prices), and a battery storage device.</figcaption>
 </figure>
 
