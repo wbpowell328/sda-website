@@ -9,6 +9,7 @@ chapters:
   - num: ""
     title: "Front cover"
     url: "/sdam/"
+    no_expand: true
   - num: ""
     title: "Table of contents"
     url: "/sdam/contents/"
