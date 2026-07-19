@@ -261,7 +261,7 @@ Using the one-step transition matrix $P^C[S^C_{t+1}\vert S^C_t]$ and the conditi
 This logic has been found to accurately reproduce both the error distribution (actual vs. benchmark), as well as both up-crossing and down-crossing distributions across a range of datasets modeling wind as well as grid prices. Figure 9.4 illustrates these distributions on a particular dataset.
 
 <figure class="book-figure">
-  <img src="/assets/images/sdam/crossingtimedistributions.png" alt="Comparison of actual vs predicted forecast error distributions, up-crossing time distributions, and down-crossing time distributions." style="max-width: 550px;">
+  <img src="/assets/images/sdam/crossingtimedistributions.jpg" alt="Comparison of actual vs predicted forecast error distributions, up-crossing time distributions, and down-crossing time distributions." style="max-width: 550px;">
   <figcaption><span class="fig-num">Figure 9.4.</span> Comparison of actual vs predicted forecast error distributions (top), up-crossing time distributions (bottom left) and down-crossing time distributions (bottom right).</figcaption>
 </figure>
 
