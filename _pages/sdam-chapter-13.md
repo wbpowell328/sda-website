@@ -440,11 +440,11 @@ $$
     <li>Without doing any additional numerical work, imagine now that the penalty on the O-negative blood needs to depend on the week to handle seasonal variations. Since you are simulating 15 weeks, describe a method for optimizing over a 15-dimensional vector (we have described two core strategies in prior assignments - you may pick one, or invent a new one).</li>
   </ol>
 </li>
-<li>Now we are going to switch to a VFA-based policy, where we use the marginal value of each blood type (and age) that is held for the future. This will be done with an adaptive learning algorithm that was described in the VFA policy section above (and very similar to our ADP strategy for the shortest path problem, except now we are doing it for a problem where the decision is a vector).
+<li><p>Now we are going to switch to a VFA-based policy, where we use the marginal value of each blood type (and age) that is held for the future. This will be done with an adaptive learning algorithm that was described in the VFA policy section above (and very similar to our ADP strategy for the shortest path problem, except now we are doing it for a problem where the decision is a vector).</p>
 
-Set the penalty for using blood on electives to 0. When using a VFA-based policy, the VFA should learn that urgent blood in excess of supply might be needed in the future. When you are using the VFA policy, you will need to run 20 training iterations to estimate the value functions. After these are estimated, you will then run 20 testing iterations to evaluate the quality of the policy.
+<p>Set the penalty for using blood on electives to 0. When using a VFA-based policy, the VFA should learn that urgent blood in excess of supply might be needed in the future. When you are using the VFA policy, you will need to run 20 training iterations to estimate the value functions. After these are estimated, you will then run 20 testing iterations to evaluate the quality of the policy.</p>
 
-We are going to test our policies for a dataset where there is a probability demand occasionally surges. You can set this probability in the spreadsheet. Begin by setting this surge probability to 0.7.
+<p>We are going to test our policies for a dataset where there is a probability demand occasionally surges. You can set this probability in the spreadsheet. Begin by setting this surge probability to 0.7.</p>
   <ol type="a">
     <li>The adaptive learning algorithm requires estimating the marginal value of each blood type. Let $\vhat^n_{ta}$ be our estimate of the marginal value of blood type $a$ for week $t$ while simulating sample path $\omega^n$.
 
