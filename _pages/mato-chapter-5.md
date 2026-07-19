@@ -1231,13 +1231,26 @@ We can compute the path costs (dual variables) $v\_{i}$ just by following the pa
 This gives us
 
 $$
-v_{1} = 0, \quad v_{2} = 16 - 8 = 8, \quad v_{3} = 8 - 4 + 16 - 8 = 12, \quad v_{4} = -14, \quad v_{5} = -8, \quad v_{6} = -4 + 16 - 8 = 4, \quad v_{7} = -5 + 8 - 4 + 16 - 8 = 7.
+\begin{align*}
+v_{1} &= 0, \\
+v_{2} &= 16 - 8 = 8, \\
+v_{3} &= 8 - 4 + 16 - 8 = 12, \\
+v_{4} &= -14, \\
+v_{5} &= -8, \\
+v_{6} &= -4 + 16 - 8 = 4, \\
+v_{7} &= -5 + 8 - 4 + 16 - 8 = 7.
+\end{align*}
 $$
 
 The reduced costs on the nonbasic links are then
 
 $$
-\bar{c}^{N} = \begin{bmatrix} \bar{c}_{16} & \bar{c}_{24} & \bar{c}_{27} \end{bmatrix} = \begin{bmatrix} c_{16} - v_{1} + v_{6} & c_{24} - v_{2} + v_{4} & c_{27} - v_{2} + v_{7} \end{bmatrix} = \begin{bmatrix} 9 - 0 + 4 & 15 - 8 + (-14) & 17 - 8 + 7 \end{bmatrix} = \begin{bmatrix} 13 & -7 & 16 \end{bmatrix}.
+\begin{align*}
+\bar{c}^{N} &= \begin{bmatrix} \bar{c}_{16} & \bar{c}_{24} & \bar{c}_{27} \end{bmatrix} \\
+&= \begin{bmatrix} c_{16} - v_{1} + v_{6} & c_{24} - v_{2} + v_{4} & c_{27} - v_{2} + v_{7} \end{bmatrix} \\
+&= \begin{bmatrix} 9 - 0 + 4 & 15 - 8 + (-14) & 17 - 8 + 7 \end{bmatrix} \\
+&= \begin{bmatrix} 13 & -7 & 16 \end{bmatrix}.
+\end{align*}
 $$
 
 The reduced cost tells us how much total costs will change if we increase the flow on each nonbasic link. If the reduced cost is negative, we get a better solution by increasing flow on that link. We now search for nonbasic links with a negative reduced cost, since this means increasing the flow on that link, and then adjusting the flows on the basic links so we maintain flow conservation, will reduce total costs.
