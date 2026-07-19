@@ -442,7 +442,7 @@ Thus, we are just simulating our way forward in time, which means we do not care
 
 <div class="book-algorithm">
 <p><strong>Forward approximate dynamic programming</strong></p>
-<p><strong>Step 0. Initialization:</strong> Initialize $V^{\pi,0}\_t,~t\in\Tcal$. Set $n = 1$. Initialize $S^1\_0$.</p>
+<p><strong>Step 0. Initialization:</strong> Initialize $V^{\pi,0}_t,~t\in\Tcal$. Set $n = 1$. Initialize $S^1_0$.</p>
 <p><strong>Step 1.</strong> Do for $n = 1, 2, \ldots, N$:</p>
 <p style="margin-left: 1.5rem;"><strong>Step 2.</strong> Do for $m = 1, 2, \ldots, M$:</p>
 <p style="margin-left: 3rem;"><strong>Step 3.</strong> Choose a sample path $\omega^m$.</p>
@@ -458,8 +458,8 @@ Thus, we are just simulating our way forward in time, which means we do not care
 <p style="margin-left: 4.5rem;"><strong>Step 6b.</strong> Update approximate value of the policy starting at time $t$:</p>
 <p style="margin-left: 4.5rem;">$$\Vbar^{n,m}_{t-1} \leftarrow U^V(\Vbar^{n,m-1}_{t-1}, S^{x,n,m}_{t-1}, \vhat^m_t)$$</p>
 <p style="margin-left: 4.5rem;">where we typically use $\step_{m-1} = 1/m$.</p>
-<p style="margin-left: 1.5rem;"><strong>Step 7.</strong> Update the policy value function $V^{\pi,n}\_t(S^x_t) = \Vbar^{n,M}\_t(S^x_t)$ for all $t = 0, 1, \ldots, T$.</p>
-<p><strong>Step 8.</strong> Return the value functions $(V^{\pi,N}\_t)\_{t=1}^T$.</p>
+<p style="margin-left: 1.5rem;"><strong>Step 7.</strong> Update the policy value function $V^{\pi,n}_t(S^x_t) = \Vbar^{n,M}_t(S^x_t)$ for all $t = 0, 1, \ldots, T$.</p>
+<p><strong>Step 8.</strong> Return the value functions $(V^{\pi,N}_t)_{t=1}^T$.</p>
 </div>
 
 This leaves the actual update in an updating function $U^V(\cdot)$ since this depends on how we are approximating the value function.
@@ -573,7 +573,7 @@ where $\varepsilon_{t+1}$ follows an empirical distribution based on the price d
 <li>Download the spreadsheet "Chapter8_electricity_prices" from [tinyurl.com/sdamodelingsupplements](https://tinyurl.com/sdamodelingsupplements/). Use the data in the tab "electricity prices" for the following questions:
   <ol type="a">
     <li>Build an empirical cumulative distribution $F_P(p) = Prob[P \leq p]$ where $P$ is a randomly chosen price for a particular hour over the one-week period in the dataset.</li>
-    <li>Let $F^{-1}\_P(u)$ be the inverse cumulative distribution, where $u$ is between 0 and 1. Find the price $p(u) = F^{-1}\_P(u)$ corresponding to $u = 0, 0.1, 0.2, \ldots, 0.9, 1.0$. Giving each of these prices a probability of 1/11, find the cumulative distribution, and compare it to the cumulative distribution that you created in part (a). Do these appear to match?</li>
+    <li>Let $F^{-1}_P(u)$ be the inverse cumulative distribution, where $u$ is between 0 and 1. Find the price $p(u) = F^{-1}_P(u)$ corresponding to $u = 0, 0.1, 0.2, \ldots, 0.9, 1.0$. Giving each of these prices a probability of 1/11, find the cumulative distribution, and compare it to the cumulative distribution that you created in part (a). Do these appear to match?</li>
   </ol>
 </li>
 <li>Using the spreadsheet "Chapter8_electricity_prices," fit a mean reversion model of the form

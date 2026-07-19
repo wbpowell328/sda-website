@@ -381,7 +381,7 @@ $$
 \beta^0_x = \frac{1}{(\sigma^0_x)^2},
 $$
 
-where $\sigma^0\_x$ is given in Table 4.1.
+where $\sigma^0_x$ is given in Table 4.1.
 
 After $n$ experiments, we are going to use our policy to make a decision $x^n$ which is the drug to try for the $n+1$st experiment. We do not know the true performance $\mu_x$ of drug $x$, but we can observe it using a noisy observation of the true value $\mu_x$ which we write using
 
@@ -389,7 +389,7 @@ $$
 W^{n+1}_x = \mu_x + \varepsilon^{n+1}_x.
 $$
 
-Assume that the standard deviation of a single experiment is $\sigma^W = 5$. We use the observation of $W^{n+1}\_x$ to update our beliefs using:
+Assume that the standard deviation of a single experiment is $\sigma^W = 5$. We use the observation of $W^{n+1}_x$ to update our beliefs using:
 
   <ol type="i">
     <li>If we try drug $x$:
@@ -413,11 +413,11 @@ Answer the following:
 </li>
 <li>We might reasonably think that the parameter $\theta^{IE}$ should depend on the number of experiments remaining in our budget, which means that $\theta^{IE}$ needs to be a function of $n$ (or equivalently, it would be a function of the remaining experiments $N-n$). There are two ways to represent this function. Discuss (without any programming) the strengths of each approach, and the computational challenges that would be involved.
   <ol type="a">
-    <li>Lookup table – Instead of searching over a scalar $\theta^{IE}$, we would have to search over a vector $\theta^{IE}\_n$.</li>
+    <li>Lookup table – Instead of searching over a scalar $\theta^{IE}$, we would have to search over a vector $\theta^{IE}_n$.</li>
     <li>Parametric – We might assume a function form such as $\theta^{IE} = \theta^{slope}(N-n)$, where now we just have to tune the scalar $\theta^{slope}$.</li>
   </ol>
 </li>
-<li>We have approached this problem as if we are solving the problem for each patient. Imagine that we have $I$ patients indexed by $i = 1, \ldots, I$, remembering that $I$ might be 10 million patients. Finding a vector of estimates $\mubar = (\mubar_x)\_{x\in\Xcal}$ for each patient would be written $\mubar = (\mubar_{i})\_{i=1}^I$ where each $\mubar_i = (\mubar_{ix})\_{x\in\Xcal}$. Creating 10 million estimates seems a bit clumsy.
+<li>We have approached this problem as if we are solving the problem for each patient. Imagine that we have $I$ patients indexed by $i = 1, \ldots, I$, remembering that $I$ might be 10 million patients. Finding a vector of estimates $\mubar = (\mubar_x)_{x\in\Xcal}$ for each patient would be written $\mubar = (\mubar_{i})_{i=1}^I$ where each $\mubar_i = (\mubar_{ix})_{x\in\Xcal}$. Creating 10 million estimates seems a bit clumsy.
 
 Imagine instead that each patient has a vector of attributes $a = (a_1,\ldots, a_M)$ where $a \in \Acal$. There may be a lot of attributes, in which case the set $\Acal$ would be quite large, but we may choose a small subset so that $\Acal$ is not as big, such as gender and whether they smoke. We can again use two different representations of $\mubar_{ax}$. As before, discuss the strengths and computational challenges of each of the following ways of modeling $\mubar_{ax}$:
   <ol type="a">
@@ -446,7 +446,7 @@ These exercises use the Python module *AdaptiveMarketPlanning* on [tinyurl.com/s
 </li>
 <li>Evaluate the IE policy given a budget $N = 20$ over the values $\theta^{IE} = (0, 0.2, 0.4, \ldots, 2.0)$ for two different sets of truths:
   <ol type="a">
-    <li>First assume that the prior is $\mu^0\_x = 0.3$ for all drugs $x$ and where the initial standard deviation $\sigma^0\_x = 0.10$. This means we are assuming that the truth $\mu_x \sim N(\mubar^0\_x,(\sigmabar^0\_x)^2)$. However, we are going to sample our truth using
+    <li>First assume that the prior is $\mu^0_x = 0.3$ for all drugs $x$ and where the initial standard deviation $\sigma^0_x = 0.10$. This means we are assuming that the truth $\mu_x \sim N(\mubar^0_x,(\sigmabar^0_x)^2)$. However, we are going to sample our truth using
 
     $$
     \muhat_x = .3 + \varepsilon
@@ -461,7 +461,7 @@ These exercises use the Python module *AdaptiveMarketPlanning* on [tinyurl.com/s
     \mu_x = \mubar^0_x + \varepsilon
     $$
 
-    where $\mubar^0$ is given in Table 4.2 ("A1c reduction") and where $\varepsilon$ is uniformly distributed in the interval $[-.5\mubar^0\_x, +.5\mubar^0\_x]$. Perform 10,000 repetitions of each value of $\theta^{IE}$ to compute the average performance. What conclusions can you draw from the plot?</li>
+    where $\mubar^0$ is given in Table 4.2 ("A1c reduction") and where $\varepsilon$ is uniformly distributed in the interval $[-.5\mubar^0_x, +.5\mubar^0_x]$. Perform 10,000 repetitions of each value of $\theta^{IE}$ to compute the average performance. What conclusions can you draw from the plot?</li>
   </ol>
 </li>
 </ol>

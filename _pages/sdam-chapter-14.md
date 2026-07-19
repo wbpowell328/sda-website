@@ -250,7 +250,7 @@ Another approach, which is much easier and extends to even more complicated situ
 <p style="margin-left: 1.5rem;"><strong>Step 2b.</strong> Generate a Monte Carlo sample of the true success probability $\rho^n \sim \rho^{true}$.</p>
 <p style="margin-left: 1.5rem;"><strong>Step 2c.</strong> Given $r^n$ and $\rho^n$, loop over our $r^n$ patients and generate a 0/1 random variable which is 1 (that is, the drug was a success) with probability $\rho^n$.</p>
 <p style="margin-left: 1.5rem;"><strong>Step 2d.</strong> Sum the successes and let this be a sample realization of $\Xhat^n_{t+1}$.</p>
-<p><strong>Step 3.</strong> Output the sample $\Xhat^1\_{t+1}, \ldots, \Xhat^N_{t+1}$.</p>
+<p><strong>Step 3.</strong> Output the sample $\Xhat^1_{t+1}, \ldots, \Xhat^N_{t+1}$.</p>
 </div>
 
 ## Designing policies
@@ -484,7 +484,7 @@ $$
 These exercises use the Python module *ClinicalTrialsDriverScript.py* on [tinyurl.com/sdagithub](http://tinyurl.com/sdagithub/).
 
 <ol class="book-exercises" style="counter-reset: exercise 8;">
-<li>Set the trial size to $T = 50$, the lookahead horizon to $H = 5$ and run a simulation of Model A. Record the stopping time and explain why the deterministic lookahead model yields the same number of new potential patients $x^{enroll}\_{t}$ at each time $t$.</li>
+<li>Set the trial size to $T = 50$, the lookahead horizon to $H = 5$ and run a simulation of Model A. Record the stopping time and explain why the deterministic lookahead model yields the same number of new potential patients $x^{enroll}_{t}$ at each time $t$.</li>
 <li>Now set the lookahead horizon to $H = 50$. Modify the module *ClinicalTrialsDriverScript.py* to include a for-loop and run 10 simulations (testing iterations) of Model B. Compute the average revenue over all simulations.</li>
 <li>When choosing $\theta^{stop} = (\theta^{stop-low}, \theta^{stop-high})$ for our PFA for determining when to stop, we usually choose a large enough $\theta^{stop-high}$ to make sure the drug is successful. Conversely, we choose a large $\theta^{stop-low}$ so that, if the true success rate of the drug is low, we stop the trial early before we lose too much money. However, we cannot make $\theta^{stop-low}$ too high, or else we risk stopping the trial before we have enough information about the drug's true success rate.
 

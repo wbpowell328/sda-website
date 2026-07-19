@@ -390,7 +390,7 @@ This method is very robust with respect to complex pre-decision states. For exam
 <ol class="book-exercises">
 <li>In the original stochastic shortest path problem where we only observe the actual cost after we traverse the link, explain why this can be solved exactly as a simple deterministic shortest path problem.</li>
 <li>For the version where we observe the actual cost over a link before we choose which direction to move, give the pre-decision and post-decision state variables.</li>
-<li>In equation $\eqref{eq:vhatsmoothing}$, we use the sampled value $\vhat^{x,n}\_t(i)$ of being in state $S_t$ to update the estimated value of being at the previous post-decision state given by $\Vbar^{x,n}\_{t-1}(i)$. Create a small numerical example to illustrate this equation.</li>
+<li>In equation $\eqref{eq:vhatsmoothing}$, we use the sampled value $\vhat^{x,n}_t(i)$ of being in state $S_t$ to update the estimated value of being at the previous post-decision state given by $\Vbar^{x,n}_{t-1}(i)$. Create a small numerical example to illustrate this equation.</li>
 </ol>
 
 **Problem solving questions**

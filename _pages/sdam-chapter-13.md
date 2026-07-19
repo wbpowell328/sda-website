@@ -335,9 +335,9 @@ This model can also be applied to any multiproduct inventory problem where there
 **Problem solving questions**
 
 <ol class="book-exercises" style="counter-reset: exercise 6;">
-<li>Blood management - Part I: Modeling - We are going to consider the blood management problem, but we are going to assume there is only one type of blood, although we are still going to model the aging process, where blood can be 0 to 5 weeks old. Any 5-week old blood that is held must be discarded. As in the book, there are two types of patients: urgent and elective. Let $R_{t\tau}$ be the number of units of blood on hand at time $t$ that has been held for $\tau$ time periods, $\tau = 0, \ldots, 5$; $\Rhat_t$ be the new blood donations that arrive between $t-1$ and $t$, where $\Rhat_t$ is a scalar; $\Dhat^{urgent}\_t$ be the new urgent demands that arrive at time $t$; and $\Dhat^{elective}\_t$ be the new elective demands that arrive at time $t$.
+<li>Blood management - Part I: Modeling - We are going to consider the blood management problem, but we are going to assume there is only one type of blood, although we are still going to model the aging process, where blood can be 0 to 5 weeks old. Any 5-week old blood that is held must be discarded. As in the book, there are two types of patients: urgent and elective. Let $R_{t\tau}$ be the number of units of blood on hand at time $t$ that has been held for $\tau$ time periods, $\tau = 0, \ldots, 5$; $\Rhat_t$ be the new blood donations that arrive between $t-1$ and $t$, where $\Rhat_t$ is a scalar; $\Dhat^{urgent}_t$ be the new urgent demands that arrive at time $t$; and $\Dhat^{elective}_t$ be the new elective demands that arrive at time $t$.
 
-At time $t$, we have to decide $x^{urgent}\_t$, the amount of blood to be assigned to urgent patients; $x^{elective}\_t$, the amount of blood to be assigned to elective patients; and $x^{hold}\_t$, the amount of blood to be held, with $x_t = (x^{urgent}\_t,x^{elective}\_t,x^{hold}\_t)$.
+At time $t$, we have to decide $x^{urgent}_t$, the amount of blood to be assigned to urgent patients; $x^{elective}_t$, the amount of blood to be assigned to elective patients; and $x^{hold}_t$, the amount of blood to be held, with $x_t = (x^{urgent}_t,x^{elective}_t,x^{hold}_t)$.
 
 Demands do not have to be covered, although the real issue is whether to cover an elective demand now (assuming there is enough blood to cover all the urgent demands) or hold the blood for a potential urgent demand in the future. As before, assume that any demands that are not served leave the system.
 
@@ -366,13 +366,13 @@ For the purposes of this exercise, you can just write $\Vbar^x_t(S^x_t) = (\thet
     <li>Write out the policy using your expression for the approximate value function.</li>
   </ol>
 </li>
-<li>Blood management - Part III: Lookahead policy - This time, we are going to assume that we have rolling forecasts of supplies and demands. Let $f^R_{tt'}$ be the forecast of blood donations at time $t'$ made using what we know at time $t$. Let $f^{D,urgent}\_{tt'}$ and $f^{D,elective}\_{tt'}$ be the forecasts of new urgent and elective demands arriving at time $t'$ given what we know at time $t$. Assume that forecasts are provided exogenously (that is, we do not have to model how the forecasts evolve from $t$ to $t+1$). You may use
+<li>Blood management - Part III: Lookahead policy - This time, we are going to assume that we have rolling forecasts of supplies and demands. Let $f^R_{tt'}$ be the forecast of blood donations at time $t'$ made using what we know at time $t$. Let $f^{D,urgent}_{tt'}$ and $f^{D,elective}_{tt'}$ be the forecasts of new urgent and elective demands arriving at time $t'$ given what we know at time $t$. Assume that forecasts are provided exogenously (that is, we do not have to model how the forecasts evolve from $t$ to $t+1$). You may use
 
 $$
 f^R_t = (f^R_{tt'})_{t'=t+1}^T, \quad f^{D,urgent}_t = (f^{D,urgent}_{tt'})_{t'=t+1}^T, \quad f^{D,elective}_t = (f^{D,elective}_{tt'})_{t'=t+1}^T, \quad f_t = (f^R_t,f^{D,urgent}_t,f^{D,elective}_t).
 $$
 
-Let $\sigma^R_{t'-t}$ be the standard deviation of the error between the actual donations $\Rhat_{tt'}$, which we assume is known based on past performance. We assume that this is purely a function of how far into the future we are planning, given by $t'-t$. Similarly let $\sigma^{D,urgent}\_{t'-t}$ and $\sigma^{D,elective}\_{t'-t}$ be the standard deviations of the errors in the forecasts of new urgent and elective demands.
+Let $\sigma^R_{t'-t}$ be the standard deviation of the error between the actual donations $\Rhat_{tt'}$, which we assume is known based on past performance. We assume that this is purely a function of how far into the future we are planning, given by $t'-t$. Similarly let $\sigma^{D,urgent}_{t'-t}$ and $\sigma^{D,elective}_{t'-t}$ be the standard deviations of the errors in the forecasts of new urgent and elective demands.
   <ol type="a">
     <li>Model the five elements of a sequential decision problem for this setting. You should be able to copy elements from one of the previous parts to this problem. Feel free to reference any equations by number you wish to re-use. The major change is the inclusion of the forecasts.</li>
     <li>Write out a DLA policy using a deterministic lookahead with forecasts as point estimates of any future donations and demands.</li>
@@ -397,7 +397,7 @@ We are going to begin by assuming that you are just going to match different blo
 
 If we ignore the impact of decisions now on the future, we have a simple linear program that matches supplies and demands, with costs given by this set of bonuses. The problem is that by ignoring the impact of decisions now on the future, we may find that we are not doing the best that we can. One issue that arises is when we use blood now for elective surgery, we are ignoring that this might be useful to hold onto in case we run out of blood for urgent surgery later on. Alternatively, we may use O- blood now rather than hold it for the future when we might run out of other blood types.
 
-Let $R_{ta}$ be the supply of blood with attribute $a$ for week $t$, and let $R_t = (R_{ta})\_{a\in\Acal}$ where $\Acal$ is the set of all the different blood attributes (blood type and age). Similarly let $D_{tb}$ be the attributes of a patient where $b$ captures the blood type and whether the surgery is urgent or elective, and let $D_t = (D_{tb})\_{b\in\Bcal}$. The state of our system is $S_t = (R_t,D_t)$.
+Let $R_{ta}$ be the supply of blood with attribute $a$ for week $t$, and let $R_t = (R_{ta})_{a\in\Acal}$ where $\Acal$ is the set of all the different blood attributes (blood type and age). Similarly let $D_{tb}$ be the attributes of a patient where $b$ captures the blood type and whether the surgery is urgent or elective, and let $D_t = (D_{tb})_{b\in\Bcal}$. The state of our system is $S_t = (R_t,D_t)$.
 
 Now let $\Rhat_{t+1,a}$ be the number of units of blood with attribute $a$ that were donated between weeks $t$ and $t+1$. Similarly let $\Dhat_{t+1,b}$ be the number of new patient arrivals with attribute $b$. We would write
 
@@ -408,7 +408,7 @@ $$
 Finally let $\omega$ represent a sample path $W_1(\omega), \ldots, W_T(\omega)$ of donations and new patients over our $T$-week horizon. Assume that we have created a set of simulations of $W_t$, and let $\Omega=(\omega_1, \ldots, \omega_N)$ be this set of sample realizations.
   <ol type="a">
     <li>How many dimensions does the state variable $S_t$ have?</li>
-    <li>Let $X^\pi(S_t\vert \theta)$ be the result of solving the linear program given the state $S_t$, where $\theta$ is the vector of all the bonuses and penalties for different assignments. Let $D^{urgent}\_t(x_t)$ be the number of urgent patients that were covered given the decision vector $x_t$, and let $D^{elective}\_t(x_t)$ be the number of elective patients that were covered. Write the problem of finding the best value of $\theta$ as an optimization problem, where instead of our usual expectation you are going to write it as an average over the sample paths in $\Omega$.</li>
+    <li>Let $X^\pi(S_t\vert \theta)$ be the result of solving the linear program given the state $S_t$, where $\theta$ is the vector of all the bonuses and penalties for different assignments. Let $D^{urgent}_t(x_t)$ be the number of urgent patients that were covered given the decision vector $x_t$, and let $D^{elective}_t(x_t)$ be the number of elective patients that were covered. Write the problem of finding the best value of $\theta$ as an optimization problem, where instead of our usual expectation you are going to write it as an average over the sample paths in $\Omega$.</li>
     <li>We are going to consider a dataset where there is a probability that demand occasionally surges. You can set this probability in the spreadsheet. Set this surge probability to 50 percent. There is a special penalty for using blood to cover elective surgery to encourage the myopic model to save blood for urgent surgery that might have an increase in demand later on. Find the best value of this penalty in the set $\lbrace -4,-9,-14,-19,-24\rbrace $ after running 20 testing iterations.</li>
     <li>Without doing any additional numerical work, imagine now that the penalty on the O-negative blood needs to depend on the week to handle seasonal variations. Since you are simulating 15 weeks, describe a method for optimizing over a 15-dimensional vector (we have described two core strategies in prior assignments - you may pick one, or invent a new one).</li>
   </ol>
@@ -421,7 +421,7 @@ We are going to test our policies for a dataset where there is a probability dem
   <ol type="a">
     <li>The adaptive learning algorithm requires estimating the marginal value of each blood type. Let $\vhat^n_{ta}$ be our estimate of the marginal value of blood type $a$ for week $t$ while simulating sample path $\omega^n$.
 
-    Let $\Vbar^{n-1}\_t(R_{ta})$ be our estimate, after $n-1$ iterations, of the marginal value of the $r$th unit of blood where $r = R^x_{ta}$ at the end of week $t$ (this is our "post-decision" state variable). Recall that we use $\vhat^n_{ta}$ to update the value function approximation around the previous post-decision state variable. We write this updating process as
+    Let $\Vbar^{n-1}_t(R_{ta})$ be our estimate, after $n-1$ iterations, of the marginal value of the $r$th unit of blood where $r = R^x_{ta}$ at the end of week $t$ (this is our "post-decision" state variable). Recall that we use $\vhat^n_{ta}$ to update the value function approximation around the previous post-decision state variable. We write this updating process as
 
     $$
     \Vbar^n_{t-1,a}(R^{x,n}_{t-1,a}) = (1-\alpha) \Vbar^{n-1}_{t-1,a}(R^{x,n}_{t-1,a}) + \alpha \vhat^n_{ta}.

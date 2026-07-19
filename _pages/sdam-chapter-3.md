@@ -355,7 +355,7 @@ $$
 **Problem solving questions**
 
 <ol class="book-exercises" style="counter-reset: exercise 5;">
-<li>A major industrial gases company has to purchase contracts for electricity a month in advance using a "take or pay" contract. If the company contracts to purchase $x_t$ megawatt-hours for month $t+1$, it pays a price $p_t$ regardless of whether it needs the power or not. But if the load (demand) $L_{t+1}$ in month $t+1$ exceeds $x_t$, then the company has to purchase power from the grid at a spot price $p^{spot}\_{t+1}$. The cost of satisfying the load in month $t+1$ is then
+<li>A major industrial gases company has to purchase contracts for electricity a month in advance using a "take or pay" contract. If the company contracts to purchase $x_t$ megawatt-hours for month $t+1$, it pays a price $p_t$ regardless of whether it needs the power or not. But if the load (demand) $L_{t+1}$ in month $t+1$ exceeds $x_t$, then the company has to purchase power from the grid at a spot price $p^{spot}_{t+1}$. The cost of satisfying the load in month $t+1$ is then
 
 $$
 C(S_t,W_{t+1}) = p_t x_t + p^{spot}_{t+1} \max\{0, L_{t+1}-x_t\}.
