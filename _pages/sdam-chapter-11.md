@@ -1,7 +1,7 @@
 ---
 layout: book
 book_data: sdam_toc
-book_home: /sdam/
+book_home: /sdam/contents/
 title: "Chapter 11: Supply chain management II: The beer game"
 permalink: /sdam/chapter-11/
 date: 2026-07-17

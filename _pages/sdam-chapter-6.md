@@ -1,7 +1,7 @@
 ---
 layout: book
 book_data: sdam_toc
-book_home: /sdam/
+book_home: /sdam/contents/
 title: "Chapter 6: Stochastic shortest path problems - Dynamic"
 permalink: /sdam/chapter-6/
 date: 2026-07-17

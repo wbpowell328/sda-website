@@ -1,7 +1,7 @@
 ---
 layout: book
 book_data: sdam_toc
-book_home: /sdam/
+book_home: /sdam/contents/
 title: "Chapter 5: Stochastic shortest path problems - Static"
 permalink: /sdam/chapter-5/
 date: 2026-07-17

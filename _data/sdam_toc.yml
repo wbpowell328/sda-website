@@ -11,7 +11,7 @@ chapters:
     url: "/sdam/"
   - num: ""
     title: "Table of contents"
-    url: "/sdam/#toc"
+    url: "/sdam/contents/"
     is_toc: true
   - num: ""
     title: "Preface and acknowledgements"

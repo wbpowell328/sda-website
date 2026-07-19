@@ -1,7 +1,7 @@
 ---
 layout: book
 book_data: sdam_toc
-book_home: /sdam/
+book_home: /sdam/contents/
 title: "Chapter 1: Modeling sequential decision problems"
 permalink: /sdam/chapter-1/
 date: 2026-07-17

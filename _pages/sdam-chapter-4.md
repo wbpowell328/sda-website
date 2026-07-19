@@ -1,7 +1,7 @@
 ---
 layout: book
 book_data: sdam_toc
-book_home: /sdam/
+book_home: /sdam/contents/
 title: "Chapter 4: Learning the best diabetes medication"
 permalink: /sdam/chapter-4/
 date: 2026-07-17

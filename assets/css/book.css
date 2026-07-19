@@ -233,11 +233,10 @@ html { scroll-padding-top: 90px; }
 }
 
 /* ============================================================
-   Full-page cover splash — shown on every visit to a book's
-   landing page, before the normal page (with its small thumbnail
-   cover) is revealed. Dismissed by a click or a keypress anywhere.
+   Full-page front-cover page (/sdam/) — a plain, static link to the
+   table of contents (/sdam/contents/). No JS: a real, predictable page,
+   not an overlay that dismisses itself dynamically.
    ============================================================ */
-body.book-cover-active { overflow: hidden; }
 .book-cover-splash {
   position: fixed;
   inset: 0;
@@ -247,12 +246,7 @@ body.book-cover-active { overflow: hidden; }
   justify-content: center;
   background: #ddcfa8;
   cursor: pointer;
-  opacity: 1;
-  transition: opacity 0.5s ease;
-}
-.book-cover-splash.is-hidden {
-  opacity: 0;
-  pointer-events: none;
+  text-decoration: none;
 }
 .book-cover-splash img {
   /* 720px matches .book-page's max-width -- on tall/wide viewports the

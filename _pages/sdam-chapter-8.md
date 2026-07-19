@@ -1,7 +1,7 @@
 ---
 layout: book
 book_data: sdam_toc
-book_home: /sdam/
+book_home: /sdam/contents/
 title: "Chapter 8: Energy storage I"
 permalink: /sdam/chapter-8/
 date: 2026-07-17

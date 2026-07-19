@@ -1,7 +1,7 @@
 ---
 layout: book
 book_data: sdam_toc
-book_home: /sdam/
+book_home: /sdam/contents/
 title: "Chapter 10: Supply chain management I: The two-agent newsvendor problem"
 permalink: /sdam/chapter-10/
 date: 2026-07-17

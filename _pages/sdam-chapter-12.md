@@ -1,7 +1,7 @@
 ---
 layout: book
 book_data: sdam_toc
-book_home: /sdam/
+book_home: /sdam/contents/
 title: "Chapter 12: Ad-click optimization"
 permalink: /sdam/chapter-12/
 date: 2026-07-17

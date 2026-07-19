@@ -1,7 +1,7 @@
 ---
 layout: book
 book_data: sdam_toc
-book_home: /sdam/
+book_home: /sdam/contents/
 title: "Chapter 14: Optimizing clinical trials"
 permalink: /sdam/chapter-14/
 date: 2026-07-17
