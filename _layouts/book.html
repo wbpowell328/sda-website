@@ -111,9 +111,13 @@
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
     });
     drawer.addEventListener('click', function (e) {
-      if (e.target.closest('a')) {
-        drawer.classList.remove('is-open');
-        btn.setAttribute('aria-expanded', 'false');
+      var link = e.target.closest('a');
+      if (!link) return;
+      drawer.classList.remove('is-open');
+      btn.setAttribute('aria-expanded', 'false');
+      if (link.pathname === window.location.pathname) {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     });
     document.addEventListener('keydown', function (e) {
