@@ -319,7 +319,7 @@ $$
 Equation $\eqref{eq:policiesapproximateDLA2}$ can be particularly daunting. Figure 11.2 illustrates each of the elements in the policy using a basic decision tree (all of this is for a single agent $q$ which we suppress). There is a set of decisions $x_t$ that emanate from the first decision node $S_t$, after which we take an expectation over the random information in $\Wtilde_{t,t+1}$. After that, we use an approximate "lookahead policy" $\Xtilde^{\tilde \pi}(\Stilde_{tt'})$ for each decision node $\Stilde_{tt'}$ in our lookahead model, where we typically simplify the state variable in some way. We also approximate information arriving in the future using $\Wtilde_{tt'}$, either by using a deterministic lookahead model, or a simulated set of possible outcomes.
 
 <figure class="book-figure">
-  <img src="/assets/images/sdam/lookaheadpolicytodecisiontree.png" alt="Illustration of lookahead policy as a decision tree." style="max-width: 550px;">
+  <img src="/assets/images/sdam/lookaheadpolicytodecisiontree.jpg" alt="Illustration of lookahead policy as a decision tree." style="max-width: 550px;">
   <figcaption><span class="fig-num">Figure 11.2.</span> Illustration of lookahead policy as a decision tree.</figcaption>
 </figure>
 
