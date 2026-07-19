@@ -7,7 +7,7 @@ permalink: /sdam/
 date: 2026-07-17
 ---
 
-<a class="book-cover-splash" href="/sdam/contents/" aria-label="Click to continue to the table of contents">
+<a class="book-cover-splash" href="/sdam/about/" aria-label="Click to continue">
   <img src="/assets/images/sdam/cover.jpg" alt="Cover of Sequential Decision Analytics and Modeling, 2nd edition, by Warren B. Powell" />
   <p class="book-cover-splash-hint">Click to enter</p>
 </a>

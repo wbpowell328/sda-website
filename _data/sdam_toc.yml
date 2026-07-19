@@ -11,6 +11,10 @@ chapters:
     url: "/sdam/"
     no_expand: true
   - num: ""
+    title: "About this book"
+    url: "/sdam/about/"
+    no_expand: true
+  - num: ""
     title: "Table of contents"
     url: "/sdam/contents/"
     is_toc: true
