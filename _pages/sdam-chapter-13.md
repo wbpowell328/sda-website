@@ -150,7 +150,7 @@ Figure 13.1 illustrates the transitions that are occurring in week $t$. We eithe
 </figure>
 
 <figure class="book-figure">
-  <img src="/assets/images/sdam/bloodnetworkhold.png" alt="Holding blood supplies until week t+1." style="max-width: 450px;">
+  <img src="/assets/images/sdam/bloodnetworkhold.jpg" alt="Holding blood supplies until week t+1." style="max-width: 450px;">
   <figcaption><span class="fig-num">Figure 13.1b.</span> Holding blood supplies until week $t+1$.</figcaption>
 </figure>
 
