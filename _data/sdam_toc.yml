@@ -21,6 +21,7 @@ chapters:
   - num: ""
     title: "Preface and acknowledgements"
     url: "/sdam/preface/"
+    no_expand: true
   - num: "1"
     title: "Modeling sequential decision problems"
     url: "/sdam/chapter-1/"
@@ -66,3 +67,4 @@ chapters:
   - num: ""
     title: "References"
     url: "/sdam/references/"
+    no_expand: true
