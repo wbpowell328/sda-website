@@ -660,6 +660,11 @@ img, video { max-width: 100%; height: auto; display: block; }
   padding-right: 0.5rem;
 }
 
+/* Matrix-style tables whose first column is a category label (e.g. blood
+   types in Table 13.1), not free-text -- center it like every other column
+   instead of the default left-aligned first column. */
+.book-table.center-first-col td:first-child { text-align: center; }
+
 /* Narrow, fully-centered numeric tables (e.g. chapter 2's exercise time/
    price table) -- the default 100%-width table with a left-aligned first
    column is overkill for a short list of numbers where every column should
