@@ -438,14 +438,16 @@ Model C is almost the same as the base model, since we are modeling all the diff
 **Problem solving questions**
 
 <ol class="book-exercises" style="counter-reset: exercise 6;">
-<li>Above, we wrote the full direct lookahead policy as
+<li><p>Above, we wrote the full direct lookahead policy as</p>
 
+<div class="eq-flush-left">
 $$
 \begin{align}
 X^{\ast }(S_t) &= \argmax_{x_t\in\Xcal}\Big(C(S_t,x_t) + {} \nonumber \\
 & \quad \E_{W_{t+1}} \Big\{\max_\pi \E_{W_{t+2}, \ldots, W_T} \Big\{\sum_{t'=t+1}^T C(S_{t'},X^\pi_{t'}(S_{t'}))\Big\vert S_{t+1}\Big\} \Big\vert S_t,x_t\Big\}\Big). \label{eq:optDLAclinicaltrials2}
 \end{align}
 $$
+</div>
 
 If we could actually compute this, we would have an optimal policy. We are going to explore this policy, and then apply it to our clinical trial problem.
   <ol type="a">
