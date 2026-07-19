@@ -1,0 +1,24 @@
+---
+layout: book
+book_data: mato_toc
+book_home: /mato/contents/
+title: "Chapter 1: Introduction"
+permalink: /mato/chapter-1/
+date: 2026-07-19
+---
+
+{% raw %}
+Making decisions is a universal human activity, something we all have done since we are born. Making good decisions is how we perform better, whether we are running a business, managing a health or energy system, designing and controlling a supply chain, inventing new products and materials, or creating new drugs. Optimization, I claim, is the science of making the best decisions that we can.
+
+The academic community has largely limited the scope of optimization to pet methods for different communities. Industrial engineering and operations research equate optimization with linear programming (as a starter), progressing into even more specialized fields such as nonlinear and integer programming. Dynamic programming is considered a very advanced topic, rarely taught at the undergraduate level. Faculty in engineering (mechanical, electrical, chemical) and economics focus on the field of optimal control, a close cousin of dynamic programming, typically using fairly advanced mathematics. Computer scientists will either study combinatorics (a close cousin of integer programming) or, more recently, reinforcement learning (a cousin of dynamic programming). All of these approaches to optimization are typically taught at a fairly advanced level.
+
+I am going to suggest a new way to teach introductory optimization to undergraduates and masters that is far more useful and addresses the modeling and algorithmic challenges that arise in decision problems that occur in practice. To do this, I am going to take on two of the titans of optimization: George Dantzig and Richard Bellman. In this course, we will still teach linear programming, but it is demoted to a method that is used only for a small number of problems, and while I will illustrate the simplex algorithm using a network problem (where the steps of the simplex algorithm can be described visually), I do not drag students through the simplex algorithm for general linear programs.
+
+By contrast, we will pay considerably more attention to sequential decision problems (also known as dynamic programs), but we will largely ignore Bellman's equation (or Hamilton-Jacobi equations). Also, we note that the origins of linear programming were in the context of sequential decision problems, and we will make the distinction between linear programming as a static problem, and as a policy for sequential decision problems. We do the same for integer and nonlinear programming.
+
+My approach will be to start with the simplest nontrivial problems, and progress to more complex settings. We start with some basic machine learning problems (with linear and nonlinear models) that lay the foundation for modeling and solving sequential decision problems (SDPs). SDPs, which usually involve making relatively simple decisions over time, are problems that are pervasive in business, economics, engineering, the sciences, and even everyday life. SDPs include problems where the decision may be binary (which web page design to use, when to stop and sell an asset), discrete (choosing the best catalyst, drug, product, path, supplier, employee, ...), and scalar continuous (finding the best price, dosage, temperature, budget). We make decisions using the three classes of policies that are widely used in practice (albeit in an ad hoc way), but show students how to properly model and tune these policies. And we do not use Bellman's equation other than a brief illustration in a shortest path problem. Bellman requires a level of sophistication for both modeling and algorithmic work that is not suitable for an introductory course, and it is only useful for a very narrow subset of problems.
+
+In the process of using sequential decision problems, we are going to have to introduce the dimension of modeling sequential information processes. While this potentially opens a pandora's box into the complex arena of stochastic modeling, we avoid this by exclusively working with random samples, just as is done with machine learning where a training dataset is a sample of the random observations.
+
+The course is aimed at undergraduates (or masters) using a minimal amount of calculus or linear algebra. We use very simple Monte Carlo simulation, but do not require a course in probability or statistics. There are many opportunities for a faculty member to adjust the examples and scope of the material to their own students. However, we urge faculty to resist the typical style of teaching this material which emphasizes the methods that have a strong theoretical foundation. This material can be taught at a very advanced level, but this course focuses on teaching students how to *think* about making decisions.
+{% endraw %}
