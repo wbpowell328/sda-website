@@ -335,13 +335,35 @@ This model can also be applied to any multiproduct inventory problem where there
 **Problem solving questions**
 
 <ol class="book-exercises" style="counter-reset: exercise 6;">
-<li>Blood management - Part I: Modeling - We are going to consider the blood management problem, but we are going to assume there is only one type of blood, although we are still going to model the aging process, where blood can be 0 to 5 weeks old. Any 5-week old blood that is held must be discarded. As in the book, there are two types of patients: urgent and elective. Let $R_{t\tau}$ be the number of units of blood on hand at time $t$ that has been held for $\tau$ time periods, $\tau = 0, \ldots, 5$; $\Rhat_t$ be the new blood donations that arrive between $t-1$ and $t$, where $\Rhat_t$ is a scalar; $\Dhat^{urgent}_t$ be the new urgent demands that arrive at time $t$; and $\Dhat^{elective}_t$ be the new elective demands that arrive at time $t$.
+<li><p>Blood management - Part I: Modeling - We are going to consider the blood management problem, but we are going to assume there is only one type of blood, although we are still going to model the aging process, where blood can be 0 to 5 weeks old. Any 5-week old blood that is held must be discarded. As in the book, there are two types of patients: urgent and elective. Let:</p>
 
-At time $t$, we have to decide $x^{urgent}_t$, the amount of blood to be assigned to urgent patients; $x^{elective}_t$, the amount of blood to be assigned to elective patients; and $x^{hold}_t$, the amount of blood to be held, with $x_t = (x^{urgent}_t,x^{elective}_t,x^{hold}_t)$.
+<div class="book-table-wrap">
+<table class="book-table is-list-table">
+<tbody>
+<tr><td>$R_{t\tau}$</td><td>Number of units of blood on hand at time $t$ that has been held for $\tau$ time periods, $\tau = 0, \ldots, 5$.</td></tr>
+<tr><td>$\Rhat_t$</td><td>New blood donations that arrive between $t-1$ and $t$, where $\Rhat_t$ is a scalar.</td></tr>
+<tr><td>$\Dhat^{urgent}_t$</td><td>New urgent demands that arrive at time $t$.</td></tr>
+<tr><td>$\Dhat^{elective}_t$</td><td>New elective demands that arrive at time $t$.</td></tr>
+</tbody>
+</table>
+</div>
 
-Demands do not have to be covered, although the real issue is whether to cover an elective demand now (assuming there is enough blood to cover all the urgent demands) or hold the blood for a potential urgent demand in the future. As before, assume that any demands that are not served leave the system.
+<p>At time $t$, we have to decide:</p>
 
-Your goal is to maximize a utility function that gives credit of 10 for each urgent patient covered and 5 for each elective patient covered.
+<div class="book-table-wrap">
+<table class="book-table is-list-table">
+<tbody>
+<tr><td>$x^{urgent}_t$</td><td>Amount of blood to be assigned to urgent patients.</td></tr>
+<tr><td>$x^{elective}_t$</td><td>Amount of blood to be assigned to elective patients.</td></tr>
+<tr><td>$x^{hold}_t$</td><td>Amount of blood to be held.</td></tr>
+<tr><td>$x_t$</td><td>$(x^{urgent}_t,x^{elective}_t,x^{hold}_t)$.</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Demands do not have to be covered, although the real issue is whether to cover an elective demand now (assuming there is enough blood to cover all the urgent demands) or hold the blood for a potential urgent demand in the future. As before, assume that any demands that are not served leave the system.</p>
+
+<p>Your goal is to maximize a utility function that gives credit of 10 for each urgent patient covered and 5 for each elective patient covered.</p>
   <ol type="a">
     <li>What is the state variable for this problem?</li>
     <li>What are the decision variables and exogenous information?</li>
