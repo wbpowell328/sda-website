@@ -391,7 +391,12 @@ For the purposes of this exercise, you can just write $\Vbar^x_t(S^x_t) = (\thet
 <li>Blood management - Part III: Lookahead policy - This time, we are going to assume that we have rolling forecasts of supplies and demands. Let $f^R_{tt'}$ be the forecast of blood donations at time $t'$ made using what we know at time $t$. Let $f^{D,urgent}_{tt'}$ and $f^{D,elective}_{tt'}$ be the forecasts of new urgent and elective demands arriving at time $t'$ given what we know at time $t$. Assume that forecasts are provided exogenously (that is, we do not have to model how the forecasts evolve from $t$ to $t+1$). You may use
 
 $$
-f^R_t = (f^R_{tt'})_{t'=t+1}^T, \quad f^{D,urgent}_t = (f^{D,urgent}_{tt'})_{t'=t+1}^T, \quad f^{D,elective}_t = (f^{D,elective}_{tt'})_{t'=t+1}^T, \quad f_t = (f^R_t,f^{D,urgent}_t,f^{D,elective}_t).
+\begin{align*}
+f^R_t &= (f^R_{tt'})_{t'=t+1}^T, \\
+f^{D,urgent}_t &= (f^{D,urgent}_{tt'})_{t'=t+1}^T, \\
+f^{D,elective}_t &= (f^{D,elective}_{tt'})_{t'=t+1}^T, \\
+f_t &= (f^R_t,f^{D,urgent}_t,f^{D,elective}_t).
+\end{align*}
 $$
 
 Let $\sigma^R_{t'-t}$ be the standard deviation of the error between the actual donations $\Rhat_{tt'}$, which we assume is known based on past performance. We assume that this is purely a function of how far into the future we are planning, given by $t'-t$. Similarly let $\sigma^{D,urgent}_{t'-t}$ and $\sigma^{D,elective}_{t'-t}$ be the standard deviations of the errors in the forecasts of new urgent and elective demands.
