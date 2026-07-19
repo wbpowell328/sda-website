@@ -400,7 +400,7 @@ This is a more compact model because we now assume that the constant term $\thet
 **Problem solving questions**
 
 <ol class="book-exercises" style="counter-reset: exercise 7;">
-<li>Recommender system part I - Belief model - You are going to help design a recommender system that recommends products to advertise when a customer is scrolling through a website. Since the customer has to sign in, we can identify the $n$th customer by a vector of attributes $a=a^n$ that includes:
+<li><p>Recommender system part I - Belief model - You are going to help design a recommender system that recommends products to advertise when a customer is scrolling through a website. Since the customer has to sign in, we can identify the $n$th customer by a vector of attributes $a=a^n$ that includes:</p>
 
 <div class="book-table-wrap">
 <table class="book-table is-list-table">
@@ -414,7 +414,7 @@ This is a more compact model because we now assume that the constant term $\thet
 </table>
 </div>
 
-Imagine that we are recommending text articles. Assume that the article we recommend for the $n$th customer has attributes $b=b^n$ that includes:
+<p>Imagine that we are recommending text articles. Assume that the article we recommend for the $n$th customer has attributes $b=b^n$ that includes:</p>
 
 <div class="book-table-wrap">
 <table class="book-table is-list-table">
@@ -428,25 +428,27 @@ Imagine that we are recommending text articles. Assume that the article we recom
 </table>
 </div>
 
-We would like to estimate $P(b^n\vert a^n)$, the probability that the $n$th customer with attribute $a^n$ clicks on the link of an article with attribute $b^n$.
+<p>We would like to estimate:</p>
 
-When customer $a^n$ arrives, we are going to assume that we have to choose a news article from a set $\Bcal^n$, which is the set of articles available when the $n$th customer arrives (this set changes over time). We would like to choose an article with attribute $b\in\Bcal^n$ that maximizes the probability that our customer will click on this news article. Our policy has to choose a particular article with attribute $b^n$.
+<p style="margin-left: 2rem;">$P(b^n\vert a^n)$ = Probability that the $n$th customer with attribute $a^n$ clicks on the link of an article with attribute $b^n$.</p>
 
-Ideally, we want $P(b^n_5\vert a^n_5)$ which is the probability that user $a^n_5$ would select article $b^n_5$, but there are too many users and too many articles to get reasonable estimates of this probability. If we only consider the elements $a_1, a_2, a_3$ and $a_4$, there would be 9,600 combinations, with an average of approximately 10,000 people for each of these first four elements. Below, we are going to assume we just use $a_1$ and $a_2$, which means 16 types of people.
+<p>When customer $a^n$ arrives, we are going to assume that we have to choose a news article from a set $\Bcal^n$, which is the set of articles available when the $n$th customer arrives (this set changes over time). We would like to choose an article with attribute $b\in\Bcal^n$ that maximizes the probability that our customer will click on this news article. Our policy has to choose a particular article with attribute $b^n$.</p>
 
-We are going to create a set of features $\Fcal$ which are constructed from the elements of $a$ and $b$ that we wish to consider. We are just going to use the elements $\lbrace a_1,a_2,b_1,b_2,b_3\rbrace $ from which we are going to construct a set of feature variables $\phi_f(a,b),~f\in\Fcal$. Since these five elements are all categorical, the most elementary features are indicator variables. For example, for the gender attribute $a_1$ we have two genders from which we create two features:
+<p>Ideally, we want $P(b^n_5\vert a^n_5)$ which is the probability that user $a^n_5$ would select article $b^n_5$, but there are too many users and too many articles to get reasonable estimates of this probability. If we only consider the elements $a_1, a_2, a_3$ and $a_4$, there would be 9,600 combinations, with an average of approximately 10,000 people for each of these first four elements. Below, we are going to assume we just use $a_1$ and $a_2$, which means 16 types of people.</p>
+
+<p>We are going to create a set of features $\Fcal$ which are constructed from the elements of $a$ and $b$ that we wish to consider. We are just going to use the elements $\lbrace a_1,a_2,b_1,b_2,b_3\rbrace $ from which we are going to construct a set of feature variables $\phi_f(a,b),~f\in\Fcal$. Since these five elements are all categorical, the most elementary features are indicator variables. For example, for the gender attribute $a_1$ we have two genders from which we create two features:</p>
 
 $$
 \phi_{male}(a) = \begin{cases} 1 & \text{if } a_1 = male, \\ 0 & \text{otherwise.} \end{cases} \qquad \phi_{female}(a) = \begin{cases} 1 & \text{if } a_1 = female, \\ 0 & \text{otherwise.} \end{cases}
 $$
 
-If we restrict ourselves to these elementary features, we would have one feature for each possible value for each element of the attributes $a_1,a_2,b_1,b_2,b_3$.
+<p>If we restrict ourselves to these elementary features, we would have one feature for each possible value for each element of the attributes $a_1,a_2,b_1,b_2,b_3$.</p>
 
-Our process begins when the first customer logs in with attribute vector $a^1$, at which point we have to decide the attributes of an article $b^1$ to display to this user, and then observe $Y^1$, where $Y^1 = 1$ if the customer clicks on the article or 0 otherwise. This information is used to create an updated state $S^1$, after which we observe customer $a^2$.
+<p>Our process begins when the first customer logs in with attribute vector $a^1$, at which point we have to decide the attributes of an article $b^1$ to display to this user, and then observe $Y^1$, where $Y^1 = 1$ if the customer clicks on the article or 0 otherwise. This information is used to create an updated state $S^1$, after which we observe customer $a^2$.</p>
 
-If $a^n$ is the attributes of the $n$th customer, then our decision is to choose $b^n$ using what we know, which we designate by $S^n$. Our goal is to model this problem and design a policy $B^\pi(S^n)$ that determines $b^n$.
+<p>If $a^n$ is the attributes of the $n$th customer, then our decision is to choose $b^n$ using what we know, which we designate by $S^n$. Our goal is to model this problem and design a policy $B^\pi(S^n)$ that determines $b^n$.</p>
 
-Our first challenge is to develop a belief model:
+<p>Our first challenge is to develop a belief model:</p>
   <ol type="a">
     <li>If we use a lookup table belief model for $P(b\vert a)$ using the attributes $\lbrace a_1,a_2, b_1,b_2,b_3\rbrace $, how many parameters are we trying to estimate?</li>
     <li>Instead, consider using a logistic regression. First define a utility function
