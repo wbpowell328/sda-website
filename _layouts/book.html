@@ -115,7 +115,7 @@
       if (!link) return;
       drawer.classList.remove('is-open');
       btn.setAttribute('aria-expanded', 'false');
-      if (link.pathname === window.location.pathname) {
+      if (link.pathname === window.location.pathname && !link.hash) {
         e.preventDefault();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
