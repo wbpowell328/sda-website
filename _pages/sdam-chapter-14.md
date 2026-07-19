@@ -373,11 +373,13 @@ We model the distribution of $\tilde\Xhat_{t,t'+1}$ using $Prob[\tilde\Xhat_{t,t
 
 We can solve the lookahead model by adapting Bellman's equation for Model A in equation $\eqref{eq:clinicaltrialbellmanModelA}$ for $t'=t, \ldots, t+H$:
 
+<div class="eq-flush-left">
 $$
 \begin{align}
-\Vtilde_{tt'}(\Stilde_{tt'}) = \min_{\xtilde^{enroll}_{tt'}} \left(\Ctilde(\Stilde_{tt'},\xtilde^{enroll}_{tt'}) + \sum_{s=0}^{\tilde\Rbar_{tt'}} Prob[\tilde\Xhat_{t,t'+1} = s\vert \tilde\Rbar_{tt'}] \Vtilde_{t,t'+1}(\Stilde_{t,t'+1}\vert \tilde\Xhat_{t,t'+1} = s)\right),   \label{eq:clinicaltrialbellmanModelB}
+\small \Vtilde_{tt'}(\Stilde_{tt'}) = \min_{\xtilde^{enroll}_{tt'}} \left(\Ctilde(\Stilde_{tt'},\xtilde^{enroll}_{tt'}) + \sum_{s=0}^{\tilde\Rbar_{tt'}} Prob[\tilde\Xhat_{t,t'+1} = s\vert \tilde\Rbar_{tt'}] \Vtilde_{t,t'+1}(\Stilde_{t,t'+1}\vert \tilde\Xhat_{t,t'+1} = s)\right),   \label{eq:clinicaltrialbellmanModelB}
 \end{align}
 $$
+</div>
 
 where $\Stilde_{t,t'+1} = (\Rtilde_{t,t'+1},\tilde\alpha_{t,t'+1})$ is conditioned on the number of successes $\tilde\Xhat_{t,t'+1} = s$, and where $Prob[\tilde\Xhat_{t,t'+1} = s\vert \tilde\Rbar_{tt'}]$ comes from equation $\eqref{eq:clinicaltrialsuccessdist}$. We have to keep in mind that the evolution of $\Rtilde_{tt'}$ has to reflect if we have decided to stop or continue the trial within the lookahead model.
 
