@@ -675,7 +675,11 @@ img, video { max-width: 100%; height: auto; display: block; }
    (not something reachable by styling a wrapper's own text-align), so
    this has to target that element specifically. */
 .eq-flush-left mjx-mtable { text-align: left !important; }
-.eq-flush-left mjx-container[display="true"] { margin-left: -0.375in; }
+/* !important needed here too: MathJax injects its own stylesheet after
+   ours loads (its script runs later in the page lifecycle), so an
+   equally-specific external rule without !important loses the cascade
+   to MathJax's own margin rule on this element. */
+.eq-flush-left mjx-container[display="true"] { margin-left: -0.375in !important; }
 
 /* Narrow, fully-centered numeric tables (e.g. chapter 2's exercise time/
    price table) -- the default 100%-width table with a left-aligned first
