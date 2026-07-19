@@ -99,6 +99,7 @@ window.CASTLE_MATH_MACROS = {
   Ihat: "\\hat I", Lhat: "\\hat L", Mhat: "\\hat M", Nhat: "\\hat N",
   Phat: "\\hat P", Qhat: "\\hat Q", Rhat: "\\hat R", Shat: "\\hat S",
   Uhat: "\\hat U", Vhat: "\\hat V", What: "\\widehat W", Xhat: "\\hat X",
+  Yhat: "\\hat Y",
 
   // ---- x-tilde (lowercase) ----
   atilde: "{\\tilde a}", btilde: "{\\tilde b}", ctilde: "{\\tilde c}",
