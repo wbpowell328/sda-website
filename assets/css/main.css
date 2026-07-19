@@ -631,7 +631,7 @@ img, video { max-width: 100%; height: auto; display: block; }
   margin: 1.5rem 0;
   font-size: 0.92rem;
 }
-.book-algorithm p { margin: 0 0 0.5rem; }
+.book-algorithm p { margin: 0 0 0.2rem; }
 .book-algorithm p:last-child { margin-bottom: 0; }
 .book-table th, .book-table td {
   border: 1px solid #d9c9a3;
