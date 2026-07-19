@@ -403,7 +403,7 @@ $$
 \tilde\alpha_{t,t'+1} = \tilde\alpha_{tt'} + s, \qquad \tilde\beta_{t,t'+1}  = \tilde\beta_{tt'} + (\tilde\Rbar_{tt'} - s).
 $$
 
-We now have to solve the lookahead model using Bellman's equation in equation $\eqref{eq:clinicaltrialbellmanModelB}$. For this problem, it makes sense to use a large-enough horizon $H$ so that we can confidently assume that we would have stopped the trial by then (that is $\Xtilde^{trial}(\Stilde_{tt'}\vert \theta^{stop}) = 0$). This means we can assume that $\Vtilde_{t,t+H}(\Stilde_{t,t+H}) = 0$, and work backward from there to time $t$. Once we have solved the dynamic program, we can pull out our enrollment decision using
+We now have to solve the lookahead model using Bellman's equation in equation <span style="white-space: nowrap;">$\eqref{eq:clinicaltrialbellmanModelB}$.</span> For this problem, it makes sense to use a large-enough horizon $H$ so that we can confidently assume that we would have stopped the trial by then (that is $\Xtilde^{trial}(\Stilde_{tt'}\vert \theta^{stop}) = 0$). This means we can assume that $\Vtilde_{t,t+H}(\Stilde_{t,t+H}) = 0$, and work backward from there to time $t$. Once we have solved the dynamic program, we can pull out our enrollment decision using
 
 $$
 \small X^{enroll}_{t}(S_t) = \argmin_{\xtilde^{enroll}_{tt}} \left(\Ctilde(\Stilde_{tt},\xtilde^{enroll}_{tt}) + \sum_{s=0}^{\tilde\Rhat_{t,t+1}} Prob[\tilde\Xhat_{t,t'+1} = s\vert \tilde\Rbar_{tt}] \Vtilde_{t,t+1}(\Stilde_{t,t+1}\vert \tilde\Xhat_{t,t'+1} = s)\right).
