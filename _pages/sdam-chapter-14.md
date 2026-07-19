@@ -233,11 +233,13 @@ $$
 
 We can find the unconditional distribution of $\Xhat_{t+1}$ by just summing over $r$ and $k$ and multiplying by the appropriate probabilities, giving us
 
+<div class="eq-flush-left">
 $$
 \begin{align}
-\scriptsize Prob[\Xhat_{t+1} = s\vert \Rbar_t] = \sum_{k=1}^K \left(\sum_{r=0}^{R_t} Prob[\Xhat_{t+1} = s\vert \Rhat_{t+1}=r, \rho^{true}=\rho_k] P_{\Rhat_{t+1}}(r\vert x^{enroll}_t, \Rbar_t)\right) p^\rho_{tk}. \label{eq:clinicaltrialsuccessdist}
+\small Prob[\Xhat_{t+1} = s\vert \Rbar_t] = \sum_{k=1}^K \left(\sum_{r=0}^{R_t} Prob[\Xhat_{t+1} = s\vert \Rhat_{t+1}=r, \rho^{true}=\rho_k] P_{\Rhat_{t+1}}(r\vert x^{enroll}_t, \Rbar_t)\right) p^\rho_{tk}. \label{eq:clinicaltrialsuccessdist}
 \end{align}
 $$
+</div>
 
 Using explicit probability distributions such as the one for $\Xhat_{t+1}$ in equation $\eqref{eq:clinicaltrialsuccessdist}$ is nice when we can find (and compute) them, but there are many complex problems where this is not possible. For example, even equation $\eqref{eq:clinicaltrialsuccessdist}$ required that we use the trick of using a sampled representation of the continuous random variable $\rho^{true}$. Without this, we would have had to introduce an integral over the density for $\rho^{true}$.
 

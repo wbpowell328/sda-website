@@ -665,6 +665,17 @@ img, video { max-width: 100%; height: auto; display: block; }
    instead of the default left-aligned first column. */
 .book-table.center-first-col td:first-child { text-align: center; }
 
+/* Flush a numbered display equation to the left margin instead of
+   MathJax's default of centering it (with the tag pinned to the right).
+   For very wide equations that already need a smaller font to fit, the
+   default centering wastes the newly-freed space on the left as an empty
+   gutter -- this reclaims it. Wrap the $$...$$ block in
+   <div class="eq-flush-left">...</div>. MathJax sets text-align: center
+   directly on the generated mjx-mtable element for numbered equations
+   (not something reachable by styling a wrapper's own text-align), so
+   this has to target that element specifically. */
+.eq-flush-left mjx-mtable { text-align: left !important; }
+
 /* Narrow, fully-centered numeric tables (e.g. chapter 2's exercise time/
    price table) -- the default 100%-width table with a left-aligned first
    column is overkill for a short list of numbers where every column should
