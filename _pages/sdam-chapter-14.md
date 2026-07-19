@@ -455,14 +455,16 @@ If we could actually compute this, we would have an optimal policy. We are going
     <li>What is the structure of the policy $X^\pi_{t'}(S_{t'})$ represented by the decision tree in part (a)? Said differently, what type of function is $X^\pi_{t'}(S_{t'})$ when given by a decision tree?</li>
   </ol>
 </li>
-<li>Since we generally cannot compute equation $\eqref{eq:optDLAclinicaltrials2}$, we have to replace the full lookahead model with an approximate lookahead model that we write as
+<li><p>Since we generally cannot compute equation $\eqref{eq:optDLAclinicaltrials2}$, we have to replace the full lookahead model with an approximate lookahead model that we write as</p>
 
+<div class="eq-flush-left">
 $$
 \begin{align}
 X^{DLA}(S_t) &= \argmin_{x_t\in\Xcal}\Big(C(S_t,x_t) + {} \nonumber \\
 & \ \Etilde_{\Wtilde_{t,t+1}} \Big\{\min_{\tilde \pi} \E_{\Wtilde_{t,t+2}, \ldots, \Wtilde_{tT}} \Big\{\sum_{t'=t+1}^T C(\Stilde_{tt'},\Xtilde^{\tilde \pi}_t(\Stilde_{tt'}))\Big\vert \Stilde_{t,t+1}\Big\} \Big\vert S_t,x_t\Big\}\Big). \label{eq:policiesapproximateDLA3}
 \end{align}
 $$
+</div>
 
 where the dynamics of our approximate lookahead model are governed by
 
