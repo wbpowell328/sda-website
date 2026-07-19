@@ -283,7 +283,7 @@ We can show that the slopes $\vbar^{x,n}\_{ta}(R^{x,n}\_{ta})$ decrease as $R^{x
 Assuming we can estimate this function, the optimization problem that we have to solve (equation $\eqref{eq:adpblood}$) is the fairly modest linear program shown in Figure 13.2. As with Figure 13.1, we have to consider both the assignment of different types of blood to different types of demand, and the decision to hold blood.
 
 <figure class="book-figure">
-  <img src="/assets/images/sdam/bloodadpnetwork.png" alt="Network model for time t with separable, piecewise linear value function approximations." style="max-width: 500px;">
+  <img src="/assets/images/sdam/bloodadpnetwork.jpg" alt="Network model for time t with separable, piecewise linear value function approximations." style="max-width: 500px;">
   <figcaption><span class="fig-num">Figure 13.2.</span> Network model for time $t$ with separable, piecewise linear value function approximations.</figcaption>
 </figure>
 
