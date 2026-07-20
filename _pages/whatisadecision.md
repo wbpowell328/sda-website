@@ -58,7 +58,7 @@ Decisions arise in a variety of settings.  Communities that study the science o
     a.  Messaging - This reflects what we say in text, video and/or audio.  A modern example of messaging includes prompt optimization, but other examples are the design of ads, communications to a company or public broadcast, instructions to use a product, training given to employees, and instructions on how to use a product.
     b.  Channels and timing - This reflects the choice of channel (text/emails, publication (print or online), social media, or advertising channels) along with the timing and frequency.  
 
-5.  **Performance metrics/objectives** - These might be revenues, cost, stockouts, improved health, portfolio returns, inventory turns, strength of material, or voter polls. These might be evaluated on average, or using some form of risk measure that captures uncertain events not represented by averages.
+5.  **Performance metrics/objectives** - These might be revenues, costs, stockouts, improved health, portfolio returns, inventory turns, strength of material, or voter polls. These might be evaluated on average, or using some form of risk measure that captures uncertain events not represented by averages.
 
 6.  **Choosing functions** - Often overlooked as a decision, functions may be methods to make decisions (policies), optimization models, objective functions, models for forecasting or estimation, or transition functions (such as how disease spreads).  This category covers the choice of function, which means its structure.  
 
