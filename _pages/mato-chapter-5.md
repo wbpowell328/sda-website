@@ -1232,7 +1232,7 @@ $$
 We can compute the path costs (dual variables) $v\_{i}$ just by following the path along the basis from each node to the supersink (node 1). Remember we have to subtract the cost for any link that we traverse in the reverse direction of the link.
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/lp-step-26.png" alt="The network with numerical link costs 14, 8, 9, 15, 16, 4, 17, 8, 5 used to compute the dual variables." style="max-width: 352px;">
+  <img src="/assets/images/mato/lp-step-26.png" alt="The network with numerical link costs 14, 8, 9, 15, 16, 4, 17, 8, 5 used to compute the dual variables." style="max-width: 299px;">
   <figcaption><span class="fig-num">Figure 5.25.</span> The numerical costs used to compute the dual variables for this example.</figcaption>
 </figure>
 
