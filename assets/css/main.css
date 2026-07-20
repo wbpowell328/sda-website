@@ -681,6 +681,14 @@ img, video { max-width: 100%; height: auto; display: block; }
    to MathJax's own margin rule on this element. */
 .eq-flush-left mjx-container[display="true"] { margin-left: -0.375in !important; }
 
+/* Same idea, larger shift -- for equations whose own min-width (driven by
+   content, not font size) is wide enough that -0.375in still leaves them
+   short of the left margin. Deliberately a separate class (not stacked
+   with .eq-flush-left) so tuning this doesn't move already-correct
+   equations using the base shift. */
+.eq-flush-left-lg mjx-mtable { text-align: left !important; }
+.eq-flush-left-lg mjx-container[display="true"] { margin-left: -0.75in !important; }
+
 /* Narrow, fully-centered numeric tables (e.g. chapter 2's exercise time/
    price table) -- the default 100%-width table with a left-aligned first
    column is overkill for a short list of numbers where every column should

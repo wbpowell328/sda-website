@@ -1748,7 +1748,7 @@ To evaluate our facility decision $x\_{t}^{facility}$, we have to simulate diffe
 
 For each sample $\hat{D}\_{t+1}^{n}$, we compute a new set of transportation flows $x\_{t+1}^{trans,n}$ which allows us to compute a new set of costs $C^{trans}\left( x\_{t+1}^{trans,n},\hat{D}\_{t+1}^{n} \right)$. Finally, we evaluate the cost of our facilities decision $x\_{t}^{facility}$ using
 
-<div class="eq-flush-left">
+<div class="eq-flush-left-lg">
 $$
 \bar{C}^{facility}(x_{t}^{facility}) = C^{facility}\left( x_{t}^{facility} \right) + \frac{1}{N}\sum_{n = 1}^{N}{C^{trans}\left( x_{t+1}^{trans,n},\hat{D}_{t+1}^{n} \right)}. \tag{10.19}\label{eq:mato-10-19}
 $$
