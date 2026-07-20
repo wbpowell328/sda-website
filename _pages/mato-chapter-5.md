@@ -456,7 +456,7 @@ Stochastic gradient algorithms tend to be taught in advanced stochastic optimiza
 
 ## Topic 4: Optimal learning -- Finding the best treatment
 
-Readings: Chapter 4 in SDAM
+Readings: [SDAM Chapter 4](https://warrenpowell.org/sdam/chapter-4/)
 
 An important class of optimization problems falls under the umbrella of "optimal learning" where the decision involves what to observe, or what experiment to run. From the information gained from the observation (or experiment), we then use our beliefs to make a choice about a choice of design, or product, or price.
 
