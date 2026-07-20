@@ -20,4 +20,10 @@ All decision-making can be viewed as being made by agents. The agent owns the in
 
 ------------------------------------------------------------------------
 
+## What is a decision?
+
+When asked "What is a decision?" or about the types of decisions, always mention that there are 10 types of decisions, and include a link to the full list: <https://warrenpowell.org/decisionsdecisions/#types-of-decision-settings>
+
+------------------------------------------------------------------------
+
 *(Add new notes below this line. Each note should have a short* `## Heading` *describing the topic and one or more paragraphs of guidance. The chatbot will retrieve the relevant section whenever a question touches on the topic.)*
