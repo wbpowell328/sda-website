@@ -61,6 +61,16 @@ const SKIP_TEX_PATTERNS = [
   /^main[._-]/i,
 ];
 
+// These three books now have web versions in _pages/ (already ingested via
+// the 'page' pipeline below, labeled book: 'CASTLE Site') that are kept more
+// up to date than the .tex source. Skip the .tex folders so the chatbot
+// isn't trained on stale content that duplicates/contradicts the web pages.
+const SKIP_BOOK_FOLDERS = new Set([
+  'Sequential Decision Analytics and Modeling', // -> _pages/sdam-*.md
+  'Modern Approach to Teaching Optimization',   // -> _pages/mato-*.md
+  'Framing the Problem',                        // -> _pages/bridging-vol1-*.md
+]);
+
 function discoverSources() {
   const sources = [];
 
@@ -87,6 +97,7 @@ function discoverSources() {
       continue;
     }
     if (!statSync(full).isDirectory()) continue;
+    if (SKIP_BOOK_FOLDERS.has(entry)) continue;
     const meta = BOOK_META[entry] || { name: entry, full: entry };
     const files = readdirSync(full).sort();
     for (const f of files) {
