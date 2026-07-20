@@ -122,7 +122,7 @@ An informal definition might be:
 
 > **Definition (informal):** A **decision** is something we control.
 
-These definitions offer a starting point, but we do not learn very much from them. More interesting in our view is to identify different types of decisions. Below are nine types of decisions that serve as a starting point:
+These definitions offer a starting point, but we do not learn very much from them. More interesting in our view is to identify different types of decisions. Below are 10 types of decisions that serve as a starting point:
 
 **1) Physical and financial decisions** – These decisions arise in the management of physical and financial resources, such as people, equipment, facilities, products, water, energy, as well as financial resources such as cash or investments. Decisions include buying, selling and modifying resources, where a modification might mean moving it from one location to another, repairing equipment, training a person, or combining ingredients to make a cake.
 
@@ -144,6 +144,8 @@ These definitions offer a starting point, but we do not learn very much from the
 **8) Estimation or identification** – We may need to identify a person, forecast demand, or name a disease.
 
 **9) Features and behaviors** – How to design a product, what features a software package should have, what services should be provided to a customer, or a student's major, which determines what skills they graduate with.
+
+**10) Deciding what to decide** – While we generally do not use formal analysis for this final decision, it is important to recognize when we are making a decision, and whether we want to address it formally using data analysis and modeling.
 
 Implicit in the identification of decisions is understanding how the decision affects the performance of the system. Moving physical resources (type 1) comes with a cost, while satisfying demands brings revenues. A decision may have an immediate impact on one or more performance metrics (as often occurs with managing resources), but often decisions have to be evaluated over time, and depend on information that is not known when the decision is made. For this reason, we are often evaluating *how* we are making decisions (that is, the method) as opposed to the decision itself.
 
