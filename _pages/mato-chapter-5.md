@@ -1800,9 +1800,11 @@ Solving our transportation problem gives us $x\_{t+1}^{trans}$. We then return t
 
 To evaluate our policies $X\_{t}^{facility}\left( S\_{t}^{facility} \right)$ and $X\_{t+1}^{trans}\left( S\_{t+1}^{trans} \right)$, we simply extend what we did in the previous section to multiple periods. We can simulate a single sequence of demands $\hat{D}\_{1},\hat{D}\_{2},\ldots,\ \hat{D}\_{T}$ (for this problem, the demands do not depend on decisions, so we can generate these in advance). Using these simulated demands, we can evaluate the performance of our policies using
 
+<div class="eq-flush-left-lg">
 $$
 \hat{F}^{\pi} = \sum_{t = 0}^{T}\left( C^{facility}\left( X_{t}^{facility}\left( S_{t}^{facility} \right) \right) + C^{trans}\left( X_{t+1}^{trans}\left( S_{t+1}^{trans} \right),\hat{D}_{t+1} \right) \right). \tag{10.22}\label{eq:mato-10-22}
 $$
+</div>
 
 This approach evaluates the policy based on a single sample realization, which is just what we did in our machine learning problems in Topic 1, as well as the asset selling and inventory planning problems in Topic 2. We could create a sequence of samples $\hat{D}\_{1}^{n},\hat{D}\_{2}^{n},\ldots,\hat{D}\_{t}^{n},\ldots,\hat{D}\_{T}^{n}$, for $n = 1,\ldots,\ N$.
 
