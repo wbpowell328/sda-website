@@ -1728,9 +1728,11 @@ Note that equation $\eqref{eq:mato-10-12}$ is using the actual demands $\hat{D}\
 
 We now want to evaluate the solution $(x\_{t}^{facility},x\_{t+1}^{trans})$. Our performance metrics can be divided between facility costs (including the cost of adding and dropping facilities), and the actual transportation costs. Facility costs are given by
 
+<div class="eq-flush-left">
 $$
 C^{facility}\left( x_{t}^{facility} \right) = \sum_{i \in I^{facility}}\left( c_{i}^{facility}x_{ti}^{facility} + c_{i}^{add}x_{ti}^{add} + c_{i}^{drop}x_{ti}^{drop} \right), \tag{10.16}\label{eq:mato-10-cost-facility}
 $$
+</div>
 
 $$
 C^{trans}\left( x_{t+1}^{trans},\hat{D}_{t+1} \right) = \sum_{i,j \in I^{facility}}{c_{ij}^{trans}x_{t+1,ij}^{trans}}. \tag{10.17}\label{eq:mato-10-cost-trans}
