@@ -980,7 +980,7 @@ We are not quite done. To be a basis (for a network), the set of links in the ba
 So, we quickly see our links fail condition 2 -- the set of links with flow do not form a tree. But we are not required to keep links with flow if the flow is at the upper or lower bound. Of the four links into the supersink, only one can be in the basis, so we are going to arbitrarily choose the first one, which gives us the basis:
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/lp-step-12.png" alt="The network with only the link from node 4 to the super sink kept in the basis among the supersink links, forming a tree." style="max-width: 560px;">
+  <img src="/assets/images/mato/lp-step-12.png" alt="The network with only the link from node 4 to the super sink kept in the basis among the supersink links, forming a tree." style="max-width: 448px;">
   <figcaption><span class="fig-num">Figure 5.12.</span> A valid basis: only one supersink link is kept, so the basic links form a tree.</figcaption>
 </figure>
 
@@ -993,7 +993,7 @@ To get from node 5 to SS, we first have to go backwards on the link (1-5), so th
 The dual at node 2 would be the cost of 2 to get 2-5, plus the dual at 5 = -8, so the dual at 2 = 2 + (-8) = -6. Continuing this logic for the remaining nodes gives us the duals:
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/lp-step-13.png" alt="The network annotated with dual variable values at each node: v1=4, v2=-6, v3=1, v4=0, v5=-8, v6=-16, v7=-7, vSS=0." style="max-width: 560px;">
+  <img src="/assets/images/mato/lp-step-13.png" alt="The network annotated with dual variable values at each node: v1=4, v2=-6, v3=1, v4=0, v5=-8, v6=-16, v7=-7, vSS=0." style="max-width: 448px;">
   <figcaption><span class="fig-num">Figure 5.13.</span> The dual variables computed from the basis.</figcaption>
 </figure>
 
@@ -1018,7 +1018,7 @@ $$
 The reduced cost captures the change in all the costs if we add one more unit of flow from 1 to 6, and then make all the other adjustments needed to ensure that we are still satisfying all the other constraints. Since the reduced cost is negative, this means that for each unit of flow, total costs will go down by 13, which means we get a better solution.
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/lp-step-14.png" alt="The network showing the flow adjustment cycle: +15 on link 1-6, -15 on link 1-5, +15 on link 2-5, -15 on link 2-6." style="max-width: 560px;">
+  <img src="/assets/images/mato/lp-step-14.png" alt="The network showing the flow adjustment cycle: +15 on link 1-6, -15 on link 1-5, +15 on link 2-5, -15 on link 2-6." style="max-width: 448px;">
   <figcaption><span class="fig-num">Figure 5.14.</span> Adjusting flow around the cycle created by adding link 1-6 to the basis.</figcaption>
 </figure>
 
@@ -1061,7 +1061,7 @@ We can write these constraints in matrix form as $Ax = b$, $x \geq 0$.
 Now assume we are going to solve the numerical example below.
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/lp-step-16.png" alt="A smaller three-supply, four-demand network with supplies 12, 18, 15 and demands 8, 19, 12, 6." style="max-width: 420px;">
+  <img src="/assets/images/mato/lp-step-16.png" alt="A smaller three-supply, four-demand network with supplies 12, 18, 15 and demands 8, 19, 12, 6." style="max-width: 336px;">
   <figcaption><span class="fig-num">Figure 5.15.</span> A numerical example used to illustrate the matrix form of the simplex algorithm.</figcaption>
 </figure>
 
