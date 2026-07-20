@@ -122,7 +122,7 @@ An informal definition might be:
 
 > **Definition (informal):** A **decision** is something we control.
 
-These definitions offer a starting point, but we do not learn very much from them. More interesting in our view is to identify different types of decisions. Below are six types of decisions that serve as a starting point:
+These definitions offer a starting point, but we do not learn very much from them. More interesting in our view is to identify different types of decisions. Below are nine types of decisions that serve as a starting point:
 
 **1) Physical and financial decisions** – These decisions arise in the management of physical and financial resources, such as people, equipment, facilities, products, water, energy, as well as financial resources such as cash or investments. Decisions include buying, selling and modifying resources, where a modification might mean moving it from one location to another, repairing equipment, training a person, or combining ingredients to make a cake.
 
@@ -135,11 +135,15 @@ These definitions offer a starting point, but we do not learn very much from the
 - a) Messaging – This reflects what we say in text, video and/or audio.
 - b) Channels and timing – This covers the choice of how to send the information: text/emails, publication (print or online), social media, or advertising channels. It also requires choosing the timing and frequency.
 
-**5) Choosing functions** – These may be methods to make decisions (policies), the formulation of optimization models, the choice of performance metrics, methods for forecasting or estimation, or the design of transition functions (such as how disease spreads).
+**5) Performance metrics and objectives** – These represent the critical choice of quantifying what we are trying to achieve, such as maximizing revenues, minimizing costs, minimizing illness, or maximizing votes received.
 
-**6) Setting parameters** – There are often a number of parameters that affect the performance of a system. These could be prices, the coefficients in a statistical model, the temperature used in a manufacturing process. They might be the weight placed on a performance metric, or performance targets.
+**6) Choosing functions** – These may be methods to make decisions (policies), the formulation of optimization models, the choice of performance metrics, methods for forecasting or estimation, or the design of transition functions (such as how disease spreads).
 
-**7) Estimation/identification** – We may be given a picture of a person, and asked to identify them, or we may be given a set of observations of sales and asked to estimate future sales. In each case we have a choice (of people, or of possible values of future sales) and we have to decide which is best, minimizing some metric that describes the error when we do not choose perfectly.
+**7) Setting parameters** – There are often a number of parameters that affect the performance of a system. These could be prices, the coefficients in a statistical model, the temperature used in a manufacturing process. They might be the weight placed on a performance metric, or performance targets.
+
+**8) Estimation or identification** – We may need to identify a person, forecast demand, or name a disease.
+
+**9) Features and behaviors** – How to design a product, what features a software package should have, what services should be provided to a customer, or a student's major, which determines what skills they graduate with.
 
 Implicit in the identification of decisions is understanding how the decision affects the performance of the system. Moving physical resources (type 1) comes with a cost, while satisfying demands brings revenues. A decision may have an immediate impact on one or more performance metrics (as often occurs with managing resources), but often decisions have to be evaluated over time, and depend on information that is not known when the decision is made. For this reason, we are often evaluating *how* we are making decisions (that is, the method) as opposed to the decision itself.
 
