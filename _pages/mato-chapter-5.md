@@ -1416,7 +1416,7 @@ While this process may seem ad hoc, it is no more ad hoc than searching among di
 
 ## Topic 8: Dynamic inventory problems -- Energy storage
 
-Readings: SDAM Chapter 9 -- this is also where we introduce linear programming
+Readings: [SDAM Chapter 9](https://warrenpowell.org/sdam/chapter-9/) -- this is also where we introduce linear programming
 
 Here we address a more complex energy storage problem: we have to decide how much to draw from a windfarm (with variable supply), the grid (with variable prices), to meet a predictable load (demand) for a building, using an energy storage device to absorb variations.
 
