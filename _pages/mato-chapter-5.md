@@ -2145,9 +2145,11 @@ $$
 
 Using this data from history, we can evaluate our policy using
 
+<div class="eq-flush-left">
 $$
 \hat{F}^{\pi}(\theta^{risk},\theta^{adj}) = \sum_{t' = t-H}^{t}{C^{total}\left( R_{t'},x_{t'} = X^{\pi}\left( S_{t'} \middle| \theta^{risk},\theta^{adj} \right)|\theta^{risk},\theta^{adj} \right)}. \tag{11.23}\label{eq:mato-11-23}
 $$
+</div>
 
 We assume that we have chosen a value for the risk parameter $\theta^{risk}$ as we described for the static model, but we can tune the parameters $\theta^{adj}$ using the optimization problem
 
