@@ -1850,7 +1850,10 @@ $$
 Our facility policy $X\_{t}^{facility}\left( S\_{t}^{facility} \right)$ (equation $\eqref{eq:mato-10-20}$) now depends on the parameter $\theta^{facility}$, which means we should write it as a parameterized policy $X\_{t}^{facility}\left( S\_{t}^{facility}\|\theta^{facility} \right)$. We would then write our objective function as
 
 $$
-\hat{F}(\theta^{facility}) = \sum_{t = 0}^{T}\left( C^{facility}\left( S_{t}^{facility},X_{t}^{facility}\left( S_{t}^{facility}|\theta^{facility} \right) \right) + C^{trans}\left( S_{t+1}^{trans},X_{t+1}^{trans}\left( S_{t+1}^{trans} \right),\hat{D}_{t+1} \right) \right). \tag{10.26}\label{eq:mato-10-26}
+\begin{align*}
+\hat{F}(\theta^{facility}) &= \sum_{t = 0}^{T} \Big( C^{facility}\left( S_{t}^{facility},X_{t}^{facility}\left( S_{t}^{facility}|\theta^{facility} \right) \right) + {} \\
+& C^{trans}\left( S_{t+1}^{trans},X_{t+1}^{trans}\left( S_{t+1}^{trans} \right),\hat{D}_{t+1} \right) \Big). \tag{10.26}\label{eq:mato-10-26}
+\end{align*}
 $$
 
 This gives us a new optimization problem, just as we have seen earlier (for example, in Topic 2) where we have to optimize the tunable parameter $\theta^{facility}$. We might write this as
