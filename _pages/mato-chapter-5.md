@@ -951,7 +951,7 @@ $$
 If you want to teach the simplex method, a nice way is to use the network above and show the steps of simplex graphically, rather than the usual treatment using matrices. We are going to start by having all the flows exit through a super sink with zero-cost links moving from each destination node (nodes 4-7) with upper bounds equal to the demand at the node:
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/lp-step-10.png" alt="The same network with a super sink node SS added, connected from each demand node by a zero-cost link whose upper bound equals that node's demand." style="max-width: 560px;">
+  <img src="/assets/images/mato/lp-step-10.png" alt="The same network with a super sink node SS added, connected from each demand node by a zero-cost link whose upper bound equals that node's demand." style="max-width: 448px;">
   <figcaption><span class="fig-num">Figure 5.10.</span> Adding a super sink with zero-cost links to simplify the presentation.</figcaption>
 </figure>
 
