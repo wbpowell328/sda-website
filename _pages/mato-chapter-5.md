@@ -1515,7 +1515,7 @@ Imagine that we are trying to design the network in the graphic below. We might 
 </div>
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/topic8-35.png" alt="Map of the United States showing a manufacturing location in Texas near Mexico, candidate distribution center locations as black squares, and local warehouses as smaller markers, connected by arrows." style="max-width: 680px;">
+  <img src="/assets/images/mato/topic8-35.png" alt="Map of the United States showing a manufacturing location in Texas near Mexico, candidate distribution center locations as black squares, and local warehouses as smaller markers, connected by arrows." style="max-width: 544px;">
   <figcaption><span class="fig-num">Figure 5.34.</span> A candidate distribution network: production in Mexico/Texas, candidate distribution centers, and local warehouses.</figcaption>
 </figure>
 
