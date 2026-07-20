@@ -1348,9 +1348,11 @@ which has to be solved subject to the constraints $\eqref{eq:mato-7-11}$-$\eqref
 
 We might create a more sophisticated policy by optimizing into the future, just as we did in our dynamic shortest path problem where we would plan a path to the destination, which would then be updated as new information came in. Such a *direct lookahead (DLA)* policy could be written
 
+<div class="eq-flush-left">
 $$
-X_{t}^{\pi}\left( S_{t} \middle| \theta \right) = \underset{\tilde{x}_{tt},\ldots,\tilde{x}_{t,t+H}}{\arg\max}\left( \sum_{t' = t}^{t + H}\left( \sum_{j}{\tilde{p}_{tt'j}\min\left\{ \tilde{D}_{tt'j},\sum_{i}\tilde{x}_{tt'ij} \right\}} - \sum_{i,j}{\tilde{c}_{tt'ij}\tilde{x}_{tt'ij}} \right) \right) \tag{7.15}\label{eq:mato-7-15}
+\small X_{t}^{\pi}\left( S_{t} \middle| \theta \right) = \small \underset{\tilde{x}_{tt},\ldots,\tilde{x}_{t,t+H}}{\arg\max}\left( \sum_{t' = t}^{t + H}\left( \sum_{j}{\tilde{p}_{tt'j}\min\left\{ \tilde{D}_{tt'j},\sum_{i}\tilde{x}_{tt'ij} \right\}} - \sum_{i,j}{\tilde{c}_{tt'ij}\tilde{x}_{tt'ij}} \right) \right) \tag{7.15}\label{eq:mato-7-15}
 $$
+</div>
 
 subject to, for $t' = t,\ t+1,\ \ldots,\ t+H$:
 
