@@ -269,7 +269,7 @@ In this section, we illustrate how we envision applying the list of decision typ
 .apps-vs-types tbody tr:nth-child(even) td { background: #fbf9f4; }
 </style>
 
-The idea of the nine types of decisions is to provide a guide to think outside the box of the most familiar decisions. In practice, you are not going to subject each of these decisions to formal analysis, which is why the ninth type, "Deciding what to decide," remains a completely subjective choice.
+The idea of the 10 types of decisions is to provide a guide to think outside the box of the most familiar decisions. In practice, you are not going to subject each of these decisions to formal analysis, which is why the tenth type, "Deciding what to decide," remains a completely subjective choice.
 
 ## Some perspectives of decisions {#some-perspectives-of-decisions}
 
