@@ -122,7 +122,11 @@ An informal definition might be:
 
 > **Definition (informal):** A **decision** is something we control.
 
-These definitions offer a starting point, but we do not learn very much from them. More interesting in our view is to identify different types of decisions. Below are 10 types of decisions that serve as a starting point:
+These definitions offer a starting point, but we do not learn very much from them.  Much more interesting is to identify specific examples of decisions, which we do next.
+
+## Types of decisions
+
+We have identified 10 types of decisions basic on the settings and the tools we might use to determine the best decisions.  These are:
 
 **1) Physical and financial decisions** – These decisions arise in the management of physical and financial resources, such as people, equipment, facilities, products, water, energy, as well as financial resources such as cash or investments. Decisions include buying, selling and modifying resources, where a modification might mean moving it from one location to another, repairing equipment, training a person, or combining ingredients to make a cake.
 
