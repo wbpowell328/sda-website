@@ -1172,14 +1172,14 @@ In fact, we are going to show you how you can invert the basis matrix $A^{B}$ fo
 Recall that each row of the basis matrix $A^{B}$ corresponds to a node, while each column corresponds to a link (that is, a decision variable $x\_{ij}$). This is why we often call $A^{B}$ a "node-arc incidence matrix." It turns out that each row of the inverse $\left[ A^{B} \right]^{-1}$ corresponds to a link, while each column corresponds to a path from a node to the root node. The element of the matrix $\left[ A^{B} \right]^{-1}$ indicates if the link for that row is in the path from the node for that column. We use 0 if the link is not in the path, and then +1 or -1 to indicate if the link is in the path, and whether you have to traverse the link in the forward direction or backwards. The choice of whether it is +1 or -1 depends on what sign convention you have used in your flow conservation constraints (that is, did you write flow out minus flow in, or the reverse). Below is the inverse that we get for our problem.
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/lp-step-22.png" alt="The inverse of A-superscript-B, alongside the network showing the northwest-corner-rule flows again for reference." style="max-width: 680px;">
+  <img src="/assets/images/mato/lp-step-22.png" alt="The inverse of A-superscript-B, alongside the network showing the northwest-corner-rule flows again for reference." style="max-width: 544px;">
   <figcaption><span class="fig-num">Figure 5.21.</span> $[A^B]^{-1}$, computed by inspection from the paths in the basis.</figcaption>
 </figure>
 
 To verify that $\left[ A^{B} \right]^{-1}$ is in fact the inverse of $A^{B}$, we can perform the multiplication $A^{B}\left[ A^{B} \right]^{-1}$ to verify that we get the identity matrix. This is done below:
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/lp-step-23.png" alt="A-superscript-B multiplied by its computed inverse, verified to equal the identity matrix." style="max-width: 620px;">
+  <img src="/assets/images/mato/lp-step-23.png" alt="A-superscript-B multiplied by its computed inverse, verified to equal the identity matrix." style="max-width: 527px;">
   <figcaption><span class="fig-num">Figure 5.22.</span> Verifying $A^B [A^B]^{-1} = I$.</figcaption>
 </figure>
 
@@ -1212,14 +1212,14 @@ $$
 Reduced costs tell us if we should increase the flow on a nonbasic link, while adjusting flows on all the basic links so that the flow conservation (plus upper and lower bound) constraints are satisfied. For our numerical example above, the reduced costs are calculated as follows:
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/lp-step-24.png" alt="The reduced-cost vector for the nonbasic links written out as a matrix product." style="max-width: 640px;">
+  <img src="/assets/images/mato/lp-step-24.png" alt="The reduced-cost vector for the nonbasic links written out as a matrix product." style="max-width: 544px;">
   <figcaption><span class="fig-num">Figure 5.23.</span> Setting up the reduced-cost calculation for the nonbasic links.</figcaption>
 </figure>
 
 Continuing the calculations:
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/lp-step-25.png" alt="The reduced-cost calculation carried through to its final simplified form in terms of the dual variables." style="max-width: 680px;">
+  <img src="/assets/images/mato/lp-step-25.png" alt="The reduced-cost calculation carried through to its final simplified form in terms of the dual variables." style="max-width: 544px;">
   <figcaption><span class="fig-num">Figure 5.24.</span> Simplifying the reduced-cost expression down to differences of dual variables.</figcaption>
 </figure>
 
@@ -1232,7 +1232,7 @@ $$
 We can compute the path costs (dual variables) $v\_{i}$ just by following the path along the basis from each node to the supersink (node 1). Remember we have to subtract the cost for any link that we traverse in the reverse direction of the link.
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/lp-step-26.png" alt="The network with numerical link costs 14, 8, 9, 15, 16, 4, 17, 8, 5 used to compute the dual variables." style="max-width: 440px;">
+  <img src="/assets/images/mato/lp-step-26.png" alt="The network with numerical link costs 14, 8, 9, 15, 16, 4, 17, 8, 5 used to compute the dual variables." style="max-width: 352px;">
   <figcaption><span class="fig-num">Figure 5.25.</span> The numerical costs used to compute the dual variables for this example.</figcaption>
 </figure>
 
