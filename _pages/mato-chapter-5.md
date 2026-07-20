@@ -1884,9 +1884,14 @@ Given the constraint $\eqref{eq:mato-10-28}$, to make a decision of what to buil
 
 We are going to solve this just as we solved the dynamic shortest path problems (section 5.2) where we optimize into the future, but only implement the decision in the first time period. We use a single set of forecasted demands made at time $t$, for all the time periods into the future:
 
+<div class="eq-flush-left-lg">
 $$
-X_{t}^{facility}\left( S_{t}^{facility} \right) = \underset{\tilde{x}_{t,t'}^{facility},\ \tilde{x}_{t,t'}^{trans},\ t' = t,\ldots,t+H}{\arg\min}\sum_{t' = t}^{t+H}\left( \sum_{i \in I^{facility}}{c_{i}^{facility}\tilde{x}_{t,t',i}^{facility}} + \sum_{i,j \in I^{facility}}{c_{ij}^{trans}\tilde{x}_{t,t',ij}^{trans}} \right), \tag{10.29}\label{eq:mato-10-29}
+\begin{align*}
+& X_{t}^{facility}\left( S_{t}^{facility} \right) = {} \\
+& \underset{\tilde{x}_{t,t'}^{facility},\ \tilde{x}_{t,t'}^{trans},\ t' = t,\ldots,t+H}{\arg\min}\sum_{t' = t}^{t+H}\left( \sum_{i \in I^{facility}}{c_{i}^{facility}\tilde{x}_{t,t',i}^{facility}} + \sum_{i,j \in I^{facility}}{c_{ij}^{trans}\tilde{x}_{t,t',ij}^{trans}} \right), \tag{10.29}\label{eq:mato-10-29}
+\end{align*}
 $$
+</div>
 
 subject to the constraints for $t' = t,\ldots,t+H$:
 
