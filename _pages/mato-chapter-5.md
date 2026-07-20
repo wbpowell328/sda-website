@@ -573,7 +573,7 @@ We can trace the shortest path by starting at node 11 and then traversing from a
 
 ### 5.2 Dynamic shortest paths
 
-Readings: SDAM Chapter 6
+Readings: [SDAM Chapter 6](https://warrenpowell.org/sdam/chapter-6/)
 
 Here we introduce the problem faced by Google maps. We have to route a traveler through a network where new information is arriving over time. Imagine that time steps forward one increment each time we traverse a link. When the traveler arrives at node $i$ at time $t$, Google receives updated estimates of travel times and recomputes the shortest path. This is a dynamic system where the "state" now includes two pieces of information: the node where the traveler is located (node $i$), and the updated estimates of the travel times over the *entire* network.
 
