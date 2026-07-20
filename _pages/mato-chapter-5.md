@@ -968,7 +968,7 @@ Next we move to node 2 where we still have 25 unassigned units of flow. We turn 
 Finally, we move the remaining 20 units of flow at node 3 to node 7.
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/lp-step-11.png" alt="The network with an initial feasible flow assignment: 15 on link 1-4, 15 on 1-5, 20 on 2-5, 25 on 2-6, 5 on 3-6, 20 on 3-7." style="max-width: 560px;">
+  <img src="/assets/images/mato/lp-step-11.png" alt="The network with an initial feasible flow assignment: 15 on link 1-4, 15 on 1-5, 20 on 2-5, 25 on 2-6, 5 on 3-6, 20 on 3-7." style="max-width: 448px;">
   <figcaption><span class="fig-num">Figure 5.11.</span> An initial feasible flow, built by matching supplies to demands in sequence.</figcaption>
 </figure>
 
