@@ -1851,7 +1851,7 @@ Our facility policy $X\_{t}^{facility}\left( S\_{t}^{facility} \right)$ (equatio
 
 $$
 \begin{align*}
-\hspace{-0.25in} \hat{F}(\theta^{facility}) &= \sum_{t = 0}^{T} \Big( C^{facility}\left( S_{t}^{facility},X_{t}^{facility}\left( S_{t}^{facility}|\theta^{facility} \right) \right) + {} \\
+& \hspace{-0.25in} \hat{F}(\theta^{facility}) = \sum_{t = 0}^{T} \Big( C^{facility}\left( S_{t}^{facility},X_{t}^{facility}\left( S_{t}^{facility}|\theta^{facility} \right) \right) + {} \\
 & C^{trans}\left( S_{t+1}^{trans},X_{t+1}^{trans}\left( S_{t+1}^{trans} \right),\hat{D}_{t+1} \right) \Big). \tag{10.26}\label{eq:mato-10-26}
 \end{align*}
 $$
