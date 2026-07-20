@@ -1810,9 +1810,11 @@ This approach evaluates the policy based on a single sample realization, which i
 
 We would then let $S\_{t}^{facility,n}$ and $S\_{t+1}^{trans,n}$ be the state variables created when following the $n^{\text{th}}$ set of demands. We then simulate our policy $N$ times and take an average:
 
+<div class="eq-flush-left-lg">
 $$
-\bar{F} = \frac{1}{N}\sum_{n = 1}^{N}{\sum_{t = 0}^{T}\left( C^{facility}\left( X_{t}^{facility}\left( S_{t}^{facility,n} \right) \right) + C^{trans}\left( X_{t+1}^{trans}\left( S_{t+1}^{trans,n} \right),\hat{D}_{t}^{n} \right) \right)}. \tag{10.23}\label{eq:mato-10-23}
+\small \bar{F} = \frac{1}{N}\sum_{n = 1}^{N}{\sum_{t = 0}^{T}\left( C^{facility}\left( X_{t}^{facility}\left( S_{t}^{facility,n} \right) \right) + C^{trans}\left( X_{t+1}^{trans}\left( S_{t+1}^{trans,n} \right),\hat{D}_{t}^{n} \right) \right)}. \tag{10.23}\label{eq:mato-10-23}
 $$
+</div>
 
 At this point we can comment on the quality of the solution produced by our policies.
 
