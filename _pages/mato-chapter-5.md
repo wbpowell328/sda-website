@@ -2043,7 +2043,7 @@ Instructor: at this point go into as much detail as you want for nonlinear progr
 
 ### 11.2 Dynamic portfolio optimization
 
-Readings: Section 13.2.4 from RLSO
+Readings: [Section 13.2.4 from RLSO](https://warrenpowell.org/assets/papers/rlso/chapter-13.pdf)
 
 The portfolio optimization problem in section 11.1 is clearly a problem that has to be solved repeatedly, over time, as new information is arriving. In other words, just as we illustrated with linear and integer programming, this is a sequential decision problem, where the optimization problem is actually a policy.
 
