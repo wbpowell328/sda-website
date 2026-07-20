@@ -88,16 +88,16 @@ In this section, we illustrate how we envision applying the list of decision typ
       <th colspan="10" style="text-align: center;">Decision types</th>
     </tr>
     <tr>
-      <th>1. Resource allocation</th>
-      <th>2. Strategic decisions</th>
-      <th>3. Information collection</th>
-      <th>4. Information sharing / dissemination</th>
-      <th>5. Performance metrics/objectives</th>
-      <th>6. Functions</th>
-      <th>7. Parameters</th>
-      <th>8. Labeling /<br>identification /<br>estimation</th>
-      <th>9. Features / behaviors</th>
-      <th>10. Deciding what to decide</th>
+      <th>Type 1<br>Resource allocation</th>
+      <th>Type 2<br>Strategic decisions</th>
+      <th>Type 3<br>Information collection</th>
+      <th>Type 4<br>Information sharing / dissemination</th>
+      <th>Type 5<br>Performance metrics/objectives</th>
+      <th>Type 6<br>Functions</th>
+      <th>Type 7<br>Parameters</th>
+      <th>Type 8<br>Labeling / identification / estimation</th>
+      <th>Type 9<br>Features / behaviors</th>
+      <th>Type 10<br>Deciding what to decide</th>
     </tr>
   </thead>
   <tbody>
