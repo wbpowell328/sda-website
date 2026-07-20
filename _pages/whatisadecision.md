@@ -80,7 +80,7 @@ The list of types of decisions above, while not directly involving any analytics
 
 In this section, we illustrate how we envision applying the list of decision types by creating a matrix, where each row is an application setting, followed by ten columns, one for each decision type. In the cell corresponding to the application setting and decision type, we list some examples of decisions that fall in the appropriate decision type which are relevant to the application setting:
 
-<div style="overflow-x: auto; margin: 1rem 0;">
+<div style="overflow-x: auto; margin: 1rem -2rem 1rem -1.5rem;">
 <table class="apps-vs-types">
   <thead>
     <tr>
@@ -263,7 +263,7 @@ In this section, we illustrate how we envision applying the list of decision typ
 
 <style>
 .apps-vs-types { border-collapse: collapse; font-size: 0.72rem; line-height: 1.3; }
-.apps-vs-types th, .apps-vs-types td { border: 1px solid #c9a86b; padding: 0.35rem 0.45rem; vertical-align: top; }
+.apps-vs-types th, .apps-vs-types td { border: 1px solid #c9a86b; padding: 0.35rem 0.35rem; vertical-align: top; }
 .apps-vs-types thead th { background: #ede0bd; color: #3d2914; font-weight: 600; }
 .apps-vs-types tbody th { background: #faf5e6; color: #3d2914; text-align: left; font-weight: 600; white-space: nowrap; }
 .apps-vs-types tbody tr:nth-child(even) td { background: #fbf9f4; }
