@@ -78,25 +78,26 @@ If you think of a type of decision that does not seem to fit in these types, ema
 
 The list of types of decisions above, while not directly involving any analytics, are analytically motivated, and are unlikely to be immediately obvious from domain experts.
 
-In this section, we illustrate how we envision applying the list of decision types by creating a matrix, where each row is an application setting, followed by nine columns, one for each decision type. In the cell corresponding to the application setting and decision type, we list some examples of decisions that fall in the appropriate decision type which are relevant to the application setting:
+In this section, we illustrate how we envision applying the list of decision types by creating a matrix, where each row is an application setting, followed by ten columns, one for each decision type. In the cell corresponding to the application setting and decision type, we list some examples of decisions that fall in the appropriate decision type which are relevant to the application setting:
 
 <div style="overflow-x: auto; margin: 1rem 0;">
 <table class="apps-vs-types">
   <thead>
     <tr>
       <th rowspan="2" style="min-width: 8rem;">Application domain</th>
-      <th colspan="9" style="text-align: center;">Decision types</th>
+      <th colspan="10" style="text-align: center;">Decision types</th>
     </tr>
     <tr>
       <th>1. Resource allocation</th>
       <th>2. Strategic decisions</th>
       <th>3. Information collection</th>
       <th>4. Information sharing / dissemination</th>
-      <th>5. Functions</th>
-      <th>6. Parameters</th>
-      <th>7. Labeling /<br>identification /<br>estimation</th>
-      <th>8. Features / behaviors</th>
-      <th>9. Deciding what to decide</th>
+      <th>5. Performance metrics/objectives</th>
+      <th>6. Functions</th>
+      <th>7. Parameters</th>
+      <th>8. Labeling /<br>identification /<br>estimation</th>
+      <th>9. Features / behaviors</th>
+      <th>10. Deciding what to decide</th>
     </tr>
   </thead>
   <tbody>
@@ -106,6 +107,7 @@ In this section, we illustrate how we envision applying the list of decision typ
       <td>Purchasing new companies</td>
       <td>New product launches</td>
       <td>Marketing strategies, social media</td>
+      <td></td>
       <td>Contract terms, uncertainty modeling, risk evaluation</td>
       <td>Pricing, risk tolerance</td>
       <td>Estimating future interest rates, likelihood of policy changes</td>
@@ -118,6 +120,7 @@ In this section, we illustrate how we envision applying the list of decision typ
       <td>Major real estate investment, major private equity investment</td>
       <td>Hiring a new portfolio manager, researching new technology</td>
       <td>Selling to investors, managing signals sent to market</td>
+      <td></td>
       <td>Choice of portfolio optimization model</td>
       <td>Tuning parameters of portfolio model</td>
       <td>Estimating future returns, change in price of oil</td>
@@ -130,6 +133,7 @@ In this section, we illustrate how we envision applying the list of decision typ
       <td>Launching new research initiative, launching drug into new market</td>
       <td>Laboratory experiments, Phase I trial, market surveys</td>
       <td>Communication with physicians, marketing to public</td>
+      <td></td>
       <td>Design of drug portfolio optimization model</td>
       <td>Parameters of portfolio optimization model; drug prices</td>
       <td>Estimating future drug efficacy, competitive response</td>
@@ -142,6 +146,7 @@ In this section, we illustrate how we envision applying the list of decision typ
       <td>Amputation? Transplant? Chemo vs. radiation? Abortion?</td>
       <td>What tests to run, trying a treatment or medication</td>
       <td>What to share with patient; patient instructions</td>
+      <td></td>
       <td>Policy to use for testing treatments</td>
       <td>Dosages, policy parameters</td>
       <td>Diagnosing a patient</td>
@@ -154,6 +159,7 @@ In this section, we illustrate how we envision applying the list of decision typ
       <td>Requiring COVID masks, launching insurance program</td>
       <td>Testing for COVID, sampling sewage, testing for deer ticks</td>
       <td>Public information, instructions to physicians, drug labels</td>
+      <td></td>
       <td>Utility function for allocating vaccines, model of patient response to dosage</td>
       <td>Age limits for vaccination</td>
       <td>Predicting next year's flu</td>
@@ -166,6 +172,7 @@ In this section, we illustrate how we envision applying the list of decision typ
       <td>Asian vs. domestic suppliers; materials required by product design</td>
       <td>Hiring product-tracking firm, inventory-sensing technology</td>
       <td>Web interface for database, product advertising</td>
+      <td></td>
       <td>Forecasting methods, inventory replenishment policy</td>
       <td>Forecasting parameters, inventory policy parameters</td>
       <td>Economic forecasting, competitor behavior</td>
@@ -178,6 +185,7 @@ In this section, we illustrate how we envision applying the list of decision typ
       <td>Purchasing fleet of flatbeds</td>
       <td>Testing out new traffic lanes</td>
       <td>Load solicitation queries; driver ads</td>
+      <td></td>
       <td>Load acceptance policies</td>
       <td>Pricing, fleet size</td>
       <td>Estimating future spot prices</td>
@@ -190,6 +198,7 @@ In this section, we illustrate how we envision applying the list of decision typ
       <td>Major investments in generation and transmission capacity</td>
       <td>Testing new storage technologies</td>
       <td>Marketing campaigns to encourage conservation</td>
+      <td></td>
       <td>Design of unit commitment models</td>
       <td>Tuning limits on voltage fluctuations, parameters in unit commitment models</td>
       <td>Forecasting power demand tomorrow</td>
@@ -202,6 +211,7 @@ In this section, we illustrate how we envision applying the list of decision typ
       <td>Exploring a new field; testing new technology</td>
       <td>Purchasing geologic surveys; drilling test well</td>
       <td>Communicating new labor policies</td>
+      <td></td>
       <td>Creating drilling strategies for fracking</td>
       <td>Bid price for a field; minimum flow rate</td>
       <td>Estimating yield of an oil pocket</td>
@@ -214,6 +224,7 @@ In this section, we illustrate how we envision applying the list of decision typ
       <td>Choosing suppliers, distribution strategy</td>
       <td>Choosing product to advertise</td>
       <td>Social media advertising</td>
+      <td></td>
       <td>Design of policy for advertising product</td>
       <td>Parameters of ad-click bidding policy</td>
       <td>Forecasting product demands</td>
@@ -226,6 +237,7 @@ In this section, we illustrate how we envision applying the list of decision typ
       <td>Launching new hotel chain</td>
       <td>Testing new services</td>
       <td>Marketing messages and channels</td>
+      <td></td>
       <td>Room contract terms; bidding policies for ads</td>
       <td>Room rates</td>
       <td>Estimating demand for special events</td>
@@ -238,6 +250,7 @@ In this section, we illustrate how we envision applying the list of decision typ
       <td>Decision to run for office</td>
       <td>Running a poll</td>
       <td>Campaign ads (TV, social media, podcasts, local signs)</td>
+      <td></td>
       <td>Contract terms with campaign advisers, marketing contracts</td>
       <td>Budgets (hiring, ads)</td>
       <td>Forecasting turnout, votes</td>
