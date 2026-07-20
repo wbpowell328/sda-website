@@ -78,9 +78,7 @@ W. B. Powell, *A Modern Approach to Teaching Optimization*, Boston–Delft: NOW 
 
 This book is designed for instructors. It is intended to provide an outline for an introductory course in optimization for undergraduates and masters students. The presentation is divided into 11 topics, starting with machine learning — which lays the foundation for tuning parameters for sequential decision problems covered in topics 2 through 6. We do not introduce linear programming until topic 7. Topics 7 through 11 cover linear, integer, and nonlinear programming, each of which is presented first in a static setting and then extended to a fully sequential setting.
 
-[Click here for an online version of the book](/mato/)
-
-[Click here for book webpage.](/teachingoptimization/)
+[Click here for an online version of the book.](/mato/) [Click here for book webpage.](/teachingoptimization/)
 
 <br clear="all" />
 
