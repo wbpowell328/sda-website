@@ -189,7 +189,7 @@ The vast majority of all decision problems are sequential decision problems. Lat
 
 ### 2.1 Introduction to sequential decision problems
 
-Readings: SDAM Chapter 1 (introduction to sequential decision problems).
+Readings: [SDAM Chapter 1](https://warrenpowell.org/sdam/chapter-1/) (introduction to sequential decision problems).
 
 A sequential decision problem is any problem that consists of the sequence:
 
