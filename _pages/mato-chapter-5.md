@@ -1121,7 +1121,7 @@ The simplest way to illustrate this property of networks is to consider a networ
 - For our network above, we can arbitrarily pick node 1 as the root node. This gives us the following constraint matrix:
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/lp-step-19.png" alt="The constraint matrix A with the row for node 1 (the root node) dropped, leaving 6 rows for nodes 2-7." style="max-width: 480px;">
+  <img src="/assets/images/mato/lp-step-19.png" alt="The constraint matrix A with the row for node 1 (the root node) dropped, leaving 6 rows for nodes 2-7." style="max-width: 408px;">
   <figcaption><span class="fig-num">Figure 5.18.</span> The constraint matrix with the root node's (redundant) row dropped.</figcaption>
 </figure>
 
@@ -1134,14 +1134,14 @@ We have to start by creating our basis. We need to find a set of flows that sati
 Professional linear programming packages have sophisticated logic for creating starting solutions. For our simple problem, we are going to use a simple strategy called the "northwest corner rule" where we literally start in the northwest corner of our graph (that is, node 1), and start assigning flow to the northeast corner (which would be node 4). We assign as much as we can (that is, the smaller of either the supply at node 1 or the demand at node 4). We then move to either the next supply node (if we allocated all the supply from node 1) or the next demand node (if we satisfied all the demand at node 4), and keep repeating the process using the remaining nodes with unused supply or unsatisfied demand. This process produces the network below, along with the basic vector $x^{B}$ (the vector of links $x\_{ij}$ for links in the basis) and the nonbasic vector $x^{N}$ (the links not in the basis):
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/lp-step-20.png" alt="The northwest-corner-rule initial basic feasible solution, alongside the lists of basic and nonbasic links." style="max-width: 640px;">
+  <img src="/assets/images/mato/lp-step-20.png" alt="The northwest-corner-rule initial basic feasible solution, alongside the lists of basic and nonbasic links." style="max-width: 544px;">
   <figcaption><span class="fig-num">Figure 5.19.</span> An initial basic feasible solution found using the northwest corner rule.</figcaption>
 </figure>
 
 We can now partition our $A$-matrix into a square matrix $A^{B}$ of the basic variables (it will always be square) and the remaining matrix $A^{N}$ comprised of the non-basic columns:
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/lp-step-21.png" alt="The A matrix partitioned into a square basic-variable matrix A-superscript-B and a nonbasic-variable matrix A-superscript-N." style="max-width: 560px;">
+  <img src="/assets/images/mato/lp-step-21.png" alt="The A matrix partitioned into a square basic-variable matrix A-superscript-B and a nonbasic-variable matrix A-superscript-N." style="max-width: 476px;">
   <figcaption><span class="fig-num">Figure 5.20.</span> Partitioning $A$ into basic ($A^B$) and nonbasic ($A^N$) columns.</figcaption>
 </figure>
 
