@@ -2113,9 +2113,11 @@ where the covariance matrix $\Sigma\_{t}$ is computed from a rolling set of obse
 
 The total adjusted return that we wish to optimize is now
 
+<div class="eq-flush-left">
 $$
-C^{total}\left( S_{t},x_{t}|\theta^{risk},\theta^{adj} \right) = C^{return}\left( S_{t},x_{t} \right) + C^{adj}\left( y_{t} \middle| \theta^{fcas} \right) - \theta^{risk}C^{risk}\left( R_{t},x_{t} \right). \tag{11.21}\label{eq:mato-11-21}
+\small C^{total}\left( S_{t},x_{t}|\theta^{risk},\theta^{adj} \right) = C^{return}\left( S_{t},x_{t} \right) + C^{adj}\left( y_{t} \middle| \theta^{fcas} \right) - \theta^{risk}C^{risk}\left( R_{t},x_{t} \right). \tag{11.21}\label{eq:mato-11-21}
 $$
+</div>
 
 Our policy is then to solve the following problem at time $t$:
 
