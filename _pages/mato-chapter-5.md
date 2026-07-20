@@ -927,7 +927,11 @@ There are many ways to illustrate the need for a linear program -- one is the ne
 Using what we learned in Topic 6, we can write this out as a linear program using our canonical model
 
 $$
-Ax = b, \quad x \leq u, \quad x \geq 0. \tag{7.1--7.3}\label{eq:mato-7-1}
+\begin{align*}
+Ax &= b, \tag{7.1}\label{eq:mato-7-1} \\
+x &\leq u, \tag{7.2}\label{eq:mato-7-2} \\
+x &\geq 0. \tag{7.3}\label{eq:mato-7-3}
+\end{align*}
 $$
 
 Writing out the constraints gives us
@@ -1045,7 +1049,11 @@ $$
 subject to the constraints:
 
 $$
-\sum_{j}{x_{ij}} = S_{i} = \text{supply at node } i, \qquad \sum_{i}x_{ij} = D_{j} = \text{demand at node } j, \qquad x_{ij} \geq 0.
+\begin{align*}
+\sum_{j}{x_{ij}} &= S_{i} = \text{supply at node } i, \\
+\sum_{i}x_{ij} &= D_{j} = \text{demand at node } j, \\
+x_{ij} &\geq 0.
+\end{align*}
 $$
 
 We can write these constraints in matrix form as $Ax = b$, $x \geq 0$.
@@ -1618,11 +1626,12 @@ We need variables that indicate whether we added or dropped facility $i$, or mad
 We then need to compute these variables using the "language" of linear constraints. We can do this with the following (remember that we want the smallest possible value of $x\_{ti}^{add}$ and $x\_{ti}^{drop}$):
 
 $$
-x_{ti}^{add} \geq x_{ti}^{facility} - R_{ti}^{facility}, \qquad x_{ti}^{add} \geq 0,
-$$
-
-$$
-x_{ti}^{drop} \geq R_{ti}^{facility} - x_{ti}^{facility}, \qquad x_{ti}^{drop} \geq 0.
+\begin{align*}
+x_{ti}^{add} &\geq x_{ti}^{facility} - R_{ti}^{facility}, \\
+x_{ti}^{add} &\geq 0, \\
+x_{ti}^{drop} &\geq R_{ti}^{facility} - x_{ti}^{facility}, \\
+x_{ti}^{drop} &\geq 0.
+\end{align*}
 $$
 
 We have to record the facility decision at time $t$ in the facility state variable at time $t+1$:
