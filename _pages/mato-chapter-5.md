@@ -360,7 +360,7 @@ The optimization problem in $\eqref{eq:mato-2-9}$ can be approached just as we d
 
 ## Topic 3: Adaptive optimization -- the newsvendor problem
 
-Readings: Chapter 3 in SDAM
+Readings: [SDAM Chapter 3](https://warrenpowell.org/sdam/chapter-3/)
 
 Arguably one of the most widely encountered problems when managing resources is the newsvendor problem, which is a nice illustration of a decision problem involving uncertainty. We will show how to solve this using a simple stochastic gradient algorithm that can be implemented in an online (learn as you go) setting. This is a natural extension of the gradient-based method we used in section 1.2 for optimizing the parameters of a nonlinear statistical model.
 
