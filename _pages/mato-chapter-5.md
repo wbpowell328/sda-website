@@ -1778,9 +1778,11 @@ $$
 
 We now write the optimization problem for determining the facilities $\eqref{eq:mato-10-8}$ in the form of a policy
 
+<div class="eq-flush-left-lg">
 $$
-X_{t}^{facility}\left( S_{t}^{facility} \right) = \underset{x_{t}^{facility}}{\arg\min}\left( \min_{\tilde{x}_{t,t+1}^{trans}} \sum_{i \in I^{facility}}{c_{i}^{facility}x_{ti}^{facility}} + \sum_{i,j \in I^{facility}}{c_{ij}^{trans}\tilde{x}_{t,t+1,ij}^{trans}} \right). \tag{10.20}\label{eq:mato-10-20}
+\small X_{t}^{facility}\left( S_{t}^{facility} \right) = \small \underset{x_{t}^{facility}}{\arg\min}\left( \min_{\tilde{x}_{t,t+1}^{trans}} \sum_{i \in I^{facility}}{c_{i}^{facility}x_{ti}^{facility}} + \sum_{i,j \in I^{facility}}{c_{ij}^{trans}\tilde{x}_{t,t+1,ij}^{trans}} \right). \tag{10.20}\label{eq:mato-10-20}
 $$
+</div>
 
 Note that we are only interested in $x\_{ti}^{facility}$; we do not care about our determination of $\tilde{x}\_{t,t+1,ij}^{trans}$ since we are only computing the transportation flows to help us find $x\_{ti}^{facility}$.
 
