@@ -1748,9 +1748,11 @@ To evaluate our facility decision $x\_{t}^{facility}$, we have to simulate diffe
 
 For each sample $\hat{D}\_{t+1}^{n}$, we compute a new set of transportation flows $x\_{t+1}^{trans,n}$ which allows us to compute a new set of costs $C^{trans}\left( x\_{t+1}^{trans,n},\hat{D}\_{t+1}^{n} \right)$. Finally, we evaluate the cost of our facilities decision $x\_{t}^{facility}$ using
 
+<div class="eq-flush-left">
 $$
 \bar{C}^{facility}(x_{t}^{facility}) = C^{facility}\left( x_{t}^{facility} \right) + \frac{1}{N}\sum_{n = 1}^{N}{C^{trans}\left( x_{t+1}^{trans,n},\hat{D}_{t+1}^{n} \right)}. \tag{10.19}\label{eq:mato-10-19}
 $$
+</div>
 
 In the next section, we are going to recognize that we do not make facility decisions just once -- these are made repeatedly over time. Since the decisions we make at time $t$ depend on what facilities have already been created (and which have not), this means that our decisions now will impact the future, and we need to understand how a decision now affects future decisions. In other words, it is a sequential decision problem!
 
