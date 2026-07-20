@@ -1931,7 +1931,7 @@ As with linear and integer programming, we are going to start with classical "st
 
 ### 11.1 Static portfolio optimization
 
-Readings: This model is a streamlined version of the model in [RLSO](https://tinyurl.com/RLandSO/), section 13.2.4.
+Readings: This model is a streamlined version of the model in [RLSO section 13.2.4.](https://warrenpowell.org/assets/papers/rlso/chapter-13.pdf)
 
 We are going to address a real problem solved by financial funds which requires that they continuously make decisions about how much to invest in a set of assets. The approach we describe here is based on an actual policy. It starts looking like a basic quadratic programming problem, but we are then going to see that it is really solved sequentially, and as a result it is a policy that needs to be tuned over multiple time periods as we have been doing in topics 7, 8 and 10.
 
