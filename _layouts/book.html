@@ -381,11 +381,27 @@
     // occurrence of the phrase on this page (not just the first) and show a
     // floating "N of M" nav bar with Prev/Next buttons to step through them,
     // the same way a browser's built-in find-in-page works.
+    //
+    // This has to wait for MathJax to finish typesetting first. On long
+    // chapter pages MathJax can take several seconds to reach equations near
+    // the bottom; inserting a <mark> into a not-yet-rendered "$$...$$" block
+    // splits its text node and permanently breaks MathJax's ability to
+    // recognize that equation, leaving it stuck as raw, unrendered source.
+    function whenMathJaxReady(cb) {
+      if (window.MathJax && window.MathJax.startup && window.MathJax.startup.promise) {
+        window.MathJax.startup.promise.then(cb);
+      } else {
+        setTimeout(function () { whenMathJaxReady(cb); }, 50);
+      }
+    }
+
     var params = new URLSearchParams(window.location.search);
     var q = params.get('q');
     if (q) {
-      var pageMain = document.querySelector('.book-page');
-      if (pageMain) {
+      whenMathJaxReady(function () {
+        var pageMain = document.querySelector('.book-page');
+        if (!pageMain) return;
+
         var textNodes = [];
         var walker = document.createTreeWalker(pageMain, NodeFilter.SHOW_TEXT, null);
         var node;
@@ -415,36 +431,36 @@
           textNode.parentNode.replaceChild(frag, textNode);
         });
 
-        if (marks.length) {
-          var current = 0;
+        if (!marks.length) return;
 
-          var nav = document.createElement('div');
-          nav.className = 'book-search-nav';
-          nav.innerHTML =
-            '<button type="button" class="book-search-nav-prev" aria-label="Previous match">&larr;</button>' +
-            '<span class="book-search-nav-count"></span>' +
-            '<button type="button" class="book-search-nav-next" aria-label="Next match">&rarr;</button>' +
-            '<button type="button" class="book-search-nav-close" aria-label="Close">&times;</button>';
-          document.body.appendChild(nav);
-          var countEl = nav.querySelector('.book-search-nav-count');
+        var current = 0;
 
-          function goTo(i) {
-            marks[current].classList.remove('is-current');
-            current = (i + marks.length) % marks.length;
-            marks[current].classList.add('is-current');
-            marks[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
-            countEl.textContent = (current + 1) + ' of ' + marks.length;
-          }
+        var nav = document.createElement('div');
+        nav.className = 'book-search-nav';
+        nav.innerHTML =
+          '<button type="button" class="book-search-nav-prev" aria-label="Previous match">&larr;</button>' +
+          '<span class="book-search-nav-count"></span>' +
+          '<button type="button" class="book-search-nav-next" aria-label="Next match">&rarr;</button>' +
+          '<button type="button" class="book-search-nav-close" aria-label="Close">&times;</button>';
+        document.body.appendChild(nav);
+        var countEl = nav.querySelector('.book-search-nav-count');
 
-          nav.querySelector('.book-search-nav-next').addEventListener('click', function () { goTo(current + 1); });
-          nav.querySelector('.book-search-nav-prev').addEventListener('click', function () { goTo(current - 1); });
-          nav.querySelector('.book-search-nav-close').addEventListener('click', function () { nav.remove(); });
-
-          countEl.textContent = '1 of ' + marks.length;
-          marks[0].classList.add('is-current');
-          marks[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        function goTo(i) {
+          marks[current].classList.remove('is-current');
+          current = (i + marks.length) % marks.length;
+          marks[current].classList.add('is-current');
+          marks[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+          countEl.textContent = (current + 1) + ' of ' + marks.length;
         }
-      }
+
+        nav.querySelector('.book-search-nav-next').addEventListener('click', function () { goTo(current + 1); });
+        nav.querySelector('.book-search-nav-prev').addEventListener('click', function () { goTo(current - 1); });
+        nav.querySelector('.book-search-nav-close').addEventListener('click', function () { nav.remove(); });
+
+        countEl.textContent = '1 of ' + marks.length;
+        marks[0].classList.add('is-current');
+        marks[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
     }
   })();
 </script>
