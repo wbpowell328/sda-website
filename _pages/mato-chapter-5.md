@@ -239,7 +239,7 @@ Below we are going to illustrate some simple sequential decision problems using 
 
 ### 2.2 Asset selling
 
-Readings: SDAM Chapter 2.
+Readings: [SDAM Chapter 2](https://warrenpowell.org/sdam/chapter-2/).
 
 We are going to start with a simple buy-low, sell-high policy in finance, which offers an important simplification to help us get started: the random information (the price at which we can sell our asset) is drawn from history, allowing us to treat it just as we did the observations $y^{n}$ in our machine learning problems in Topic 1.
 
