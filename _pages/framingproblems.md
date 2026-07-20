@@ -62,7 +62,7 @@ There are many settings in practice where we behave as if we were on autopilot, 
 
 <br clear="all" />
 
-A complete discussion of decisions is on the [Decisions, decisions](/decisionsdecisions/) page. There, we define a decision as information we control, which then allows us to name nine types of decisions, including several that are typically overlooked.
+A complete discussion of decisions is on the [Decisions, decisions](/decisionsdecisions/) page. There, we define a decision as information we control, which then allows us to name 10 types of decisions, including several that are typically overlooked.
 
 ## Uncertainties {#uncertainties}
 
