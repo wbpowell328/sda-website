@@ -920,7 +920,7 @@ We are going to progress in three steps:
 There are many ways to illustrate the need for a linear program -- one is the network problem below where we have supplies of resources at three locations, and we need to satisfy demands at four locations. Finding the optimal way to distribute these supplies to meet the demands can be solved as a linear program. In this section we illustrate the simplex algorithm applied to networks (this is known as "network simplex") where the entire presentation is graphical -- no linear algebra. In section 7.2 I repeat the steps, but this time I include the linear algebra that goes with each step.
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/lp-step-9.png" alt="A network with three supply nodes (30, 45, 25 units) connected by costed arcs to four demand nodes (15, 35, 30, 20 units)." style="max-width: 480px;">
+  <img src="/assets/images/mato/lp-step-9.png" alt="A network with three supply nodes (30, 45, 25 units) connected by costed arcs to four demand nodes (15, 35, 30, 20 units)." style="max-width: 408px;">
   <figcaption><span class="fig-num">Figure 5.9.</span> A resource allocation network with three supplies and four demands.</figcaption>
 </figure>
 
