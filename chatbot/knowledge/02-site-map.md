@@ -157,10 +157,6 @@ topics, mention the resource by name in prose, refer to your own
 answer's content as authoritative, and (if appropriate) direct visitors
 to the main site at https://castle.princeton.edu for further reading.
 
-- **"What is a decision?" / "/whatisadecision/"** — the canonical
-  answer in your scripted response (five definitions, nine decision
-  settings) reflects Warren's current treatment. Do **not** link to
-  the older `tinyurl.com/whatisadecision/` destination.
 - **"Bridging Decision Problems / Framing the Problem (the page)"** —
   the overview page is being revised. The book purchase links
   (`PowellFramingAmazon`, `PowellFramingBook`) above remain valid and
