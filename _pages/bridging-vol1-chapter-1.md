@@ -282,7 +282,7 @@ For complex problems in industry, implementation can be an exceptionally challen
 We first recognize that any quantity that can be represented on a computer is a form of information. We can identify three types of information from the perspective of how it evolves over time:
 
 1. The information that we know at the time we make a decision which constitutes the state of our system (more precisely the state of knowledge). This is the information needed to make decisions and/or to compute the performance metrics, now or possibly in the future.
-2. New information that we control. We define decisions formally in Chapter 4 and describe six different types of decisions which helps in the process of identifying decisions.
+2. New information that we control. We define decisions formally in Chapter 4 and describe 10 different types of decisions which helps in the process of identifying decisions.
 3. New information which arrives from outside of our system beyond our control, although it may be influenced by our current state and/or the decisions we make. We call this exogenous information, and it can come from a number of sources:
    - Natural phenomena such as weather and earthquakes.
    - Markets, such as the demand for a product, stock prices and interest rates.
