@@ -1421,14 +1421,14 @@ Readings: [SDAM Chapter 9](https://warrenpowell.org/sdam/chapter-9/) -- this is 
 Here we address a more complex energy storage problem: we have to decide how much to draw from a windfarm (with variable supply), the grid (with variable prices), to meet a predictable load (demand) for a building, using an energy storage device to absorb variations.
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/topic8-29.png" alt="Diagram showing wind energy and grid prices feeding into a battery storage device, which supplies a building's demand." style="max-width: 640px;">
+  <img src="/assets/images/mato/topic8-29.png" alt="Diagram showing wind energy and grid prices feeding into a battery storage device, which supplies a building's demand." style="max-width: 544px;">
   <figcaption><span class="fig-num">Figure 5.28.</span> The energy storage problem: wind and grid supply, buffered by storage, to meet building demand.</figcaption>
 </figure>
 
 We have rolling forecasts of wind which change quite a bit from hour to hour:
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/topic8-30.png" alt="Chart of rolling hourly wind forecasts made at successive times, compared against the actual realized wind." style="max-width: 640px;">
+  <img src="/assets/images/mato/topic8-30.png" alt="Chart of rolling hourly wind forecasts made at successive times, compared against the actual realized wind." style="max-width: 512px;">
   <figcaption><span class="fig-num">Figure 5.29.</span> Rolling forecasts of wind, updated each hour, compared to the actual outcome.</figcaption>
 </figure>
 
@@ -1437,7 +1437,7 @@ We are going to solve this much as we solve our dynamic shortest path problem, w
 Now, to handle uncertainty, we insert a coefficient $\theta\_{t' - t}$ for our forecast of wind made at time $t$, of what the energy from the wind farm will be at time $t'$. Note that $\theta\_{t' - t}$ is not a function of $t$, it is just a function of the difference $t' - t$. So if we look 24 hours into the future, we would have 24 coefficients. A simpler strategy to get us started would be to assume that there is just one coefficient for all forecasts. The modified lookahead linear program looks like:
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/topic8-31.png" alt="The lookahead linear program for the energy storage problem, with variables for wind-to-demand, grid-to-demand, wind-to-reservoir, reservoir-to-demand, and reservoir-to-grid flows, and the constraint where theta parameterizes the wind forecast highlighted." style="max-width: 560px;">
+  <img src="/assets/images/mato/topic8-31.png" alt="The lookahead linear program for the energy storage problem, with variables for wind-to-demand, grid-to-demand, wind-to-reservoir, reservoir-to-demand, and reservoir-to-grid flows, and the constraint where theta parameterizes the wind forecast highlighted." style="max-width: 476px;">
   <figcaption><span class="fig-num">Figure 5.30.</span> The parameterized lookahead linear program for energy storage, with the wind-forecast coefficient $\theta_{t'-t}$ highlighted.</figcaption>
 </figure>
 
@@ -1466,21 +1466,21 @@ Next we have to turn to algorithms to search for the best value of $\theta$. If 
 We can set up our simulation so that the rolling forecast is perfectly accurate. In this case, we would expect the best value of $\theta$ to be 1.0. The figure below confirms this.
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/topic8-32.png" alt="Chart showing the percentage improvement in policy performance as theta varies, peaking near theta=1 when the forecast is perfect." style="max-width: 560px;">
+  <img src="/assets/images/mato/topic8-32.png" alt="Chart showing the percentage improvement in policy performance as theta varies, peaking near theta=1 when the forecast is perfect." style="max-width: 476px;">
   <figcaption><span class="fig-num">Figure 5.31.</span> With a perfect forecast, the optimal $\theta$ is 1.0.</figcaption>
 </figure>
 
 Now run the experiment where the rolling forecast (say of wind) is not accurate, as would occur in practice. In this case, we get the graph below, where the best values of $\theta$ are quite different from 1.0.
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/topic8-33.png" alt="Chart showing the percentage improvement in policy performance as theta varies, with an imperfect forecast, peaking well away from theta=1." style="max-width: 560px;">
+  <img src="/assets/images/mato/topic8-33.png" alt="Chart showing the percentage improvement in policy performance as theta varies, with an imperfect forecast, peaking well away from theta=1." style="max-width: 476px;">
   <figcaption><span class="fig-num">Figure 5.32.</span> With an imperfect forecast, the optimal $\theta$ shifts away from 1.0.</figcaption>
 </figure>
 
 The figure below shows that we can achieve approximately a 30 percent improvement using optimized $\theta$.
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/topic8-34.png" alt="Bar chart showing percent improvement over theta=1 for different starting points of a stochastic search for theta, with the optimized theta reaching about 30 percent improvement." style="max-width: 560px;">
+  <img src="/assets/images/mato/topic8-34.png" alt="Bar chart showing percent improvement over theta=1 for different starting points of a stochastic search for theta, with the optimized theta reaching about 30 percent improvement." style="max-width: 476px;">
   <figcaption><span class="fig-num">Figure 5.33.</span> Tuning $\theta$ achieves roughly a 30 percent improvement over the naive $\theta = 1$ policy.</figcaption>
 </figure>
 
