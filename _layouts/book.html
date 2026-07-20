@@ -377,29 +377,72 @@
       closePanel();
     });
 
-    // If arriving from a search result (?q=phrase), scroll to and briefly
-    // highlight the first occurrence of the phrase on this page.
+    // If arriving from a search result (?q=phrase), highlight every
+    // occurrence of the phrase on this page (not just the first) and show a
+    // floating "N of M" nav bar with Prev/Next buttons to step through them,
+    // the same way a browser's built-in find-in-page works.
     var params = new URLSearchParams(window.location.search);
     var q = params.get('q');
     if (q) {
       var pageMain = document.querySelector('.book-page');
       if (pageMain) {
+        var textNodes = [];
         var walker = document.createTreeWalker(pageMain, NodeFilter.SHOW_TEXT, null);
+        var node;
+        while ((node = walker.nextNode())) textNodes.push(node);
+
         var needle = q.toLowerCase();
-        var node, target = null, idx = -1;
-        while ((node = walker.nextNode())) {
-          var i = node.nodeValue.toLowerCase().indexOf(needle);
-          if (i !== -1) { target = node; idx = i; break; }
-        }
-        if (target) {
-          var range = document.createRange();
-          range.setStart(target, idx);
-          range.setEnd(target, idx + q.length);
-          var mark = document.createElement('mark');
-          mark.className = 'book-search-hit';
-          range.surroundContents(mark);
-          mark.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          setTimeout(function () { mark.classList.add('is-fading'); }, 2500);
+        var marks = [];
+        textNodes.forEach(function (textNode) {
+          var text = textNode.nodeValue;
+          var lower = text.toLowerCase();
+          var idx = lower.indexOf(needle);
+          if (idx === -1) return;
+
+          var frag = document.createDocumentFragment();
+          var cursor = 0;
+          while (idx !== -1) {
+            frag.appendChild(document.createTextNode(text.slice(cursor, idx)));
+            var mark = document.createElement('mark');
+            mark.className = 'book-search-hit';
+            mark.textContent = text.slice(idx, idx + q.length);
+            frag.appendChild(mark);
+            marks.push(mark);
+            cursor = idx + q.length;
+            idx = lower.indexOf(needle, cursor);
+          }
+          frag.appendChild(document.createTextNode(text.slice(cursor)));
+          textNode.parentNode.replaceChild(frag, textNode);
+        });
+
+        if (marks.length) {
+          var current = 0;
+
+          var nav = document.createElement('div');
+          nav.className = 'book-search-nav';
+          nav.innerHTML =
+            '<button type="button" class="book-search-nav-prev" aria-label="Previous match">&larr;</button>' +
+            '<span class="book-search-nav-count"></span>' +
+            '<button type="button" class="book-search-nav-next" aria-label="Next match">&rarr;</button>' +
+            '<button type="button" class="book-search-nav-close" aria-label="Close">&times;</button>';
+          document.body.appendChild(nav);
+          var countEl = nav.querySelector('.book-search-nav-count');
+
+          function goTo(i) {
+            marks[current].classList.remove('is-current');
+            current = (i + marks.length) % marks.length;
+            marks[current].classList.add('is-current');
+            marks[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            countEl.textContent = (current + 1) + ' of ' + marks.length;
+          }
+
+          nav.querySelector('.book-search-nav-next').addEventListener('click', function () { goTo(current + 1); });
+          nav.querySelector('.book-search-nav-prev').addEventListener('click', function () { goTo(current - 1); });
+          nav.querySelector('.book-search-nav-close').addEventListener('click', function () { nav.remove(); });
+
+          countEl.textContent = '1 of ' + marks.length;
+          marks[0].classList.add('is-current');
+          marks[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       }
     }
