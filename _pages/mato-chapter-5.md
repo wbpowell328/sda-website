@@ -1102,7 +1102,7 @@ $$
 We would write our constraint matrix $A$ with a row for each constraint, and a column for each variable $x\_{ij}$, giving us the matrix:
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/lp-step-17.png" alt="The full 7-row by 9-column node-arc incidence matrix A for the numerical example." style="max-width: 620px;">
+  <img src="/assets/images/mato/lp-step-17.png" alt="The full 7-row by 9-column node-arc incidence matrix A for the numerical example." style="max-width: 527px;">
   <figcaption><span class="fig-num">Figure 5.16.</span> The constraint matrix $A$ for the numerical example.</figcaption>
 </figure>
 
