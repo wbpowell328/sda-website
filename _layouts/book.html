@@ -40,12 +40,22 @@
     <span class="book-topbar-subtitle" id="book-topbar-subtitle" data-default-text="{{ book.book_subtitle }}">{{ book.book_subtitle }}</span>
   </a>
   <div class="book-topbar-actions">
+    <button type="button" class="book-search-toggle" aria-controls="book-search-panel" aria-expanded="false">
+      Search
+    </button>
     <button type="button" class="book-toc-toggle" aria-controls="book-toc-drawer" aria-expanded="false">
       Contents
     </button>
     <a class="book-topbar-exit" href="{{ '/teaching-books/' | relative_url }}">Back to SDA site &rarr;</a>
   </div>
 </header>
+
+<div id="book-search-panel" class="book-search-panel" data-book="{{ book_data_key }}" hidden>
+  <div class="book-search-panel-inner">
+    <input type="search" id="book-search-input" class="book-search-input" placeholder="Search {{ book.book_title }}&hellip;" autocomplete="off">
+    <ul id="book-search-results" class="book-search-results"></ul>
+  </div>
+</div>
 
 <nav id="book-toc-drawer" class="book-toc-drawer" aria-label="Table of contents">
   <ol>
@@ -246,6 +256,153 @@
     }, { passive: true });
 
     update();
+  })();
+</script>
+
+<!-- Whole-book word search. Fetches a site-wide JSON index (one entry per
+     chapter, across all books) generated at build time by /search-index.json,
+     caches it in sessionStorage so navigating between chapters doesn't
+     re-fetch it, and filters to just this book's entries via data-book on
+     the panel. Matching is a simple case-insensitive substring/phrase search
+     (no stemming or fuzzy matching) -- results are ranked by occurrence
+     count. Picking a result navigates to that chapter with ?q=<phrase>,
+     which the block below reads on load to scroll to and highlight the
+     first occurrence on the destination page. -->
+<script>
+  (function () {
+    var toggle = document.querySelector('.book-search-toggle');
+    var panel = document.getElementById('book-search-panel');
+    var input = document.getElementById('book-search-input');
+    var resultsEl = document.getElementById('book-search-results');
+    if (!toggle || !panel || !input || !resultsEl) return;
+
+    var bookKey = panel.getAttribute('data-book');
+    var indexPromise = null;
+
+    function loadIndex() {
+      if (indexPromise) return indexPromise;
+      var cached = sessionStorage.getItem('book-search-index');
+      if (cached) {
+        indexPromise = Promise.resolve(JSON.parse(cached));
+        return indexPromise;
+      }
+      indexPromise = fetch('{{ "/search-index.json" | relative_url }}')
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          try { sessionStorage.setItem('book-search-index', JSON.stringify(data)); } catch (e) {}
+          return data;
+        });
+      return indexPromise;
+    }
+
+    function escapeRegExp(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+    function escapeHtml(s) {
+      return s.replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    }
+
+    function snippetFor(text, re) {
+      var m = re.exec(text);
+      if (!m) return '';
+      var start = Math.max(0, m.index - 60);
+      var end = Math.min(text.length, m.index + m[0].length + 60);
+      var pre = (start > 0 ? '…' : '') + text.slice(start, m.index);
+      var hit = text.slice(m.index, m.index + m[0].length);
+      var post = text.slice(m.index + m[0].length, end) + (end < text.length ? '…' : '');
+      return escapeHtml(pre) + '<mark>' + escapeHtml(hit) + '</mark>' + escapeHtml(post);
+    }
+
+    function runSearch(query) {
+      query = query.trim();
+      if (query.length < 2) {
+        resultsEl.innerHTML = '';
+        return;
+      }
+      loadIndex().then(function (entries) {
+        var re = new RegExp(escapeRegExp(query), 'gi');
+        var matches = [];
+        entries.forEach(function (e) {
+          if (e.book !== bookKey) return;
+          var haystack = e.title + ' ' + e.text;
+          var count = (haystack.match(re) || []).length;
+          if (count === 0) return;
+          re.lastIndex = 0;
+          matches.push({ entry: e, count: count, snippet: snippetFor(e.text.length ? e.text : e.title, re) });
+        });
+        matches.sort(function (a, b) { return b.count - a.count; });
+
+        if (!matches.length) {
+          resultsEl.innerHTML = '<li class="book-search-empty">No matches found.</li>';
+          return;
+        }
+        resultsEl.innerHTML = matches.map(function (m) {
+          var url = m.entry.url + '?q=' + encodeURIComponent(query);
+          return '<li><a href="' + url + '">' +
+            '<span class="book-search-result-title">' + escapeHtml(m.entry.title) + '</span>' +
+            '<span class="book-search-result-count">' + m.count + (m.count === 1 ? ' match' : ' matches') + '</span>' +
+            (m.snippet ? '<span class="book-search-result-snippet">' + m.snippet + '</span>' : '') +
+            '</a></li>';
+        }).join('');
+      });
+    }
+
+    var debounceTimer = null;
+    input.addEventListener('input', function () {
+      clearTimeout(debounceTimer);
+      var query = input.value;
+      debounceTimer = setTimeout(function () { runSearch(query); }, 150);
+    });
+
+    function openPanel() {
+      panel.hidden = false;
+      toggle.setAttribute('aria-expanded', 'true');
+      input.focus();
+      loadIndex();
+    }
+    function closePanel() {
+      panel.hidden = true;
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+
+    toggle.addEventListener('click', function () {
+      if (panel.hidden) openPanel(); else closePanel();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !panel.hidden) closePanel();
+    });
+    document.addEventListener('click', function (e) {
+      if (panel.hidden) return;
+      if (panel.contains(e.target) || e.target === toggle) return;
+      closePanel();
+    });
+
+    // If arriving from a search result (?q=phrase), scroll to and briefly
+    // highlight the first occurrence of the phrase on this page.
+    var params = new URLSearchParams(window.location.search);
+    var q = params.get('q');
+    if (q) {
+      var pageMain = document.querySelector('.book-page');
+      if (pageMain) {
+        var walker = document.createTreeWalker(pageMain, NodeFilter.SHOW_TEXT, null);
+        var needle = q.toLowerCase();
+        var node, target = null, idx = -1;
+        while ((node = walker.nextNode())) {
+          var i = node.nodeValue.toLowerCase().indexOf(needle);
+          if (i !== -1) { target = node; idx = i; break; }
+        }
+        if (target) {
+          var range = document.createRange();
+          range.setStart(target, idx);
+          range.setEnd(target, idx + q.length);
+          var mark = document.createElement('mark');
+          mark.className = 'book-search-hit';
+          range.surroundContents(mark);
+          mark.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setTimeout(function () { mark.classList.add('is-fading'); }, 2500);
+        }
+      }
+    }
   })();
 </script>
 
