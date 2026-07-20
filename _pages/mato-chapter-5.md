@@ -1268,7 +1268,7 @@ There are different strategies for choosing the nonbasic link, since networks ca
 From our list of reduced costs above, we see that the only nonbasic link with a negative reduced cost is link (2,4). We want to increase flow from 2 to 4. Then, to maintain flow conservation, for each unit of flow we push from 2 to 4, we want to push a unit from 4 to the root node (node 1), and then from the root node to node 2, always limiting ourselves to links in the basis. We note that there is always exactly one path between any node and the root node.
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/lp-step-27.png" alt="The network showing the flow adjustment cycle for adding link 2-4 to the basis: flow decreasing on 1-4 and 2-5, increasing on 1-5." style="max-width: 400px;">
+  <img src="/assets/images/mato/lp-step-27.png" alt="The network showing the flow adjustment cycle for adding link 2-4 to the basis: flow decreasing on 1-4 and 2-5, increasing on 1-5." style="max-width: 340px;">
   <figcaption><span class="fig-num">Figure 5.26.</span> Adjusting flow around the cycle created by adding link 2-4 to the basis.</figcaption>
 </figure>
 
@@ -1286,7 +1286,7 @@ Some notes:
 We note that all of our calculations seem to depend on our choice of root node. It turns out that changing the root node has the effect of changing all of the dual variables by a constant, which means that the reduced costs, which all involve differences between dual variables, are not affected. Below are two networks with different root nodes to illustrate this property.
 
 <figure class="book-figure">
-  <img src="/assets/images/mato/lp-step-28.png" alt="The same network solved with node 1 as root (v1=0) versus node 3 as root (v1=-12), showing all dual variables shifted by the same constant." style="max-width: 680px;">
+  <img src="/assets/images/mato/lp-step-28.png" alt="The same network solved with node 1 as root (v1=0) versus node 3 as root (v1=-12), showing all dual variables shifted by the same constant." style="max-width: 544px;">
   <figcaption><span class="fig-num">Figure 5.27.</span> Choosing a different root node shifts every dual variable by the same constant.</figcaption>
 </figure>
 
