@@ -130,7 +130,7 @@ We have identified 10 types of decisions basic on the settings and the tools we 
 
 **1) Physical and financial decisions** – These decisions arise in the management of physical and financial resources, such as people, equipment, facilities, products, water, energy, as well as financial resources such as cash or investments. Decisions include buying, selling and modifying resources, where a modification might mean moving it from one location to another, repairing equipment, training a person, or combining ingredients to make a cake.
 
-**2) Discrete actions** – This is a general term that can be used to describe complex projects such as launching a new product, submitting a drug to clinical trials, or purchasing a company. Discrete actions may make a number of different changes to a system.
+**2) Complex/strategic decisions** – These are decisions that may make multiple changes to a system (changing resources, parameters, beliefs), and which typically involve significant sources of uncertainty. These decisions are typically evaluated once, but the option of waiting and making the decision later may exist.
 
 **3) Information acquisition/observation decisions** – These include decisions such as running experiments in the lab, field tests, or computer simulations. It might include performing market research, hiring an expert, or asking a large language model.
 
