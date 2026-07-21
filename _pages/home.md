@@ -18,6 +18,8 @@ date: 2017-07-16 23:57:03
 If you want to run a better {anything} you have to make better decisions.
 </p>
 
+Our approach focuses on making the best decisions, but not just the decisions that fit some optimization model... this website spans ***any*** decision. We start in English (not math), and begin by [defining decisions](/decisionsdecisions/#what-is-a-decision), then we identify [10 types of decisions](/decisionsdecisions/#types-of-decision-settings). We use a [universal modeling framework](/universal-modeling-framework/) for evaluating ***any*** method for making decisions (called "[policies](/policies/)"), from simple rules to large-scale deterministic integer programs. We also identify [12 categories of uncertainty](/modeling-uncertainty/) that may come in a range of styles and time scales.
+
 Our approach, motivated by decades of working on complex, real-world problems, starts in English with a process of *framing* problems by posing three questions:
 
 1. What are the performance metrics?
@@ -25,8 +27,6 @@ Our approach, motivated by decades of working on complex, real-world problems, s
 3. What are the sources of uncertainty?
 
 These questions help to clarify *thinking* about problems, which is all that is needed for most decisions. For applications that warrant more careful analysis, the questions lay the foundation for the **Universal Modeling Framework** which can represent any sequential decision problem as a mathematical model.
-
-Our approach focuses on making the best decisions, but not just the decisions that fit some optimization model... this website spans ***any*** decision. We start in English (not math), and begin by [defining decisions](/decisionsdecisions/#what-is-a-decision), then we identify [10 types of decisions](/decisionsdecisions/#types-of-decision-settings). We use a [universal modeling framework](/universal-modeling-framework/) for evaluating ***any*** method for making decisions (called "[policies](/policies/)"), from simple rules to large-scale deterministic integer programs. We also identify [12 categories of uncertainty](/modeling-uncertainty/) that may come in a range of styles and time scales.
 
 A good way to start is to follow the instructions in [**A guided tour**](/guided-tour/) which starts with material on problem framing that requires no math. Most of the presentation is free of math, while a few pages have some math. If you are interested in more depth, try using [**Ask Professor Powell**](/ask-professor-powell/) which will use as much math as you want (just ask). The chatbot has been trained with all my books, 1,000 pages of LinkedIn posts on decision analytics, and the contents of this website.
 
