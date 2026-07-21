@@ -859,37 +859,40 @@ mark.search-widget-hit.is-current {
 .search-widget-nav-close { border: none; font-size: 1.2rem; }
 
 /* ============================================================
-   Site-wide search — header button + dropdown panel. Unlike the book
-   reader's sticky-topbar version, .site-header isn't sticky, so the
-   panel just sits in normal flow right under it instead of using
-   fixed/sticky positioning.
+   Site-wide search — lives in the sidebar (right below "About")
+   rather than the header, so it doesn't add another wrapped line on
+   narrow header widths. Toggling it reveals a compact card inline in
+   the sidebar's own flow, right under the button that opens it.
    ============================================================ */
-.site-search-toggle {
+.sidebar-search-toggle {
+  display: block;
+  width: 100%;
+  text-align: left;
   background: transparent;
-  color: #f5ecd6;
-  border: 1px solid #6b5a3f;
-  border-radius: 4px;
-  padding: 0.45rem 0.9rem;
-  font-size: 0.88rem;
-  font-weight: 600;
+  border: none;
+  font-family: inherit;
   cursor: pointer;
+  font-weight: 600;
+  color: #f5ecd6;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  border-radius: 3px;
+  border-bottom: 1px solid #5a3e1f;
 }
-.site-search-toggle:hover { background: rgba(245,236,214,0.1); }
+.sidebar-search-toggle:hover { background: #5a3e1f; color: #fff; }
 .site-search-panel {
   background: #fbf6e7;
-  border-bottom: 2px solid #c9621e;
-  box-shadow: 0 6px 16px rgba(43,36,25,0.18);
-}
-.site-search-panel-inner {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 1rem 1.5rem;
+  border-radius: 5px;
+  box-shadow: 0 4px 10px rgba(43,36,25,0.25);
+  padding: 0.75rem;
+  margin: 0.5rem 0 0.75rem;
 }
 .site-search-input {
   width: 100%;
   box-sizing: border-box;
-  padding: 0.6rem 0.8rem;
-  font-size: 1rem;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.95rem;
   border: 1px solid #c9b98a;
   border-radius: 4px;
   background: #fff;
@@ -898,8 +901,4 @@ mark.search-widget-hit.is-current {
 .site-search-input:focus {
   outline: none;
   border-color: #c9621e;
-}
-
-@media (max-width: 700px) {
-  .site-search-panel-inner { padding: 0.85rem 1rem; }
 }
