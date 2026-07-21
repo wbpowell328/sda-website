@@ -70,11 +70,11 @@ This is a graduate-level book aimed at readers who are interested in writing the
 
 <br clear="all" />
 
-<img src="/assets/images/teaching-books/mato-cover.jpg" alt="A Modern Approach to Teaching Optimization book cover" width="180" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
+<img src="/assets/images/teaching-books/mato-cover.jpg" alt="A Modern Approach to Teaching an Introduction to Optimization book cover" width="180" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 
 ## A Modern Approach to Teaching an Introduction to Optimization {#mato}
 
-W. B. Powell, *A Modern Approach to Teaching Optimization*, Boston–Delft: NOW Publishers, 2024.
+W. B. Powell, *A Modern Approach to Teaching an Introduction to Optimization*, Boston–Delft: NOW Publishers, 2024.
 
 This book is designed for instructors. It is intended to provide an outline for an introductory course in optimization for undergraduates and masters students. The presentation is divided into 11 topics, starting with machine learning — which lays the foundation for tuning parameters for sequential decision problems covered in topics 2 through 6. We do not introduce linear programming until topic 7. Topics 7 through 11 cover linear, integer, and nonlinear programming, each of which is presented first in a static setting and then extended to a fully sequential setting.
 

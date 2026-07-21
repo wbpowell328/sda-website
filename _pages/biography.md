@@ -40,7 +40,7 @@ It can become difficult to sort through almost 40 years of professional experien
 He is the author / co-author / editor of:
 
 - **Bridging Decision Problems** (monograph series), Volume I: *Framing the Problem*, Kindle Direct Publishing, January 2026.
-- W. B. Powell, *A Modern Approach to Teaching Optimization*, Boston–Delft: NOW Publishers, 2024. [tinyurl.com/TeachingOpt](https://tinyurl.com/TeachingOpt/)
+- W. B. Powell, *A Modern Approach to Teaching an Introduction to Optimization*, Boston–Delft: NOW Publishers, 2024. [tinyurl.com/TeachingOpt](https://tinyurl.com/TeachingOpt/)
 - W. B. Powell, *[Reinforcement Learning and Stochastic Optimization: A unified framework for sequential decisions](/rlso/)*, John Wiley and Sons, 2022.
 - W. B. Powell, *Sequential Decision Analytics and Modeling*, Boston–Delft: NOW Publishers, 2022. [tinyurl.com/sdamodeling](https://tinyurl.com/sdamodeling/)
 - W. B. Powell, I. O. Ryzhov, *Optimal Learning*, John Wiley and Sons, New York, 2012.

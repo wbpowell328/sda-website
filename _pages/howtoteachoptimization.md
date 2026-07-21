@@ -66,9 +66,9 @@ Of particular importance to students in a problem domain such as business, engin
 
 While this material seems more basic that the topics in my optimization course above, the lack of any mathematics can be deceptive: identifying metrics, decisions and uncertainties requires a level of maturity in a problem context.
 
-## A Modern Approach to Teaching Optimization (2024)
+## A Modern Approach to Teaching an Introduction to Optimization (2024)
 
-![Cover of A Modern Approach to Teaching Optimization by Warren B. Powell](/assets/images/teaching-books/mato-cover.jpg)In 2024 I wrote a short book for instructions in reaction to people teaching introductory optimization courses by starting with linear programming and the simplex algorithm.  [The pdf can be downloaded here.](https://tinyurl.com/TeachingOpt/)
+![Cover of A Modern Approach to Teaching an Introduction to Optimization by Warren B. Powell](/assets/images/teaching-books/mato-cover.jpg)In 2024 I wrote a short book for instructions in reaction to people teaching introductory optimization courses by starting with linear programming and the simplex algorithm.  [The pdf can be downloaded here.](https://tinyurl.com/TeachingOpt/)
 
 MATO is written for instructors teaching an introductory course for undergraduates or masters.  It suggests 11 topics, starting with regression (where you optimize parameters), then progresses through five topics addressing simple, sequential decision problems that any student would recognize.
 

@@ -454,9 +454,9 @@ A summary of major developments in CASTLE Labs over its history.
   <div class="tl-event tl-left">
     <div class="tl-year">2024</div>
     <button class="tl-card" aria-expanded="false" type="button">
-      <div class="tl-headline"><em>A Modern Approach to Teaching Optimization</em><span class="tl-toggle">▼</span></div>
+      <div class="tl-headline"><em>A Modern Approach to Teaching an Introduction to Optimization</em><span class="tl-toggle">▼</span></div>
       <div class="tl-detail">
-        <p>Posted <a href="/teachingoptimization/"><em>A Modern Approach to Teaching Optimization</em></a> which presents a fundamentally new approach for teaching an introduction to optimization course for undergraduates or masters.</p>
+        <p>Posted <a href="/teachingoptimization/"><em>A Modern Approach to Teaching an Introduction to Optimization</em></a> which presents a fundamentally new approach for teaching an introduction to optimization course for undergraduates or masters.</p>
       </div>
     </button>
   </div>
