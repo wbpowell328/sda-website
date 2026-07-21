@@ -36,6 +36,15 @@
         <a href="{{ section.items[0].url | relative_url }}">{{ section.section }}</a>
       {% endfor %}
     </nav>
+    <button type="button" class="site-search-toggle search-widget-toggle" aria-controls="site-search-panel" aria-expanded="false">
+      Search
+    </button>
+  </div>
+  <div id="site-search-panel" class="site-search-panel search-widget-panel" hidden>
+    <div class="site-search-panel-inner">
+      <input type="search" class="site-search-input search-widget-input" placeholder="Search the site&hellip;" autocomplete="off">
+      <ul class="site-search-results search-widget-results"></ul>
+    </div>
   </div>
 </header>
 
@@ -180,6 +189,8 @@
     + '" defer><\/script>'
   );
 </script>
+
+{% include search-widget.html %}
 
 </body>
 </html>

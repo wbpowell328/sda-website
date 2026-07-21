@@ -61,3 +61,4 @@ exclude:
   - convert-page.ps1
   - ruby4_patch.rb
   - "Draft webpages/"
+  - "*.original"

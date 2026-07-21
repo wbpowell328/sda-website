@@ -1,0 +1,208 @@
+<!-- Shared search widget behavior, used by both the book reader (book.html)
+     and the main site (default.html). Fetches the site-wide JSON index
+     generated at build time by /search-index.json, caches it in
+     sessionStorage, and renders results into whichever panel is present on
+     the page. If that panel carries a `data-book` attribute, results are
+     filtered to just that book's chapters (the book reader's own search);
+     if the attribute is absent, every entry in the index is searched (the
+     main site's search). Matching is a simple case-insensitive
+     substring/phrase search (no stemming or fuzzy matching) -- results are
+     ranked by occurrence count. Picking a result navigates to that page
+     with ?q=<phrase>, which the block below reads on load to scroll to and
+     highlight every occurrence on the destination page. -->
+<script>
+  (function () {
+    var toggle = document.querySelector('.search-widget-toggle');
+    var panel = document.querySelector('.search-widget-panel');
+    var input = document.querySelector('.search-widget-input');
+    var resultsEl = document.querySelector('.search-widget-results');
+    if (!toggle || !panel || !input || !resultsEl) return;
+
+    var bookKey = panel.getAttribute('data-book');
+    var indexPromise = null;
+
+    function loadIndex() {
+      if (indexPromise) return indexPromise;
+      var cached = sessionStorage.getItem('castle-search-index');
+      if (cached) {
+        indexPromise = Promise.resolve(JSON.parse(cached));
+        return indexPromise;
+      }
+      indexPromise = fetch('{{ "/search-index.json" | relative_url }}')
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          try { sessionStorage.setItem('castle-search-index', JSON.stringify(data)); } catch (e) {}
+          return data;
+        });
+      return indexPromise;
+    }
+
+    function escapeRegExp(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+    function escapeHtml(s) {
+      return s.replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    }
+
+    function snippetFor(text, re) {
+      var m = re.exec(text);
+      if (!m) return '';
+      var start = Math.max(0, m.index - 60);
+      var end = Math.min(text.length, m.index + m[0].length + 60);
+      var pre = (start > 0 ? '…' : '') + text.slice(start, m.index);
+      var hit = text.slice(m.index, m.index + m[0].length);
+      var post = text.slice(m.index + m[0].length, end) + (end < text.length ? '…' : '');
+      return escapeHtml(pre) + '<mark>' + escapeHtml(hit) + '</mark>' + escapeHtml(post);
+    }
+
+    function runSearch(query) {
+      query = query.trim();
+      if (query.length < 2) {
+        resultsEl.innerHTML = '';
+        return;
+      }
+      loadIndex().then(function (entries) {
+        var re = new RegExp(escapeRegExp(query), 'gi');
+        var matches = [];
+        entries.forEach(function (e) {
+          if (bookKey && e.book !== bookKey) return;
+          var haystack = e.title + ' ' + e.text;
+          var count = (haystack.match(re) || []).length;
+          if (count === 0) return;
+          re.lastIndex = 0;
+          matches.push({ entry: e, count: count, snippet: snippetFor(e.text.length ? e.text : e.title, re) });
+        });
+        matches.sort(function (a, b) { return b.count - a.count; });
+
+        if (!matches.length) {
+          resultsEl.innerHTML = '<li class="search-empty">No matches found.</li>';
+          return;
+        }
+        resultsEl.innerHTML = matches.map(function (m) {
+          var url = m.entry.url + '?q=' + encodeURIComponent(query);
+          return '<li><a href="' + url + '">' +
+            '<span class="search-result-title">' + escapeHtml(m.entry.title) + '</span>' +
+            '<span class="search-result-count">' + m.count + (m.count === 1 ? ' match' : ' matches') + '</span>' +
+            (m.snippet ? '<span class="search-result-snippet">' + m.snippet + '</span>' : '') +
+            '</a></li>';
+        }).join('');
+      });
+    }
+
+    var debounceTimer = null;
+    input.addEventListener('input', function () {
+      clearTimeout(debounceTimer);
+      var query = input.value;
+      debounceTimer = setTimeout(function () { runSearch(query); }, 150);
+    });
+
+    function openPanel() {
+      panel.hidden = false;
+      toggle.setAttribute('aria-expanded', 'true');
+      input.focus();
+      loadIndex();
+    }
+    function closePanel() {
+      panel.hidden = true;
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+
+    toggle.addEventListener('click', function () {
+      if (panel.hidden) openPanel(); else closePanel();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !panel.hidden) closePanel();
+    });
+    document.addEventListener('click', function (e) {
+      if (panel.hidden) return;
+      if (panel.contains(e.target) || e.target === toggle) return;
+      closePanel();
+    });
+
+    // If arriving from a search result (?q=phrase), highlight every
+    // occurrence of the phrase on this page (not just the first) and show a
+    // floating "N of M" nav bar with Prev/Next buttons to step through them,
+    // the same way a browser's built-in find-in-page works.
+    //
+    // This has to wait for MathJax to finish typesetting first. On long
+    // chapter pages MathJax can take several seconds to reach equations near
+    // the bottom; inserting a <mark> into a not-yet-rendered "$$...$$" block
+    // splits its text node and permanently breaks MathJax's ability to
+    // recognize that equation, leaving it stuck as raw, unrendered source.
+    function whenMathJaxReady(cb) {
+      if (window.MathJax && window.MathJax.startup && window.MathJax.startup.promise) {
+        window.MathJax.startup.promise.then(cb);
+      } else {
+        setTimeout(function () { whenMathJaxReady(cb); }, 50);
+      }
+    }
+
+    var params = new URLSearchParams(window.location.search);
+    var q = params.get('q');
+    if (q) {
+      whenMathJaxReady(function () {
+        var pageMain = document.querySelector('.book-page') || document.querySelector('main.content');
+        if (!pageMain) return;
+
+        var textNodes = [];
+        var walker = document.createTreeWalker(pageMain, NodeFilter.SHOW_TEXT, null);
+        var node;
+        while ((node = walker.nextNode())) textNodes.push(node);
+
+        var needle = q.toLowerCase();
+        var marks = [];
+        textNodes.forEach(function (textNode) {
+          var text = textNode.nodeValue;
+          var lower = text.toLowerCase();
+          var idx = lower.indexOf(needle);
+          if (idx === -1) return;
+
+          var frag = document.createDocumentFragment();
+          var cursor = 0;
+          while (idx !== -1) {
+            frag.appendChild(document.createTextNode(text.slice(cursor, idx)));
+            var mark = document.createElement('mark');
+            mark.className = 'search-widget-hit';
+            mark.textContent = text.slice(idx, idx + q.length);
+            frag.appendChild(mark);
+            marks.push(mark);
+            cursor = idx + q.length;
+            idx = lower.indexOf(needle, cursor);
+          }
+          frag.appendChild(document.createTextNode(text.slice(cursor)));
+          textNode.parentNode.replaceChild(frag, textNode);
+        });
+
+        if (!marks.length) return;
+
+        var current = 0;
+
+        var nav = document.createElement('div');
+        nav.className = 'search-widget-nav';
+        nav.innerHTML =
+          '<button type="button" class="search-widget-nav-prev" aria-label="Previous match">&larr;</button>' +
+          '<span class="search-widget-nav-count"></span>' +
+          '<button type="button" class="search-widget-nav-next" aria-label="Next match">&rarr;</button>' +
+          '<button type="button" class="search-widget-nav-close" aria-label="Close">&times;</button>';
+        document.body.appendChild(nav);
+        var countEl = nav.querySelector('.search-widget-nav-count');
+
+        function goTo(i) {
+          marks[current].classList.remove('is-current');
+          current = (i + marks.length) % marks.length;
+          marks[current].classList.add('is-current');
+          marks[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+          countEl.textContent = (current + 1) + ' of ' + marks.length;
+        }
+
+        nav.querySelector('.search-widget-nav-next').addEventListener('click', function () { goTo(current + 1); });
+        nav.querySelector('.search-widget-nav-prev').addEventListener('click', function () { goTo(current - 1); });
+        nav.querySelector('.search-widget-nav-close').addEventListener('click', function () { nav.remove(); });
+
+        countEl.textContent = '1 of ' + marks.length;
+        marks[0].classList.add('is-current');
+        marks[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    }
+  })();
+</script>

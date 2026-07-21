@@ -765,3 +765,141 @@ img, video { max-width: 100%; height: auto; display: block; }
   color: #8a3a1a;
   margin-right: 0.4rem;
 }
+
+/* ============================================================
+   Search widget — shared between the book reader's per-book search
+   (book.css defines .book-search-toggle/.book-search-panel container
+   styling) and the main site's global search below. The result-list
+   item styles, the arrival-highlight mark, and the floating "N of M"
+   nav bar are identical in both contexts, so they live here once.
+   ============================================================ */
+.search-widget-results {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+.search-widget-results li { margin-bottom: 0.25rem; }
+.search-widget-results a {
+  display: block;
+  padding: 0.55rem 0.7rem;
+  border-radius: 4px;
+  color: #2b2419;
+}
+.search-widget-results a:hover { background: #ede0bd; text-decoration: none; }
+.search-result-title {
+  display: block;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #3d2914;
+}
+.search-result-count {
+  display: inline-block;
+  font-size: 0.75rem;
+  color: #8a3a1a;
+  margin-top: 0.1rem;
+}
+.search-result-snippet {
+  display: block;
+  font-size: 0.85rem;
+  color: #5a4a35;
+  margin-top: 0.2rem;
+  line-height: 1.4;
+}
+.search-result-snippet mark {
+  background: #f3cf8a;
+  color: #2b2419;
+  padding: 0 0.1em;
+}
+.search-empty {
+  padding: 0.55rem 0.7rem;
+  color: #6b5a3f;
+  font-style: italic;
+}
+
+mark.search-widget-hit {
+  background: #f7e6b8;
+  color: #2b2419;
+  padding: 0 0.1em;
+}
+mark.search-widget-hit.is-current {
+  background: #f3a63d;
+}
+
+.search-widget-nav {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #3d2914;
+  color: #f5ecd6;
+  padding: 0.55rem 0.75rem;
+  border-radius: 6px;
+  box-shadow: 0 6px 16px rgba(43,36,25,0.3);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.88rem;
+}
+.search-widget-nav button {
+  background: transparent;
+  color: #f5ecd6;
+  border: 1px solid #6b5a3f;
+  border-radius: 4px;
+  width: 1.9rem;
+  height: 1.9rem;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.search-widget-nav button:hover { background: rgba(245,236,214,0.12); }
+.search-widget-nav-count { white-space: nowrap; min-width: 4.5rem; text-align: center; }
+.search-widget-nav-close { border: none; font-size: 1.2rem; }
+
+/* ============================================================
+   Site-wide search — header button + dropdown panel. Unlike the book
+   reader's sticky-topbar version, .site-header isn't sticky, so the
+   panel just sits in normal flow right under it instead of using
+   fixed/sticky positioning.
+   ============================================================ */
+.site-search-toggle {
+  background: transparent;
+  color: #f5ecd6;
+  border: 1px solid #6b5a3f;
+  border-radius: 4px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.site-search-toggle:hover { background: rgba(245,236,214,0.1); }
+.site-search-panel {
+  background: #fbf6e7;
+  border-bottom: 2px solid #c9621e;
+  box-shadow: 0 6px 16px rgba(43,36,25,0.18);
+}
+.site-search-panel-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+}
+.site-search-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.6rem 0.8rem;
+  font-size: 1rem;
+  border: 1px solid #c9b98a;
+  border-radius: 4px;
+  background: #fff;
+  color: #2b2419;
+}
+.site-search-input:focus {
+  outline: none;
+  border-color: #c9621e;
+}
+
+@media (max-width: 700px) {
+  .site-search-panel-inner { padding: 0.85rem 1rem; }
+}
