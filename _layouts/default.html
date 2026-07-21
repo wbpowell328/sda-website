@@ -93,21 +93,21 @@
             {% endfor %}
           </ul>
         </details>
-        {% if entry.section == "About" %}
-          <button type="button" class="sidebar-search-toggle search-widget-toggle" aria-controls="site-search-panel" aria-expanded="false">
-            Search website
-          </button>
-          <div id="site-search-panel" class="site-search-panel search-widget-panel" hidden>
-            <input type="search" class="site-search-input search-widget-input" placeholder="Search the site&hellip;" autocomplete="off">
-            <ul class="site-search-results search-widget-results"></ul>
-          </div>
-        {% endif %}
       {% elsif entry.cta %}
         <a href="{{ entry.url | relative_url }}" class="sidebar-cta">{{ entry.title }}</a>
       {% elsif entry.external %}
         <a href="{{ entry.url }}" target="_blank" rel="noopener" class="sidebar-link">{{ entry.title }}</a>
       {% else %}
         <a href="{{ entry.url | relative_url }}" class="sidebar-link">{{ entry.title }}</a>
+      {% endif %}
+      {% if entry.title == "Home" %}
+        <button type="button" class="sidebar-search-toggle search-widget-toggle" aria-controls="site-search-panel" aria-expanded="false">
+          Search website
+        </button>
+        <div id="site-search-panel" class="site-search-panel search-widget-panel" hidden>
+          <input type="search" class="site-search-input search-widget-input" placeholder="Search the site&hellip;" autocomplete="off">
+          <ul class="site-search-results search-widget-results"></ul>
+        </div>
       {% endif %}
     {% endfor %}
   </nav>
