@@ -20,7 +20,7 @@ If you want to run a better {anything} you have to make better decisions.
 
 Our approach focuses on making the best decisions, but not just the decisions that fit some optimization model... this website spans ***any*** decision. We start in English (not math), and begin by [defining decisions](/decisionsdecisions/#what-is-a-decision), then we identify [10 types of decisions](/decisionsdecisions/#types-of-decision-settings). We use a [universal modeling framework](/universal-modeling-framework/) for evaluating ***any*** method for making decisions (called "[policies](/policies/)"), from simple rules to large-scale deterministic integer programs. We also identify [12 categories of uncertainty](/modeling-uncertainty/) that may come in a range of styles and time scales.
 
-Our approach, motivated by decades of working on complex, real-world problems, starts in English with a process of *framing* problems by posing three questions:
+Motivated by decades of working on complex, real-world problems, we start in English with a process of *framing* problems by posing three questions:
 
 1. What are the performance metrics?
 2. What types of decisions are being made (and who makes them)?
