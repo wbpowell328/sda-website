@@ -14,13 +14,58 @@ permalink: /search-index.json
 },
 {%- endfor -%}
 {%- assign non_book_pages = site.pages | where_exp: "p", "p.layout != 'book'" -%}
-{%- assign site_pages = non_book_pages | where_exp: "p", "p.layout != nil" | sort: "url" -%}
-{%- for p in site_pages -%}
-{
-"book": null,
-"url": {{ p.url | relative_url | jsonify }},
-"title": {{ p.title | jsonify }},
-"text": {{ p.content | strip_html | normalize_whitespace | jsonify }}
-}{% unless forloop.last %},{% endunless %}
+{%- assign candidate_pages = non_book_pages | where_exp: "p", "p.layout != nil" | sort: "url" -%}
+{%- comment -%}
+  Only index non-book pages that are actually reachable from the site --
+  otherwise orphaned pages with no click-path (old leftovers like /sda/)
+  turn up in search results with no way to navigate to them any other
+  way. "Reachable" means either: linked directly from the sidebar nav
+  (_data/nav.yml) or the homepage cards (_data/home.yml), OR linked from
+  the body content of some other page (e.g. the "People" page links to
+  "Biography" -- Biography isn't in nav.yml itself, but is one click away
+  from a page that is). Fragment anchors (#foo) are stripped before
+  comparing since a link to a specific section still means the page
+  itself is reachable.
+{%- endcomment -%}
+{%- assign emitted_count = 0 -%}
+{%- for p in candidate_pages -%}
+  {%- assign reachable = false -%}
+  {%- for entry in site.data.nav -%}
+    {%- if entry.url -%}
+      {%- assign entry_url = entry.url | split: "#" | first -%}
+      {%- if entry_url == p.url -%}{%- assign reachable = true -%}{%- endif -%}
+    {%- endif -%}
+    {%- for it in entry.items -%}
+      {%- if it.url -%}
+        {%- assign it_url = it.url | split: "#" | first -%}
+        {%- if it_url == p.url -%}{%- assign reachable = true -%}{%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endfor -%}
+  {%- for group in site.data.home -%}
+    {%- for item in group[1] -%}
+      {%- if item.url -%}
+        {%- assign item_url = item.url | split: "#" | first -%}
+        {%- if item_url == p.url -%}{%- assign reachable = true -%}{%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endfor -%}
+  {%- unless reachable -%}
+    {%- for p2 in candidate_pages -%}
+      {%- if p2.url != p.url and p2.content contains p.url -%}
+        {%- assign reachable = true -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endunless -%}
+  {%- if reachable -%}
+    {%- if emitted_count > 0 -%},{%- endif -%}
+    {
+    "book": null,
+    "url": {{ p.url | relative_url | jsonify }},
+    "title": {{ p.title | jsonify }},
+    "text": {{ p.content | strip_html | normalize_whitespace | jsonify }}
+    }
+    {%- assign emitted_count = emitted_count | plus: 1 -%}
+  {%- endif -%}
 {%- endfor -%}
 ]
