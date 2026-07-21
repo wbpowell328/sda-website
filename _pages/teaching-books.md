@@ -11,7 +11,7 @@ date: 2026-05-31
 - [Bridging Decision Problems (monograph series)](#bridging)
 - [Sequential Decision Analytics and Modeling](#sdam)
 - [Reinforcement Learning and Stochastic Optimization](#rlso)
-- [A Modern Approach to Teaching Optimization](#mato)
+- [A Modern Approach to Teaching an Introduction to Optimization](#mato)
 - [Optimal Learning](#optimal-learning)
 - [The Decision Factory](#decision-factory)
 
@@ -72,7 +72,7 @@ This is a graduate-level book aimed at readers who are interested in writing the
 
 <img src="/assets/images/teaching-books/mato-cover.jpg" alt="A Modern Approach to Teaching Optimization book cover" width="180" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 
-## A Modern Approach to Teaching Optimization {#mato}
+## A Modern Approach to Teaching an Introduction to Optimization {#mato}
 
 W. B. Powell, *A Modern Approach to Teaching Optimization*, Boston–Delft: NOW Publishers, 2024.
 
