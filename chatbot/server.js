@@ -81,7 +81,7 @@ function checkSessionCap(sessionId) {
     if (elapsed < SESSION_COOLDOWN_MS) {
       const waitMin = Math.ceil((SESSION_COOLDOWN_MS - elapsed) / 60000);
       sessionActivity.set(sessionId, activity);
-      return `You've reached the message limit for this conversation. Please wait about ${waitMin} more minute${waitMin === 1 ? '' : 's'} before sending another message.`;
+      return `You have hit the message limit for a single session. Please return in ${waitMin} more minute${waitMin === 1 ? '' : 's'} to continue.`;
     }
     // Cooldown elapsed -- start a fresh cycle.
     activity.count = 0;
@@ -93,7 +93,7 @@ function checkSessionCap(sessionId) {
     activity.cappedAt = Date.now();
     sessionActivity.set(sessionId, activity);
     const waitMin = Math.round(SESSION_COOLDOWN_MS / 60000);
-    return `You've reached the message limit for this conversation (${SESSION_MESSAGE_CAP} messages). Please wait ${waitMin} minutes before sending another message.`;
+    return `You have hit the message limit for a single session. Please return in ${waitMin} minutes to continue.`;
   }
 
   sessionActivity.set(sessionId, activity);
