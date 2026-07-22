@@ -66,8 +66,9 @@ Below I briefly summarize each chapter. Individual chapters can be downloaded by
 - **Chapter 19 — Direct lookahead policies.** We cover both deterministic lookahead policies (most often associated with "model predictive control") and policies based on stochastic lookahead models. We describe six classes of approximation strategies, and then illustrate all four classes of policies in the context of policies to solve a lookahead model (the "policy-within-a-policy").
 - **Chapter 20 — Multiagent modeling and learning.** Here we adopt our universal framework and illustrate it in the context of the rich domain of multiagent problems, beginning with two-agent problems for learning where we present our perspective on POMDPs.
 
-<img src="/assets/images/rlso/rlso-index-applications.jpg" alt="A scan of the 'Applications' section of the RLSO book index, showing a long alphabetical list of applications referenced in the book" width="440" align="right" style="max-width: 100%; height: auto; margin-left: 1.5rem; margin-bottom: 1rem;" />
-[**Index**](/assets/papers/2022/04/RLSO-Index-Wiley-format.pdf) — check out the entry "Applications." Shown to the right is a peek at the list of applications listed in the Index. These range from sketches of models to mentions of contexts where a method might apply.
+[**Index**](/assets/papers/2022/04/RLSO-Index-Wiley-format.pdf) — check out the entry "Applications." Shown below is a peek at the list of applications listed in the Index. These range from sketches of models to mentions of contexts where a method might apply.
+
+<img src="/assets/images/rlso/rlso-index-applications.jpg" alt="A scan of the 'Applications' section of the RLSO book index, showing a long alphabetical list of applications referenced in the book" width="880" style="max-width: 100%; height: auto; display: block; margin: 1rem auto;" />
 
 <br clear="all" />
 
