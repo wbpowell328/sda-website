@@ -49,7 +49,7 @@ which allows us to write Bellman's equation as
 
 $$V_t(S_t) = \max_{x_t} \Big( C(S_t, x_t) + \sum_{s' \in \mathcal{S}} p(s' \mid S_t, x_t) V_{t+1}(s') \Big)$$
 
-The use of the summation rests on Bellman's assumption that the state $S_t$ is discrete, where the state space is $\mathcal{S} = \{1, 2, \ldots, |\mathcal{S}|\}$.
+The use of the summation rests on Bellman's assumption that the state $S_t$ is discrete, where the state space is $\mathcal{S} = \{1, 2, \ldots, \|\mathcal{S}\|\}$.
 
 If the state variable $S_t$ is a discrete scalar — such as the number of items in inventory — then this equation may be computable. But this requires that the random variable $W_{t+1}$ be "simple" (a discrete scalar would be nice), and also that the decision $x_t$ be simple (such as a discrete scalar).
 
