@@ -55,6 +55,51 @@ function sanitizeSessionId(raw) {
   return raw.trim().slice(0, 64);
 }
 
+// ---- Per-session message cap + cooldown -----------------------------------
+// Stops one conversation from going on indefinitely (e.g. a user peppering
+// the bot with pointless questions after being asked to stop). Separate from
+// CHAT_RATE_LIMIT below, which is a per-IP backstop against scripted abuse --
+// this one targets a single conversation regardless of how many other
+// sessions share that IP (e.g. a classroom on one campus network).
+const SESSION_MESSAGE_CAP = Number(process.env.SESSION_MESSAGE_CAP) || 20;
+const SESSION_COOLDOWN_MS = Number(process.env.SESSION_COOLDOWN_MS) || 30 * 60 * 1000; // 30 min
+const sessionActivity = new Map(); // sessionId -> { count, cappedAt: number|null, lastSeen }
+
+setInterval(() => {
+  const cutoff = Date.now() - SESSION_COOLDOWN_MS - 60 * 60 * 1000; // generous grace period
+  for (const [id, a] of sessionActivity) if (a.lastSeen < cutoff) sessionActivity.delete(id);
+}, 30 * 60 * 1000).unref();
+
+// Returns an error string if this session should be blocked right now, else null.
+// Also updates the session's counters as a side effect.
+function checkSessionCap(sessionId) {
+  const activity = sessionActivity.get(sessionId) || { count: 0, cappedAt: null, lastSeen: 0 };
+  activity.lastSeen = Date.now();
+
+  if (activity.cappedAt) {
+    const elapsed = Date.now() - activity.cappedAt;
+    if (elapsed < SESSION_COOLDOWN_MS) {
+      const waitMin = Math.ceil((SESSION_COOLDOWN_MS - elapsed) / 60000);
+      sessionActivity.set(sessionId, activity);
+      return `You've reached the message limit for this conversation. Please wait about ${waitMin} more minute${waitMin === 1 ? '' : 's'} before sending another message.`;
+    }
+    // Cooldown elapsed -- start a fresh cycle.
+    activity.count = 0;
+    activity.cappedAt = null;
+  }
+
+  activity.count += 1;
+  if (activity.count > SESSION_MESSAGE_CAP) {
+    activity.cappedAt = Date.now();
+    sessionActivity.set(sessionId, activity);
+    const waitMin = Math.round(SESSION_COOLDOWN_MS / 60000);
+    return `You've reached the message limit for this conversation (${SESSION_MESSAGE_CAP} messages). Please wait ${waitMin} minutes before sending another message.`;
+  }
+
+  sessionActivity.set(sessionId, activity);
+  return null;
+}
+
 const app = express();
 // Render (and most reverse proxies) forwards client IP via X-Forwarded-For.
 // Trust one hop so rate limiting keys on the real client, not the proxy.
@@ -151,6 +196,11 @@ app.post('/chat', chatLimiter, async (req, res) => {
     ? clientSessionId.trim().slice(0, 64)
     : crypto.randomUUID();
   const ipHash = hashIp(req.ip);
+
+  const capMessage = checkSessionCap(sessionId);
+  if (capMessage) {
+    return res.status(429).json({ error: capMessage });
+  }
 
   // Log the new user message (last one in the array) up front so we don't
   // lose it if Claude later errors out.

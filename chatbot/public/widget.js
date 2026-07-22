@@ -902,7 +902,11 @@
 
       if (!res.ok || !res.body) {
         const errText = await res.text().catch(() => `${res.status} ${res.statusText}`);
-        throw new Error(errText);
+        let msg = errText;
+        try { msg = JSON.parse(errText).error || errText; } catch (_) {}
+        const e = new Error(msg);
+        e.isServerResponse = true; // real HTTP response, not a connection failure
+        throw e;
       }
 
       const reader = res.body.getReader();
@@ -949,7 +953,8 @@
       refreshPlaceholder();
     } catch (err) {
       assistantBubble.remove();
-      addBubble('error', `Error: ${err.message}\n\nIs the chatbot server running? (npm start in chatbot/)`);
+      const hint = err.isServerResponse ? '' : '\n\nIs the chatbot server running? (npm start in chatbot/)';
+      addBubble('error', `Error: ${err.message}${hint}`);
     } finally {
       sending = false;
       sendBtn.disabled = false;
