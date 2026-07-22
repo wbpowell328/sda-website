@@ -773,46 +773,52 @@ img, video { max-width: 100%; height: auto; display: block; }
    item styles, the arrival-highlight mark, and the floating "N of M"
    nav bar are identical in both contexts, so they live here once.
    ============================================================ */
-.search-widget-results {
+/* Scoped under .search-widget-panel (not just .search-widget-results) so
+   these beat .sidebar li a / .sidebar li a:hover on specificity -- the
+   site-wide search panel is nested inside <nav class="sidebar">, and
+   without this the sidebar's own dark-hover link styling (meant for nav
+   links) bled through onto search results, making the title/snippet text
+   nearly unreadable on hover. */
+.search-widget-panel .search-widget-results {
   list-style: none;
   margin: 0.75rem 0 0;
   padding: 0;
   max-height: 50vh;
   overflow-y: auto;
 }
-.search-widget-results li { margin-bottom: 0.25rem; }
-.search-widget-results a {
+.search-widget-panel .search-widget-results li { margin-bottom: 0.25rem; }
+.search-widget-panel .search-widget-results a {
   display: block;
   padding: 0.55rem 0.7rem;
   border-radius: 4px;
   color: #2b2419;
 }
-.search-widget-results a:hover { background: #ede0bd; text-decoration: none; }
-.search-result-title {
+.search-widget-panel .search-widget-results a:hover { background: #ede0bd; text-decoration: none; }
+.search-widget-panel .search-result-title {
   display: block;
   font-weight: 700;
   font-size: 0.95rem;
   color: #3d2914;
 }
-.search-result-count {
+.search-widget-panel .search-result-count {
   display: inline-block;
   font-size: 0.75rem;
   color: #8a3a1a;
   margin-top: 0.1rem;
 }
-.search-result-snippet {
+.search-widget-panel .search-result-snippet {
   display: block;
   font-size: 0.85rem;
   color: #5a4a35;
   margin-top: 0.2rem;
   line-height: 1.4;
 }
-.search-result-snippet mark {
+.search-widget-panel .search-result-snippet mark {
   background: #f3cf8a;
   color: #2b2419;
   padding: 0 0.1em;
 }
-.search-empty {
+.search-widget-panel .search-empty {
   padding: 0.55rem 0.7rem;
   color: #6b5a3f;
   font-style: italic;
