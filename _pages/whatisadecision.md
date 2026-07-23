@@ -276,7 +276,7 @@ The idea of the 10 types of decisions is to provide a guide to think outside the
 
 ## Why automate decisions? {#why-automate-decisions}
 
-It is important to think about *why* you want to use a computer to make decisions. Some reasons are:
+To help with the task of "deciding what to decide" it is useful to think about why you want to use a computer to make decisions. Some reasons are:
 
 1. To make better decisions than are being made now — this is often the first reason cited, but in practice it might be the least important.
 2. To make decisions more quickly — there are many settings where decisions have to be made within a certain amount of time, which could be anything from 50 milliseconds in an e-commerce application, to several hours for scheduling power generators for tomorrow.
