@@ -24,7 +24,6 @@ After a career in traditional academic research on models and algorithms for mak
   - [Making a decision](#making-a-decision)
   - [Decisions vs. commitments](#decisions-vs-commitments)
 - [History of defining decisions](#history-of-defining-decisions)
-- [What decisions do we need to make?](#what-decisions-to-make)
 - [How do we make decisions?](#how-do-we-make-decisions)
 - [The psychology of making decisions](#psychology)
 - ["State variables" are fundamental in dynamic problems, but what is a state variable?](#state-variables)
@@ -434,16 +433,6 @@ When reviewing books for definitions of decisions, I would often find discussion
 A decision is, first and foremost, a piece of *information*. A person (or computer) makes a decision, and only then do we address the problem of implementing the decision, if necessary.  Decisions are often made as part of a planning process, which means they may not be directly implemented at all. 
 
 What is most important is that we think broadly so that we are aware of any way we can control or modify a process to achieve an objective.  We address this in the next section where we identify different types of decisions.
-
-## What decisions do we need to make? {#what-decisions-to-make}
-
-When we are trying to improve some performance metric ("metric-focused" problems), we may face the challenge of simply identifying what decisions are available to be made.  This step of the process is completely missing when you start with a math model with some $$x$$.
-
-Below I illustrate a time when I was invited to tour an Amazon fulfillment facility.  As I walked around the facility, I found myself looking for anything that could be changed, which meant that I was looking at the result of a decision.  This exercise can be applied to any setting.  Think of doing this with your little red "My Decision Book" where you can write down the "decisions" you observe.
-
-I like to emphasize that improving any process starts in English.
-
-<img src="/assets/images/decisionsdecisions/problems-to-decisions.jpg" alt="A diagram or photo illustrating how observing a process — people, machines, conveyors, inventory in a fulfillment facility — translates into identifying decisions that can be improved" style="display: block; margin: 1rem auto; max-width: 80%; height: auto;" />
 
 ## How do we make decisions? {#how-do-we-make-decisions}
 
