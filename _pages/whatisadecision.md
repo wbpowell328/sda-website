@@ -32,6 +32,10 @@ After a career in traditional academic research on models and algorithms for mak
 
 A goal of this page is making people more aware of when they are making decisions, since we frequently make decisions without realizing it. You cannot make a better decision until you recognize that you are making a decision.
 
+Identifying the decisions that determine how a system behaves is not easy, and represents an important skill. This webpage is designed to help with this process.
+
+<img src="/assets/images/decisionsdecisions/problems-to-decisions.jpg" alt="Photos of a fulfillment warehouse, a hospital, a research lab, and a forest, each feeding into a red notebook titled 'My Decision Book' listing metrics, decisions, and uncertainties" style="display: block; margin: 1rem auto; max-width: 80%; height: auto;" />
+
 ## What is a decision? {#what-is-a-decision}
 
 It is astonishing that such a fundamental activity of people lacks a broadly accepted definition.  As with many commonly used words, "decision" is used in different ways.  
