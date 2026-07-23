@@ -279,14 +279,15 @@ The idea of the 10 types of decisions is to provide a guide to think outside the
 It is important to think about *why* you want to use a computer to make decisions. Some reasons are:
 
 1. To make better decisions than are being made now — this is often the first reason cited, but in practice it might be the least important.
-2. To remove the human from the decision-making process, which can be for several reasons:
+2. To make decisions more quickly — there are many settings where decisions have to be made within a certain amount of time, which could be anything from 50 milliseconds in an e-commerce application, to several hours for scheduling power generators for tomorrow.
+3. To remove the human from the decision-making process, which can be for several reasons:
    1. To adapt more quickly to changing conditions.
    2. Saving manpower expenses.
    3. Providing more uniform behavior when there is a team of people making the same decisions.
    4. To reduce the need for training as people turn over.
    5. As improvements are made, you just have to change an automated process once, whereas with people you need to retrain everyone.
-3. Anticipating the impact of a decision now on the behavior of a system in the future. Simulating decisions in the future is very hard for people, and even imperfect planning in the future can improve planning now.
-4. Simulating decisions can help with strategic planning.
+4. Anticipating the impact of a decision now on the behavior of a system in the future. Simulating decisions in the future is very hard for people, and even imperfect planning in the future can improve planning now.
+5. Simulating decisions can help with strategic planning.
 
 ## Some perspectives of decisions {#some-perspectives-of-decisions}
 
