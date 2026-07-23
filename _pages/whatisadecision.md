@@ -26,7 +26,6 @@ After a career in traditional academic research on models and algorithms for mak
 - [History of defining decisions](#history-of-defining-decisions)
 - [How do we make decisions?](#how-do-we-make-decisions)
 - [The psychology of making decisions](#psychology)
-- ["State variables" are fundamental in dynamic problems, but what is a state variable?](#state-variables)
 - [What is the value of information?](#value-of-information)
 - [The "great thinkers" in the history of decision-making.](#great-thinkers)
 
@@ -487,30 +486,6 @@ I also offer another hypothesis:
 *Humans, without any training, use all four classes of policies, albeit in an ad hoc way.  Our brains have learned to naturally adapt our decision-making styles to different situations.*
 
 A simple example is playing chess, where we start each game using "if in this state, we take this action" style of thinking (a form of PFA called a lookup table), to the use of decision trees where we plan into the future, a form of DLA (direct lookahead approximation).  We might even use a DLA/VFA hybrid where we plan for a few moves into the future, and then stop using a rough approximation of the value of the position we are in (e.g. did we lose our queen, or is our rook in a strong position).  
-
-## State variables: The information we use to make decisions. {#state-variables}
-
-Almost inseparable from how we make decisions is the information we have available to make the decision.  In the communities that work on sequential decision problems (dynamic programming, Markov decision processes, optimal control), this information is contained in the *state variable*.  Bizarrely, I came to realize that even the top theoreticians (and I would say *especially* the top theoreticians) did not know how to define a state variable!
-
-I found two books on deterministic optimal control which offered a perfectly acceptable definition:
-
-*All the information you need at time t to model the system from time t onward.*
-
-Nothing wrong with this, except that it doesn't specify *what* information is needed.
-
-I offer a fairly extensive discussion of what I might call "the state of state variables" [which can be accessed here](https://tinyurl.com/onstatevariables/). This webpage includes my own definition of a state variable, which has been evolving over time.  The most refined version is contained in my 2022 volume, [*Reinforcement Learning and Stochastic Optimization: A unified framework for sequential decisions*](https://tinyurl.com/RLandSO/) (see section 9.4).  In it, I offer two definitions depending on whether you are given the policy for making decisions, or whether we are working from a fundamental description.  The most interesting case in my view is where we specify the policy, for which I offer the definition: 
-
-*The state variable is a function of history that, given a policy, is necessary and sufficient to compute:*
-
-a.  *The performance metrics.*
-b.  *The policy (the function used to make decisions).*
-c.  *Any information needed to compute (a) and (b) in the future, which may include the dependence (if any) of the exogenous information on the current state and/or the decision that has just been made.*
-
-It is (b) that requires that we specify our policy.  If we want to do this without specifying the policy, we would replace (b) with the constraints (or whatever is needed to specify the set of decisions).  However, if we have a VFA or DLA type policy we are typically modeling the future using a forecast, which would have to be contained in the state variable.   
-
-Understanding policies helps us understand what information we need to make our decisions, which then guides the collection of what can be large quantities of data.  Often, there is information we need but do not know (such as a demand forecast, or how a patient will respond to treatment) that we need to estimate using statistical models.
-
-Compiling the information in state variables is the core of ontology and epistemology, which dates back to the work of the ancient philosophers, and is an active area of application for modern large language models.  Ontology can be thought of as "what we know" while epistemology addresses "how we know it" which helps us address how *well* we know something.  Decisions invariably modify processes moving forward in time, usually in the presence of dynamic information processes which are unknown at the time a decision is made.  
 
 ## What is the value of information? {#value-of-information}
 
