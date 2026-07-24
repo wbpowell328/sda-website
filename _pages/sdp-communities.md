@@ -10,7 +10,7 @@ The first community to address making decisions over time was in the context of 
 
 Over time, there evolved 15 distinct communities addressing sequential decision problems, using eight different notational systems, different ways of writing the problem, and a host of competing techniques illustrated with different motivating applications. I came to call this the "jungle of stochastic optimization" which is represented by the books below:
 
-<img src="/assets/images/sdp-communities/jungle-of-stochastic-optimization.jpg" alt="A collage of book covers from the many communities of stochastic optimization — including stochastic programming, simulation optimization, robust optimization, decision analysis, optimal control, approximate/exact dynamic programming, reinforcement learning, stochastic search, and multi-armed bandits — overlaid on a jungle background" style="display: block; margin: 1rem auto; max-width: 80%; height: auto;" />
+<img src="/assets/images/sdp-communities/jungle-of-stochastic-optimization.jpg" alt="A collage of book covers from the many communities of stochastic optimization — including stochastic programming, simulation optimization, robust optimization, decision analysis, optimal control, approximate/exact dynamic programming, reinforcement learning, stochastic search, and multi-armed bandits — overlaid on a jungle background" style="display: block; margin: 1rem auto; max-width: 68%; height: auto;" />
 
 Below we list a series of communities roughly in the order that they emerged. Some grew out of Bellman's original work, while the others trace their roots to other fields.
 
