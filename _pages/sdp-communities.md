@@ -8,6 +8,10 @@ date: 2026-05-30
 {% raw %}
 The first community to address making decisions over time was in the context of optimal control problems in the 1800s, but these problems were deterministic — meaning they ignored the arrival of what we call *exogenous information*. The first serious work for true sequential decision problems (decision, information, decision, information, ...) was the work of Bellman in the 1950s. This research grew under the name of "Markov decision processes."
 
+Over time, there evolved 15 distinct communities addressing sequential decision problems, using eight different notational systems, different ways of writing the problem, and a host of competing techniques illustrated with different motivating applications. I came to call this the "jungle of stochastic optimization" which is represented by the books below:
+
+<img src="/assets/images/sdp-communities/jungle-of-stochastic-optimization.jpg" alt="A collage of book covers from the many communities of stochastic optimization — including stochastic programming, simulation optimization, robust optimization, decision analysis, optimal control, approximate/exact dynamic programming, reinforcement learning, stochastic search, and multi-armed bandits — overlaid on a jungle background" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" />
+
 Below we list a series of communities roughly in the order that they emerged. Some grew out of Bellman's original work, while the others trace their roots to other fields.
 
 ## Jump to a community
