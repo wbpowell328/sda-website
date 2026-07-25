@@ -64,7 +64,7 @@ router.get('/admin/conversations', requireAdmin, async (req, res) => {
   if (!loggerEnabled()) {
     return res.status(503).send('Logger not configured (TURSO_DATABASE_URL / TURSO_AUTH_TOKEN missing).');
   }
-  const limit = Math.min(Number(req.query.limit) || 200, 1000);
+  const limit = Math.min(Number(req.query.limit) || 500, 1000);
   let rows = [];
   let s = null;
   try {

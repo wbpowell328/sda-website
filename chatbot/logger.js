@@ -74,7 +74,7 @@ export async function logMessage({
   }
 }
 
-export async function recentConversations({ limit = 200 } = {}) {
+export async function recentConversations({ limit = 500 } = {}) {
   if (!ready || !client) return [];
   const result = await client.execute({
     sql: `SELECT id, session_id, role, content, ip_hash,
