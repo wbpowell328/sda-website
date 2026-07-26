@@ -908,3 +908,26 @@ mark.search-widget-hit.is-current {
   outline: none;
   border-color: #c9621e;
 }
+
+/* ============================================================
+   Alphabetic ordered list with parentheses — a), b), c) ...
+   Standard <ol type="a"> only renders a. b. c. (with period);
+   this class swaps in a) b) c) via a CSS counter.
+   ============================================================ */
+.alpha-paren {
+  list-style: none;
+  counter-reset: alpha-paren;
+  padding-left: 1.75em;
+}
+.alpha-paren > li {
+  counter-increment: alpha-paren;
+  position: relative;
+  margin: 0.15rem 0;
+}
+.alpha-paren > li::before {
+  content: counter(alpha-paren, lower-alpha) ") ";
+  position: absolute;
+  left: -1.75em;
+  width: 1.5em;
+  text-align: right;
+}

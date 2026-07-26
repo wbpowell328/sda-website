@@ -283,11 +283,7 @@ To help with the task of "deciding what to decide" it is useful to think about w
 1. To make better decisions than are being made now — this is often the first reason cited, but in practice it might be the least important.
 2. To make decisions more quickly — there are many settings where decisions have to be made within a certain amount of time, which could be anything from 50 milliseconds in an e-commerce application, to several hours for scheduling power generators for tomorrow.
 3. To remove the human from the decision-making process, which can be for several reasons:
-   1. To adapt more quickly to changing conditions.
-   2. Saving manpower expenses.
-   3. Providing more uniform behavior when there is a team of people making the same decisions.
-   4. To reduce the need for training as people turn over.
-   5. As improvements are made, you just have to change an automated process once, whereas with people you need to retrain everyone.
+   <ol class="alpha-paren"><li>To adapt more quickly to changing conditions.</li><li>Saving manpower expenses.</li><li>Providing more uniform behavior when there is a team of people making the same decisions.</li><li>To reduce the need for training as people turn over.</li><li>As improvements are made, you just have to change an automated process once, whereas with people you need to retrain everyone.</li></ol>
 4. Anticipating the impact of a decision now on the behavior of a system in the future. Simulating decisions in the future is very hard for people, and even imperfect planning in the future can improve planning now.
 5. Simulating decisions can help with strategic planning.
 
