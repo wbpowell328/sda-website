@@ -274,7 +274,7 @@ In this section, we illustrate how we envision applying the list of decision typ
 .apps-vs-types tbody tr:nth-child(even) td { background: #fbf9f4; }
 </style>
 
-The idea of the 10 types of decisions is to provide a guide to think outside the box of the most familiar decisions. However, remember that you are only interested in the decisions that have the greatest impact on the most important metrics, which is why you have to always keep an eye on your [metrics pyramid](/framingproblems/#performance-metrics). This is why our framing process begins by listing the performance metrics, followed by identifying decisions.
+The idea of the 10 types of decisions is to provide a guide to think outside the box of the most familiar decisions. However, remember that you are only interested in the decisions that have the greatest impact on the most important metrics, which is why you have to always keep an eye on your [metrics pyramid](/framingproblems/#performance-metrics). This is why our [framing process](/framingproblems/) begins by listing the performance metrics, followed by identifying decisions.
 
 ## Why automate decisions? {#why-automate-decisions}
 
