@@ -54,6 +54,8 @@ Framing represents a major plateau, since it is an important (and overlooked) sk
 
 Framing is an important skill for people working in an area of application. Each of the dimensions of framing can be immediately translated to a mathematical model (as we do in the second pass), but only if a model is needed. I claim that while framing is a critical first step to creating a computer model, it also helps people understand a problem even if they never develop a model.
 
+For additional reading, see the online book [Framing the Problem](/bridging-vol1/).
+
 ## The second pass – The universal modeling framework {#second-pass}
 
 At this point you have learned from the first pass:
