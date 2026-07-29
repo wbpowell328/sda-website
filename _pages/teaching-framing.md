@@ -5,19 +5,6 @@ permalink: /teaching-framing/
 date: 2026-07-28
 ---
 
-<style>
-  /* TEST: color + underline for all body links on this page only.
-     Skip the sidebar / header nav; those live outside .content. */
-  .content a {
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 3px;
-  }
-  /* Don't underline heading anchors, images-as-links, or the page-title link. */
-  .content h1 a, .content h2 a, .content h3 a, .content h4 a,
-  .content a:has(> img) { text-decoration: none; }
-</style>
-
 Most areas of business, economics, finance, science and engineering are continually addressing problems where the goal is to do something better.
 
 I am going to approach the process of teaching how to frame problems from the perspective of business students who face an endless array of business cases that are familiar to a broad audience, but the ideas can be applied to any setting.

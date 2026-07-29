@@ -232,6 +232,18 @@ img, video { max-width: 100%; height: auto; display: block; }
 .content p { margin: 0 0 1rem; }
 .content ul, .content ol { padding-left: 1.5rem; }
 
+/* Body links get a color + underline treatment for legibility.
+   Scope to .content so header nav, sidebar, cards, and search widget
+   keep their own hover-only underline behavior. */
+.content a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+/* Don't underline heading-anchor links or image-wrapping links. */
+.content h1 a, .content h2 a, .content h3 a, .content h4 a,
+.content a:has(> img) { text-decoration: none; }
+
 .content blockquote {
   border-left: 4px solid #c9621e;
   margin: 1rem 0;
