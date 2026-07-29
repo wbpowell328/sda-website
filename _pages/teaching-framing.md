@@ -1,9 +1,22 @@
 ---
 layout: page
-title: "How to teach framing?"
+title: "How to teach framing"
 permalink: /teaching-framing/
 date: 2026-07-28
 ---
+
+<style>
+  /* TEST: color + underline for all body links on this page only.
+     Skip the sidebar / header nav; those live outside .content. */
+  .content a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  /* Don't underline heading anchors, images-as-links, or the page-title link. */
+  .content h1 a, .content h2 a, .content h3 a, .content h4 a,
+  .content a:has(> img) { text-decoration: none; }
+</style>
 
 Most areas of business, economics, finance, science and engineering are continually addressing problems where the goal is to do something better.
 
@@ -44,3 +57,5 @@ Give each student a sheet with three headings (metrics, decisions, uncertainties
 As the speaker progresses through their presentation, the students have to identify different metrics that seem relevant for evaluating performance, what decisions have an impact on these metrics, and the uncertainties that affect performance.
 
 It is possible that the speaker may overlook something, such as decisions. Students should realize that the talk is incomplete, and ask the speaker to fill in missing elements. They have to learn how to do this in a way that is understandable to the speaker. For example, asking "What decisions do you make" may not be obvious to someone not trained in this vocabulary.
+
+After completing the worksheet, the next step would be to follow [the framing process](https://warrenpowell.org/framingproblems/#the-framing-process).
