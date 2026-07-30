@@ -68,6 +68,8 @@
   items:
     - title: Courses
       url: /teaching-courses/
+    - title: Decision framing cases
+      url: /decision-framing-cases/
     - title: How to teach framing
       url: /teaching-framing/
     - title: Books
