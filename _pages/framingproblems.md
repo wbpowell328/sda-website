@@ -12,17 +12,16 @@ Framing a decision problem is the most important step — it sets the stage for 
 
 - [The framing process](#the-framing-process)
 - [Performance metrics](#performance-metrics)
-- [Handling risk](#handling-risk)
-- [Decisions](#decisions)
-- [Uncertainties](#uncertainties)
+- [Types of decisions](#types-of-decisions)
+- [Sources and styles of uncertainty](#sources-and-styles-of-uncertainty)
 
 ## The framing process {#the-framing-process}
 
 The framing step starts with answering three questions, in English:
 
-1. What are the **performance metrics**?
-2. What are the **types of decisions** (and who makes them)?
-3. What are the **sources and styles of uncertainty**?
+1. What are the [**performance metrics**](#performance-metrics)?
+2. What are the [**types of decisions**](#types-of-decisions) (and who makes them)?
+3. What are the [**sources and styles of uncertainty**](#sources-and-styles-of-uncertainty)?
 
 These three questions do not answer all the questions that will come up, but they are an important start. Most important is that they do not bias a problem toward any form of analytics, since typically all forms are required for complex problems.
 
@@ -44,14 +43,14 @@ Metrics need to be prioritized. An effective way to do this is to sort them into
 
 These pyramids can be made at any level of the company. They may focus on a particular project, or track day-to-day performance. An organization will typically have many of these pyramids. Note that an executive or manager at one level may decide on the metrics of people or groups that report to them.
 
-## Handling risk {#handling-risk}
+### Handling risk {#handling-risk}
 
 There are two ways we can evaluate any performance metric:
 
 - **On average** — this can mean total profits, cost per item, or average production per day.
 - **Risk metrics** — averages account for uncertainty by smoothing variations into an average or total, but some events impact the system in such a way that it is not captured by an average. We begin by defining risk events, in English, which are events that are not properly captured by averages (plant shutdowns, patient deaths, product recalls, clinical trial failures). We then design metrics to quantify these events, which can be incorporated in the objective function or (more commonly) as a constraint.
 
-## Decisions {#decisions}
+## Types of decisions {#types-of-decisions}
 
 Decisions are how we change a process — whether it is an initial design decision, or operational decisions that are made over time. Decisions can be obvious (routing trucks, ordering inventory, prescribing a medication), but often they are not.
 
@@ -64,7 +63,7 @@ There are many settings in practice where we behave as if we were on autopilot, 
 
 A complete discussion of decisions is on the [Decisions, decisions](/decisionsdecisions/) page. There, we define a decision as information we control, which then allows us to name 10 types of decisions, including several that are typically overlooked.
 
-## Uncertainties {#uncertainties}
+## Sources and styles of uncertainty {#sources-and-styles-of-uncertainty}
 
 *Uncertainty* is a word we use to describe information that will arrive to the system in the future that affects its performance in some way. Since the information has not arrived yet, we don't know what the information will contain — which means it is uncertain.
 
