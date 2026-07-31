@@ -16,3 +16,9 @@ This is a web edition of *Sequential Decision Analytics and Modeling* (2nd editi
 The book is also available as a [downloadable PDF](/assets/papers/sdam-2nd-edition.pdf), or see the [book's webpage](/sdamodeling/) for a fuller overview, the accompanying Python software, and course materials.
 
 <br clear="all" />
+
+**Published:** 1st edition, November, 2022, NOW Publishing.
+
+**Updated:** 2nd edition, Kindle Direct Publishing, February, 2026.
+
+**Reprinted online:** July, 2026, at [warrenpowell.org](/teaching-books/).

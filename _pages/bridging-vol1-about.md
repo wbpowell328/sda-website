@@ -12,3 +12,7 @@ This is a web edition of *Framing the Problem*, Volume I of the monograph series
 The book is also available on [Kindle](https://tinyurl.com/PowellFramingAmazon/), or as a [downloadable PDF](/assets/papers/bridging-vol-i-framing.pdf). For an overview of the ideas in the book, see the [Bridging Decision Problems](/bridgingdecisionproblems/) webpage.
 
 <br clear="all" />
+
+**Published:** January, 2026 by Kindle Direct Publishing, pdf available online.
+
+**Updated:** July, 2026 — Made available online at [warrenpowell.org](/teaching-books/).
