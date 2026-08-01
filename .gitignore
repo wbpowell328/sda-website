@@ -71,3 +71,4 @@ decision-framing-app/node_modules/
 decision-framing-app/web/node_modules/
 decision-framing-app/web/dist/
 decision-framing-app/local.db*
+decision-framing-app/web/vite.config.js.timestamp-*.mjs

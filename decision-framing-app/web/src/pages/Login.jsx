@@ -42,6 +42,7 @@ export default function Login() {
         <button type="submit" disabled={submitting}>{submitting ? 'Logging in…' : 'Log in'}</button>
       </form>
       <p>No account yet? <Link to="/signup">Sign up</Link></p>
+      <p><Link to="/forgot-password">Forgot your password?</Link></p>
     </div>
   );
 }

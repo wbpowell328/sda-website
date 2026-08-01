@@ -5,6 +5,8 @@ import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import ProjectEditor from './pages/ProjectEditor.jsx';
+import RequestPasswordReset from './pages/RequestPasswordReset.jsx';
+import ResetPassword from './pages/ResetPassword.jsx';
 
 const queryClient = new QueryClient();
 
@@ -20,6 +22,8 @@ function Routed() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/forgot-password" element={<RequestPasswordReset />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/projects/:id" element={<ProtectedRoute><ProjectEditor /></ProtectedRoute>} />
     </Routes>
