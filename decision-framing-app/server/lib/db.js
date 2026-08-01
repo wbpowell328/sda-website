@@ -4,16 +4,25 @@
 // metrics/decisions/matrix cells), not an append-only log.
 
 import { createClient } from '@libsql/client';
+import { cleanEnv } from './env.js';
 
 let client = null;
 let ready = false;
 
+function getTursoUrl() {
+  return cleanEnv('TURSO_DATABASE_URL');
+}
+
+function getTursoToken() {
+  return cleanEnv('TURSO_AUTH_TOKEN');
+}
+
 export function dbConfigured() {
-  const url = process.env.TURSO_DATABASE_URL;
+  const url = getTursoUrl();
   if (!url) return false;
   // A local file: URL needs no auth token — handy for local dev without a Turso account.
   if (url.startsWith('file:')) return true;
-  return !!process.env.TURSO_AUTH_TOKEN;
+  return !!getTursoToken();
 }
 
 export function getDb() {
@@ -27,9 +36,11 @@ export function dbReady() {
 
 export async function initDb() {
   if (!dbConfigured()) return false;
+  const url = getTursoUrl();
+  const token = getTursoToken();
   client = createClient({
-    url: process.env.TURSO_DATABASE_URL,
-    ...(process.env.TURSO_AUTH_TOKEN ? { authToken: process.env.TURSO_AUTH_TOKEN } : {}),
+    url,
+    ...(token ? { authToken: token } : {}),
   });
 
   await client.batch([

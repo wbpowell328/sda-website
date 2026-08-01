@@ -2,14 +2,15 @@
 // RESEND_API_KEY is absent — same feature-detection pattern as the
 // chatbot's optional RAG/logging integrations.
 import { Resend } from 'resend';
+import { cleanEnv } from './env.js';
 
 export function emailEnabled() {
-  return !!(process.env.RESEND_API_KEY && process.env.EMAIL_FROM);
+  return !!(cleanEnv('RESEND_API_KEY') && cleanEnv('EMAIL_FROM'));
 }
 
 let client = null;
 function getClient() {
-  if (!client) client = new Resend(process.env.RESEND_API_KEY);
+  if (!client) client = new Resend(cleanEnv('RESEND_API_KEY'));
   return client;
 }
 
@@ -20,7 +21,7 @@ export async function sendPasswordResetEmail(toEmail, resetUrl) {
   }
   try {
     await getClient().emails.send({
-      from: process.env.EMAIL_FROM,
+      from: cleanEnv('EMAIL_FROM'),
       to: toEmail,
       subject: 'Reset your password — CASTLE Decision Framing',
       text: `Someone requested a password reset for this account.\n\n`
