@@ -5,13 +5,12 @@ import { getOwnedProject, getOwnedMetric } from '../lib/ownership.js';
 import { asyncHandler } from '../lib/asyncHandler.js';
 
 const router = express.Router();
-router.use(requireAuth);
 
 function isNonEmptyString(v) {
   return typeof v === 'string' && v.trim().length > 0;
 }
 
-router.post('/api/projects/:id/metrics', asyncHandler(async (req, res) => {
+router.post('/api/projects/:id/metrics', requireAuth, asyncHandler(async (req, res) => {
   const project = await getOwnedProject(req.user.id, req.params.id);
   if (!project) return res.status(404).json({ error: 'Project not found.' });
 
@@ -37,7 +36,7 @@ router.post('/api/projects/:id/metrics', asyncHandler(async (req, res) => {
   });
 }));
 
-router.patch('/api/metrics/:metricId', asyncHandler(async (req, res) => {
+router.patch('/api/metrics/:metricId', requireAuth, asyncHandler(async (req, res) => {
   const metric = await getOwnedMetric(req.user.id, req.params.metricId);
   if (!metric) return res.status(404).json({ error: 'Metric not found.' });
 
@@ -49,7 +48,7 @@ router.patch('/api/metrics/:metricId', asyncHandler(async (req, res) => {
   res.json({ metric: { id: metric.id, label: label.trim(), level: metric.level, position: metric.position } });
 }));
 
-router.delete('/api/metrics/:metricId', asyncHandler(async (req, res) => {
+router.delete('/api/metrics/:metricId', requireAuth, asyncHandler(async (req, res) => {
   const metric = await getOwnedMetric(req.user.id, req.params.metricId);
   if (!metric) return res.status(404).json({ error: 'Metric not found.' });
 
@@ -75,7 +74,7 @@ router.delete('/api/metrics/:metricId', asyncHandler(async (req, res) => {
 // metric in the project (level + left-to-right order within that level).
 // Applied in one transaction. Never touches matrix_cells — those key off
 // metric id, not position, so ratings stay attached correctly.
-router.post('/api/projects/:id/metrics/reorder', asyncHandler(async (req, res) => {
+router.post('/api/projects/:id/metrics/reorder', requireAuth, asyncHandler(async (req, res) => {
   const project = await getOwnedProject(req.user.id, req.params.id);
   if (!project) return res.status(404).json({ error: 'Project not found.' });
 

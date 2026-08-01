@@ -5,11 +5,10 @@ import { getOwnedDecision, getOwnedMetric } from '../lib/ownership.js';
 import { asyncHandler } from '../lib/asyncHandler.js';
 
 const router = express.Router();
-router.use(requireAuth);
 
 const VALID_RATINGS = new Set(['H', 'M', 'L', 'N']);
 
-router.patch('/api/matrix-cells', asyncHandler(async (req, res) => {
+router.patch('/api/matrix-cells', requireAuth, asyncHandler(async (req, res) => {
   const { decisionId, metricId, rating } = req.body || {};
   if (!VALID_RATINGS.has(rating)) return res.status(400).json({ error: 'rating must be one of H, M, L, N.' });
 

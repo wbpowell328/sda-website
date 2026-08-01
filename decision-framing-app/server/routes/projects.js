@@ -5,13 +5,12 @@ import { getOwnedProject } from '../lib/ownership.js';
 import { asyncHandler } from '../lib/asyncHandler.js';
 
 const router = express.Router();
-router.use(requireAuth);
 
 function isNonEmptyString(v) {
   return typeof v === 'string' && v.trim().length > 0;
 }
 
-router.get('/api/projects', asyncHandler(async (req, res) => {
+router.get('/api/projects', requireAuth, asyncHandler(async (req, res) => {
   const db = getDb();
   const result = await db.execute({
     sql: 'SELECT id, name, created_at, updated_at FROM projects WHERE user_id = ? ORDER BY updated_at DESC',
@@ -20,7 +19,7 @@ router.get('/api/projects', asyncHandler(async (req, res) => {
   res.json({ projects: result.rows.map(serializeProject) });
 }));
 
-router.post('/api/projects', asyncHandler(async (req, res) => {
+router.post('/api/projects', requireAuth, asyncHandler(async (req, res) => {
   const { name } = req.body || {};
   if (!isNonEmptyString(name)) return res.status(400).json({ error: 'Project name is required.' });
 
@@ -33,7 +32,7 @@ router.post('/api/projects', asyncHandler(async (req, res) => {
   res.status(201).json({ project: serializeProject(project) });
 }));
 
-router.get('/api/projects/:id', asyncHandler(async (req, res) => {
+router.get('/api/projects/:id', requireAuth, asyncHandler(async (req, res) => {
   const project = await getOwnedProject(req.user.id, req.params.id);
   if (!project) return res.status(404).json({ error: 'Project not found.' });
 
@@ -70,7 +69,7 @@ router.get('/api/projects/:id', asyncHandler(async (req, res) => {
   });
 }));
 
-router.patch('/api/projects/:id', asyncHandler(async (req, res) => {
+router.patch('/api/projects/:id', requireAuth, asyncHandler(async (req, res) => {
   const project = await getOwnedProject(req.user.id, req.params.id);
   if (!project) return res.status(404).json({ error: 'Project not found.' });
 
@@ -86,7 +85,7 @@ router.patch('/api/projects/:id', asyncHandler(async (req, res) => {
   res.json({ project: serializeProject(updated) });
 }));
 
-router.delete('/api/projects/:id', asyncHandler(async (req, res) => {
+router.delete('/api/projects/:id', requireAuth, asyncHandler(async (req, res) => {
   const project = await getOwnedProject(req.user.id, req.params.id);
   if (!project) return res.status(404).json({ error: 'Project not found.' });
 

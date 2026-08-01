@@ -6,13 +6,12 @@ import { isValidDecisionType } from '../lib/decisionTypes.js';
 import { asyncHandler } from '../lib/asyncHandler.js';
 
 const router = express.Router();
-router.use(requireAuth);
 
 function isNonEmptyString(v) {
   return typeof v === 'string' && v.trim().length > 0;
 }
 
-router.post('/api/projects/:id/decisions', asyncHandler(async (req, res) => {
+router.post('/api/projects/:id/decisions', requireAuth, asyncHandler(async (req, res) => {
   const project = await getOwnedProject(req.user.id, req.params.id);
   if (!project) return res.status(404).json({ error: 'Project not found.' });
 
@@ -37,7 +36,7 @@ router.post('/api/projects/:id/decisions', asyncHandler(async (req, res) => {
   });
 }));
 
-router.patch('/api/decisions/:decisionId', asyncHandler(async (req, res) => {
+router.patch('/api/decisions/:decisionId', requireAuth, asyncHandler(async (req, res) => {
   const decision = await getOwnedDecision(req.user.id, req.params.decisionId);
   if (!decision) return res.status(404).json({ error: 'Decision not found.' });
 
@@ -60,7 +59,7 @@ router.patch('/api/decisions/:decisionId', asyncHandler(async (req, res) => {
   res.json({ decision: { id: decision.id, label: nextLabel, decisionType: nextType, position: decision.position } });
 }));
 
-router.delete('/api/decisions/:decisionId', asyncHandler(async (req, res) => {
+router.delete('/api/decisions/:decisionId', requireAuth, asyncHandler(async (req, res) => {
   const decision = await getOwnedDecision(req.user.id, req.params.decisionId);
   if (!decision) return res.status(404).json({ error: 'Decision not found.' });
 
@@ -83,7 +82,7 @@ router.delete('/api/decisions/:decisionId', asyncHandler(async (req, res) => {
 
 // Full-structure reorder: client sends the complete ordered list of every
 // decision id in the project. Never touches matrix_cells.
-router.post('/api/projects/:id/decisions/reorder', asyncHandler(async (req, res) => {
+router.post('/api/projects/:id/decisions/reorder', requireAuth, asyncHandler(async (req, res) => {
   const project = await getOwnedProject(req.user.id, req.params.id);
   if (!project) return res.status(404).json({ error: 'Project not found.' });
 
