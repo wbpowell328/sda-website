@@ -17,7 +17,18 @@ import decisionsRouter from './routes/decisions.js';
 import matrixRouter from './routes/matrix.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: path.join(__dirname, '..', '.env'), override: true });
+
+// Render's masked environment-variable input corrupts very long single-line
+// values (confirmed: a 348-char token was silently replaced with 8 real
+// characters followed by 340 bullet characters). Render's Secret Files
+// feature uses a plain-text file editor instead, so prefer loading from
+// there (mounted at /etc/secrets/<filename>) when present, falling back to
+// a local .env for development.
+const RENDER_SECRET_ENV = '/etc/secrets/.env';
+dotenv.config({
+  path: existsSync(RENDER_SECRET_ENV) ? RENDER_SECRET_ENV : path.join(__dirname, '..', '.env'),
+  override: true,
+});
 
 const PORT = Number(process.env.PORT) || 3100;
 

@@ -9,11 +9,7 @@ export function cleanEnv(name) {
   if (typeof raw !== 'string') return raw;
   const cleaned = raw.trim().replace(/[^\x20-\x7E]/g, '');
   if (cleaned !== raw) {
-    console.warn(`[env] stripped non-ASCII/whitespace characters from ${name} (was ${raw.length} chars, now ${cleaned.length})`); // TEMP-DEBUG-REMOVE
-    const codes = Array.from(raw).slice(0, 30).map(c => c.codePointAt(0)); // TEMP-DEBUG-REMOVE
-    console.warn(`[env] ${name} first 30 char codes:`, JSON.stringify(codes)); // TEMP-DEBUG-REMOVE
-    const distinctAfter8 = new Set(Array.from(raw).slice(8)); // TEMP-DEBUG-REMOVE
-    console.warn(`[env] ${name} distinct chars after index 8:`, JSON.stringify(Array.from(distinctAfter8).map(c => c.codePointAt(0)))); // TEMP-DEBUG-REMOVE
+    console.warn(`[env] stripped non-ASCII/whitespace characters from ${name} (was ${raw.length} chars, now ${cleaned.length})`);
   }
   return cleaned;
 }
