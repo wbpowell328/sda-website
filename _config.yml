@@ -54,6 +54,7 @@ exclude:
   - page_inventory.md
   - drop_list.md
   - chatbot/
+  - decision-framing-app/
   - design-mockups/
   - "Website images/"
   - "Webpage notes.docx"

@@ -1,0 +1,30 @@
+# Render service config for the CASTLE decision-framing app.
+# Use the dashboard's "New Web Service" flow pointed at this repo (root
+# directory: decision-framing-app) and Render will read this file automatically.
+
+services:
+  - type: web
+    name: castle-framing-app
+    runtime: node
+    plan: free               # 512MB RAM, sleeps after 15min idle, 750h/mo
+    region: oregon
+    branch: main
+    buildCommand: npm install && npm --prefix web install && npm --prefix web run build
+    startCommand: node server/server.js
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: TURSO_DATABASE_URL
+        sync: false           # paste in Render dashboard — a NEW database, separate from the chatbot's
+      - key: TURSO_AUTH_TOKEN
+        sync: false           # paste in Render dashboard
+      - key: COOKIE_SECRET
+        sync: false           # paste any random string in Render dashboard
+      - key: RESEND_API_KEY
+        sync: false           # paste in Render dashboard (added in Phase 6)
+      - key: EMAIL_FROM
+        sync: false
+      - key: APP_BASE_URL
+        sync: false           # e.g. https://castle-framing-app.onrender.com

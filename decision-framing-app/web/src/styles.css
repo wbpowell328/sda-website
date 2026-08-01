@@ -1,0 +1,333 @@
+:root {
+  --hml-h: #f44336; /* High impact — matches assets/css/main.css .hml-h on the main site */
+  --hml-m: #ffb74d; /* Medium impact */
+  --hml-l: #fff176; /* Low impact */
+  --hml-n: transparent; /* No impact */
+  --border: #d8d3c4;
+  --text: #2b2620;
+  --bg: #fbf9f4;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+#root {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.auth-page {
+  max-width: 360px;
+  margin: 4rem auto;
+}
+
+.auth-page form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.auth-page label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-weight: 600;
+}
+
+input {
+  font: inherit;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+button {
+  font: inherit;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f0ece0;
+}
+
+.form-error {
+  color: var(--hml-h);
+  font-weight: 600;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.new-project-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.new-project-form input {
+  flex: 1;
+}
+
+.project-list {
+  list-style: none;
+  padding: 0;
+}
+
+.project-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.project-list-item a {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.project-list-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.rename-form {
+  display: flex;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.tab-bar {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  margin: 1rem 0 1.5rem;
+}
+
+.tab {
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: none;
+  padding: 0.5rem 0.25rem;
+}
+
+.tab.active {
+  border-bottom-color: var(--text);
+  font-weight: 600;
+}
+
+.hint {
+  color: #6b5a3f;
+  font-size: 0.9rem;
+}
+
+.pyramid-level {
+  margin-bottom: 1rem;
+}
+
+.pyramid-level-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6b5a3f;
+  margin-bottom: 0.35rem;
+}
+
+.pyramid-level-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  padding: 0.5rem;
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+}
+
+.pyramid-card {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+}
+
+.pyramid-card-label {
+  border: none;
+  background: none;
+  padding: 0;
+  font-weight: 600;
+  cursor: text;
+}
+
+.pyramid-card-controls {
+  display: flex;
+  gap: 0.15rem;
+}
+
+.pyramid-card-controls button {
+  padding: 0.15rem 0.4rem;
+  line-height: 1;
+}
+
+.pyramid-edit-form {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.pyramid-add-form {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+.pyramid-add-level-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  justify-content: center;
+}
+
+.reference-toggle {
+  margin-bottom: 0.75rem;
+}
+
+.decision-type-reference {
+  list-style: none;
+  padding: 0.75rem 1rem;
+  margin: 0 0 1rem;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.decision-type-reference li {
+  margin-bottom: 0.5rem;
+}
+
+.decision-items {
+  list-style: none;
+  padding: 0;
+}
+
+.decision-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.decision-item-text {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.decision-label {
+  font-weight: 600;
+}
+
+.decision-type-tag {
+  font-size: 0.75rem;
+  color: #6b5a3f;
+  background: #f0ece0;
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+  width: fit-content;
+}
+
+.decision-item-controls {
+  display: flex;
+  gap: 0.15rem;
+  flex-shrink: 0;
+}
+
+.decision-edit-form {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.decision-add-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.decision-add-form input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.matrix-editor-wrap {
+  overflow-x: auto;
+}
+
+.matrix-editor {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.matrix-editor th,
+.matrix-editor td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.5rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.matrix-editor thead th {
+  background: #f0ece0;
+  font-size: 0.85rem;
+  vertical-align: bottom;
+}
+
+.matrix-editor tbody th {
+  background: #f0ece0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  max-width: 220px;
+  white-space: normal;
+}
+
+.matrix-editor select {
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-weight: 700;
+  width: 100%;
+  cursor: pointer;
+}
+
+/* Same hex + alpha convention as assets/css/main.css .hml-h/.hml-m/.hml-l/.hml-n on the main site. */
+.hml-cell.hml-h { background: #f4433699; }
+.hml-cell.hml-m { background: #ffb74d99; }
+.hml-cell.hml-l { background: #fff17699; }
+.hml-cell.hml-n { background: transparent; }

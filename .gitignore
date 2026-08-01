@@ -53,6 +53,7 @@ Website images/
 Draft webpages/
 SDA marketing/
 SDA-website files/
+Decision framing environment/
 _tmp_migration_urls.txt
 bundle-install.log
 
@@ -63,3 +64,10 @@ _pages/*.md.original
 # script but should NOT be committed to a public repo. The .tex/.docx
 # sources are his IP. Kept locally only; backed up via Dropbox.
 Chatbot knowledge base/
+
+# Decision-framing app — secrets, deps/build output, local dev SQLite file.
+decision-framing-app/.env
+decision-framing-app/node_modules/
+decision-framing-app/web/node_modules/
+decision-framing-app/web/dist/
+decision-framing-app/local.db*
