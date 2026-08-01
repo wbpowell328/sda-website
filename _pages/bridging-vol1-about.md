@@ -16,3 +16,5 @@ The book is also available on [Kindle](https://tinyurl.com/PowellFramingAmazon/)
 **Published:** January, 2026 by Kindle Direct Publishing, pdf available online.
 
 **Updated:** July, 2026 — Made available online at [warrenpowell.org](/teaching-books/).
+
+**Updated:** August, 2026 — Added Chapter 6, with cases which are used to illustrate the process of framing decisions.
