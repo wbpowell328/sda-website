@@ -87,6 +87,8 @@
       url: /energystorage/
     - title: Senior theses
       url: /powellseniortheses/
+    - title: Datasets
+      url: /datasets/
 
 - section: About
   items:
