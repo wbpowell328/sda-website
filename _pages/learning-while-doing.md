@@ -5,6 +5,8 @@ permalink: /learning-while-doing/
 date: 2026-08-02
 ---
 
+<p style="font-style: italic; color: #7a5a30; margin: 0.5rem 0 1.5rem;">This game is under development. We will let you know when it is ready for use.</p>
+
 <div style="background:#faf5e6; border-left:4px solid #c9621e; padding:1rem 1.25rem; margin:1.25rem 0;">
   <p style="margin:0 0 0.5rem 0;"><strong>Play the game →</strong> <a href="https://learning-while-doing.onrender.com/" target="_blank" rel="noopener">learning-while-doing.onrender.com</a></p>
   <p style="margin:0; font-size:0.9rem; color:#5a4a35;">The game is hosted separately from this site. The first load can take 30–60 seconds while the free-tier server wakes up.</p>

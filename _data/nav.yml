@@ -81,8 +81,6 @@
 
 - section: Extra materials
   items:
-    - title: Learning while doing (game)
-      url: /learning-while-doing/
     - title: The 7 levels of AI
       url: /the-7-levels-of-ai/
     - title: Energy storage research
@@ -91,6 +89,8 @@
       url: /powellseniortheses/
     - title: Datasets
       url: /datasets/
+    - title: Learning while doing (game)
+      url: /learning-while-doing/
 
 - section: About
   items:
