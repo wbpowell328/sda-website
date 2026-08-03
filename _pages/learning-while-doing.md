@@ -5,11 +5,6 @@ permalink: /learning-while-doing/
 date: 2026-08-02
 ---
 
-<div style="background:#faf5e6; border-left:4px solid #c9621e; padding:1rem 1.25rem; margin:1.25rem 0;">
-  <p style="margin:0 0 0.5rem 0;"><strong>Play the game →</strong> <a href="https://learning-while-doing.onrender.com/" target="_blank" rel="noopener">learning-while-doing.onrender.com</a></p>
-  <p style="margin:0; font-size:0.9rem; color:#5a4a35;">The game is hosted separately from this site. The first load can take 30–60 seconds while the free-tier server wakes up.</p>
-</div>
-
 ## Introduction to the cash buffer game
 
 A mutual-fund manager has to decide how much of the portfolio to hold in cash. Hold too little and a burst of investor redemptions forces expensive fire-sales; hold too much and you sacrifice returns on the cash cushion. There is a single control — the target cash-buffer ratio, $\theta$, expressed as a fraction of assets under management.
@@ -18,7 +13,12 @@ This is an exercise in tuning a simple policy under real-world conditions, a pro
 
 For an introduction to the problem, watch the [short video here](https://tinyurl.com/LearningWhileDoing/).
 
-## What you'll see
+<div style="background:#faf5e6; border-left:4px solid #c9621e; padding:1rem 1.25rem; margin:1.25rem 0;">
+  <p style="margin:0 0 0.5rem 0;"><strong>Play the game →</strong> <a href="https://learning-while-doing.onrender.com/" target="_blank" rel="noopener">learning-while-doing.onrender.com</a></p>
+  <p style="margin:0; font-size:0.9rem; color:#5a4a35;">The game is hosted separately from this site. The first load can take 30–60 seconds while the free-tier server wakes up.</p>
+</div>
+
+## What you will see
 
 The dashboard lets you pick a random seed, a simulation length (weeks), and one of four modes:
 
