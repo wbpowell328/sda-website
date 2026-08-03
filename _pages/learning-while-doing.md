@@ -39,4 +39,4 @@ The four policy modes correspond directly to the classes discussed on the [Optim
 
 ## Credits
 
-Written by Jonathan Wong. Source code and documentation: [github.com/jwong3927/learning-while-doing](https://github.com/jwong3927/learning-while-doing).
+Based on code written by Jonathan Wong.
