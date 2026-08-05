@@ -101,18 +101,64 @@ You can keep doing one more batch at a time by hitting **One more** (as long as 
 
 If you hit **Restart** it resets the game to the starting points, and zeroes out the boxes reporting the performance and number of days.
 
-## What you will see
+## Parameter adjustment policies
 
-The parameter-adjustment policies you can pick from:
+To determine how to adjust the parameter policies $\theta$, we need some method. Below, we review two simplistic policies (manual and random), along with the two policies reviewed in the video above: interval estimation, and a family of policies based on the concept of the knowledge gradient which is based on the value of information obtained from observing performance over a period of time.
 
-| Policy | What it does |
-| --- | --- |
-| **Human** | You pick each value of $\theta$ yourself. Between rounds, a posterior-belief plot updates so you can see where the model thinks the minimum lies. |
-| **KG (Knowledge Gradient)** | An automated policy that picks the $\theta$ whose next observation is expected to move the estimated best decision the most. Four variants (offline/online × correlated/independent) let you compare the closed-form KG against its sequential and independent siblings. |
-| **IE (Interval Estimation)** | An uncertainty-driven exploration policy — picks the $\theta$ whose upper (optimistic) confidence bound is best. |
-| **Random** | A baseline that samples $\theta$ uniformly. Useful as a sanity check against the two informed policies. |
+### Manual policies
 
-Once inside the game, the top control bar sets the starting $\theta$, the run length (days), and how many policy-driven iterations to repeat before stopping. Each iteration shows the cost you incurred, the day-by-day cash balance, and the log of large-flow jump events. After a run you can click **Reveal truth** to plot the estimated underlying cost curve and see how far the policy's best guess sits from the true minimum.
+A manual policy requires a human (you) to review the behavior of the system and make a subjective adjustment of what to try. Go ahead and try to compete against the other policies (don't laugh — you may win!).
+
+### Randomized policies
+
+A popular class of policies in the reinforcement learning literature is to introduce randomization. A purely random policy makes no sense for an online setting, we could use a mixture of doing what we think is best based on our current (but imperfect) belief, and something random that we test just for learning.
+
+The challenge in this setting is handling the high level of noise when we try any policy, regardless of whether we think it is best or we are exploring something different.
+
+### Interval estimation policies
+
+An IE policy is written
+
+$$\Theta^{cash}\!\left(S^{n} \mid \rho^{IE}\right) = \arg\max_{\theta}\left(\mu_{\theta}^{n} + \rho^{IE}\,\sigma_{\theta}^{n}\right)$$
+
+where $\mu_{\theta}^{n}$ is the current estimate of the performance of the cash management parameter $\theta = \theta^{cash}$. The variable $S^{n}$ captures our "state of knowledge" about how well the system performs after $n$ updates. The policy parameter $\rho^{IE}$ also has to be tuned, which means we are tuning a parameter in the policy $\Theta^{cash}\!\left(S_{t} \mid \rho^{IE}\right)$ that is used to tune the parameters in the cash management policy.
+
+One way to compare the parameter $\rho^{IE}$ is to test different values over a range. It is likely that $\rho^{IE}$ will fall in the range $[0, 3]$, which helps with the process. Testing values in increments of 0.2 is one approach to find the best value of $\rho^{IE}$.
+
+### Knowledge gradient policies
+
+The "knowledge gradient" (or KG) is a policy that estimates the value of information from an experiment. This means estimating how much better future decisions will perform after watching the performance of some value of $\theta^{cash}$ for a period of time (such as 50 weeks). See below for more information about the knowledge gradient.
+
+Choosing how long to observe the process is its own parameter. If it is too short (say a week) then what you are going to observe is sheer noise, and you will not learn anything (imagine trying to decide how much auto insurance to have based on what happened last week). You might learn much more if you choose 50 weeks, but this means waiting an entire year before taking advantage of what you have learned. Playing with this parameter is one of the goals of the game.
+
+Knowledge gradient policies come in two flavors:
+
+- **Offline knowledge gradient** — This computes the value of information completely ignoring the actual performance. For example, we might try holding only 1 percent of cash reserves. Let $KG^{offline}(\theta^{cash}; \rho^{lkhd})$ where $\rho^{lkhd}$ is called the "lookahead parameter" which is an integer giving how many days the knowledge gradient peeks into the future to calculate benefits. The best value for $\rho^{lkhd}$ depends on how noisy the simulations are. We might use $\rho^{lkhd} = 1$ for low-noise simulations, and $\rho^{lkhd} = 50$ (or more) for higher-noise problems.
+- **Online knowledge gradient** — Here we balance our current estimate of how well our system is performing (which might be completely off) against the value of the improved performance that we might obtain if we test a policy now. This introduces a new twist: how long should we assume we are going to benefit from the information we just gained? This is an important tradeoff that you will have to explore in the game.
+
+The online knowledge gradient is computed using
+
+$$KG^{online}\!\left(\theta^{cash}; \rho^{lkhd}\right) = \mu_{\theta}^{n} + KG^{offline}\!\left(\theta^{cash}; \rho^{lkhd}\right)$$
+
+Here, $\mu_{\theta}^{n}$ captures our current (possibly incorrect) estimate of the performance of our cash management policy using $\theta^{cash} = \theta$.
+
+For readers who would like a more in-depth treatment of the knowledge gradient, see the material on the [optimal learning](/optimal-learning/) webpage.
+
+### How the knowledge gradient works
+
+![Diagram: five candidate values of θ with their expected returns, with an improvement distribution above the fifth bar illustrating the expected-improvement definition of the knowledge gradient](/assets/images/learning-while-doing/knowledge-gradient-diagram.png)
+
+The knowledge gradient was introduced by Peter Frazier in 2007 for offline learning problems, and later extended by Ilya Ryzhov to online learning. The logic behind the knowledge gradient is described in the video introducing the cash management game above, but a quick explanation uses the graphic above (from the video).
+
+Imagine we have five possible values of the parameter $\theta^{cash}$ that we are trying to optimize. Also imagine we have imperfect estimates, but for now we think the fourth value is best. We want to estimate the value of the information we would obtain if we tested the fifth value.
+
+If we test the fifth value, and update our estimate of its performance, we only benefit if the updated estimate of the performance is better than what we currently estimate for the fourth value. If this is not the case, then we still think the fourth value is best, which means testing the fifth value does not change our decision of which of the five values is best.
+
+If we did many simulations using the fifth value of $\theta^{cash}$ (using our simulator), we might obtain any of the black dots. Some of these are improvements that would increase our estimate of the fifth value, while others would not. If we performed many of these simulations, we could build a probability distribution of the updated estimate of the fifth value.
+
+There is a probability that the improvement is zero (shown as a big spike), and then there are probabilities that testing the fifth choice is an improvement. The knowledge gradient, then, is the expected increase in the value of the *best* choice.
+
+For an in-depth technical presentation of the knowledge gradient, see the [optimal learning](/optimal-learning/) page (see the sections that refer to "knowledge gradient").
 
 ## Why it illustrates optimal learning
 
