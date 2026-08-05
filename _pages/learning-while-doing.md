@@ -32,36 +32,23 @@ We recommend starting with the 1-parameter policy to get a feel for the game. No
 
 ## To play the game
 
-Choose the **cash-management policy** you want to tune, then the **parameter-adjustment policy** that will do the tuning. Hit **Play the game** to launch.
+Pick a **cash-management policy**, then hit **Play the game**. Inside the game you'll choose the parameter-adjustment policy on the control bar.
 
 <div style="background:#faf5e6; border-left:4px solid #c9621e; padding:1.25rem 1.5rem; margin:1.25rem 0; border-radius:6px;">
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem 1.25rem; margin-bottom:1rem;">
-    <label style="display:flex; flex-direction:column; font-size:0.9rem; color:#5a4a35;">
-      <span style="font-weight:600; margin-bottom:0.35rem;">Cash-management policy</span>
+  <div style="display:flex; flex-wrap:wrap; gap:0.75rem 1rem; align-items:center;">
+    <a id="lwd-play" href="#" target="_blank" rel="noopener"
+       style="display:inline-block; background:#c9621e; color:#fff; padding:8px 20px;
+              border-radius:4px; text-decoration:none; font-weight:600; font-size:0.95rem;">
+      Play the game
+    </a>
+    <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.9rem; color:#5a4a35;">
+      <span style="font-weight:600;">Cash-management policy:</span>
       <select id="lwd-app" style="padding:6px 8px; border:1px solid #c9b891; border-radius:4px; font-size:0.95rem; background:#fff;">
         <option value="cash_balance">Cash balance — 1 parameter (θ)</option>
         <option value="cash_balance_2d">Cash balance — 2 parameters (θ_ind, θ_inst)</option>
       </select>
     </label>
-    <label style="display:flex; flex-direction:column; font-size:0.9rem; color:#5a4a35;">
-      <span style="font-weight:600; margin-bottom:0.35rem;">Parameter-adjustment policy</span>
-      <select id="lwd-policy" style="padding:6px 8px; border:1px solid #c9b891; border-radius:4px; font-size:0.95rem; background:#fff;">
-        <option value="kg">KG — offline correlated (analytic)</option>
-        <option value="kg_indep">KG — offline independent</option>
-        <option value="okg">KG — online correlated</option>
-        <option value="okg_indep">KG — online independent</option>
-        <option value="ie">IE — LCB (upper-confidence exploration)</option>
-        <option value="random">Random — baseline</option>
-        <option value="human">Human — I pick θ each round</option>
-      </select>
-    </label>
-  </div>
-  <div style="display:flex; flex-wrap:wrap; gap:0.75rem; align-items:center;">
-    <a id="lwd-play" href="#" target="_blank" rel="noopener"
-       style="display:inline-block; background:#c9621e; color:#fff; padding:8px 20px;
-              border-radius:4px; text-decoration:none; font-weight:600; font-size:0.95rem;">
-      Play the game →
-    </a>
+    <span style="flex:1;"></span>
     <a id="lwd-advanced" href="#" target="_blank" rel="noopener"
        style="display:inline-block; padding:8px 12px; text-decoration:none;
               color:#5a4a35; font-size:0.9rem; border-bottom:1px dashed #a08b6a;">
@@ -70,8 +57,7 @@ Choose the **cash-management policy** you want to tune, then the **parameter-adj
   </div>
   <p style="margin:0.9rem 0 0 0; font-size:0.85rem; color:#7a6a55;">
     The game is hosted separately from this site. The first load can take
-    30–60 seconds while the free-tier server wakes up. Human mode requires
-    the 1-parameter cash-balance app.
+    30–60 seconds while the free-tier server wakes up.
   </p>
 </div>
 
@@ -79,26 +65,16 @@ Choose the **cash-management policy** you want to tune, then the **parameter-adj
 (function () {
   const BASE   = 'https://learning-while-doing.onrender.com/';
   const appSel = document.getElementById('lwd-app');
-  const polSel = document.getElementById('lwd-policy');
   const play   = document.getElementById('lwd-play');
   const adv    = document.getElementById('lwd-advanced');
-  const humanOpt = polSel.querySelector('option[value="human"]');
 
   function rebuild() {
-    // Human is 1-D only. If the user picks the 2-D app, disable
-    // Human and swap the selection over to KG.
-    const is2D = appSel.value === 'cash_balance_2d';
-    humanOpt.disabled = is2D;
-    if (is2D && polSel.value === 'human') polSel.value = 'kg';
-
-    const qs = 'app=' + encodeURIComponent(appSel.value) +
-               '&policy=' + encodeURIComponent(polSel.value);
+    const qs = 'app=' + encodeURIComponent(appSel.value);
     play.href = BASE + '?' + qs + '&auto=1';
     adv.href  = BASE + '?' + qs;
   }
 
   appSel.addEventListener('change', rebuild);
-  polSel.addEventListener('change', rebuild);
   rebuild();
 })();
 </script>
