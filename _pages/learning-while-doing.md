@@ -148,7 +148,7 @@ For readers who would like a more in-depth treatment of the knowledge gradient, 
 
 <img src="/assets/images/learning-while-doing/knowledge-gradient-diagram.png"
      alt="Diagram: five candidate values of θ with their expected returns, with an improvement distribution above the fifth bar illustrating the expected-improvement definition of the knowledge gradient"
-     style="float:right; width:328px; max-width:45%; margin:0 0 0.75rem 1.25rem;">
+     style="float:right; width:492px; max-width:55%; margin:0 0 0.75rem 1.25rem;">
 
 The knowledge gradient was introduced by Peter Frazier in 2007 for offline learning problems, and later extended by Ilya Ryzhov to online learning. The logic behind the knowledge gradient is described in the video introducing the cash management game above, but a quick explanation uses the graphic to the right (from the video).
 
