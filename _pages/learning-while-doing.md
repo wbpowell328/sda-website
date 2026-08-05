@@ -13,6 +13,23 @@ This is an exercise in tuning a simple policy under real-world conditions, a pro
 
 For an introduction to the problem, watch the [short video here](https://tinyurl.com/LearningWhileDoing/).
 
+## The setup
+
+As you see from the video (which you need to watch), there are two policies for setting how much cash to keep on hand for redemptions:
+
+- The single-parameter version — This uses a fraction (say .07) of the total cash under management.
+- The two-parameter version — Use one parameter for the individual investors, and a second parameter for the institutional investors.
+
+We would like to determine which of these two policies are best, but both have parameters that need to be tuned. To do this, we have to choose a parameter adjustment policy from the pull-down list. Finally, there is a set of advanced parameters which can be ignored for now.
+
+"Playing the game" involves picking a value for the policy parameters (whether it is one or two). The game then simulates a number of days and reports the total performance, which is the gains from the stock market minus transaction costs.
+
+After one batch of observations, your chosen "parameter adjustment policy" will adjust the parameters, and run another batch. You can do this as often as you like. The game will report the performance for each batch, and the cumulative performance.
+
+You can hit restart and start over at any time.
+
+We recommend starting with the 1-parameter policy to get a feel for the game. Note that daily performance is very noisy, so you will learn virtually nothing from running 1 or even several weeks. Part of your challenge is to determine how long you should stay with a single parameter setting before updating it (we are not going to help you pick this). Don't be afraid to test intervals as long as 100 days, but remember — it takes 100 days to simulate 100 days in the field. This is the challenge of "learning while doing."
+
 ## To play the game
 
 Choose the **cash-management policy** you want to tune, then the **parameter-adjustment policy** that will do the tuning. Hit **Play the game** to launch.
