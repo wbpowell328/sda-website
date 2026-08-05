@@ -79,6 +79,28 @@ Pick a **cash-management policy**, then hit **Play the game**. Inside the game y
 })();
 </script>
 
+## How the game is played
+
+The game is controlled using the settings in the control bar that looks like:
+
+![Control bar with empty results — Starting point 0.1, Run 50 days, Repeat 0](/assets/images/learning-while-doing/control-bar-empty.png)
+
+The game starts by choosing initial values of the cash management parameters in the **Starting point** box. You might choose 0.10 for the single-parameter version, or (0.10, 0.10) for the two-parameter version.
+
+The system then simulates a number of days set in the **Run** box. If this box is set to 50, then it will simulate 50 days using the initial values for the policy parameters.
+
+The next pulldown menu provides a set of choices for the policy used to update the policy parameters. These parameter settings are only used in the next batch of simulations (e.g. the next 50 days).
+
+The **Repeat** box will repeat the process of updating the parameters, and simulating the next batch of days. If this is 0, then the model does a single simulation of the batch (50 days) and stops. The **Starting point** box will update to **Current point** and show the value that will be simulated if you perform another batch by hitting the button **One more**.
+
+After hitting the **Run** button, you might see something like:
+
+![Control bar after a run — Current point 0.2, Total days 100, Latest score $12,825, Cumulative score $26,204](/assets/images/learning-while-doing/control-bar-after-run.png)
+
+You can keep doing one more batch at a time by hitting **One more** (as long as **Repeat** is set to 0). If you set **Repeat** to 10, it will run another batch and update the parameters 10 times using the specified parameter-adjustment policy. The points that are selected at the end of each batch are shown in the graphic below.
+
+If you hit **Restart** it resets the game to the starting points, and zeroes out the boxes reporting the performance and number of days.
+
 ## What you will see
 
 The parameter-adjustment policies you can pick from:
