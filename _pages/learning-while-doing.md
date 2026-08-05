@@ -65,7 +65,7 @@ Choose the **cash-management policy** you want to tune, then the **parameter-adj
     <a id="lwd-advanced" href="#" target="_blank" rel="noopener"
        style="display:inline-block; padding:8px 12px; text-decoration:none;
               color:#5a4a35; font-size:0.9rem; border-bottom:1px dashed #a08b6a;">
-      Set advanced parameters first
+      Advanced parameters
     </a>
   </div>
   <p style="margin:0.9rem 0 0 0; font-size:0.85rem; color:#7a6a55;">
