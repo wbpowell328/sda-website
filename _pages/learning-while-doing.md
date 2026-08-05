@@ -146,9 +146,11 @@ For readers who would like a more in-depth treatment of the knowledge gradient, 
 
 ### How the knowledge gradient works
 
-![Diagram: five candidate values of θ with their expected returns, with an improvement distribution above the fifth bar illustrating the expected-improvement definition of the knowledge gradient](/assets/images/learning-while-doing/knowledge-gradient-diagram.png)
+<img src="/assets/images/learning-while-doing/knowledge-gradient-diagram.png"
+     alt="Diagram: five candidate values of θ with their expected returns, with an improvement distribution above the fifth bar illustrating the expected-improvement definition of the knowledge gradient"
+     style="float:right; width:328px; max-width:45%; margin:0 0 0.75rem 1.25rem;">
 
-The knowledge gradient was introduced by Peter Frazier in 2007 for offline learning problems, and later extended by Ilya Ryzhov to online learning. The logic behind the knowledge gradient is described in the video introducing the cash management game above, but a quick explanation uses the graphic above (from the video).
+The knowledge gradient was introduced by Peter Frazier in 2007 for offline learning problems, and later extended by Ilya Ryzhov to online learning. The logic behind the knowledge gradient is described in the video introducing the cash management game above, but a quick explanation uses the graphic to the right (from the video).
 
 Imagine we have five possible values of the parameter $\theta^{cash}$ that we are trying to optimize. Also imagine we have imperfect estimates, but for now we think the fourth value is best. We want to estimate the value of the information we would obtain if we tested the fifth value.
 
@@ -159,13 +161,3 @@ If we did many simulations using the fifth value of $\theta^{cash}$ (using our s
 There is a probability that the improvement is zero (shown as a big spike), and then there are probabilities that testing the fifth choice is an improvement. The knowledge gradient, then, is the expected increase in the value of the *best* choice.
 
 For an in-depth technical presentation of the knowledge gradient, see the [optimal learning](/optimal-learning/) page (see the sections that refer to "knowledge gradient").
-
-## Why it illustrates optimal learning
-
-This is a small, transparent instance of the core sequential-learning problem: you have a limited budget of experiments to reduce your uncertainty about an unknown function, and you have to choose *where* to experiment next. Pin the seed, run each mode in turn, and you can see — in one afternoon — the difference between exploring blindly, exploring informatively, and letting a Bayesian model tell you where the next dollar of experimentation buys the most information.
-
-The four policy modes correspond directly to the classes discussed on the [Optimal learning](/optimal-learning/) page.
-
-## Credits
-
-Based on code written by Jonathan Wong.
