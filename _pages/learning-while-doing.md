@@ -68,6 +68,16 @@ Pick a **cash-management policy**, then hit **Play the game**. Inside the game y
   const play   = document.getElementById('lwd-play');
   const adv    = document.getElementById('lwd-advanced');
 
+  // If the user came back from the game (Save-and-exit passes ?app=...),
+  // restore the dropdown to what they last had selected. Only accept
+  // values the dropdown actually knows about.
+  try {
+    const wanted = new URLSearchParams(window.location.search).get('app');
+    if (wanted && [...appSel.options].some(o => o.value === wanted)) {
+      appSel.value = wanted;
+    }
+  } catch (_) { /* no-op */ }
+
   function rebuild() {
     const qs = 'app=' + encodeURIComponent(appSel.value);
     play.href = BASE + '?' + qs + '&auto=1';
