@@ -5,13 +5,28 @@ permalink: /learning-while-doing/
 date: 2026-08-02
 ---
 
-## Introduction to the cash buffer game
+## Learning while doing — the cash management game
 
-A mutual-fund manager has to decide how much of the portfolio to hold in cash. Hold too little and a burst of investor redemptions forces expensive fire-sales; hold too much and you sacrifice returns on the cash cushion. There is a single control — the target cash-buffer ratio, $\theta$, expressed as a fraction of assets under management.
+The cash management game is an exercise in adaptively learning and making adjustments, a process we call "learning while doing." The problem is a real application, where a mutual fund manager has to decide how much cash to keep on hand to respond to redemptions. The original motivation of the problem was revealed in an email from a mutual fund manager to a professor who taught one of his courses for his executive MBA.
 
-This is an exercise in tuning a simple policy under real-world conditions, a process we call "Learning while doing."
+The game involves trying to determine the right fraction of his assets under management to keep in cash. We start with a simpler problem where there is a single parameter to optimize, and then transition to a richer problem which involves two parameters.
+
+This game describes a very real-world solution that can be applied to virtually any process that would benefit from adapting to conditions in the field. Players will learn about:
+
+- Creating and updating beliefs about the process.
+- Choosing among methods ("policies") for updating tunable parameters (such as the fraction of assets to hold in cash).
+- Recognizing that these policies have their own parameters.
+- Understanding how noise dramatically increases the complexity of even simple problems such as this.
 
 For an introduction to the problem, watch the [short video here](https://tinyurl.com/LearningWhileDoing/).
+
+Our presentation is divided into the following sections:
+
+- [**The setup**](#the-setup) — a quick introduction to running the game.
+- [**Playing the game**](#playing-the-game) — choose which version of the game you want to play (1 or 2 parameters), and edit the parameters that control the behavior of the game (not necessary for initial runs).
+- [**How the game is played**](#how-the-game-is-played) — a more in-depth description of how to run the game.
+- [**Parameter adjustment policies**](#parameter-adjustment-policies) — an overview of the methods you can test for adjusting the parameters that govern how much cash is held.
+- [**Belief formation**](#belief-formation) — an introduction to the issues that arise when creating and updating beliefs into how new information changes what we think about the performance function.
 
 ## The setup
 
@@ -30,7 +45,7 @@ You can hit restart and start over at any time.
 
 We recommend starting with the 1-parameter policy to get a feel for the game. Note that daily performance is very noisy, so you will learn virtually nothing from running 1 or even several weeks. Part of your challenge is to determine how long you should stay with a single parameter setting before updating it (we are not going to help you pick this). Don't be afraid to test intervals as long as 100 days, but remember — it takes 100 days to simulate 100 days in the field. This is the challenge of "learning while doing."
 
-## To play the game
+## Playing the game
 
 Pick a **cash-management policy**, then hit **Play the game**. Inside the game you'll choose the parameter-adjustment policy on the control bar.
 
@@ -171,3 +186,7 @@ If we did many simulations using the fifth value of $\theta^{cash}$ (using our s
 There is a probability that the improvement is zero (shown as a big spike), and then there are probabilities that testing the fifth choice is an improvement. The knowledge gradient, then, is the expected increase in the value of the *best* choice.
 
 For an in-depth technical presentation of the knowledge gradient, see the [optimal learning](/optimal-learning/) page (see the sections that refer to "knowledge gradient").
+
+## Belief formation
+
+*(section content to come)*
