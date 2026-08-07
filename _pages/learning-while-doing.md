@@ -17,6 +17,7 @@ This game describes a very real-world solution that can be applied to virtually 
 - Choosing among methods ("policies") for updating tunable parameters (such as the fraction of assets to hold in cash).
 - Recognizing that these policies have their own parameters.
 - Understanding how noise dramatically increases the complexity of even simple problems such as this.
+- Learning in the field is slow; it takes a day to observe a day.
 
 For an introduction to the problem, watch the [short video here](https://tinyurl.com/LearningWhileDoing/).
 
