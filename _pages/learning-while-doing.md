@@ -1,11 +1,9 @@
 ---
 layout: page
-title: "Learning while doing — the cash buffer game"
+title: "Learning while doing — the cash management game"
 permalink: /learning-while-doing/
 date: 2026-08-02
 ---
-
-## Learning while doing — the cash management game
 
 The cash management game is an exercise in adaptively learning and making adjustments, a process we call "learning while doing." The problem is a real application, where a mutual fund manager has to decide how much cash to keep on hand to respond to redemptions. The original motivation of the problem was revealed in an email from a mutual fund manager to a professor who taught one of his courses for his executive MBA.
 
