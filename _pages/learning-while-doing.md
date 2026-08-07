@@ -66,7 +66,7 @@ Pick a **cash-management policy**, then hit **Play the game**. Inside the game y
     <a id="lwd-advanced" href="#" rel="noopener"
        style="display:inline-block; padding:8px 12px; text-decoration:none;
               color:#5a4a35; font-size:0.9rem; border-bottom:1px dashed #a08b6a;">
-      Advanced parameters
+      Game parameters
     </a>
   </div>
   <p style="margin:0.9rem 0 0 0; font-size:0.85rem; color:#7a6a55;">
