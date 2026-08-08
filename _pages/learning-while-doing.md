@@ -56,14 +56,14 @@ Pick a **cash-management policy**, then hit **Play the game**. Inside the game y
       Play the game
     </a>
     <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.9rem; color:#5a4a35;">
-      <span style="font-weight:600;">Cash-management policy:</span>
+      <span style="font-weight:600;">Choose game:</span>
       <select id="lwd-app" style="padding:6px 8px; border:1px solid #c9b891; border-radius:4px; font-size:0.95rem; background:#fff;">
         <option value="cash_balance">Cash balance — 1 parameter (θ)</option>
         <option value="cash_balance_2d">Cash balance — 2 parameters (θ_ind, θ_inst)</option>
       </select>
     </label>
     <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.9rem; color:#5a4a35;">
-      <span style="font-weight:600;">Parameters:</span>
+      <span style="font-weight:600;">Parameter panel:</span>
       <select id="lwd-panel" style="padding:6px 8px; border:1px solid #c9b891; border-radius:4px; font-size:0.95rem; background:#fff;">
         <option value="Default">Default</option>
       </select>
