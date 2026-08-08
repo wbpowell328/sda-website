@@ -46,7 +46,7 @@ We recommend starting with the 1-parameter policy to get a feel for the game. No
 
 ## Playing the game
 
-Pick a **cash-management policy**, then hit **Play the game**. Inside the game you'll choose the parameter-adjustment policy on the control bar.
+Pick a **game**, then hit **Play the game**. Inside the game you'll choose the parameter-adjustment policy on the control bar.
 
 <div style="background:#faf5e6; border-left:4px solid #c9621e; padding:1.25rem 1.5rem; margin:1.25rem 0; border-radius:6px;">
   <div style="display:flex; flex-wrap:wrap; gap:0.75rem 1rem; align-items:center;">
