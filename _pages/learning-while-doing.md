@@ -62,6 +62,12 @@ Pick a **cash-management policy**, then hit **Play the game**. Inside the game y
         <option value="cash_balance_2d">Cash balance — 2 parameters (θ_ind, θ_inst)</option>
       </select>
     </label>
+    <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.9rem; color:#5a4a35;">
+      <span style="font-weight:600;">Parameters:</span>
+      <select id="lwd-panel" style="padding:6px 8px; border:1px solid #c9b891; border-radius:4px; font-size:0.95rem; background:#fff;">
+        <option value="Default">Default</option>
+      </select>
+    </label>
     <span style="flex:1;"></span>
     <a id="lwd-advanced" href="#" rel="noopener"
        style="display:inline-block; padding:8px 12px; text-decoration:none;
@@ -77,28 +83,100 @@ Pick a **cash-management policy**, then hit **Play the game**. Inside the game y
 
 <script>
 (function () {
-  const BASE   = 'https://learning-while-doing.onrender.com/';
-  const appSel = document.getElementById('lwd-app');
-  const play   = document.getElementById('lwd-play');
-  const adv    = document.getElementById('lwd-advanced');
+  const BASE     = 'https://learning-while-doing.onrender.com/';
+  const appSel   = document.getElementById('lwd-app');
+  const panelSel = document.getElementById('lwd-panel');
+  const play     = document.getElementById('lwd-play');
+  const adv      = document.getElementById('lwd-advanced');
 
-  // If the user came back from the game (Save-and-exit passes ?app=...),
-  // restore the dropdown to what they last had selected. Only accept
-  // values the dropdown actually knows about.
+  // Panels live in the GAME's localStorage (onrender.com), which this
+  // page can't read directly (different origin). Instead, Save-and-exit
+  // from the game appends ?panels=name1,name2&active=NAME to the
+  // return URL. We mirror that into landing-origin localStorage keyed
+  // by app so the dropdown stays populated across landing visits.
+  //
+  //   { app_name: { panels: [...], active: 'name' }, ... }
+  const LANDING_PANELS_KEY = 'lwd_landing_panels_v1';
+
+  function readMirror() {
+    try {
+      const raw = localStorage.getItem(LANDING_PANELS_KEY);
+      const parsed = raw ? JSON.parse(raw) : {};
+      return (parsed && typeof parsed === 'object') ? parsed : {};
+    } catch (_) { return {}; }
+  }
+
+  function writeMirror(m) {
+    try { localStorage.setItem(LANDING_PANELS_KEY, JSON.stringify(m)); }
+    catch (_) { /* private mode / quota */ }
+  }
+
+  const mirror = readMirror();
+
+  // If the user came back from the game (Save-and-exit passes
+  // ?app=…&panels=…&active=…), restore the app dropdown AND update
+  // the panels mirror for that app.
+  let wantedApp = null;
   try {
-    const wanted = new URLSearchParams(window.location.search).get('app');
-    if (wanted && [...appSel.options].some(o => o.value === wanted)) {
-      appSel.value = wanted;
+    const q = new URLSearchParams(window.location.search);
+    wantedApp = q.get('app');
+    const panelsCsv = q.get('panels');
+    const active    = q.get('active');
+    if (wantedApp && (panelsCsv || active)) {
+      const cur = mirror[wantedApp] || { panels: ['Default'], active: 'Default' };
+      if (panelsCsv) {
+        cur.panels = panelsCsv.split(',')
+          .map(s => s.trim())
+          .filter(Boolean);
+        if (!cur.panels.includes('Default')) cur.panels.unshift('Default');
+      }
+      if (active) cur.active = active;
+      mirror[wantedApp] = cur;
+      writeMirror(mirror);
     }
   } catch (_) { /* no-op */ }
+  if (wantedApp && [...appSel.options].some(o => o.value === wantedApp)) {
+    appSel.value = wantedApp;
+  }
+
+  function repopulatePanels() {
+    const app = appSel.value;
+    const entry = mirror[app] || { panels: ['Default'], active: 'Default' };
+    // Rebuild the panel <select> from the mirror for this app.
+    while (panelSel.firstChild) panelSel.removeChild(panelSel.firstChild);
+    for (const name of entry.panels) {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      panelSel.appendChild(opt);
+    }
+    if ([...panelSel.options].some(o => o.value === entry.active)) {
+      panelSel.value = entry.active;
+    }
+  }
 
   function rebuild() {
-    const qs = 'app=' + encodeURIComponent(appSel.value);
+    const qs = 'app=' + encodeURIComponent(appSel.value)
+             + '&panel=' + encodeURIComponent(panelSel.value);
     play.href = BASE + '?' + qs + '&auto=1';
     adv.href  = BASE + '?' + qs;
   }
 
-  appSel.addEventListener('change', rebuild);
+  appSel.addEventListener('change', () => {
+    // App changed — re-populate the panels list for the new app,
+    // then refresh the Play / Game-parameters links.
+    repopulatePanels();
+    rebuild();
+  });
+  panelSel.addEventListener('change', () => {
+    // Remember the newly-picked panel as the active one for this app.
+    const app = appSel.value;
+    mirror[app] = mirror[app] || { panels: ['Default'], active: 'Default' };
+    mirror[app].active = panelSel.value;
+    writeMirror(mirror);
+    rebuild();
+  });
+  repopulatePanels();
   rebuild();
 })();
 </script>
