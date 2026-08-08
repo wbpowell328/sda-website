@@ -48,7 +48,7 @@ We recommend starting with the 1-parameter policy to get a feel for the game. No
 
 Pick a **game**, then hit **Play the game**. Inside the game you'll choose the parameter-adjustment policy on the control bar.
 
-<div style="background:#faf5e6; border-left:4px solid #c9621e; padding:1.25rem 1.5rem; margin:1.25rem 0; border-radius:6px;">
+<div style="background:#faf5e6; border-left:4px solid #c9621e; padding:1.25rem 1.5rem; margin:1.25rem -2rem; border-radius:6px;">
   <div style="display:flex; flex-wrap:wrap; gap:0.75rem 1rem; align-items:center;">
     <a id="lwd-play" href="#" rel="noopener"
        style="display:inline-block; background:#c9621e; color:#fff; padding:8px 20px;
@@ -68,7 +68,6 @@ Pick a **game**, then hit **Play the game**. Inside the game you'll choose the p
         <option value="Default">Default</option>
       </select>
     </label>
-    <span style="flex:1;"></span>
     <a id="lwd-advanced" href="#" rel="noopener"
        style="display:inline-block; padding:8px 12px; text-decoration:none;
               color:#5a4a35; font-size:0.9rem; border-bottom:1px dashed #a08b6a;">
