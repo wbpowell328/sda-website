@@ -5,7 +5,9 @@ permalink: /permissions/
 date: 2026-08-09
 ---
 
-The material on this website is made available primarily for teaching and research use. If you would like to draw on it in a publication, class, or presentation, please cite the source so readers can find it.
+This website is designed as a public resource. You may use any of this material for your teaching without attribution, regardless of whether you are copying material directly into a lecture, or blending the information into your existing teaching material.
+
+If you are using material in a publication that you feel should be attributed to the website, use the guidance below.
 
 ## How to cite
 
@@ -33,4 +35,4 @@ Cite the book itself; the online reader is just one way to access it.
 
 ## Other uses
 
-If you would like to reproduce a figure, adapt case-study material, translate content, or make other use of the material beyond ordinary citation, please email me at [wbpowell328@gmail.com](mailto:wbpowell328@gmail.com) — I am generally happy to grant permission for teaching and non-commercial research use.
+If you would like to reproduce a figure, adapt case-study material, translate content, or make other use of the material beyond ordinary citation, please email me at [wbpowell328@gmail.com](mailto:wbpowell328@gmail.com) — I am generally happy to grant permission for non-commercial use.
