@@ -16,6 +16,8 @@ This webpage offers three ideas to help with teaching (more to come):
 - [Expanding the scope of an existing lecture](#expanding-the-scope-of-an-existing-lecture)
 - [Framing a lecture from a guest speaker](#framing-a-lecture-from-a-guest-speaker)
 - [Case studies on framing](#case-studies-on-framing)
+  - [Decision framing questions](#framing-questions)
+  - [List of decision framing cases](#list-of-cases)
 
 ## Expanding the scope of an existing lecture
 
@@ -49,7 +51,29 @@ A powerful approach to illustrating the process of framing decision problems is 
 
 Each case features a standard list of decision framing questions (given below). There is nothing special about these cases. Our feeling is that the decision framing questions could be added to the back of any case study that describes a setting where we want to improve some product or process.
 
-Feel free to download any of the cases for use in classes or simply to obtain a general understanding of the framing process. Or, copy the decision framing questions (at the end of each case, or at the bottom of this webpage) that you can attach to any case, or for use in real problems.
+Feel free to download any of the cases for use in classes or simply to obtain a general understanding of the framing process. Or, copy the decision framing questions (at the end of each case, or in the section just below) that you can attach to any case, or for use in real problems.
+
+### Decision framing questions {#framing-questions}
+
+Each of the cases below contains a set of questions that challenge students to frame the case by identifying performance metrics, types of decisions, and types of uncertainties. These questions, listed below, are the same for each case. There are links to relevant supporting information on the SDA website.
+
+1. Identify the different metrics that can be used to evaluate every aspect of the performance of the system. Organize these into a pyramid to indicate the relative importance, following the style given [here](/framingproblems/#performance-metrics).
+
+2. What are the types of decisions? Use the [list of decision types here as a guide](/decisionsdecisions/#types-of-decision-settings), illustrated by the [applications here](/decisionsdecisions/#from-apps-to-types).
+
+3. Fill out the performance metrics along the top (from most to least important) followed by the list of decisions (in any order). Use your judgment to assess whether the impact of each decision on each metric is H (high impact), M (medium), L (low) or N (none). Finally, use the resulting matrix to rank the decisions in terms of their impact on the most important metrics. You can do this with the [interactive decision framing tool](/decision-framing-tool/) (build a pyramid, list decisions, and fill in the matrix online), or with the [downloadable spreadsheet template](https://tinyurl.com/InteractionMatrix/) if you'd rather not create an account.
+
+4. What are the different sources of uncertainty? Use the [12 categories of uncertainty here as a guide](/modeling-uncertainty/#categories).
+
+5. Repeat the exercise in (3), but this time using uncertainties instead of decisions.
+   - a) Which sources of uncertainty would be captured using average performance over time?
+   - b) Which sources of uncertainty represent forms of risk that are not properly captured using averages?
+
+6. Choose the single decision that seems to have the highest impact on the most important metric.
+   - a) What approach do you think you would use to make this decision?
+   - b) What data appears to be necessary to make this decision, including the calculation of any performance metrics where the decision would have a high or medium impact?
+
+7. Using the same decision you identified in (6), identify the people, departments, groups or organizations that you would need to work with to implement the decision.
 
 ### List of decision framing cases {#list-of-cases}
 
@@ -90,25 +114,3 @@ Feel free to download any of the cases for use in classes or simply to obtain a 
 **[Riverton County — Public Health Response](/assets/cases/Riverton_County_Public_Health_Case.docx).** A county health commissioner must decide how to respond when local overdose deaths remain high even as the national crisis appears to be easing.
 
 **[Summit Ridge Asset Management — The Monday Morning Cash Decision](/assets/cases/Summit_Ridge_Mutual_Fund_Cash_Case.docx).** A mutual fund CIO must decide how to manage investor flows, liquidity, portfolio performance, and trading pressure after a weekend of bad news.
-
-### Decision framing questions {#framing-questions}
-
-Each of the cases above contains a set of questions that challenge students to frame the case by identifying performance metrics, types of decisions, and types of uncertainties. These questions, listed below, are the same for each case. There are links to relevant supporting information on the SDA website.
-
-1. Identify the different metrics that can be used to evaluate every aspect of the performance of the system. Organize these into a pyramid to indicate the relative importance, following the style given [here](/framingproblems/#performance-metrics).
-
-2. What are the types of decisions? Use the [list of decision types here as a guide](/decisionsdecisions/#types-of-decision-settings), illustrated by the [applications here](/decisionsdecisions/#from-apps-to-types).
-
-3. Fill out the performance metrics along the top (from most to least important) followed by the list of decisions (in any order). Use your judgment to assess whether the impact of each decision on each metric is H (high impact), M (medium), L (low) or N (none). Finally, use the resulting matrix to rank the decisions in terms of their impact on the most important metrics. You can do this with the [interactive decision framing tool](/decision-framing-tool/) (build a pyramid, list decisions, and fill in the matrix online), or with the [downloadable spreadsheet template](https://tinyurl.com/InteractionMatrix/) if you'd rather not create an account.
-
-4. What are the different sources of uncertainty? Use the [12 categories of uncertainty here as a guide](/modeling-uncertainty/#categories).
-
-5. Repeat the exercise in (3), but this time using uncertainties instead of decisions.
-   - a) Which sources of uncertainty would be captured using average performance over time?
-   - b) Which sources of uncertainty represent forms of risk that are not properly captured using averages?
-
-6. Choose the single decision that seems to have the highest impact on the most important metric.
-   - a) What approach do you think you would use to make this decision?
-   - b) What data appears to be necessary to make this decision, including the calculation of any performance metrics where the decision would have a high or medium impact?
-
-7. Using the same decision you identified in (6), identify the people, departments, groups or organizations that you would need to work with to implement the decision.
