@@ -51,13 +51,13 @@ How did I handle all those senior theses? In my last decade, I refined the proce
 
 4. **Reviewing the model** — Students have the most difficulty with mathematical modeling. I recommend that advisers review the first draft of the modeling chapter that a student writes to check the notation. The most subtle aspect of a sequential decision problem is modeling the flow of information, but the examples in the [SDAM book](/sdam/) illustrate a style that makes modeling information fairly straightforward.
 
-5. At this point, the thesis should follow the style of the chapters in the [SDAM book](/sdam/) above. After modeling the five elements, the next step is to model uncertainty, which can be as simple as using historical data (as with the training of any statistical model), or subtle for a (typically advanced) student who wants to develop a mathematical model. Modeling uncertainty may require nothing more than finding a historical dataset, or running a simple spreadsheet simulation. Or, it can evolve into surprisingly sophisticated mathematics — it all depends on the background, skill and interests of the student.
+5. **Modeling uncertainty** — At this point, the thesis should follow the style of the chapters in the [SDAM book](/sdam/) above. After modeling the five elements, the next step is to model uncertainty, which can be as simple as using historical data (as with the training of any statistical model), or subtle for a (typically advanced) student who wants to develop a mathematical model. Modeling uncertainty may require nothing more than finding a historical dataset, or running a simple spreadsheet simulation. Or, it can evolve into surprisingly sophisticated mathematics — it all depends on the background, skill and interests of the student.
 
-6. The final modeling step involves designing, tuning, and comparing policies for making decisions. See [here](/policies/) for a thorough discussion of policies. Remember — always start with the simplest policy. As with modeling uncertainty, designing policies can be fairly simple exercises, or they can challenge the most sophisticated Ph.D. student.
+6. **Designing policies** — The final modeling step involves designing, tuning, and comparing policies for making decisions. See [here](/policies/) for a thorough discussion of policies. Remember — always start with the simplest policy. As with modeling uncertainty, designing policies can be fairly simple exercises, or they can challenge the most sophisticated Ph.D. student.
 
-7. The research would normally close with doing some form of policy study to conclude the research.
+7. **Perform policy study** — The research would normally close with doing some form of policy study to conclude the research.
 
-8. During the year, I would set up office hours each week (typically Friday morning) where students could sign up to meet with me. It is important to make sure a student has a reasonable topic and that the mathematical model is sound (the [SDAM book](/sdam/) was my most useful reference).
+8. **Student meetings** — During the year, I would set up office hours each week (typically Friday morning) where students could sign up to meet with me. It is important to make sure a student has a reasonable topic and that the mathematical model is sound (the [SDAM book](/sdam/) was my most useful reference).
 
 ## My undergraduate senior theses (2010-2020)
 
