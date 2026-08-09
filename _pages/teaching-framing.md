@@ -13,9 +13,9 @@ This webpage contains some ideas on how to teach decision framing, with a focus 
 
 This webpage offers three ideas to help with teaching (more to come):
 
-- Expanding the scope of an existing lecture
-- Framing a lecture from a guest speaker
-- Case studies on framing
+- [Expanding the scope of an existing lecture](#expanding-the-scope-of-an-existing-lecture)
+- [Framing a lecture from a guest speaker](#framing-a-lecture-from-a-guest-speaker)
+- [Case studies on framing](#case-studies-on-framing)
 
 ## Expanding the scope of an existing lecture
 
