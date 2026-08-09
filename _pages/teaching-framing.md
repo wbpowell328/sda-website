@@ -1,13 +1,13 @@
 ---
 layout: page
-title: "How to teach framing"
+title: "How to teach decision framing"
 permalink: /teaching-framing/
 date: 2026-07-28
 ---
 
 Most areas of business, economics, finance, science and engineering are continually addressing problems where the goal is to do something better.
 
-I am going to approach the process of teaching how to frame problems from the perspective of business students who face an endless array of business cases that are familiar to a broad audience, but the ideas can be applied to any setting.
+I am going to approach the process of teaching how to frame decision problems from the perspective of business students who face an endless array of business cases that are familiar to a broad audience, but the ideas can be applied to any setting.
 
 The framing process always starts by addressing the three framing questions we cover [here](https://warrenpowell.org/framingproblems/):
 
