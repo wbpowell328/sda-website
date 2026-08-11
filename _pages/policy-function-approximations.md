@@ -13,6 +13,7 @@ PFAs include *any* function that might be used in machine learning, which means 
 1. **Lookup tables** — rules of the form "if in this state, take this action."
 2. **Parametric models** — linear and nonlinear models, including neural networks.
 3. **Nonparametric models** — local approximations that might be constant, linear, or nonlinear and capture only local behavior. Examples: kernel regression, radial basis functions, splines, support vector machines, deep neural networks.
+4. **Large language models** — while technically a form of neural networks, LLMs deserve their own category because of how text is handled. LLMs are being used to make a wide range of discrete choices (patient treatments, choice of optimization model, catalysts, products, …) that are effectively decisions, but where the choices are made based on the training behind the LLM.
 
 ## Lookup tables
 
