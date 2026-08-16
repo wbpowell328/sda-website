@@ -64,7 +64,7 @@ Each of the cases above contains a set of questions that challenge students to f
 
 2. What are the types of decisions? Use the [list of decision types here as a guide](/decisionsdecisions/#types-of-decision-settings), illustrated by the [applications here](/decisionsdecisions/#from-apps-to-types).
 
-3. Fill out the performance metrics along the top (from most to least important) followed by the list of decisions (in any order). Use your judgment to assess whether the impact of each decision on each metric is H (high impact), M (medium), L (low) or N (none). Finally, use the resulting matrix to rank the decisions in terms of their impact on the most important metrics. You can do this with the [interactive decision framing tool](/decision-framing-tool/) (build a pyramid, list decisions, and fill in the matrix online), or with the [downloadable spreadsheet template](https://tinyurl.com/InteractionMatrix/) if you'd rather not create an account.
+3. Fill out the performance metrics along the top (from most to least important) followed by the list of decisions (in any order). Use your judgment to assess whether the impact of each decision on each metric is H (high impact), M (medium), L (low) or N (none). Finally, use the resulting matrix to rank the decisions in terms of their impact on the most important metrics. You can do this with the [interactive decision framing tools](/decision-framing-tools/) (build a pyramid, list decisions, and fill in the matrix online), or with the [downloadable spreadsheet template](https://tinyurl.com/InteractionMatrix/) if you'd rather not create an account.
 
 4. What are the different sources of uncertainty? Use the [12 categories of uncertainty here as a guide](/modeling-uncertainty/#categories).
 
