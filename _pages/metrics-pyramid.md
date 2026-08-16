@@ -14,6 +14,11 @@ date: 2026-08-11
 </ol>
 <p>Everything runs client-side; your work saves in the browser automatically. The <em>File</em> menu below lets you keep multiple named documents, and each contains the pyramid plus both matrices.</p>
 
+<p style="background:#faf5e6; border-left: 4px solid #c9621e; padding: 10px 16px; border-radius: 3px;">
+  <strong>New — <a href="#ask-professor-powell">Ask Professor Powell</a> to draft your framing.</strong>
+  Skip to the bottom to describe your problem in a sentence or two (or drop in a case file, or a URL) and get all three tools filled in — you edit and refine from there.
+</p>
+
 <div class="fp-toolbar">
   <details class="fp-menu" id="fp-file-menu">
     <summary>File ▾</summary>
@@ -125,6 +130,47 @@ date: 2026-08-11
       <div id="fp-umatrix"></div>
     </div>
   </div>
+</div>
+
+<h2 id="ask-professor-powell" class="fp-section-h2">Ask Professor Powell</h2>
+<p>Describe a decision problem in a sentence or two, or drop in a case document (PDF, DOCX, TXT, MD) or point at a URL. The bot will draft a first-cut framing — metrics pyramid, decision matrix, uncertainty matrix, all pre-scored — and drop it into the three tools above for you to review and edit. Everything the bot produces is a starting point, not a final answer; the point of the tools is that <em>you</em> refine it.</p>
+
+<div class="fp-bot-card">
+  <div class="fp-bot-row">
+    <label for="fp-bot-desc" class="fp-bot-label">Describe your problem</label>
+    <textarea id="fp-bot-desc" rows="4" spellcheck="true"
+      placeholder="e.g. A regional pharmacy chain has to decide, each week, how much of a slow-moving cold-and-flu medication to keep in each of 40 stores given uncertain seasonal demand, expiring inventory, and a shared central warehouse..."></textarea>
+  </div>
+
+  <div class="fp-bot-row-inline">
+    <div class="fp-bot-inline">
+      <label for="fp-bot-url" class="fp-bot-label">…or a URL to a case / description</label>
+      <input type="url" id="fp-bot-url" placeholder="https://warrenpowell.org/assets/cases/Northstar_Living_Inventory_Case.docx" />
+    </div>
+    <div class="fp-bot-inline">
+      <label for="fp-bot-file" class="fp-bot-label">…or upload a file (PDF, DOCX, TXT, MD)</label>
+      <input type="file" id="fp-bot-file" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown" />
+    </div>
+  </div>
+
+  <div class="fp-bot-controls">
+    <label class="fp-bot-size">
+      <span>Framing size:</span>
+      <select id="fp-bot-size">
+        <option value="small">Small — 4 metrics, 3 decisions, 3 uncertainties</option>
+        <option value="medium" selected>Medium — 6 metrics, 5 decisions, 5 uncertainties</option>
+        <option value="large">Large — 10 metrics, 8 decisions, 8 uncertainties</option>
+      </select>
+    </label>
+    <div class="fp-bot-actions">
+      <button type="button" id="fp-bot-generate">Ask Professor Powell</button>
+      <button type="button" id="fp-bot-clear" title="Clear the description, URL, and file inputs">Clear inputs</button>
+    </div>
+  </div>
+
+  <p class="fp-bot-caveat"><strong>Anything the bot produces will replace your current workspace.</strong> If you want to keep what's on screen now, use <em>File → Save as…</em> first.</p>
+
+  <div id="fp-bot-status" class="fp-bot-status" role="status" aria-live="polite"></div>
 </div>
 
 <style>
@@ -501,6 +547,80 @@ date: 2026-08-11
     .fp-pyramid { max-width: 6in; margin: 0 auto; }
     .fp-drop-zone { border: 1px solid #999; background: transparent; }
     .fp-chip { border-color: #333; box-shadow: none; }
+  }
+
+  /* ── Ask Professor Powell card ─────────────────────────────── */
+  .fp-bot-card {
+    background: #faf5e6;
+    border: 1px solid #c9b891;
+    border-radius: 6px;
+    padding: 16px;
+    margin: 16px 0 32px 0;
+  }
+  .fp-bot-row { margin-bottom: 12px; }
+  .fp-bot-row textarea {
+    width: 100%; box-sizing: border-box;
+    padding: 8px; font-family: inherit; font-size: 0.95rem;
+    border: 1px solid #c9b891; border-radius: 4px;
+    background: #fff; color: #3a2f22;
+    resize: vertical;
+  }
+  .fp-bot-row-inline {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    margin-bottom: 12px;
+  }
+  @media (max-width: 640px) {
+    .fp-bot-row-inline { grid-template-columns: 1fr; }
+  }
+  .fp-bot-inline { display: flex; flex-direction: column; }
+  .fp-bot-label {
+    font-size: 0.9rem; font-weight: 600; color: #5a4a35;
+    margin-bottom: 4px;
+  }
+  .fp-bot-inline input[type="url"],
+  .fp-bot-inline input[type="file"] {
+    width: 100%; box-sizing: border-box;
+    padding: 6px 8px; font-family: inherit; font-size: 0.9rem;
+    border: 1px solid #c9b891; border-radius: 4px;
+    background: #fff; color: #3a2f22;
+  }
+  .fp-bot-controls {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap; margin: 8px 0;
+  }
+  .fp-bot-size {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.9rem; color: #5a4a35;
+  }
+  .fp-bot-size select {
+    padding: 4px 6px; font-family: inherit; font-size: 0.9rem;
+    border: 1px solid #c9b891; border-radius: 4px;
+    background: #fff; color: #3a2f22;
+  }
+  .fp-bot-actions { display: flex; gap: 8px; }
+  .fp-bot-actions button {
+    padding: 8px 16px; font-size: 0.95rem;
+    background: #c9621e; color: #fff;
+    border: 1px solid #a24e15; border-radius: 4px;
+    cursor: pointer; font-weight: 600;
+  }
+  .fp-bot-actions button:hover:not(:disabled) { background: #a24e15; }
+  .fp-bot-actions button:disabled { opacity: 0.55; cursor: not-allowed; }
+  .fp-bot-actions button#fp-bot-clear {
+    background: #fff; color: #5a4a35; border-color: #c9b891; font-weight: 500;
+  }
+  .fp-bot-actions button#fp-bot-clear:hover:not(:disabled) { background: #f0e5c8; }
+  .fp-bot-caveat {
+    margin: 6px 0 0 0; font-size: 0.85rem; color: #7a6a55;
+  }
+  .fp-bot-status {
+    margin-top: 10px; min-height: 1.2em; font-size: 0.9rem; color: #5a4a35;
+  }
+  .fp-bot-status.fp-bot-status-working {
+    color: #c9621e; font-weight: 600;
+  }
+  .fp-bot-status.fp-bot-status-error {
+    color: #a1250f; font-weight: 600;
   }
 </style>
 
@@ -1274,6 +1394,133 @@ date: 2026-08-11
     flashStatus._t = setTimeout(() => { el.textContent = ''; }, 2500);
   }
 
+  // ── Ask Professor Powell ────────────────────────────────────
+  // One-shot bridge to the /framing endpoint on castle-chatbot.onrender.com.
+  // Sends description + optional URL + optional file, receives a full
+  // framing JSON, drops it into the workspace. Doesn't set a save-target
+  // (currentName stays null) so the user hits Save-as… if they want to keep
+  // the AI's draft; the banner shows a soft "AI draft" label meanwhile.
+  const FRAMING_URL = 'https://castle-chatbot.onrender.com/framing';
+  function setBotStatus(msg, kind) {
+    const el = $('#fp-bot-status');
+    if (!el) return;
+    el.textContent = msg || '';
+    el.classList.remove('fp-bot-status-working', 'fp-bot-status-error');
+    if (kind === 'working') el.classList.add('fp-bot-status-working');
+    if (kind === 'error')   el.classList.add('fp-bot-status-error');
+  }
+  // Some validation before we ship the framing into state. The endpoint uses
+  // tool_use so the shape is enforced, but the model can still hand back a
+  // metric key in `assignments` that isn't in `metrics` — normalize any drift
+  // instead of showing an empty pyramid.
+  function coerceFraming(f) {
+    if (!f || typeof f !== 'object') throw new Error('Empty framing');
+    const metrics       = Array.isArray(f.metrics)       ? f.metrics.filter(Boolean).map(String)       : [];
+    const decisions     = Array.isArray(f.decisions)     ? f.decisions.filter(Boolean).map(String)     : [];
+    const uncertainties = Array.isArray(f.uncertainties) ? f.uncertainties.filter(Boolean).map(String) : [];
+    if (metrics.length === 0)   throw new Error('Framing has no metrics');
+    if (decisions.length === 0) throw new Error('Framing has no decisions');
+
+    // Rebuild assignments so only known metrics survive; clamp tier to 1..4.
+    const rawAssign = (f.assignments && typeof f.assignments === 'object') ? f.assignments : {};
+    const assignments = {};
+    metrics.forEach((m) => {
+      const t = Number(rawAssign[m]);
+      if (Number.isFinite(t) && t >= 1 && t <= 4) assignments[m] = Math.round(t);
+    });
+    // If model forgot to place Tier 1, promote the first metric so the
+    // pyramid at least has a top tier.
+    if (!Object.values(assignments).includes(1) && metrics.length) {
+      assignments[metrics[0]] = 1;
+    }
+
+    const norm = (mat, rows) => {
+      const out = {};
+      if (mat && typeof mat === 'object') {
+        rows.forEach((rowName) => {
+          const src = mat[rowName];
+          if (src && typeof src === 'object') {
+            const row = {};
+            metrics.forEach((m) => {
+              const v = String(src[m] || '').toUpperCase();
+              if (v === 'H' || v === 'M' || v === 'L' || v === 'N') row[m] = v;
+            });
+            if (Object.keys(row).length) out[rowName] = row;
+          }
+        });
+      }
+      return out;
+    };
+
+    return {
+      metrics,
+      assignments,
+      decisions,
+      matrix: norm(f.matrix, decisions),
+      uncertainties,
+      uMatrix: norm(f.uMatrix, uncertainties),
+    };
+  }
+  function applyFraming(framing, sourceLabel) {
+    state = normalizeState(coerceFraming(framing));
+    setCurrentName(null);                                  // AI drafts have no save-target
+    setDocTitle('AI draft — ' + (sourceLabel || 'Ask Professor Powell'));
+    $('#fp-metrics-input').value       = state.metrics.join('\n');
+    $('#fp-decisions-input').value     = state.decisions.join('\n');
+    $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
+    render();
+    renderAllMatrices();
+    autoSave();
+    // Scroll the user back up to the pyramid so they see the result.
+    const anchor = document.getElementById('metrics-pyramid-tool');
+    if (anchor && anchor.scrollIntoView) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  async function runFramingRequest() {
+    const desc = $('#fp-bot-desc').value.trim();
+    const url  = $('#fp-bot-url').value.trim();
+    const file = $('#fp-bot-file').files && $('#fp-bot-file').files[0];
+    const size = $('#fp-bot-size').value || 'medium';
+    if (!desc && !url && !file) {
+      setBotStatus('Add a description, a URL, or a file first.', 'error');
+      return;
+    }
+    const btn = $('#fp-bot-generate');
+    btn.disabled = true;
+    const originalLabel = btn.textContent;
+    btn.textContent = 'Working…';
+    setBotStatus('Contacting Professor Powell… (first request after idle can take ~30 s while the server wakes up)', 'working');
+    try {
+      const form = new FormData();
+      if (desc) form.append('description', desc);
+      if (url)  form.append('url', url);
+      if (file) form.append('file', file, file.name);
+      form.append('size', size);
+
+      const resp = await fetch(FRAMING_URL, { method: 'POST', body: form });
+      const data = await resp.json().catch(() => ({ error: 'Bad response from server.' }));
+      if (!resp.ok) throw new Error(data.error || ('Request failed (' + resp.status + ')'));
+      if (!data.framing) throw new Error('Server returned no framing.');
+
+      const sourceLabel = file ? file.name
+                              : url ? url
+                              : (desc.length > 60 ? desc.slice(0, 57) + '…' : desc);
+      applyFraming(data.framing, sourceLabel);
+      setBotStatus('Draft ready — scroll up to review and edit. Use File → Save as… to keep it.', '');
+    } catch (err) {
+      console.error('Framing request failed:', err);
+      setBotStatus('Sorry — ' + (err && err.message ? err.message : 'request failed') + '. Try again in a moment.', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    }
+  }
+  function clearBotInputs() {
+    $('#fp-bot-desc').value = '';
+    $('#fp-bot-url').value  = '';
+    $('#fp-bot-file').value = '';
+    setBotStatus('');
+  }
+
   // ── Init ────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
     load();
@@ -1365,6 +1612,19 @@ date: 2026-08-11
       }
     });
     $('#fp-print').addEventListener('click', () => window.print());
+    // Ask Professor Powell (framing bot)
+    const botBtn = $('#fp-bot-generate');
+    if (botBtn) botBtn.addEventListener('click', runFramingRequest);
+    const botClear = $('#fp-bot-clear');
+    if (botClear) botClear.addEventListener('click', clearBotInputs);
+    // Ctrl/Cmd-Enter inside the description box submits.
+    const botDesc = $('#fp-bot-desc');
+    if (botDesc) botDesc.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        runFramingRequest();
+      }
+    });
     // Re-align textareas on window resize: header cells can wrap or
     // unwrap when the matrix column widths change, and that changes
     // the offset the textarea needs to match.

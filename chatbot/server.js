@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 import Anthropic from '@anthropic-ai/sdk';
 import rateLimit from 'express-rate-limit';
 import multer from 'multer';
+import mammoth from 'mammoth';
 import crypto from 'node:crypto';
 import { readFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
@@ -20,7 +21,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, '.env'), override: true });
 const PORT = Number(process.env.PORT) || 3000;
 const MODEL = process.env.CLAUDE_MODEL || 'claude-haiku-4-5-20251001';
+// Framing generation is heavier work than chat Q&A (long documents in, strict
+// JSON out) so it defaults to Sonnet. Override via FRAMING_MODEL env var if
+// costs bite — Haiku 4.5 also handles this task well.
+const FRAMING_MODEL = process.env.FRAMING_MODEL || 'claude-sonnet-5';
 const SYSTEM_PROMPT_PATH = path.join(__dirname, 'system-prompt.txt');
+const FRAMING_PROMPT_PATH = path.join(__dirname, 'framing-prompt.txt');
 const RAG_K = Number(process.env.RAG_K) || 8;
 const KNOWLEDGE_DB_PATH = path.join(__dirname, 'knowledge.db');
 
@@ -36,6 +42,9 @@ if (!existsSync(SYSTEM_PROMPT_PATH)) {
 
 const RAG_ENABLED = existsSync(KNOWLEDGE_DB_PATH) && !!process.env.VOYAGE_API_KEY;
 const systemPrompt = readFileSync(SYSTEM_PROMPT_PATH, 'utf8');
+const framingPrompt = existsSync(FRAMING_PROMPT_PATH)
+  ? readFileSync(FRAMING_PROMPT_PATH, 'utf8')
+  : null;
 const client = new Anthropic();
 
 // ---- Session-scoped PDF attachments ---------------------------------------
@@ -183,6 +192,255 @@ app.delete('/attachment', (req, res) => {
   const sessionId = sanitizeSessionId(req.query.sessionId);
   if (sessionId) attachments.delete(sessionId);
   res.json({ ok: true });
+});
+
+// ---- /framing --------------------------------------------------------------
+// One-shot endpoint used by /metrics-pyramid/ to generate a first-cut decision
+// framing (metrics pyramid + decision matrix + uncertainty matrix) from a
+// text description, a URL, and/or an uploaded document. Fills all three tools
+// on the page in one call. Independent of the /chat session model.
+const FRAMING_MAX_UPLOAD_MB = Number(process.env.FRAMING_MAX_UPLOAD_MB) || 15;
+const FRAMING_MAX_CHARS = Number(process.env.FRAMING_MAX_CHARS) || 120000;
+const framingLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: Number(process.env.FRAMING_RATE_LIMIT) || 20,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: { error: 'Framing rate limit exceeded. Please wait an hour and try again.' },
+});
+const framingUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: FRAMING_MAX_UPLOAD_MB * 1024 * 1024, files: 1 },
+  fileFilter: (req, file, cb) => {
+    const ok =
+      file.mimetype === 'application/pdf' ||
+      file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+      file.mimetype === 'text/plain' ||
+      file.mimetype === 'text/markdown' ||
+      /\.(pdf|docx|txt|md)$/i.test(file.originalname || '');
+    if (!ok) return cb(new Error('Only PDF, DOCX, TXT, or MD files are supported.'));
+    cb(null, true);
+  },
+});
+
+const FRAMING_TOOL = {
+  name: 'record_framing',
+  description: 'Record a decision framing: a metrics pyramid, an ordered decisions list with its impact matrix, and an ordered uncertainties list with its impact matrix.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      metrics: {
+        type: 'array',
+        items: { type: 'string' },
+        description: 'Short performance metric names (2–4 words), ordered by pyramid tier (Tier 1 first). Length must match the requested size: small=4, medium=6, large=10.',
+      },
+      assignments: {
+        type: 'object',
+        additionalProperties: { type: 'integer', minimum: 1, maximum: 4 },
+        description: 'Every metric name → its pyramid tier (1–4). Exactly one metric maps to 1.',
+      },
+      decisions: {
+        type: 'array',
+        items: { type: 'string' },
+        description: 'Decisions the decision-maker controls, ordered most-impactful first. Length must match: small=3, medium=5, large=8.',
+      },
+      matrix: {
+        type: 'object',
+        description: 'Impact matrix keyed by decision name → object keyed by metric name → "H"|"M"|"L"|"N". Include every (decision, metric) pair.',
+        additionalProperties: {
+          type: 'object',
+          additionalProperties: { type: 'string', enum: ['H', 'M', 'L', 'N'] },
+        },
+      },
+      uncertainties: {
+        type: 'array',
+        items: { type: 'string' },
+        description: 'External uncertain factors, ordered most-impactful first. Length must match: small=3, medium=5, large=8.',
+      },
+      uMatrix: {
+        type: 'object',
+        description: 'Impact matrix keyed by uncertainty name → object keyed by metric name → "H"|"M"|"L"|"N". Include every pair.',
+        additionalProperties: {
+          type: 'object',
+          additionalProperties: { type: 'string', enum: ['H', 'M', 'L', 'N'] },
+        },
+      },
+    },
+    required: ['metrics', 'assignments', 'decisions', 'matrix', 'uncertainties', 'uMatrix'],
+  },
+};
+
+// Very small HTML → text so pages fetched by URL are usable prompt input.
+// Strips scripts/styles, unwraps tags, collapses whitespace. Not perfect but
+// good enough — Claude tolerates messy input.
+function htmlToText(html) {
+  return String(html)
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, ' ')
+    .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// Resolve a file (in-memory buffer + declared mediaType/filename) into a
+// Claude content block. PDFs go native (Claude reads layout/tables). DOCX
+// gets extracted with mammoth. Text just decodes.
+async function fileToContentBlock(buf, mediaType, filename) {
+  const name = (filename || '').toLowerCase();
+  const isPdf = mediaType === 'application/pdf' || name.endsWith('.pdf');
+  const isDocx = mediaType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    || name.endsWith('.docx');
+  const isText = mediaType === 'text/plain' || mediaType === 'text/markdown'
+    || name.endsWith('.txt') || name.endsWith('.md');
+
+  if (isPdf) {
+    return {
+      type: 'document',
+      source: { type: 'base64', media_type: 'application/pdf', data: buf.toString('base64') },
+    };
+  }
+  if (isDocx) {
+    const { value } = await mammoth.extractRawText({ buffer: buf });
+    const text = (value || '').trim().slice(0, FRAMING_MAX_CHARS);
+    return { type: 'text', text: `[Document: ${filename || 'upload.docx'}]\n\n${text}` };
+  }
+  if (isText) {
+    const text = buf.toString('utf8').trim().slice(0, FRAMING_MAX_CHARS);
+    return { type: 'text', text: `[Document: ${filename || 'upload.txt'}]\n\n${text}` };
+  }
+  throw new Error(`Unsupported file type: ${mediaType || filename}`);
+}
+
+// Fetch a user-supplied URL server-side (avoids CORS) and turn it into a
+// Claude content block. Bounded by size + timeout so a hostile URL can't
+// hang the process. Handles PDF, DOCX, HTML/text natively.
+async function urlToContentBlock(url) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 20000);
+  let resp;
+  try {
+    resp = await fetch(url, {
+      signal: controller.signal,
+      redirect: 'follow',
+      headers: { 'User-Agent': 'CASTLE-framing-bot/1.0 (+https://warrenpowell.org)' },
+    });
+  } finally {
+    clearTimeout(timeout);
+  }
+  if (!resp.ok) throw new Error(`Fetch failed (${resp.status}) for ${url}`);
+  const ctype = (resp.headers.get('content-type') || '').toLowerCase();
+  const buf = Buffer.from(await resp.arrayBuffer());
+  if (buf.length > FRAMING_MAX_UPLOAD_MB * 1024 * 1024) {
+    throw new Error(`Fetched document too large (${(buf.length / 1024 / 1024).toFixed(1)} MB, cap ${FRAMING_MAX_UPLOAD_MB} MB).`);
+  }
+  const nameFromUrl = (() => {
+    try { return new URL(url).pathname.split('/').pop() || url; }
+    catch (_) { return url; }
+  })();
+
+  if (ctype.includes('pdf') || /\.pdf(\?|$)/i.test(url)) {
+    return fileToContentBlock(buf, 'application/pdf', nameFromUrl);
+  }
+  if (ctype.includes('wordprocessingml') || /\.docx(\?|$)/i.test(url)) {
+    return fileToContentBlock(
+      buf,
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      nameFromUrl,
+    );
+  }
+  // Everything else: treat as text/HTML. HTML gets tag-stripped; plain text
+  // is used as-is.
+  const raw = buf.toString('utf8');
+  const text = (ctype.includes('html') || /<html[\s>]/i.test(raw.slice(0, 500)) ? htmlToText(raw) : raw)
+    .trim()
+    .slice(0, FRAMING_MAX_CHARS);
+  return { type: 'text', text: `[Source URL: ${url}]\n\n${text}` };
+}
+
+function sizeInstructions(size) {
+  const s = String(size || 'medium').toLowerCase();
+  const spec = { small: [4, 3, 3], medium: [6, 5, 5], large: [10, 8, 8] };
+  const [m, d, u] = spec[s] || spec.medium;
+  return { size: s in spec ? s : 'medium', metrics: m, decisions: d, uncertainties: u };
+}
+
+app.post('/framing', framingLimiter, (req, res) => {
+  framingUpload.single('file')(req, res, async (uploadErr) => {
+    if (uploadErr) return res.status(400).json({ error: uploadErr.message });
+    try {
+      if (!framingPrompt) {
+        return res.status(500).json({ error: 'Framing prompt not configured on the server.' });
+      }
+      const description = String(req.body?.description || '').trim().slice(0, FRAMING_MAX_CHARS);
+      const url = String(req.body?.url || '').trim();
+      const { size, metrics: nM, decisions: nD, uncertainties: nU } = sizeInstructions(req.body?.size);
+
+      // Build the user content: any combination of file + URL + text is fine,
+      // but the user must provide at least one signal.
+      const userContent = [];
+      if (req.file) {
+        userContent.push(await fileToContentBlock(
+          req.file.buffer,
+          req.file.mimetype,
+          req.file.originalname,
+        ));
+      }
+      if (url) {
+        if (!/^https?:\/\//i.test(url)) {
+          return res.status(400).json({ error: 'URL must start with http:// or https://.' });
+        }
+        userContent.push(await urlToContentBlock(url));
+      }
+      if (description) {
+        userContent.push({ type: 'text', text: `User description:\n${description}` });
+      }
+      if (userContent.length === 0) {
+        return res.status(400).json({ error: 'Provide a description, a URL, or an uploaded document.' });
+      }
+
+      userContent.push({
+        type: 'text',
+        text:
+          `Produce a **${size}** framing:\n` +
+          `  - exactly ${nM} metrics\n` +
+          `  - exactly ${nD} decisions\n` +
+          `  - exactly ${nU} uncertainties\n` +
+          `Pre-score both impact matrices. Call the record_framing tool.`,
+      });
+
+      const response = await client.messages.create({
+        model: FRAMING_MODEL,
+        max_tokens: 4096,
+        system: framingPrompt,
+        tools: [FRAMING_TOOL],
+        tool_choice: { type: 'tool', name: FRAMING_TOOL.name },
+        messages: [{ role: 'user', content: userContent }],
+      });
+
+      const toolBlock = (response.content || []).find(
+        (b) => b.type === 'tool_use' && b.name === FRAMING_TOOL.name,
+      );
+      if (!toolBlock) {
+        return res.status(502).json({ error: 'Model did not produce a framing. Try again with a longer description.' });
+      }
+      return res.json({
+        framing: toolBlock.input,
+        size,
+        model: FRAMING_MODEL,
+        usage: response.usage,
+      });
+    } catch (err) {
+      console.error('Framing error:', err);
+      const msg = err && err.message ? String(err.message) : 'Unknown error';
+      return res.status(500).json({ error: msg });
+    }
+  });
 });
 
 // Stream a chat completion back as Server-Sent Events.
