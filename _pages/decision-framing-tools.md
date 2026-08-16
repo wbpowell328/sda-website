@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "Decision framing tools"
-permalink: /metrics-pyramid/
+permalink: /decision-framing-tools/
 date: 2026-08-11
 ---
 

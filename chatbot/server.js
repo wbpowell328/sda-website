@@ -195,7 +195,7 @@ app.delete('/attachment', (req, res) => {
 });
 
 // ---- /framing --------------------------------------------------------------
-// One-shot endpoint used by /metrics-pyramid/ to generate a first-cut decision
+// One-shot endpoint used by /decision-framing-tools/ to generate a first-cut decision
 // framing (metrics pyramid + decision matrix + uncertainty matrix) from a
 // text description, a URL, and/or an uploaded document. Fills all three tools
 // on the page in one call. Independent of the /chat session model.
