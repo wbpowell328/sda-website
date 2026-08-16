@@ -26,6 +26,8 @@ Motivated by decades of working on complex, real-world problems, we start in Eng
 2. What types of decisions are being made (and who makes them)?
 3. What are the sources of uncertainty?
 
+Be sure to check out our [new tool for framing decision problems](/decision-framing-tools/).
+
 These questions help to clarify *thinking* about problems, which is all that is needed for most decisions. For applications that warrant more careful analysis, the questions lay the foundation for the **Universal Modeling Framework** which can represent any sequential decision problem as a mathematical model.
 
 A good way to start is to follow the instructions in [**A guided tour**](/guided-tour/) which starts with material on problem framing that requires no math. Most of the presentation is free of math, while a few pages have some math. If you are interested in more depth, try using [**Ask Professor Powell**](/ask-professor-powell/) which will use as much math as you want (just ask). The chatbot has been trained with all my books, 1,000 pages of LinkedIn posts on decision analytics, and the contents of this website.
