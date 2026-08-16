@@ -6,12 +6,13 @@ date: 2026-08-11
 ---
 
 {% raw %}
-<p>Two companion tools for the framing process:</p>
+<p>Three companion tools for the framing process:</p>
 <ol>
   <li><a href="#metrics-pyramid-tool"><strong>Metrics pyramid tool</strong></a> — prioritize your performance metrics into a four-level pyramid.</li>
   <li><a href="#decision-prioritization-tool"><strong>Decision prioritization tool</strong></a> — score each decision's impact on each pyramid-ordered metric (H / M / L / N), then reorder the decisions by their impact on the most important metrics.</li>
+  <li><a href="#uncertainty-prioritization-tool"><strong>Uncertainty prioritization tool</strong></a> — same idea, applied to the uncertainties that affect performance.</li>
 </ol>
-<p>Everything runs client-side; your work saves in the browser automatically. The <em>File</em> menu below lets you keep multiple named documents, and each contains both the pyramid and the matrix.</p>
+<p>Everything runs client-side; your work saves in the browser automatically. The <em>File</em> menu below lets you keep multiple named documents, and each contains the pyramid plus both matrices.</p>
 
 <div class="fp-toolbar">
   <details class="fp-menu" id="fp-file-menu">
@@ -96,6 +97,23 @@ date: 2026-08-11
     <p class="fp-muted">Columns follow the pyramid order. Rows can be dragged by their <span class="fp-grip-inline">☰</span> handle.</p>
     <div class="fp-matrix-wrapper">
       <div id="fp-matrix"></div>
+    </div>
+  </div>
+</div>
+
+<h2 id="uncertainty-prioritization-tool" class="fp-section-h2">Uncertainty prioritization tool</h2>
+<p>This tool works the same as the decision prioritization tool above.</p>
+
+<div class="fp-grid fp-grid-narrow">
+  <div class="fp-panel fp-uncertainties-panel">
+    <h3>Uncertainties</h3>
+    <textarea id="fp-uncertainties-input" spellcheck="true" placeholder="Demand volatility&#10;Supplier reliability&#10;Currency fluctuation&#10;Regulatory change"></textarea>
+  </div>
+  <div class="fp-panel fp-matrix-panel">
+    <h3>Impact matrix</h3>
+    <p class="fp-muted">Columns follow the pyramid order. Rows can be dragged by their <span class="fp-grip-inline">☰</span> handle.</p>
+    <div class="fp-matrix-wrapper">
+      <div id="fp-umatrix"></div>
     </div>
   </div>
 </div>
@@ -244,8 +262,9 @@ date: 2026-08-11
     color: #7a6a55;
   }
 
-  /* Decisions textarea reuses the metrics textarea styling. */
-  #fp-decisions-input {
+  /* Decisions/Uncertainties textareas reuse the metrics textarea styling. */
+  #fp-decisions-input,
+  #fp-uncertainties-input {
     width: 100%; min-height: 180px;
     padding: 8px 10px;
     border: 1px solid #c9b891; border-radius: 4px;
@@ -340,7 +359,8 @@ date: 2026-08-11
   @media print {
     /* Keep the matrix on the printed page — it's a deliverable too. */
     .fp-matrix-grip { display: none; }
-    .fp-decisions-panel { display: none !important; }
+    .fp-decisions-panel,
+    .fp-uncertainties-panel { display: none !important; }
   }
 
   .fp-grid {
@@ -462,8 +482,33 @@ date: 2026-08-11
   let state = {
     metrics: [], assignments: {},
     decisions: [], matrix: {},
+    uncertainties: [], uMatrix: {},
   };
   let currentName = null;   // which named file, if any, is currently loaded
+
+  // Impact-matrix configs — same UI, two entities. Kind key ('decision'
+  // or 'uncertainty') selects which state fields to read/write, which
+  // DOM containers to render into, and which labels to show.
+  const MATRIX = {
+    decision: {
+      listKey:   'decisions',
+      matrixKey: 'matrix',
+      wrapSel:   '#fp-matrix',
+      textareaSel: '#fp-decisions-input',
+      headerLabel:  'Decision',
+      singularLower:'decision',
+      pluralLower:  'decisions',
+    },
+    uncertainty: {
+      listKey:   'uncertainties',
+      matrixKey: 'uMatrix',
+      wrapSel:   '#fp-umatrix',
+      textareaSel: '#fp-uncertainties-input',
+      headerLabel:  'Uncertainty',
+      singularLower:'uncertainty',
+      pluralLower:  'uncertainties',
+    },
+  };
 
   const $  = (sel) => document.querySelector(sel);
   const $$ = (sel) => Array.from(document.querySelectorAll(sel));
@@ -474,13 +519,15 @@ date: 2026-08-11
     catch (_) { /* private mode / quota — ignore */ }
   }
   // Fill in any missing fields on a partial state blob (URL-shared
-  // links or files saved before the decisions/matrix existed).
+  // links or files saved before newer fields existed).
   function normalizeState(s) {
     return {
-      metrics:     Array.isArray(s && s.metrics)     ? s.metrics     : [],
-      assignments: (s && s.assignments)              ? s.assignments : {},
-      decisions:   Array.isArray(s && s.decisions)   ? s.decisions   : [],
-      matrix:      (s && s.matrix)                   ? s.matrix      : {},
+      metrics:       Array.isArray(s && s.metrics)       ? s.metrics       : [],
+      assignments:   (s && s.assignments)                ? s.assignments   : {},
+      decisions:     Array.isArray(s && s.decisions)     ? s.decisions     : [],
+      matrix:        (s && s.matrix)                     ? s.matrix        : {},
+      uncertainties: Array.isArray(s && s.uncertainties) ? s.uncertainties : [],
+      uMatrix:       (s && s.uMatrix)                    ? s.uMatrix       : {},
     };
   }
   function load() {
@@ -542,6 +589,8 @@ date: 2026-08-11
       assignments: state.assignments,
       decisions: state.decisions,
       matrix: state.matrix,
+      uncertainties: state.uncertainties,
+      uMatrix: state.uMatrix,
       savedAt: new Date().toISOString(),
     };
   }
@@ -571,10 +620,11 @@ date: 2026-08-11
     if (!file) return;
     state = normalizeState(file);
     setCurrentName(name);
-    $('#fp-metrics-input').value = state.metrics.join('\n');
-    $('#fp-decisions-input').value = state.decisions.join('\n');
+    $('#fp-metrics-input').value       = state.metrics.join('\n');
+    $('#fp-decisions-input').value     = state.decisions.join('\n');
+    $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
     render();
-    renderMatrix();
+    renderAllMatrices();
     autoSave();
     flashStatus('Loaded "' + name + '".');
   }
@@ -680,17 +730,20 @@ date: 2026-08-11
     }
     state.metrics = newMetrics;
     state.assignments = kept;
-    // Also prune matrix values referencing metrics that no longer exist
-    // (leaves matrix values under still-present metrics untouched).
+    // Also prune BOTH matrix objects (decisions + uncertainties) of any
+    // cell values referencing metrics that no longer exist. Values
+    // under still-present metrics are untouched.
     const metricSet = new Set(newMetrics);
-    for (const d of Object.keys(state.matrix)) {
-      for (const m of Object.keys(state.matrix[d])) {
-        if (!metricSet.has(m)) delete state.matrix[d][m];
+    for (const mx of [state.matrix, state.uMatrix]) {
+      for (const row of Object.keys(mx)) {
+        for (const m of Object.keys(mx[row])) {
+          if (!metricSet.has(m)) delete mx[row][m];
+        }
+        if (Object.keys(mx[row]).length === 0) delete mx[row];
       }
-      if (Object.keys(state.matrix[d]).length === 0) delete state.matrix[d];
     }
     render();
-    renderMatrix();   // metric columns may have changed
+    renderAllMatrices();   // metric columns may have changed
     autoSave();
   }
 
@@ -744,27 +797,29 @@ date: 2026-08-11
       if (tier === 0) delete state.assignments[metric];
       else state.assignments[metric] = tier;
       render();
-      renderMatrix();   // moving a metric in/out of a tier changes matrix columns
+      renderAllMatrices();   // moving a metric in/out of a tier changes matrix columns
       autoSave();
     });
   }
 
-  // ── Decisions textarea → decisions list sync ────────────────
-  function parseDecisionsTextarea() {
-    const raw = $('#fp-decisions-input').value;
+  // ── Decisions / Uncertainties textarea sync (generic) ───────
+  function parseTextareaList(textareaSel) {
+    const raw = $(textareaSel).value;
     const lines = raw.split('\n').map(s => s.trim()).filter(Boolean);
     const seen = new Set(); const out = [];
     for (const s of lines) if (!seen.has(s)) { seen.add(s); out.push(s); }
     return out;
   }
-  function syncDecisionsFromTextarea() {
-    const newList = parseDecisionsTextarea();
-    // Preserve matrix values only for decisions still in the list.
+  function syncListFromTextarea(kind) {
+    const cfg = MATRIX[kind];
+    const newList = parseTextareaList(cfg.textareaSel);
+    // Preserve matrix rows only for entries still in the list.
     const kept = {};
-    for (const d of newList) if (state.matrix[d]) kept[d] = state.matrix[d];
-    state.decisions = newList;
-    state.matrix = kept;
-    renderMatrix();
+    const oldMatrix = state[cfg.matrixKey];
+    for (const name of newList) if (oldMatrix[name]) kept[name] = oldMatrix[name];
+    state[cfg.listKey]   = newList;
+    state[cfg.matrixKey] = kept;
+    renderImpactMatrix(kind);
     autoSave();
   }
 
@@ -784,14 +839,16 @@ date: 2026-08-11
     }
     return out;
   }
-  function renderMatrix() {
-    const wrap = $('#fp-matrix');
+  function renderImpactMatrix(kind) {
+    const cfg = MATRIX[kind];
+    const wrap = $(cfg.wrapSel);
     if (!wrap) return;
     const metrics = orderedMetrics();
-    const decisions = state.decisions;
-    if (metrics.length === 0 && decisions.length === 0) {
+    const rows = state[cfg.listKey];
+    if (metrics.length === 0 && rows.length === 0) {
       wrap.innerHTML = '<p class="fp-matrix-empty">' +
-        "Add metrics (and drag them into pyramid tiers) above, and list decisions on the left, to start scoring impact." +
+        'Add metrics (and drag them into pyramid tiers) above, and list ' +
+        cfg.pluralLower + ' on the left, to start scoring impact.' +
         '</p>';
       return;
     }
@@ -801,21 +858,23 @@ date: 2026-08-11
         '</p>';
       return;
     }
-    if (decisions.length === 0) {
-      wrap.innerHTML = '<p class="fp-matrix-empty">' +
-        "Add decisions on the left to start scoring." +
-        '</p>';
+    if (rows.length === 0) {
+      wrap.innerHTML = '<p class="fp-matrix-empty">Add ' +
+        cfg.pluralLower + ' on the left to start scoring.</p>';
       return;
     }
+    const matrixObj = state[cfg.matrixKey];
+
     const table = document.createElement('table');
     table.className = 'fp-matrix';
+    table.dataset.kind = kind;
 
     const thead = document.createElement('thead');
     const hr = document.createElement('tr');
     hr.appendChild(document.createElement('th'));  // grip column
     const dh = document.createElement('th');
     dh.className = 'fp-matrix-decision-header';
-    dh.textContent = 'Decision';
+    dh.textContent = cfg.headerLabel;
     hr.appendChild(dh);
     for (const { metric, tier } of metrics) {
       const th = document.createElement('th');
@@ -828,9 +887,9 @@ date: 2026-08-11
     table.appendChild(thead);
 
     const tbody = document.createElement('tbody');
-    for (const d of decisions) {
+    for (const name of rows) {
       const tr = document.createElement('tr');
-      tr.dataset.decision = d;
+      tr.dataset.name = name;
 
       const grip = document.createElement('td');
       grip.className = 'fp-matrix-grip';
@@ -841,59 +900,70 @@ date: 2026-08-11
 
       const nameTd = document.createElement('td');
       nameTd.className = 'fp-matrix-decision';
-      nameTd.textContent = d;
+      nameTd.textContent = name;
       tr.appendChild(nameTd);
 
       for (const { metric } of metrics) {
         const cell = document.createElement('td');
         cell.className = 'fp-matrix-cell';
-        const v = (state.matrix[d] && state.matrix[d][metric]) || '';
+        const v = (matrixObj[name] && matrixObj[name][metric]) || '';
         cell.dataset.value = v;
         cell.title = 'Click to cycle: H → M → L → N → blank';
-        cell.addEventListener('click', () => cycleCell(d, metric, cell));
+        cell.addEventListener('click', () => cycleCell(kind, name, metric, cell));
         tr.appendChild(cell);
       }
       tbody.appendChild(tr);
-      wireMatrixRowDrag(tr);
+      wireMatrixRowDrag(kind, tr);
     }
     table.appendChild(tbody);
 
     wrap.innerHTML = '';
     wrap.appendChild(table);
   }
-  function cycleCell(decision, metric, cell) {
+  function renderAllMatrices() {
+    renderImpactMatrix('decision');
+    renderImpactMatrix('uncertainty');
+  }
+  function cycleCell(kind, name, metric, cell) {
+    const cfg = MATRIX[kind];
+    const matrixObj = state[cfg.matrixKey];
     const order = ['', 'H', 'M', 'L', 'N'];
-    const cur = (state.matrix[decision] && state.matrix[decision][metric]) || '';
+    const cur = (matrixObj[name] && matrixObj[name][metric]) || '';
     const idx = order.indexOf(cur);
     const next = order[(idx + 1) % order.length];
-    if (!state.matrix[decision]) state.matrix[decision] = {};
+    if (!matrixObj[name]) matrixObj[name] = {};
     if (next === '') {
-      delete state.matrix[decision][metric];
-      if (Object.keys(state.matrix[decision]).length === 0) delete state.matrix[decision];
+      delete matrixObj[name][metric];
+      if (Object.keys(matrixObj[name]).length === 0) delete matrixObj[name];
     } else {
-      state.matrix[decision][metric] = next;
+      matrixObj[name][metric] = next;
     }
     cell.dataset.value = next;
     autoSave();
   }
 
   // ── Matrix row drag-to-reorder ──────────────────────────────
-  function clearMatrixDropIndicators() {
-    $$('.fp-matrix tbody tr').forEach(r => {
+  // Clear drop indicators inside a specific matrix (identified by
+  // the wrap element) — never touches the other matrix.
+  function clearMatrixDropIndicators(wrapEl) {
+    if (!wrapEl) return;
+    wrapEl.querySelectorAll('tbody tr').forEach(r => {
       r.classList.remove('fp-matrix-drop-above', 'fp-matrix-drop-below');
     });
   }
-  function wireMatrixRowDrag(row) {
+  function wireMatrixRowDrag(kind, row) {
+    const cfg = MATRIX[kind];
+    const wrap = $(cfg.wrapSel);
     const grip = row.querySelector('.fp-matrix-grip');
     if (!grip) return;
     grip.addEventListener('dragstart', (e) => {
-      e.dataTransfer.setData('text/plain', row.dataset.decision);
+      e.dataTransfer.setData('text/plain', row.dataset.name);
       e.dataTransfer.effectAllowed = 'move';
       row.classList.add('fp-matrix-dragging');
     });
     grip.addEventListener('dragend', () => {
       row.classList.remove('fp-matrix-dragging');
-      clearMatrixDropIndicators();
+      clearMatrixDropIndicators(wrap);
     });
     row.addEventListener('dragover', (e) => {
       // preventDefault is required so 'drop' fires.
@@ -901,8 +971,6 @@ date: 2026-08-11
       e.dataTransfer.dropEffect = 'move';
       const rect = row.getBoundingClientRect();
       const above = (e.clientY - rect.top) < rect.height / 2;
-      // Only touch this row's indicator; leave others as-is (dragleave
-      // on a neighbour will clean up that one).
       row.classList.toggle('fp-matrix-drop-above', above);
       row.classList.toggle('fp-matrix-drop-below', !above);
     });
@@ -915,21 +983,21 @@ date: 2026-08-11
       e.preventDefault();
       const src = e.dataTransfer.getData('text/plain');
       const above = row.classList.contains('fp-matrix-drop-above');
-      clearMatrixDropIndicators();
-      if (!src || src === row.dataset.decision) return;
-      const list = state.decisions.slice();
+      clearMatrixDropIndicators(wrap);
+      if (!src || src === row.dataset.name) return;
+      const list = state[cfg.listKey].slice();
       const srcIdx = list.indexOf(src);
       if (srcIdx < 0) return;
       list.splice(srcIdx, 1);
-      let dstIdx = list.indexOf(row.dataset.decision);
+      let dstIdx = list.indexOf(row.dataset.name);
       if (dstIdx < 0) return;
       if (!above) dstIdx += 1;
       list.splice(dstIdx, 0, src);
-      state.decisions = list;
+      state[cfg.listKey] = list;
       // Keep the textarea in sync with the new row order so what
       // the user sees on the left matches the matrix.
-      $('#fp-decisions-input').value = state.decisions.join('\n');
-      renderMatrix();
+      $(cfg.textareaSel).value = state[cfg.listKey].join('\n');
+      renderImpactMatrix(kind);
       autoSave();
     });
   }
@@ -953,21 +1021,28 @@ date: 2026-08-11
   // ── Init ────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
     load();
-    $('#fp-metrics-input').value   = state.metrics.join('\n');
-    $('#fp-decisions-input').value = state.decisions.join('\n');
+    $('#fp-metrics-input').value       = state.metrics.join('\n');
+    $('#fp-decisions-input').value     = state.decisions.join('\n');
+    $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
     renderCurrentFileLabel();
     $$('.fp-drop-zone').forEach(wireDropZone);
-    $('#fp-metrics-input').addEventListener('input',   syncMetricsFromTextarea);
-    $('#fp-decisions-input').addEventListener('input', syncDecisionsFromTextarea);
+    $('#fp-metrics-input').addEventListener('input',       syncMetricsFromTextarea);
+    $('#fp-decisions-input').addEventListener('input',     () => syncListFromTextarea('decision'));
+    $('#fp-uncertainties-input').addEventListener('input', () => syncListFromTextarea('uncertainty'));
     // File menu
     $('#fp-menu-new').addEventListener('click', () => {
       closeFileMenu();
       if (!confirm('Start a new document? Anything on screen is discarded (Save first if you want to keep it).')) return;
-      state = { metrics: [], assignments: {}, decisions: [], matrix: {} };
+      state = {
+        metrics: [], assignments: {},
+        decisions: [], matrix: {},
+        uncertainties: [], uMatrix: {},
+      };
       setCurrentName(null);
-      $('#fp-metrics-input').value = '';
-      $('#fp-decisions-input').value = '';
-      render(); renderMatrix(); autoSave();
+      $('#fp-metrics-input').value       = '';
+      $('#fp-decisions-input').value     = '';
+      $('#fp-uncertainties-input').value = '';
+      render(); renderAllMatrices(); autoSave();
     });
     $('#fp-menu-open').addEventListener('click', () => {
       closeFileMenu();
@@ -999,14 +1074,19 @@ date: 2026-08-11
     $('#fp-clear').addEventListener('click', () => {
       if (!confirm('Empty every tier? Chips return to Unassigned; the metric list, decisions, and matrix scores are not touched.')) return;
       state.assignments = {};
-      render(); renderMatrix(); autoSave();
+      render(); renderAllMatrices(); autoSave();
     });
     $('#fp-reset').addEventListener('click', () => {
-      if (!confirm('Delete every metric AND every decision, and clear the pyramid and the matrix? Cannot be undone.')) return;
-      state = { metrics: [], assignments: {}, decisions: [], matrix: {} };
-      $('#fp-metrics-input').value = '';
-      $('#fp-decisions-input').value = '';
-      render(); renderMatrix(); autoSave();
+      if (!confirm('Delete every metric, decision, and uncertainty, and clear the pyramid and both matrices? Cannot be undone.')) return;
+      state = {
+        metrics: [], assignments: {},
+        decisions: [], matrix: {},
+        uncertainties: [], uMatrix: {},
+      };
+      $('#fp-metrics-input').value       = '';
+      $('#fp-decisions-input').value     = '';
+      $('#fp-uncertainties-input').value = '';
+      render(); renderAllMatrices(); autoSave();
     });
     $('#fp-share').addEventListener('click', async () => {
       const url = toShareUrl();
@@ -1019,7 +1099,7 @@ date: 2026-08-11
     });
     $('#fp-print').addEventListener('click', () => window.print());
     render();
-    renderMatrix();
+    renderAllMatrices();
   });
 })();
 </script>
