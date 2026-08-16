@@ -602,24 +602,35 @@ date: 2026-08-11
     try { localStorage.setItem(FILES_KEY, JSON.stringify(files)); }
     catch (_) { /* ignore */ }
   }
+  // The banner's display title is decoupled from currentName so a
+  // public example can show its title in the banner WITHOUT gaining
+  // a save-target (Save on a public example should still prompt
+  // Save as…, not silently overwrite the source in the repo).
+  let docTitle = null;
   function setCurrentName(name) {
     currentName = name || null;
     try {
       if (currentName) localStorage.setItem(CURRENT_KEY, currentName);
       else localStorage.removeItem(CURRENT_KEY);
     } catch (_) { /* ignore */ }
+    // A named save also becomes the display title (unless one was
+    // set explicitly via setDocTitle beforehand — that survives).
+    if (currentName) docTitle = currentName;
     renderCurrentFileLabel();
     // Duplicate only makes sense when a named document is loaded.
     const dupBtn = $('#fp-menu-duplicate');
     if (dupBtn) dupBtn.disabled = !currentName;
   }
+  function setDocTitle(text) {
+    docTitle = text || null;
+    renderCurrentFileLabel();
+  }
   function renderCurrentFileLabel() {
     const el = $('#fp-doc-title');
     if (!el) return;
     // Empty text collapses via CSS :empty rule, so no banner shows
-    // for an unnamed workspace (fresh session, URL share, or after
-    // File > New decision).
-    el.textContent = currentName || '';
+    // for a truly unnamed workspace.
+    el.textContent = docTitle || '';
   }
   function snapshotForSave() {
     return {
@@ -856,7 +867,8 @@ date: 2026-08-11
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       const data = await resp.json();
       state = normalizeState(data);
-      setCurrentName(null);   // no name → next Save prompts Save as…
+      setCurrentName(null);   // no save-target → next Save prompts Save as…
+      setDocTitle(ex.title || ex.file);   // but DO show the example name in the banner
       $('#fp-metrics-input').value       = state.metrics.join('\n');
       $('#fp-decisions-input').value     = state.decisions.join('\n');
       $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -1249,6 +1261,7 @@ date: 2026-08-11
         uncertainties: [], uMatrix: {},
       };
       setCurrentName(null);
+      setDocTitle(null);   // wipe the banner too
       $('#fp-metrics-input').value       = '';
       $('#fp-decisions-input').value     = '';
       $('#fp-uncertainties-input').value = '';
@@ -1301,7 +1314,8 @@ date: 2026-08-11
         decisions: [], matrix: {},
         uncertainties: [], uMatrix: {},
       };
-      setCurrentName(null);   // also clears the doc-title banner
+      setCurrentName(null);
+      setDocTitle(null);   // also wipe the banner
       $('#fp-metrics-input').value       = '';
       $('#fp-decisions-input').value     = '';
       $('#fp-uncertainties-input').value = '';
