@@ -26,7 +26,6 @@ date: 2026-08-11
       <button type="button" id="fp-menu-export" title="Download the current decision as a JSON file (useful for sharing or contributing to the public examples library)">Export as JSON…</button>
     </div>
   </details>
-  <span id="fp-current-file" class="fp-current-file" title="Currently loaded pyramid"></span>
   <span class="fp-toolbar-sep" aria-hidden="true"></span>
   <button type="button" id="fp-clear">Clear pyramid</button>
   <button type="button" id="fp-reset">Reset all</button>
@@ -55,6 +54,8 @@ date: 2026-08-11
     </div>
   </div>
 </div>
+
+<h2 id="fp-doc-title" class="fp-doc-title" aria-live="polite"></h2>
 
 <h2 id="metrics-pyramid-tool" class="fp-section-h2">Metrics pyramid tool</h2>
 <p>Type performance metrics on the left (one per line), then drag each chip into a tier — most important at the top, least important at the bottom. Drag between tiers to re-order, or back to <em>Unassigned</em> to remove.</p>
@@ -141,12 +142,21 @@ date: 2026-08-11
     display: inline-block; width: 1px; height: 24px; background: #d9c99d;
     margin: 0 4px;
   }
-  .fp-current-file {
-    font-size: 0.85rem; color: #5a4a35; font-weight: 600;
-    padding: 4px 10px; background: #faf5e6;
-    border: 1px solid #c9b891; border-radius: 4px;
+  /* Document title — the currently loaded case's name, shown as a
+     workspace-wide header directly below the toolbar. Empty when
+     nothing named is loaded (fresh session, URL share) so users
+     aren't stared at by an empty banner. */
+  .fp-doc-title {
+    margin: 16px 0 8px 0;
+    padding: 10px 16px;
+    background: #faf5e6;
+    border-left: 4px solid #c9621e;
+    border-radius: 3px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #5a4a35;
   }
-  .fp-current-file:empty { display: none; }
+  .fp-doc-title:empty { display: none; }
 
   /* File dropdown menu (uses <details> for click-toggle) */
   .fp-menu {
@@ -604,9 +614,12 @@ date: 2026-08-11
     if (dupBtn) dupBtn.disabled = !currentName;
   }
   function renderCurrentFileLabel() {
-    const el = $('#fp-current-file');
+    const el = $('#fp-doc-title');
     if (!el) return;
-    el.textContent = currentName ? 'Current: ' + currentName : '';
+    // Empty text collapses via CSS :empty rule, so no banner shows
+    // for an unnamed workspace (fresh session, URL share, or after
+    // File > New decision).
+    el.textContent = currentName || '';
   }
   function snapshotForSave() {
     return {
