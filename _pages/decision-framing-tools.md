@@ -43,7 +43,7 @@ date: 2026-08-11
 <div id="fp-open-modal" class="fp-modal" hidden>
   <div class="fp-modal-card" role="dialog" aria-modal="true" aria-labelledby="fp-modal-title">
     <div class="fp-modal-header">
-      <h3 id="fp-modal-title">Open pyramid</h3>
+      <h3 id="fp-modal-title">Open decision problem</h3>
       <button type="button" class="fp-modal-close" id="fp-modal-close" aria-label="Close">×</button>
     </div>
     <h4 class="fp-modal-subheader">Your saved decisions</h4>
