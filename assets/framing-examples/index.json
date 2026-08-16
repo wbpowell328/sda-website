@@ -1,6 +1,11 @@
 {
   "examples": [
     {
+      "file": "asterion-clinical-trial.json",
+      "title": "Asterion Therapeutics — the enrollment clock (large)",
+      "description": "A biotech's chief development officer deciding whether to accelerate, restructure, or pause a Phase II trial. 10 metrics, 8 decisions, 8 uncertainties, matrices pre-scored."
+    },
+    {
       "file": "trucking-dispatch.json",
       "title": "Trucking fleet dispatch",
       "description": "A truckload carrier deciding how to prioritize daily driver-load matching."
