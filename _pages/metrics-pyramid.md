@@ -587,7 +587,13 @@ date: 2026-08-11
     } catch (_) { /* ignore */ }
     try {
       const cur = localStorage.getItem(CURRENT_KEY);
-      if (cur) currentName = cur;
+      if (cur) {
+        currentName = cur;
+        // Keep the banner in sync with the restored save-target on
+        // page reload; without this the doc-title stays empty until
+        // the user re-opens something from File > Open.
+        docTitle = cur;
+      }
     } catch (_) { /* ignore */ }
   }
 
