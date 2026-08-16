@@ -4,6 +4,11 @@
       "file": "asterion-clinical-trial.json",
       "title": "Asterion Therapeutics — the enrollment clock (large)",
       "description": "A biotech's chief development officer deciding whether to accelerate, restructure, or pause a Phase II trial. 10 metrics, 8 decisions, 8 uncertainties, matrices pre-scored."
+    },
+    {
+      "file": "prairieline-truckload.json",
+      "title": "PrairieLine Freight — the Friday afternoon dispatch (medium)",
+      "description": "A truckload carrier's VP of operations balancing today's load acceptance and driver assignments against Monday's fleet, brokerage, and domicile decisions. 6 metrics, 5 decisions, 5 uncertainties, matrices pre-scored."
     }
   ]
 }
