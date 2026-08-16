@@ -108,6 +108,17 @@ date: 2026-08-11
   </div>
   <div class="fp-panel fp-matrix-panel">
     <h3>Impact matrix</h3>
+    <div class="fp-matrix-controls">
+      <button type="button" class="fp-matrix-draft" data-kind="decision"
+        title="Use the AI to fill in H/M/L/N for every cell based on your current metrics and decisions. Review carefully.">
+        First draft (AI)
+      </button>
+      <button type="button" class="fp-matrix-reset" data-kind="decision"
+        title="Clear every H/M/L/N in this matrix. The decisions and metrics are not touched.">
+        Reset scores
+      </button>
+      <span class="fp-matrix-ai-note" data-kind="decision" hidden>AI-generated — be sure to review carefully.</span>
+    </div>
     <p class="fp-muted">Columns follow the pyramid order. Rows can be dragged by their <span class="fp-grip-inline">☰</span> handle.</p>
     <div class="fp-matrix-wrapper">
       <div id="fp-matrix"></div>
@@ -125,6 +136,17 @@ date: 2026-08-11
   </div>
   <div class="fp-panel fp-matrix-panel">
     <h3>Impact matrix</h3>
+    <div class="fp-matrix-controls">
+      <button type="button" class="fp-matrix-draft" data-kind="uncertainty"
+        title="Use the AI to fill in H/M/L/N for every cell based on your current metrics and uncertainties. Review carefully.">
+        First draft (AI)
+      </button>
+      <button type="button" class="fp-matrix-reset" data-kind="uncertainty"
+        title="Clear every H/M/L/N in this matrix. The uncertainties and metrics are not touched.">
+        Reset scores
+      </button>
+      <span class="fp-matrix-ai-note" data-kind="uncertainty" hidden>AI-generated — be sure to review carefully.</span>
+    </div>
     <p class="fp-muted">Columns follow the pyramid order. Rows can be dragged by their <span class="fp-grip-inline">☰</span> handle.</p>
     <div class="fp-matrix-wrapper">
       <div id="fp-umatrix"></div>
@@ -547,6 +569,30 @@ date: 2026-08-11
     .fp-pyramid { max-width: 6in; margin: 0 auto; }
     .fp-drop-zone { border: 1px solid #999; background: transparent; }
     .fp-chip { border-color: #333; box-shadow: none; }
+  }
+
+  /* ── Per-matrix controls (First draft / Reset) ────────────── */
+  .fp-matrix-controls {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    margin: 4px 0 8px 0;
+  }
+  .fp-matrix-controls button {
+    padding: 4px 12px; font-size: 0.85rem;
+    background: #fff; border: 1px solid #c9b891; border-radius: 4px;
+    cursor: pointer; color: #5a4a35;
+  }
+  .fp-matrix-controls button:hover:not(:disabled) { background: #faf5e6; }
+  .fp-matrix-controls button:disabled { opacity: 0.55; cursor: not-allowed; }
+  .fp-matrix-controls button.fp-matrix-draft {
+    background: #f5e5b5; border-color: #c9621e; color: #5a4a35;
+    font-weight: 600;
+  }
+  .fp-matrix-controls button.fp-matrix-draft:hover:not(:disabled) {
+    background: #f0d890;
+  }
+  .fp-matrix-ai-note {
+    font-size: 0.82rem; color: #8a8072; font-style: italic;
+    padding: 2px 6px;
   }
 
   /* ── Ask Professor Powell card ─────────────────────────────── */
@@ -1315,6 +1361,95 @@ date: 2026-08-11
       matrixObj[name][metric] = next;
     }
     cell.dataset.value = next;
+    // A manual edit means the user has started reviewing this matrix, so
+    // the "AI-generated — review carefully" note has served its purpose.
+    hideAiNote(kind);
+    autoSave();
+  }
+
+  // ── Per-matrix First-draft (AI) + Reset ────────────────────
+  // Note is session-only — not persisted across page reloads or saves.
+  // It's a "you just clicked First draft" reminder, not a permanent tag.
+  const MATRIX_ENDPOINT = 'https://castle-chatbot.onrender.com/framing/matrix';
+  function showAiNote(kind) {
+    const el = document.querySelector('.fp-matrix-ai-note[data-kind="' + kind + '"]');
+    if (el) el.hidden = false;
+  }
+  function hideAiNote(kind) {
+    const el = document.querySelector('.fp-matrix-ai-note[data-kind="' + kind + '"]');
+    if (el) el.hidden = true;
+  }
+  function setMatrixButtonsBusy(kind, busy, label) {
+    const draft = document.querySelector('.fp-matrix-draft[data-kind="' + kind + '"]');
+    const reset = document.querySelector('.fp-matrix-reset[data-kind="' + kind + '"]');
+    if (draft) {
+      draft.disabled = busy;
+      if (busy) { draft.dataset.origText = draft.textContent; draft.textContent = label || 'Working…'; }
+      else if (draft.dataset.origText) { draft.textContent = draft.dataset.origText; delete draft.dataset.origText; }
+    }
+    if (reset) reset.disabled = busy;
+  }
+  async function runMatrixDraft(kind) {
+    const cfg = MATRIX[kind];
+    // Same column-source the table uses — only tier-assigned metrics count.
+    const metrics = orderedMetrics().map(x => x.metric);
+    const rows = (state[cfg.listKey] || []).slice();
+    if (metrics.length === 0) {
+      alert('Add metrics and drop them into pyramid tiers first — the matrix needs columns to score.');
+      return;
+    }
+    if (rows.length === 0) {
+      alert('List some ' + cfg.pluralLower + ' on the left first — the matrix needs rows to score.');
+      return;
+    }
+    setMatrixButtonsBusy(kind, true, 'Scoring…');
+    try {
+      const resp = await fetch(MATRIX_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kind, metrics, rows }),
+      });
+      const data = await resp.json().catch(() => ({ error: 'Bad response from server.' }));
+      if (!resp.ok) throw new Error(data.error || ('Request failed (' + resp.status + ')'));
+      if (!data.matrix || typeof data.matrix !== 'object') throw new Error('Server returned no matrix.');
+      // Coerce again on the client side just to be safe — accept only known
+      // (row, metric) pairs with H/M/L/N values.
+      const metricSet = new Set(metrics);
+      const rowSet = new Set(rows);
+      const cleaned = {};
+      for (const row of Object.keys(data.matrix)) {
+        if (!rowSet.has(row)) continue;
+        const src = data.matrix[row];
+        if (!src || typeof src !== 'object') continue;
+        const scored = {};
+        for (const m of Object.keys(src)) {
+          if (!metricSet.has(m)) continue;
+          const v = String(src[m] || '').toUpperCase();
+          if (v === 'H' || v === 'M' || v === 'L' || v === 'N') scored[m] = v;
+        }
+        if (Object.keys(scored).length) cleaned[row] = scored;
+      }
+      state[cfg.matrixKey] = cleaned;
+      renderImpactMatrix(kind);
+      showAiNote(kind);
+      autoSave();
+    } catch (err) {
+      console.error('First-draft (matrix) failed:', err);
+      alert('Sorry — ' + (err && err.message ? err.message : 'request failed') +
+        '\n(First request after idle can take ~30 s while the server wakes up. Try again in a moment.)');
+    } finally {
+      setMatrixButtonsBusy(kind, false);
+    }
+  }
+  function resetMatrix(kind) {
+    const cfg = MATRIX[kind];
+    const rows = (state[cfg.listKey] || []).length;
+    if (rows === 0) return;                                  // nothing to clear
+    if (!confirm('Clear every H/M/L/N in the ' + cfg.singularLower + ' impact matrix? The ' +
+      cfg.pluralLower + ' and metrics are not touched.')) return;
+    state[cfg.matrixKey] = {};
+    hideAiNote(kind);
+    renderImpactMatrix(kind);
     autoSave();
   }
 
@@ -1612,6 +1747,20 @@ date: 2026-08-11
       }
     });
     $('#fp-print').addEventListener('click', () => window.print());
+    // Per-matrix First-draft / Reset buttons (delegated: covers both matrices).
+    document.addEventListener('click', (e) => {
+      const draft = e.target.closest('.fp-matrix-draft');
+      if (draft) {
+        const k = draft.dataset.kind;
+        if (k === 'decision' || k === 'uncertainty') runMatrixDraft(k);
+        return;
+      }
+      const reset = e.target.closest('.fp-matrix-reset');
+      if (reset) {
+        const k = reset.dataset.kind;
+        if (k === 'decision' || k === 'uncertainty') resetMatrix(k);
+      }
+    });
     // Ask Professor Powell (framing bot)
     const botBtn = $('#fp-bot-generate');
     if (botBtn) botBtn.addEventListener('click', runFramingRequest);

@@ -370,6 +370,108 @@ function sizeInstructions(size) {
   return { size: s in spec ? s : 'medium', metrics: m, decisions: d, uncertainties: u };
 }
 
+// Per-matrix scoring: given the metrics + rows already on the page, fill in
+// H/M/L/N cells for one impact matrix. Cheaper + faster than /framing since
+// the model isn't inventing the vocabulary, only scoring the interactions.
+const MATRIX_TOOL = {
+  name: 'record_matrix',
+  description: 'Record an impact matrix: for every (row, metric) pair, assign H/M/L/N.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      matrix: {
+        type: 'object',
+        description: 'Object keyed by row name → object keyed by metric name → "H"|"M"|"L"|"N". Include every (row, metric) pair.',
+        additionalProperties: {
+          type: 'object',
+          additionalProperties: { type: 'string', enum: ['H', 'M', 'L', 'N'] },
+        },
+      },
+    },
+    required: ['matrix'],
+  },
+};
+
+app.post('/framing/matrix', framingLimiter, express.json({ limit: '256kb' }), async (req, res) => {
+  try {
+    const kindRaw = String(req.body?.kind || '').toLowerCase();
+    const kind = kindRaw === 'uncertainty' ? 'uncertainty' : (kindRaw === 'decision' ? 'decision' : null);
+    if (!kind) return res.status(400).json({ error: 'kind must be "decision" or "uncertainty".' });
+
+    const metrics = Array.isArray(req.body?.metrics) ? req.body.metrics.filter(Boolean).map(String) : [];
+    const rows    = Array.isArray(req.body?.rows)    ? req.body.rows.filter(Boolean).map(String)    : [];
+    if (metrics.length === 0) return res.status(400).json({ error: 'metrics list is empty.' });
+    if (rows.length === 0)    return res.status(400).json({ error: 'rows list is empty.' });
+    if (metrics.length > 40 || rows.length > 40) {
+      return res.status(400).json({ error: 'Matrix too large (max 40 x 40).' });
+    }
+
+    const rowLabel = kind === 'uncertainty' ? 'uncertainties' : 'decisions';
+    const rowVerb  = kind === 'uncertainty'
+      ? 'external uncertain factors that the decision-maker does NOT control'
+      : 'levers the decision-maker actually controls';
+    const systemText =
+      `You are scoring an impact matrix for Professor Warren Powell's decision-framing tool.\n\n` +
+      `The user has already picked ${metrics.length} performance METRICS (ordered by pyramid tier, most important first) ` +
+      `and ${rows.length} ${rowLabel} (${rowVerb}). Your job is only to fill in the H/M/L/N impact score for every ` +
+      `(row, metric) pair — do NOT invent new metrics or rows, do NOT rename them.\n\n` +
+      `Scores:\n` +
+      `  H — high impact (strongly moves this metric)\n` +
+      `  M — medium (noticeable, second-order effect)\n` +
+      `  L — low (small but real)\n` +
+      `  N — no meaningful impact\n\n` +
+      `Guidance:\n` +
+      `- Consider both direct and indirect effects.\n` +
+      `- Every row should have at least one H (otherwise it doesn't belong in the model).\n` +
+      `- Not every column needs an H from every row — be honest about N cells.\n` +
+      `- A matrix full of Hs is useless; discriminate.\n\n` +
+      `Return via the record_matrix tool. Keys must match the input strings character-for-character (capitalization + punctuation).`;
+
+    const userText =
+      `Metrics (pyramid-ordered, Tier 1 first):\n` +
+      metrics.map((m, i) => `  ${i + 1}. ${m}`).join('\n') +
+      `\n\n${rowLabel[0].toUpperCase() + rowLabel.slice(1)} (rows):\n` +
+      rows.map((r, i) => `  ${i + 1}. ${r}`).join('\n') +
+      `\n\nScore every (row, metric) cell.`;
+
+    const response = await client.messages.create({
+      model: FRAMING_MODEL,
+      max_tokens: 2048,
+      system: systemText,
+      tools: [MATRIX_TOOL],
+      tool_choice: { type: 'tool', name: MATRIX_TOOL.name },
+      messages: [{ role: 'user', content: userText }],
+    });
+
+    const toolBlock = (response.content || []).find(
+      (b) => b.type === 'tool_use' && b.name === MATRIX_TOOL.name,
+    );
+    if (!toolBlock || !toolBlock.input?.matrix) {
+      return res.status(502).json({ error: 'Model did not produce a matrix. Try again.' });
+    }
+
+    // Coerce: only keep known rows/metrics; only valid H/M/L/N values.
+    const raw = toolBlock.input.matrix;
+    const metricSet = new Set(metrics);
+    const cleaned = {};
+    for (const row of rows) {
+      const src = raw[row];
+      if (!src || typeof src !== 'object') continue;
+      const scored = {};
+      for (const m of metrics) {
+        const v = String(src[m] || '').toUpperCase();
+        if (v === 'H' || v === 'M' || v === 'L' || v === 'N') scored[m] = v;
+      }
+      if (Object.keys(scored).length) cleaned[row] = scored;
+    }
+
+    return res.json({ matrix: cleaned, model: FRAMING_MODEL, usage: response.usage });
+  } catch (err) {
+    console.error('Framing/matrix error:', err);
+    return res.status(500).json({ error: (err && err.message) || 'Unknown error' });
+  }
+});
+
 app.post('/framing', framingLimiter, (req, res) => {
   framingUpload.single('file')(req, res, async (uploadErr) => {
     if (uploadErr) return res.status(400).json({ error: uploadErr.message });
