@@ -18,17 +18,18 @@ date: 2026-08-11
   <details class="fp-menu" id="fp-file-menu">
     <summary>File ▾</summary>
     <div class="fp-menu-items">
-      <button type="button" id="fp-menu-new">New pyramid</button>
+      <button type="button" id="fp-menu-new">New decision</button>
       <button type="button" id="fp-menu-open">Open…</button>
       <button type="button" id="fp-menu-save">Save</button>
       <button type="button" id="fp-menu-saveas">Save as…</button>
+      <button type="button" id="fp-menu-duplicate" title="Save a copy of the currently loaded decision (adds &quot; (2)&quot; to the name)">Duplicate</button>
     </div>
   </details>
   <span id="fp-current-file" class="fp-current-file" title="Currently loaded pyramid"></span>
   <span class="fp-toolbar-sep" aria-hidden="true"></span>
   <button type="button" id="fp-clear">Clear pyramid</button>
   <button type="button" id="fp-reset">Reset all</button>
-  <button type="button" id="fp-share">Copy share URL</button>
+  <button type="button" id="fp-share" title="Copy a URL that opens this document as a fresh snapshot in someone else's browser (their edits don't affect your copy)">Share URL</button>
   <button type="button" id="fp-print">Print</button>
   <span id="fp-status" class="fp-status" role="status"></span>
 </div>
@@ -587,6 +588,9 @@ date: 2026-08-11
       else localStorage.removeItem(CURRENT_KEY);
     } catch (_) { /* ignore */ }
     renderCurrentFileLabel();
+    // Duplicate only makes sense when a named document is loaded.
+    const dupBtn = $('#fp-menu-duplicate');
+    if (dupBtn) dupBtn.disabled = !currentName;
   }
   function renderCurrentFileLabel() {
     const el = $('#fp-current-file');
@@ -624,6 +628,30 @@ date: 2026-08-11
     setCurrentName(name);
     flashStatus('Saved as "' + name + '".');
   }
+  // Duplicate — copy the current document under a new name that
+  // auto-appends " (N)". If the current name already ends with
+  // " (N)", the next available N is used; otherwise it starts at
+  // (2). Sets the current name to the new copy so subsequent Save
+  // clicks write to the copy, not the original.
+  function duplicateFile() {
+    if (!currentName) {
+      flashStatus('Nothing loaded — use Save as… first.');
+      return;
+    }
+    const files = readFiles();
+    // Strip trailing " (N)" so re-duplicating a copy walks the
+    // counter forward instead of piling suffixes.
+    const m = currentName.match(/^(.*?)\s*\((\d+)\)\s*$/);
+    const baseName = m ? m[1] : currentName;
+    let n = m ? parseInt(m[2], 10) + 1 : 2;
+    while (files[baseName + ' (' + n + ')']) n++;
+    const newName = baseName + ' (' + n + ')';
+    files[newName] = snapshotForSave();
+    writeFiles(files);
+    setCurrentName(newName);
+    flashStatus('Duplicated as "' + newName + '".');
+  }
+
   function loadFile(name) {
     const files = readFiles();
     const file = files[name];
@@ -1086,7 +1114,7 @@ date: 2026-08-11
     // File menu
     $('#fp-menu-new').addEventListener('click', () => {
       closeFileMenu();
-      if (!confirm('Start a new document? Anything on screen is discarded (Save first if you want to keep it).')) return;
+      if (!confirm('Start a new decision? Anything on screen is discarded (Save first if you want to keep it).')) return;
       state = {
         metrics: [], assignments: {},
         decisions: [], matrix: {},
@@ -1109,6 +1137,10 @@ date: 2026-08-11
     $('#fp-menu-saveas').addEventListener('click', () => {
       closeFileMenu();
       saveAsFile();
+    });
+    $('#fp-menu-duplicate').addEventListener('click', () => {
+      closeFileMenu();
+      duplicateFile();
     });
     // Open-modal wiring
     $('#fp-modal-close').addEventListener('click', closeOpenModal);
