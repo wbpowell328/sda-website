@@ -143,9 +143,9 @@ date: 2026-08-11
     margin: 0 4px;
   }
   /* Document title — the currently loaded case's name, shown as a
-     workspace-wide header directly below the toolbar. Empty when
-     nothing named is loaded (fresh session, URL share) so users
-     aren't stared at by an empty banner. */
+     workspace-wide header directly below the toolbar. Always
+     visible; when no named document is loaded the banner shows a
+     muted placeholder pointing at File > Open. */
   .fp-doc-title {
     margin: 16px 0 8px 0;
     padding: 10px 16px;
@@ -156,7 +156,11 @@ date: 2026-08-11
     font-weight: 700;
     color: #5a4a35;
   }
-  .fp-doc-title:empty { display: none; }
+  .fp-doc-title.fp-doc-title-empty {
+    color: #a79974;
+    font-weight: 500;
+    font-style: italic;
+  }
 
   /* File dropdown menu (uses <details> for click-toggle) */
   .fp-menu {
@@ -634,9 +638,13 @@ date: 2026-08-11
   function renderCurrentFileLabel() {
     const el = $('#fp-doc-title');
     if (!el) return;
-    // Empty text collapses via CSS :empty rule, so no banner shows
-    // for a truly unnamed workspace.
-    el.textContent = docTitle || '';
+    if (docTitle) {
+      el.textContent = docTitle;
+      el.classList.remove('fp-doc-title-empty');
+    } else {
+      el.textContent = 'No document loaded — use File > Open to load one, or Save as… to name the current work.';
+      el.classList.add('fp-doc-title-empty');
+    }
   }
   function snapshotForSave() {
     return {
