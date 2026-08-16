@@ -308,9 +308,14 @@ date: 2026-08-11
   }
   .fp-matrix-decision-header { min-width: 140px; text-align: left; }
   .fp-matrix-metric-header {
-    min-width: 60px; max-width: 100px;
+    min-width: 60px; max-width: 110px;
     text-align: center;
-    word-break: break-word;
+    /* Prefer to break on <wbr> markers (which we insert after each
+       "/" in headers via JS) rather than mid-word. If the header
+       still overflows, overflow-wrap: break-word breaks anywhere
+       as a fallback so nothing spills outside the cell. */
+    word-break: normal;
+    overflow-wrap: break-word;
     line-height: 1.15;
   }
   /* Tier bands on the header columns so the pyramid grouping is visible. */
@@ -839,6 +844,22 @@ date: 2026-08-11
     }
     return out;
   }
+  // Set a matrix-header cell's text with <wbr> markers after every
+  // "/" so the browser prefers breaking at those spots. Text before
+  // and after each slash stays intact — no more single-letter
+  // orphans from mid-word breaking.
+  function appendMetricHeaderText(el, text) {
+    el.textContent = '';
+    const parts = String(text).split('/');
+    for (let i = 0; i < parts.length; i++) {
+      if (i > 0) {
+        el.appendChild(document.createTextNode('/'));
+        el.appendChild(document.createElement('wbr'));
+      }
+      el.appendChild(document.createTextNode(parts[i]));
+    }
+  }
+
   function renderImpactMatrix(kind) {
     const cfg = MATRIX[kind];
     const wrap = $(cfg.wrapSel);
@@ -879,8 +900,12 @@ date: 2026-08-11
     for (const { metric, tier } of metrics) {
       const th = document.createElement('th');
       th.className = 'fp-matrix-metric-header fp-matrix-tier-' + tier;
-      th.textContent = metric;
-      th.title = 'Tier ' + tier;
+      // Header text with a preferred line-break opportunity (<wbr>)
+      // after every "/". Metrics-per-something (e.g. Rev/driver/wk,
+      // Operating margin/mile) then wrap cleanly at the slash
+      // instead of dropping a random tail letter to the next line.
+      appendMetricHeaderText(th, metric);
+      th.title = 'Tier ' + tier + ' — ' + metric;
       hr.appendChild(th);
     }
     thead.appendChild(hr);
