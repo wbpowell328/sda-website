@@ -86,10 +86,9 @@ date: 2026-08-11
 <h2 id="decision-prioritization-tool" class="fp-section-h2">Decision prioritization tool</h2>
 <p>List the decisions you'd consider (one per line). The matrix below has one column per <em>tier-assigned</em> metric from the pyramid above, ordered top-to-bottom by tier (left-to-right within the same tier by the order the metrics appear in the metrics list). Click any cell to cycle through <b>H</b> (high impact) → <b>M</b> → <b>L</b> → <b>N</b> (none) → blank. When you're done scoring, drag any row up or down via the <span class="fp-grip-inline">☰</span> handle to prioritize decisions by their impact on the most important metrics.</p>
 
-<div class="fp-grid">
+<div class="fp-grid fp-grid-narrow">
   <div class="fp-panel fp-decisions-panel">
     <h3>Decisions</h3>
-    <p class="fp-muted">One per line. The order here becomes the initial row order in the matrix; drag rows in the matrix to change it.</p>
     <textarea id="fp-decisions-input" spellcheck="true" placeholder="Set the price&#10;Choose a supplier&#10;Approve the design&#10;Schedule production"></textarea>
   </div>
   <div class="fp-panel fp-matrix-panel">
@@ -350,8 +349,15 @@ date: 2026-08-11
     gap: 24px;
     align-items: start;
   }
+  /* Decisions/matrix grid: give the matrix more room than the pyramid
+     grid does — decisions column is a compact ~25% of the panel width
+     so the matrix can breathe. */
+  .fp-grid-narrow {
+    grid-template-columns: minmax(180px, 1fr) minmax(380px, 3fr);
+  }
   @media (max-width: 800px) {
-    .fp-grid { grid-template-columns: 1fr; }
+    .fp-grid,
+    .fp-grid-narrow { grid-template-columns: 1fr; }
   }
 
   .fp-panel h3 { margin: 0 0 4px 0; color: #5a4a35; }
