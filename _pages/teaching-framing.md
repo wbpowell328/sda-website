@@ -65,7 +65,7 @@ Each of the cases below contains a set of questions that challenge students to f
 
 4. What are the different sources of uncertainty? Use the [12 categories of uncertainty here as a guide](/modeling-uncertainty/#categories).
 
-5. Repeat the exercise in (3), but this time using uncertainties instead of decisions.
+5. Repeat the exercise in (3) using the impact matrix for uncertainties:
    - a) Which sources of uncertainty would be captured using average performance over time?
    - b) Which sources of uncertainty represent forms of risk that are not properly captured using averages?
 
