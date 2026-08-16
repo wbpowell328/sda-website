@@ -1295,12 +1295,13 @@ date: 2026-08-11
       render(); renderAllMatrices(); autoSave();
     });
     $('#fp-reset').addEventListener('click', () => {
-      if (!confirm('Delete every metric, decision, and uncertainty, and clear the pyramid and both matrices? Cannot be undone.')) return;
+      if (!confirm('Delete every metric, decision, and uncertainty, clear the pyramid and both matrices, and unload the current document? (Saved documents in File > Open are not affected.) Cannot be undone.')) return;
       state = {
         metrics: [], assignments: {},
         decisions: [], matrix: {},
         uncertainties: [], uMatrix: {},
       };
+      setCurrentName(null);   // also clears the doc-title banner
       $('#fp-metrics-input').value       = '';
       $('#fp-decisions-input').value     = '';
       $('#fp-uncertainties-input').value = '';
