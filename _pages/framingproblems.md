@@ -14,6 +14,7 @@ Framing a decision problem is the most important step — it sets the stage for 
 - [Performance metrics](#performance-metrics)
 - [Types of decisions](#types-of-decisions)
 - [Sources and styles of uncertainty](#sources-and-styles-of-uncertainty)
+- [Metrics pyramid tool](#metrics-pyramid-tool)
 
 ## The framing process {#the-framing-process}
 
@@ -72,4 +73,17 @@ The academic community studies the process of making decisions in the presence o
 We have identified 12 different ways that information can impact the behavior of a model or its implementation, including observational errors (does the patient have cancer?), exogenous uncertainty (weather, customer demands), prognostic uncertainty (forecasting errors), and implementation errors (people not following instructions).
 
 A complete discussion is on the [Modeling uncertainty](/modeling-uncertainty/) page.
+
+## Metrics pyramid tool {#metrics-pyramid-tool}
+
+A companion interactive tool for building the [metrics pyramid](#performance-metrics) described above. Type your list of metrics, drag each into one of four priority tiers, and share the resulting pyramid as a URL or print it for classroom use. Everything runs in the browser — nothing leaves your device unless you copy the share URL.
+
+<p style="margin: 1rem 0;">
+  <a href="/metrics-pyramid/"
+     style="display: inline-block; background: #c9621e; color: #fff;
+            padding: 8px 20px; border-radius: 4px; text-decoration: none;
+            font-weight: 600; font-size: 0.95rem;">
+    Open the metrics pyramid tool →
+  </a>
+</p>
 {% endraw %}
