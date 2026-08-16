@@ -21,7 +21,7 @@ This webpage offers three ideas to help with teaching (more to come):
 
 ## Expanding the scope of an existing lecture
 
-Imagine you have a lecture prepared to address a specific business problem, which might be inventory planning, locating facilities, scheduling projects, pricing products, or personnel management. Your lecture may be designed to illustrate a specific tool or solution approach, which means you have already chosen what decision is being made, and the performance metric.
+Imagine you have a lecture prepared to address a specific problem, whether it is a business problem or any application in engineering, health, energy, or transportation. Your lecture may be designed to illustrate a specific tool or solution approach, which means you have already chosen what decision is being made, and the performance metric.
 
 1. **Metrics**: Take a few minutes to step back to a larger problem setting where you want to minimize costs, maximize profits, or increase productivity. As you increase the scope of the problem, you typically are going to encounter multiple metrics. Organize these into a pyramid as we do [here](https://warrenpowell.org/framingproblems/#performance-metrics).
 
