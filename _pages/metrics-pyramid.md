@@ -240,9 +240,15 @@ date: 2026-08-11
     display: flex; align-items: center; gap: 8px;
     padding: 8px 12px;
     border-bottom: 1px solid #eae0c8;
+    cursor: pointer;
   }
   .fp-file-row:last-child { border-bottom: none; }
   .fp-file-row:hover { background: #faf5e6; }
+  .fp-file-row:focus {
+    outline: 2px solid #c9621e;
+    outline-offset: -2px;
+    background: #faf5e6;
+  }
   .fp-file-name {
     flex: 1 1 auto; min-width: 0;
     font-size: 0.95rem; color: #5a4a35; font-weight: 600;
@@ -760,25 +766,34 @@ date: 2026-08-11
         meta.textContent = fmtSavedAt(savedAt);
         nameEl.appendChild(meta);
       }
-      const loadBtn = document.createElement('button');
-      loadBtn.type = 'button';
-      loadBtn.className = 'fp-file-load';
-      loadBtn.textContent = 'Load';
-      loadBtn.addEventListener('click', () => {
-        loadFile(name);
-        closeOpenModal();
-      });
       const delBtn = document.createElement('button');
       delBtn.type = 'button';
       delBtn.className = 'fp-file-delete';
       delBtn.textContent = 'Delete';
-      delBtn.addEventListener('click', () => {
+      delBtn.addEventListener('click', (e) => {
+        // Prevent the row-click loader from firing after Delete.
+        e.stopPropagation();
         if (!window.confirm('Delete pyramid "' + name + '"? Cannot be undone.')) return;
         deleteFile(name);
         renderFileList();
       });
+      // The whole row is clickable — matches the hover highlight the
+      // user already sees. Keyboard access via role=button + Enter/Space.
+      row.tabIndex = 0;
+      row.setAttribute('role', 'button');
+      row.setAttribute('aria-label', 'Load ' + name);
+      row.addEventListener('click', () => {
+        loadFile(name);
+        closeOpenModal();
+      });
+      row.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          loadFile(name);
+          closeOpenModal();
+        }
+      });
       row.appendChild(nameEl);
-      row.appendChild(loadBtn);
       row.appendChild(delBtn);
       list.appendChild(row);
     }
@@ -865,13 +880,18 @@ date: 2026-08-11
         meta.textContent = ex.description;
         nameEl.appendChild(meta);
       }
-      const loadBtn = document.createElement('button');
-      loadBtn.type = 'button';
-      loadBtn.className = 'fp-file-load';
-      loadBtn.textContent = 'Load';
-      loadBtn.addEventListener('click', () => loadPublicExample(ex));
+      // Whole-row click loads (no separate Load button needed).
+      row.tabIndex = 0;
+      row.setAttribute('role', 'button');
+      row.setAttribute('aria-label', 'Load ' + (ex.title || ex.file));
+      row.addEventListener('click', () => loadPublicExample(ex));
+      row.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          loadPublicExample(ex);
+        }
+      });
       row.appendChild(nameEl);
-      row.appendChild(loadBtn);
       list.appendChild(row);
     }
   }
