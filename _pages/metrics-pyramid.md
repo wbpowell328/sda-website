@@ -191,7 +191,7 @@ date: 2026-08-11
   .fp-modal-card {
     background: #fff; border-radius: 6px;
     padding: 20px;
-    max-width: 520px; width: 90%; max-height: 80vh;
+    max-width: 780px; width: 90%; max-height: 80vh;
     display: flex; flex-direction: column;
     box-shadow: 0 4px 20px rgba(0,0,0,0.2);
   }
