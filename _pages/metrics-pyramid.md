@@ -65,7 +65,7 @@ date: 2026-08-11
     <p class="fp-muted">Tier 1 = most important. Drop chips onto any tier; drag between tiers to re-order.</p>
     <div class="fp-pyramid">
       <div class="fp-tier fp-tier-1">
-        <div class="fp-tier-label">Tier 1 <span class="fp-tier-hint">(most important)</span></div>
+        <div class="fp-tier-label">Tier 1 <span class="fp-tier-hint">(one metric)</span></div>
         <div class="fp-drop-zone" data-tier="1"></div>
       </div>
       <div class="fp-tier fp-tier-2">
@@ -77,7 +77,7 @@ date: 2026-08-11
         <div class="fp-drop-zone" data-tier="3"></div>
       </div>
       <div class="fp-tier fp-tier-4">
-        <div class="fp-tier-label">Tier 4 <span class="fp-tier-hint">(least important)</span></div>
+        <div class="fp-tier-label">Tier 4</div>
         <div class="fp-drop-zone" data-tier="4"></div>
       </div>
     </div>
