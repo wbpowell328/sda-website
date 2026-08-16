@@ -275,10 +275,15 @@ date: 2026-08-11
     color: #333;
   }
 
-  /* Impact matrix — table with clickable cells and draggable rows. */
+  /* Impact matrix — table with clickable cells and draggable rows.
+     Wrapper shrinks to the table's natural width so a small matrix
+     (few metrics or few rows) doesn't leave a wide empty band next
+     to the last column. If the natural width exceeds the panel's
+     width, max-width: 100% caps it and overflow-x: auto scrolls. */
   .fp-matrix-wrapper {
-    overflow-x: auto;   /* wide matrices scroll horizontally */
+    width: fit-content;
     max-width: 100%;
+    overflow-x: auto;
     border: 1px solid #eae0c8;
     border-radius: 4px;
     background: #fdfaf1;
