@@ -19,6 +19,11 @@
       "file": "aurora-motors.json",
       "title": "Aurora Motors — the flow coordination dilemma (medium)",
       "description": "A hybrid-vehicle manufacturer coordinating imported parts, production sequencing, and dealer commitments under tariff, incentive, and fuel-price uncertainty. 6 metrics, 5 decisions, 5 uncertainties, matrices pre-scored."
+    },
+    {
+      "file": "summit-ridge-cash.json",
+      "title": "Summit Ridge Asset Management — the Monday morning cash decision (medium)",
+      "description": "A mutual fund CIO balancing redemption liquidity against performance drag from cash after a weekend market shock. 6 metrics, 5 decisions, 5 uncertainties, matrices pre-scored."
     }
   ]
 }
