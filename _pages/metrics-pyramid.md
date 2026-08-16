@@ -1,12 +1,17 @@
 ---
 layout: page
-title: "Metrics pyramid tool"
+title: "Decision framing tools"
 permalink: /metrics-pyramid/
 date: 2026-08-11
 ---
 
 {% raw %}
-<p>Prioritize a set of performance metrics into a four-level pyramid — most important at the top, least important at the bottom. Type metrics on the left (one per line), then drag each chip into a tier. Drag between tiers to re-order, or back to <em>Unassigned</em> to remove. Your work saves in the browser automatically. Print for handouts, or share as a URL.</p>
+<p>Two companion tools for the framing process:</p>
+<ol>
+  <li><a href="#metrics-pyramid-tool"><strong>Metrics pyramid tool</strong></a> — prioritize your performance metrics into a four-level pyramid.</li>
+  <li><a href="#decision-prioritization-tool"><strong>Decision prioritization tool</strong></a> — score each decision's impact on each pyramid-ordered metric (H / M / L / N), then reorder the decisions by their impact on the most important metrics.</li>
+</ol>
+<p>Everything runs client-side; your work saves in the browser automatically. The <em>File</em> menu below lets you keep multiple named documents, and each contains both the pyramid and the matrix.</p>
 
 <div class="fp-toolbar">
   <details class="fp-menu" id="fp-file-menu">
@@ -42,6 +47,9 @@ date: 2026-08-11
   </div>
 </div>
 
+<h2 id="metrics-pyramid-tool" class="fp-section-h2">Metrics pyramid tool</h2>
+<p>Type performance metrics on the left (one per line), then drag each chip into a tier — most important at the top, least important at the bottom. Drag between tiers to re-order, or back to <em>Unassigned</em> to remove.</p>
+
 <div class="fp-grid">
   <div class="fp-panel fp-metrics-panel">
     <h3>Metrics</h3>
@@ -71,6 +79,24 @@ date: 2026-08-11
         <div class="fp-tier-label">Tier 4 <span class="fp-tier-hint">(least important)</span></div>
         <div class="fp-drop-zone" data-tier="4"></div>
       </div>
+    </div>
+  </div>
+</div>
+
+<h2 id="decision-prioritization-tool" class="fp-section-h2">Decision prioritization tool</h2>
+<p>List the decisions you'd consider (one per line). The matrix below has one column per <em>tier-assigned</em> metric from the pyramid above, ordered top-to-bottom by tier (left-to-right within the same tier by the order the metrics appear in the metrics list). Click any cell to cycle through <b>H</b> (high impact) → <b>M</b> → <b>L</b> → <b>N</b> (none) → blank. When you're done scoring, drag any row up or down via the <span class="fp-grip-inline">☰</span> handle to prioritize decisions by their impact on the most important metrics.</p>
+
+<div class="fp-grid">
+  <div class="fp-panel fp-decisions-panel">
+    <h3>Decisions</h3>
+    <p class="fp-muted">One per line. The order here becomes the initial row order in the matrix; drag rows in the matrix to change it.</p>
+    <textarea id="fp-decisions-input" spellcheck="true" placeholder="Set the price&#10;Choose a supplier&#10;Approve the design&#10;Schedule production"></textarea>
+  </div>
+  <div class="fp-panel fp-matrix-panel">
+    <h3>Impact matrix</h3>
+    <p class="fp-muted">Columns follow the pyramid order. Rows can be dragged by their <span class="fp-grip-inline">☰</span> handle.</p>
+    <div class="fp-matrix-wrapper">
+      <div id="fp-matrix"></div>
     </div>
   </div>
 </div>
@@ -203,6 +229,121 @@ date: 2026-08-11
   }
   .fp-modal-actions button:hover { background: #faf5e6; }
 
+  /* Section headings between the two tools */
+  .fp-section-h2 {
+    margin-top: 32px; padding-top: 12px;
+    border-top: 2px solid #eae0c8;
+    color: #5a4a35;
+  }
+  .fp-grip-inline {
+    display: inline-block;
+    padding: 0 4px;
+    background: #faf5e6;
+    border: 1px solid #c9b891;
+    border-radius: 3px;
+    font-size: 0.85em;
+    color: #7a6a55;
+  }
+
+  /* Decisions textarea reuses the metrics textarea styling. */
+  #fp-decisions-input {
+    width: 100%; min-height: 180px;
+    padding: 8px 10px;
+    border: 1px solid #c9b891; border-radius: 4px;
+    font-family: inherit; font-size: 0.95rem;
+    resize: vertical;
+    box-sizing: border-box;
+    background: #fff;
+    color: #333;
+  }
+
+  /* Impact matrix — table with clickable cells and draggable rows. */
+  .fp-matrix-wrapper {
+    overflow-x: auto;   /* wide matrices scroll horizontally */
+    max-width: 100%;
+    border: 1px solid #eae0c8;
+    border-radius: 4px;
+    background: #fdfaf1;
+  }
+  .fp-matrix-empty {
+    padding: 20px; margin: 0;
+    color: #7a6a55; font-style: italic; text-align: center;
+    font-size: 0.9rem;
+  }
+  table.fp-matrix {
+    border-collapse: collapse;
+    background: #fff;
+    font-size: 0.9rem;
+  }
+  table.fp-matrix th,
+  table.fp-matrix td {
+    border: 1px solid #eae0c8;
+    padding: 6px 8px;
+    vertical-align: middle;
+  }
+  table.fp-matrix thead th {
+    background: #faf5e6;
+    color: #5a4a35;
+    font-weight: 600;
+    font-size: 0.85rem;
+    position: sticky; top: 0; z-index: 1;
+  }
+  .fp-matrix-decision-header { min-width: 140px; text-align: left; }
+  .fp-matrix-metric-header {
+    min-width: 60px; max-width: 100px;
+    text-align: center;
+    word-break: break-word;
+    line-height: 1.15;
+  }
+  /* Tier bands on the header columns so the pyramid grouping is visible. */
+  .fp-matrix-tier-1 { background: #eadfc0 !important; }
+  .fp-matrix-tier-2 { background: #f0e6cd !important; }
+  .fp-matrix-tier-3 { background: #f6eeda !important; }
+  .fp-matrix-tier-4 { background: #fbf6e8 !important; }
+
+  /* Cells — click to cycle H → M → L → N → empty */
+  .fp-matrix-cell {
+    text-align: center;
+    cursor: pointer; user-select: none;
+    font-weight: 700; font-size: 0.9rem;
+    min-width: 44px; height: 34px;
+    transition: filter 0.1s;
+  }
+  .fp-matrix-cell:hover { filter: brightness(0.95); }
+  .fp-matrix-cell[data-value=""]  { background: #fff; color: #d4c8a8; }
+  .fp-matrix-cell[data-value=""]::before { content: '–'; }
+  .fp-matrix-cell[data-value="H"] { background: #dc2626; color: #fff; }
+  .fp-matrix-cell[data-value="M"] { background: #f97316; color: #fff; }
+  .fp-matrix-cell[data-value="L"] { background: #facc15; color: #333; }
+  .fp-matrix-cell[data-value="N"] { background: #faf5e6; color: #7a6a55; }
+
+  .fp-matrix-decision {
+    font-weight: 600; color: #5a4a35;
+    max-width: 260px;
+    word-break: break-word;
+  }
+
+  /* Drag handle (grip) column */
+  .fp-matrix-grip {
+    text-align: center;
+    color: #7a6a55;
+    cursor: grab;
+    user-select: none;
+    width: 24px;
+    background: #faf5e6;
+    font-size: 1.1rem;
+  }
+  .fp-matrix-grip:active { cursor: grabbing; }
+  tr.fp-matrix-dragging { opacity: 0.4; }
+  tr.fp-matrix-drop-above > td { box-shadow: inset 0 3px 0 0 #c9621e; }
+  tr.fp-matrix-drop-below > td { box-shadow: inset 0 -3px 0 0 #c9621e; }
+
+  @media print {
+    /* Keep the matrix on the printed page — it's a deliverable too. */
+    .fp-matrix-grip { display: none; }
+    .fp-decisions-panel { display: none !important; }
+  }
+
   .fp-grid {
     display: grid;
     grid-template-columns: minmax(240px, 1fr) minmax(340px, 2fr);
@@ -302,10 +443,20 @@ date: 2026-08-11
   const CURRENT_KEY = 'framing_pyramid_current_v1'; // which named file is loaded
   const URL_PARAM = 'p';
 
-  // State: metrics is an ordered list of strings (source-of-truth
-  // from the textarea); assignments maps each metric → tier 1-4.
-  // Missing entry or 0 means the metric is Unassigned.
-  let state = { metrics: [], assignments: {} };
+  // State — a single "framing document" bundles the pyramid AND
+  // the decision matrix so File > Save keeps them together.
+  //   metrics      : ordered list of metric strings (source-of-truth
+  //                  from the metrics textarea).
+  //   assignments  : metric → tier 1-4 (missing/0 = Unassigned).
+  //   decisions    : ordered list of decision strings; order is the
+  //                  matrix row order, updated by both the textarea
+  //                  and drag-to-reorder inside the matrix.
+  //   matrix       : { decision: { metric: 'H'|'M'|'L'|'N' } } —
+  //                  missing = blank (not yet scored).
+  let state = {
+    metrics: [], assignments: {},
+    decisions: [], matrix: {},
+  };
   let currentName = null;   // which named file, if any, is currently loaded
 
   const $  = (sel) => document.querySelector(sel);
@@ -316,16 +467,26 @@ date: 2026-08-11
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
     catch (_) { /* private mode / quota — ignore */ }
   }
+  // Fill in any missing fields on a partial state blob (URL-shared
+  // links or files saved before the decisions/matrix existed).
+  function normalizeState(s) {
+    return {
+      metrics:     Array.isArray(s && s.metrics)     ? s.metrics     : [],
+      assignments: (s && s.assignments)              ? s.assignments : {},
+      decisions:   Array.isArray(s && s.decisions)   ? s.decisions   : [],
+      matrix:      (s && s.matrix)                   ? s.matrix      : {},
+    };
+  }
   function load() {
-    // URL param wins — someone shared a pyramid link.
+    // URL param wins — someone shared a link.
     try {
       const enc = new URLSearchParams(window.location.search).get(URL_PARAM);
       if (enc) {
         const decoded = JSON.parse(atob(
           enc.replace(/-/g, '+').replace(/_/g, '/')
         ));
-        if (decoded && Array.isArray(decoded.metrics) && decoded.assignments) {
-          state = { metrics: decoded.metrics, assignments: decoded.assignments };
+        if (decoded && Array.isArray(decoded.metrics)) {
+          state = normalizeState(decoded);
           return;
         }
       }
@@ -335,10 +496,7 @@ date: 2026-08-11
       if (raw) {
         const parsed = JSON.parse(raw);
         if (parsed && Array.isArray(parsed.metrics)) {
-          state = {
-            metrics: parsed.metrics,
-            assignments: parsed.assignments || {},
-          };
+          state = normalizeState(parsed);
         }
       }
     } catch (_) { /* ignore */ }
@@ -376,6 +534,8 @@ date: 2026-08-11
     return {
       metrics: state.metrics,
       assignments: state.assignments,
+      decisions: state.decisions,
+      matrix: state.matrix,
       savedAt: new Date().toISOString(),
     };
   }
@@ -403,13 +563,12 @@ date: 2026-08-11
     const files = readFiles();
     const file = files[name];
     if (!file) return;
-    state = {
-      metrics: Array.isArray(file.metrics) ? file.metrics.slice() : [],
-      assignments: file.assignments ? { ...file.assignments } : {},
-    };
+    state = normalizeState(file);
     setCurrentName(name);
     $('#fp-metrics-input').value = state.metrics.join('\n');
+    $('#fp-decisions-input').value = state.decisions.join('\n');
     render();
+    renderMatrix();
     autoSave();
     flashStatus('Loaded "' + name + '".');
   }
@@ -515,7 +674,17 @@ date: 2026-08-11
     }
     state.metrics = newMetrics;
     state.assignments = kept;
+    // Also prune matrix values referencing metrics that no longer exist
+    // (leaves matrix values under still-present metrics untouched).
+    const metricSet = new Set(newMetrics);
+    for (const d of Object.keys(state.matrix)) {
+      for (const m of Object.keys(state.matrix[d])) {
+        if (!metricSet.has(m)) delete state.matrix[d][m];
+      }
+      if (Object.keys(state.matrix[d]).length === 0) delete state.matrix[d];
+    }
     render();
+    renderMatrix();   // metric columns may have changed
     autoSave();
   }
 
@@ -569,6 +738,192 @@ date: 2026-08-11
       if (tier === 0) delete state.assignments[metric];
       else state.assignments[metric] = tier;
       render();
+      renderMatrix();   // moving a metric in/out of a tier changes matrix columns
+      autoSave();
+    });
+  }
+
+  // ── Decisions textarea → decisions list sync ────────────────
+  function parseDecisionsTextarea() {
+    const raw = $('#fp-decisions-input').value;
+    const lines = raw.split('\n').map(s => s.trim()).filter(Boolean);
+    const seen = new Set(); const out = [];
+    for (const s of lines) if (!seen.has(s)) { seen.add(s); out.push(s); }
+    return out;
+  }
+  function syncDecisionsFromTextarea() {
+    const newList = parseDecisionsTextarea();
+    // Preserve matrix values only for decisions still in the list.
+    const kept = {};
+    for (const d of newList) if (state.matrix[d]) kept[d] = state.matrix[d];
+    state.decisions = newList;
+    state.matrix = kept;
+    renderMatrix();
+    autoSave();
+  }
+
+  // ── Matrix: columns come from the pyramid ───────────────────
+  function orderedMetrics() {
+    // Group by tier (1..4), preserve textarea order within each tier.
+    // Skip metrics that haven't been dropped into a tier — the matrix
+    // is about *prioritized* metrics.
+    const byTier = { 1: [], 2: [], 3: [], 4: [] };
+    for (const m of state.metrics) {
+      const t = Number(state.assignments[m]) || 0;
+      if (t >= 1 && t <= 4) byTier[t].push(m);
+    }
+    const out = [];
+    for (const t of [1, 2, 3, 4]) {
+      for (const m of byTier[t]) out.push({ metric: m, tier: t });
+    }
+    return out;
+  }
+  function renderMatrix() {
+    const wrap = $('#fp-matrix');
+    if (!wrap) return;
+    const metrics = orderedMetrics();
+    const decisions = state.decisions;
+    if (metrics.length === 0 && decisions.length === 0) {
+      wrap.innerHTML = '<p class="fp-matrix-empty">' +
+        "Add metrics (and drag them into pyramid tiers) above, and list decisions on the left, to start scoring impact." +
+        '</p>';
+      return;
+    }
+    if (metrics.length === 0) {
+      wrap.innerHTML = '<p class="fp-matrix-empty">' +
+        "No tier-assigned metrics yet — drag some metric chips into the pyramid above and this matrix's columns will fill in." +
+        '</p>';
+      return;
+    }
+    if (decisions.length === 0) {
+      wrap.innerHTML = '<p class="fp-matrix-empty">' +
+        "Add decisions on the left to start scoring." +
+        '</p>';
+      return;
+    }
+    const table = document.createElement('table');
+    table.className = 'fp-matrix';
+
+    const thead = document.createElement('thead');
+    const hr = document.createElement('tr');
+    hr.appendChild(document.createElement('th'));  // grip column
+    const dh = document.createElement('th');
+    dh.className = 'fp-matrix-decision-header';
+    dh.textContent = 'Decision';
+    hr.appendChild(dh);
+    for (const { metric, tier } of metrics) {
+      const th = document.createElement('th');
+      th.className = 'fp-matrix-metric-header fp-matrix-tier-' + tier;
+      th.textContent = metric;
+      th.title = 'Tier ' + tier;
+      hr.appendChild(th);
+    }
+    thead.appendChild(hr);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    for (const d of decisions) {
+      const tr = document.createElement('tr');
+      tr.dataset.decision = d;
+
+      const grip = document.createElement('td');
+      grip.className = 'fp-matrix-grip';
+      grip.textContent = '☰';
+      grip.draggable = true;
+      grip.title = 'Drag to reorder this row';
+      tr.appendChild(grip);
+
+      const nameTd = document.createElement('td');
+      nameTd.className = 'fp-matrix-decision';
+      nameTd.textContent = d;
+      tr.appendChild(nameTd);
+
+      for (const { metric } of metrics) {
+        const cell = document.createElement('td');
+        cell.className = 'fp-matrix-cell';
+        const v = (state.matrix[d] && state.matrix[d][metric]) || '';
+        cell.dataset.value = v;
+        cell.title = 'Click to cycle: H → M → L → N → blank';
+        cell.addEventListener('click', () => cycleCell(d, metric, cell));
+        tr.appendChild(cell);
+      }
+      tbody.appendChild(tr);
+      wireMatrixRowDrag(tr);
+    }
+    table.appendChild(tbody);
+
+    wrap.innerHTML = '';
+    wrap.appendChild(table);
+  }
+  function cycleCell(decision, metric, cell) {
+    const order = ['', 'H', 'M', 'L', 'N'];
+    const cur = (state.matrix[decision] && state.matrix[decision][metric]) || '';
+    const idx = order.indexOf(cur);
+    const next = order[(idx + 1) % order.length];
+    if (!state.matrix[decision]) state.matrix[decision] = {};
+    if (next === '') {
+      delete state.matrix[decision][metric];
+      if (Object.keys(state.matrix[decision]).length === 0) delete state.matrix[decision];
+    } else {
+      state.matrix[decision][metric] = next;
+    }
+    cell.dataset.value = next;
+    autoSave();
+  }
+
+  // ── Matrix row drag-to-reorder ──────────────────────────────
+  function clearMatrixDropIndicators() {
+    $$('.fp-matrix tbody tr').forEach(r => {
+      r.classList.remove('fp-matrix-drop-above', 'fp-matrix-drop-below');
+    });
+  }
+  function wireMatrixRowDrag(row) {
+    const grip = row.querySelector('.fp-matrix-grip');
+    if (!grip) return;
+    grip.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', row.dataset.decision);
+      e.dataTransfer.effectAllowed = 'move';
+      row.classList.add('fp-matrix-dragging');
+    });
+    grip.addEventListener('dragend', () => {
+      row.classList.remove('fp-matrix-dragging');
+      clearMatrixDropIndicators();
+    });
+    row.addEventListener('dragover', (e) => {
+      // preventDefault is required so 'drop' fires.
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      const rect = row.getBoundingClientRect();
+      const above = (e.clientY - rect.top) < rect.height / 2;
+      // Only touch this row's indicator; leave others as-is (dragleave
+      // on a neighbour will clean up that one).
+      row.classList.toggle('fp-matrix-drop-above', above);
+      row.classList.toggle('fp-matrix-drop-below', !above);
+    });
+    row.addEventListener('dragleave', (e) => {
+      if (!row.contains(e.relatedTarget)) {
+        row.classList.remove('fp-matrix-drop-above', 'fp-matrix-drop-below');
+      }
+    });
+    row.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const src = e.dataTransfer.getData('text/plain');
+      const above = row.classList.contains('fp-matrix-drop-above');
+      clearMatrixDropIndicators();
+      if (!src || src === row.dataset.decision) return;
+      const list = state.decisions.slice();
+      const srcIdx = list.indexOf(src);
+      if (srcIdx < 0) return;
+      list.splice(srcIdx, 1);
+      let dstIdx = list.indexOf(row.dataset.decision);
+      if (dstIdx < 0) return;
+      if (!above) dstIdx += 1;
+      list.splice(dstIdx, 0, src);
+      state.decisions = list;
+      // Keep the textarea in sync with the new row order so what
+      // the user sees on the left matches the matrix.
+      $('#fp-decisions-input').value = state.decisions.join('\n');
+      renderMatrix();
       autoSave();
     });
   }
@@ -592,18 +947,21 @@ date: 2026-08-11
   // ── Init ────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
     load();
-    $('#fp-metrics-input').value = state.metrics.join('\n');
+    $('#fp-metrics-input').value   = state.metrics.join('\n');
+    $('#fp-decisions-input').value = state.decisions.join('\n');
     renderCurrentFileLabel();
     $$('.fp-drop-zone').forEach(wireDropZone);
-    $('#fp-metrics-input').addEventListener('input', syncMetricsFromTextarea);
+    $('#fp-metrics-input').addEventListener('input',   syncMetricsFromTextarea);
+    $('#fp-decisions-input').addEventListener('input', syncDecisionsFromTextarea);
     // File menu
     $('#fp-menu-new').addEventListener('click', () => {
       closeFileMenu();
-      if (!confirm('Start a new pyramid? Anything on screen is discarded (Save first if you want to keep it).')) return;
-      state = { metrics: [], assignments: {} };
+      if (!confirm('Start a new document? Anything on screen is discarded (Save first if you want to keep it).')) return;
+      state = { metrics: [], assignments: {}, decisions: [], matrix: {} };
       setCurrentName(null);
       $('#fp-metrics-input').value = '';
-      render(); autoSave();
+      $('#fp-decisions-input').value = '';
+      render(); renderMatrix(); autoSave();
     });
     $('#fp-menu-open').addEventListener('click', () => {
       closeFileMenu();
@@ -633,15 +991,16 @@ date: 2026-08-11
       if (m && m.open && !m.contains(e.target)) m.open = false;
     });
     $('#fp-clear').addEventListener('click', () => {
-      if (!confirm('Empty every tier? Chips return to Unassigned; the metric list is not touched.')) return;
+      if (!confirm('Empty every tier? Chips return to Unassigned; the metric list, decisions, and matrix scores are not touched.')) return;
       state.assignments = {};
-      render(); autoSave();
+      render(); renderMatrix(); autoSave();
     });
     $('#fp-reset').addEventListener('click', () => {
-      if (!confirm('Delete every metric and clear the pyramid? Cannot be undone.')) return;
-      state = { metrics: [], assignments: {} };
+      if (!confirm('Delete every metric AND every decision, and clear the pyramid and the matrix? Cannot be undone.')) return;
+      state = { metrics: [], assignments: {}, decisions: [], matrix: {} };
       $('#fp-metrics-input').value = '';
-      render(); autoSave();
+      $('#fp-decisions-input').value = '';
+      render(); renderMatrix(); autoSave();
     });
     $('#fp-share').addEventListener('click', async () => {
       const url = toShareUrl();
@@ -654,6 +1013,7 @@ date: 2026-08-11
     });
     $('#fp-print').addEventListener('click', () => window.print());
     render();
+    renderMatrix();
   });
 })();
 </script>
