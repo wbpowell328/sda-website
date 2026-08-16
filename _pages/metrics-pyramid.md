@@ -934,22 +934,18 @@ date: 2026-08-11
       const wrap = $(cfg.wrapSel);
       const textarea = $(cfg.textareaSel);
       if (!wrap || !textarea) continue;
-      const panel = textarea.closest('.fp-panel');
-      if (!panel) continue;
-      // Reset any prior offset first so the measurement is a clean
-      // baseline; a follow-up rAF then applies the fresh delta.
-      panel.style.paddingTop = '';
+      // Reset any prior offset so the measurement is a clean
+      // baseline. The h3 above stays where it is; we push ONLY the
+      // textarea down so its top aligns with the matrix's first
+      // data row while the "Decisions" / "Uncertainties" label
+      // stays level with "Impact matrix" at the panel top.
+      textarea.style.marginTop = '';
       const firstRow = wrap.querySelector('tbody tr');
       if (!firstRow) continue;
-      // Read positions after the reset lands.
       const target = firstRow.getBoundingClientRect().top;
       const current = textarea.getBoundingClientRect().top;
       const delta = target - current;
-      // Only apply the offset when the matrix's first data row is
-      // below the textarea baseline (the usual case). If the matrix
-      // is empty or has no headers, delta is 0 and we leave things
-      // alone.
-      if (delta > 0) panel.style.paddingTop = delta + 'px';
+      if (delta > 0) textarea.style.marginTop = delta + 'px';
     }
   }
   function cycleCell(kind, name, metric, cell) {
