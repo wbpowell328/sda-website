@@ -1,0 +1,9 @@
+{
+  "examples": [
+    {
+      "file": "trucking-dispatch.json",
+      "title": "Trucking fleet dispatch",
+      "description": "A truckload carrier deciding how to prioritize daily driver-load matching."
+    }
+  ]
+}

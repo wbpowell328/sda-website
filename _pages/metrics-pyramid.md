@@ -23,6 +23,7 @@ date: 2026-08-11
       <button type="button" id="fp-menu-save">Save</button>
       <button type="button" id="fp-menu-saveas">Save as…</button>
       <button type="button" id="fp-menu-duplicate" title="Save a copy of the currently loaded decision (adds &quot; (2)&quot; to the name)">Duplicate</button>
+      <button type="button" id="fp-menu-export" title="Download the current decision as a JSON file (useful for sharing or contributing to the public examples library)">Export as JSON…</button>
     </div>
   </details>
   <span id="fp-current-file" class="fp-current-file" title="Currently loaded pyramid"></span>
@@ -41,8 +42,14 @@ date: 2026-08-11
       <h3 id="fp-modal-title">Open pyramid</h3>
       <button type="button" class="fp-modal-close" id="fp-modal-close" aria-label="Close">×</button>
     </div>
-    <p class="fp-muted" style="margin: 0 0 8px 0;">Pyramids you've saved on this browser. Click one to load it.</p>
+    <h4 class="fp-modal-subheader">Your saved decisions</h4>
+    <p class="fp-muted" style="margin: 0 0 6px 0;">Saved on this browser. Click one to load it.</p>
     <div id="fp-file-list" class="fp-file-list"></div>
+
+    <h4 class="fp-modal-subheader" style="margin-top: 16px;">Public examples</h4>
+    <p class="fp-muted" style="margin: 0 0 6px 0;">Curated decision problems. Loading one drops it into your workspace as an unnamed document — use <em>Save as…</em> to keep your own copy.</p>
+    <div id="fp-example-list" class="fp-file-list"></div>
+
     <div class="fp-modal-actions">
       <button type="button" id="fp-modal-cancel">Cancel</button>
     </div>
@@ -193,6 +200,10 @@ date: 2026-08-11
     margin-bottom: 8px;
   }
   .fp-modal-header h3 { margin: 0; color: #5a4a35; }
+  .fp-modal-subheader {
+    margin: 0 0 2px 0; font-size: 0.95rem;
+    color: #5a4a35; font-weight: 600;
+  }
   .fp-modal-close {
     background: none; border: none; font-size: 1.6rem;
     line-height: 1; padding: 0 8px; cursor: pointer;
@@ -736,8 +747,112 @@ date: 2026-08-11
   }
   function openOpenModal() {
     renderFileList();
+    renderPublicExamples();   // fires an async fetch; list fills in when it lands
     const m = $('#fp-open-modal');
     if (m) m.hidden = false;
+  }
+
+  // ── Export as JSON ──────────────────────────────────────────
+  // Downloads the current document as a .json file. Useful for
+  // sharing, backing up, or contributing to the public examples
+  // library (drop the file into /assets/framing-examples/ and
+  // add it to /assets/framing-examples/index.json).
+  function exportCurrentDocument() {
+    const blob = new Blob(
+      [JSON.stringify(snapshotForSave(), null, 2)],
+      { type: 'application/json' }
+    );
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = (currentName || 'decision-framing') + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 500);
+    flashStatus('Exported to ' + a.download);
+  }
+
+  // ── Public examples ─────────────────────────────────────────
+  // Curated decision problems live in /assets/framing-examples/
+  // as JSON files, with an index.json manifest listing them. The
+  // Open modal fetches the manifest and renders a Load button per
+  // entry. Loading an example populates the workspace without
+  // setting a current name — user must Save as… to keep a copy,
+  // so the public example isn't accidentally overwritten.
+  const EXAMPLES_BASE = '/assets/framing-examples/';
+  async function fetchExamplesManifest() {
+    try {
+      const resp = await fetch(EXAMPLES_BASE + 'index.json', { cache: 'no-cache' });
+      if (!resp.ok) return [];
+      const parsed = await resp.json();
+      return Array.isArray(parsed && parsed.examples) ? parsed.examples : [];
+    } catch (_) { return []; }
+  }
+  async function renderPublicExamples() {
+    const list = $('#fp-example-list');
+    if (!list) return;
+    list.innerHTML = '';
+    // Loading placeholder while the fetch is in flight.
+    const loading = document.createElement('div');
+    loading.style.padding = '10px 12px';
+    loading.style.fontSize = '0.9rem';
+    loading.style.color = '#7a6a55';
+    loading.style.fontStyle = 'italic';
+    loading.textContent = 'Loading…';
+    list.appendChild(loading);
+    const examples = await fetchExamplesManifest();
+    list.innerHTML = '';
+    if (examples.length === 0) {
+      const empty = document.createElement('div');
+      empty.style.padding = '10px 12px';
+      empty.style.fontSize = '0.9rem';
+      empty.style.color = '#7a6a55';
+      empty.style.fontStyle = 'italic';
+      empty.textContent = 'No public examples yet.';
+      list.appendChild(empty);
+      return;
+    }
+    for (const ex of examples) {
+      const row = document.createElement('div');
+      row.className = 'fp-file-row';
+      const nameEl = document.createElement('span');
+      nameEl.className = 'fp-file-name';
+      nameEl.textContent = ex.title || ex.file;
+      if (ex.description) {
+        const meta = document.createElement('span');
+        meta.className = 'fp-file-meta';
+        meta.style.display = 'block';
+        meta.style.marginLeft = '0';
+        meta.textContent = ex.description;
+        nameEl.appendChild(meta);
+      }
+      const loadBtn = document.createElement('button');
+      loadBtn.type = 'button';
+      loadBtn.className = 'fp-file-load';
+      loadBtn.textContent = 'Load';
+      loadBtn.addEventListener('click', () => loadPublicExample(ex));
+      row.appendChild(nameEl);
+      row.appendChild(loadBtn);
+      list.appendChild(row);
+    }
+  }
+  async function loadPublicExample(ex) {
+    try {
+      const resp = await fetch(EXAMPLES_BASE + ex.file, { cache: 'no-cache' });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const data = await resp.json();
+      state = normalizeState(data);
+      setCurrentName(null);   // no name → next Save prompts Save as…
+      $('#fp-metrics-input').value       = state.metrics.join('\n');
+      $('#fp-decisions-input').value     = state.decisions.join('\n');
+      $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
+      render(); renderAllMatrices(); autoSave();
+      closeOpenModal();
+      flashStatus('Loaded example "' + (ex.title || ex.file) + '". Use Save as… to keep a copy.');
+    } catch (e) {
+      alert('Failed to load example: ' + String(e && e.message || e));
+    }
   }
   function closeOpenModal() {
     const m = $('#fp-open-modal');
@@ -1141,6 +1256,10 @@ date: 2026-08-11
     $('#fp-menu-duplicate').addEventListener('click', () => {
       closeFileMenu();
       duplicateFile();
+    });
+    $('#fp-menu-export').addEventListener('click', () => {
+      closeFileMenu();
+      exportCurrentDocument();
     });
     // Open-modal wiring
     $('#fp-modal-close').addEventListener('click', closeOpenModal);

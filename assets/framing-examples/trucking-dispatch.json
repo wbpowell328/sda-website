@@ -1,0 +1,32 @@
+{
+  "metrics": [
+    "Revenue per mile",
+    "Revenue per driver per week",
+    "Operating margin per mile",
+    "Load coverage",
+    "Tool usage",
+    "Sales"
+  ],
+  "assignments": {
+    "Revenue per mile":            1,
+    "Revenue per driver per week": 2,
+    "Operating margin per mile":   2,
+    "Load coverage":               3,
+    "Tool usage":                  4,
+    "Sales":                       4
+  },
+  "decisions": [
+    "Pickup window violation",
+    "Load bonus",
+    "Delivery window violation",
+    "Home time bonus"
+  ],
+  "matrix": {},
+  "uncertainties": [
+    "Booked loads",
+    "Driver behavior",
+    "Dispatcher choice",
+    "Shipper behavior"
+  ],
+  "uMatrix": {}
+}
