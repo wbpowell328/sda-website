@@ -1,0 +1,26 @@
+{
+  "metrics": [
+    "Contribution/visit",
+    "Recurring customer rate",
+    "Cleaner retention",
+    "Completion rate"
+  ],
+  "assignments": {
+    "Contribution/visit":      1,
+    "Recurring customer rate": 2,
+    "Cleaner retention":       2,
+    "Completion rate":         3
+  },
+  "decisions": [
+    "Launch geography",
+    "Cleaner compensation",
+    "Customer discount level"
+  ],
+  "matrix": {},
+  "uncertainties": [
+    "Customer demand",
+    "Cleaner labor supply",
+    "Geographic matching"
+  ],
+  "uMatrix": {}
+}

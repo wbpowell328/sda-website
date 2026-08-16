@@ -9,6 +9,11 @@
       "file": "prairieline-truckload.json",
       "title": "PrairieLine Freight — the Friday afternoon dispatch (medium)",
       "description": "A truckload carrier's VP of operations balancing today's load acceptance and driver assignments against Monday's fleet, brokerage, and domicile decisions. 6 metrics, 5 decisions, 5 uncertainties, matrices pre-scored."
+    },
+    {
+      "file": "brightnest-launch.json",
+      "title": "BrightNest Home Services — the two-sided launch (small)",
+      "description": "A cleaning-service startup deciding how densely to launch. 4 metrics, 3 decisions, 3 uncertainties, matrices left blank for the reader to score."
     }
   ]
 }
