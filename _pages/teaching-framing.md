@@ -18,6 +18,7 @@ This webpage offers three ideas to help with teaching (more to come):
 - [Case studies on framing](#case-studies-on-framing)
   - [Decision framing questions](#framing-questions)
   - [List of decision framing cases](#list-of-cases)
+- <span style="background:#c9621e; color:#fff; font-size:0.75em; font-weight:700; padding:2px 6px; border-radius:3px; vertical-align:middle; margin-right:4px;">NEW</span> [Decision framing tools](/decision-framing-tools/)
 
 ## Expanding the scope of an existing lecture
 
