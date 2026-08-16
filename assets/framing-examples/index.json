@@ -14,6 +14,11 @@
       "file": "brightnest-launch.json",
       "title": "BrightNest Home Services — the two-sided launch (small)",
       "description": "A cleaning-service startup deciding how densely to launch. 4 metrics, 3 decisions, 3 uncertainties, matrices left blank for the reader to score."
+    },
+    {
+      "file": "aurora-motors.json",
+      "title": "Aurora Motors — the flow coordination dilemma (medium)",
+      "description": "A hybrid-vehicle manufacturer coordinating imported parts, production sequencing, and dealer commitments under tariff, incentive, and fuel-price uncertainty. 6 metrics, 5 decisions, 5 uncertainties, matrices pre-scored."
     }
   ]
 }
