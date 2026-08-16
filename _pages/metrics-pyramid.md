@@ -923,6 +923,34 @@ date: 2026-08-11
   function renderAllMatrices() {
     renderImpactMatrix('decision');
     renderImpactMatrix('uncertainty');
+    // Align each textarea's top with the first data row of its matrix
+    // — measure AFTER render so column widths / header wrapping are
+    // fully laid out.
+    requestAnimationFrame(alignMatrixTextareas);
+  }
+  function alignMatrixTextareas() {
+    for (const kind of ['decision', 'uncertainty']) {
+      const cfg = MATRIX[kind];
+      const wrap = $(cfg.wrapSel);
+      const textarea = $(cfg.textareaSel);
+      if (!wrap || !textarea) continue;
+      const panel = textarea.closest('.fp-panel');
+      if (!panel) continue;
+      // Reset any prior offset first so the measurement is a clean
+      // baseline; a follow-up rAF then applies the fresh delta.
+      panel.style.paddingTop = '';
+      const firstRow = wrap.querySelector('tbody tr');
+      if (!firstRow) continue;
+      // Read positions after the reset lands.
+      const target = firstRow.getBoundingClientRect().top;
+      const current = textarea.getBoundingClientRect().top;
+      const delta = target - current;
+      // Only apply the offset when the matrix's first data row is
+      // below the textarea baseline (the usual case). If the matrix
+      // is empty or has no headers, delta is 0 and we leave things
+      // alone.
+      if (delta > 0) panel.style.paddingTop = delta + 'px';
+    }
   }
   function cycleCell(kind, name, metric, cell) {
     const cfg = MATRIX[kind];
@@ -1098,6 +1126,14 @@ date: 2026-08-11
       }
     });
     $('#fp-print').addEventListener('click', () => window.print());
+    // Re-align textareas on window resize: header cells can wrap or
+    // unwrap when the matrix column widths change, and that changes
+    // the offset the textarea needs to match.
+    let resizeT = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeT);
+      resizeT = setTimeout(alignMatrixTextareas, 100);
+    });
     render();
     renderAllMatrices();
   });
