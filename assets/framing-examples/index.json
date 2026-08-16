@@ -24,6 +24,16 @@
       "file": "summit-ridge-cash.json",
       "title": "Summit Ridge Asset Management — the Monday morning cash decision (medium)",
       "description": "A mutual fund CIO balancing redemption liquidity against performance drag from cash after a weekend market shock. 6 metrics, 5 decisions, 5 uncertainties, matrices pre-scored."
+    },
+    {
+      "file": "northstar-inventory-small.json",
+      "title": "Northstar Living — the inventory bet (small)",
+      "description": "A compact-appliance retailer committing to holiday-season purchases 7-11 weeks in advance under uncertain demand and lead times. 4 metrics, 3 decisions, 3 uncertainties, matrices left blank for the reader to score."
+    },
+    {
+      "file": "northstar-inventory-medium.json",
+      "title": "Northstar Living — the inventory bet (medium)",
+      "description": "A compact-appliance retailer committing to holiday-season purchases 7-11 weeks in advance under uncertain demand and lead times. 6 metrics, 5 decisions, 5 uncertainties, matrices left blank for the reader to score."
     }
   ]
 }

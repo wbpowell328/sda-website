@@ -1,0 +1,34 @@
+{
+  "metrics": [
+    "Operating margin",
+    "Stockout rate",
+    "Excess inventory",
+    "Retailer OTIF",
+    "Emergency freight $",
+    "Working capital"
+  ],
+  "assignments": {
+    "Operating margin":    1,
+    "Stockout rate":       2,
+    "Excess inventory":    2,
+    "Retailer OTIF":       3,
+    "Emergency freight $": 3,
+    "Working capital":     3
+  },
+  "decisions": [
+    "Purchase quantities",
+    "Supplier allocation",
+    "Transportation & air reserve",
+    "Pricing & promotions",
+    "Channel allocation"
+  ],
+  "matrix": {},
+  "uncertainties": [
+    "Holiday demand",
+    "Supplier lead times",
+    "Competitor pricing",
+    "Retailer cancellations",
+    "Rare disruptions"
+  ],
+  "uMatrix": {}
+}
