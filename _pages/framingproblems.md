@@ -14,7 +14,7 @@ Framing a decision problem is the most important step — it sets the stage for 
 - [Performance metrics](#performance-metrics)
 - [Types of decisions](#types-of-decisions)
 - [Sources and styles of uncertainty](#sources-and-styles-of-uncertainty)
-- [Decision framing tools](/decision-framing-tools/)
+- <span style="background:#c9621e; color:#fff; font-size:0.75em; font-weight:700; padding:2px 6px; border-radius:3px; vertical-align:middle; margin-right:4px;">NEW</span> [Decision framing tools](/decision-framing-tools/)
 
 ## The framing process {#the-framing-process}
 
