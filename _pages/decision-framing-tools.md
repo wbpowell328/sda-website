@@ -63,6 +63,7 @@ date: 2026-08-11
 <h2 id="fp-doc-title" class="fp-doc-title" aria-live="polite"></h2>
 
 <h2 id="metrics-pyramid-tool" class="fp-section-h2">Metrics pyramid tool</h2>
+<p>Metrics quantify what you want to achieve. They come in three flavors: metrics to be maximized or minimized, along with targets you want to hit, and limits where you specify a minimum or maximum for a metric. The top metric should be in the first category.</p>
 <p>Type performance metrics on the left (one per line), then drag each chip into a tier — most important at the top, least important at the bottom. Drag between tiers to re-order, or back to <em>Unassigned</em> to remove.</p>
 
 <div class="fp-grid">
