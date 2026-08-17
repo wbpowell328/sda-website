@@ -49,7 +49,7 @@ Examples of $$F(x, W)$$ include: the revenue from advertising a product, the per
 
 Although $$x$$ may be discrete or continuous, scalar or vector, the most common version of this problem involves identifying the best of a set of discrete choices which have uncertain values, as depicted below:
 
-<img src="/assets/images/knowledgegradient/discrete-choices.jpg" alt="Bar chart of seven discrete choices (A through G), each showing an estimated goal/metric with an uncertainty interval, alongside a list of example decision settings: type of drug, supplier, trading policy, product design, battery technology, price, web page design, product to advertise, location for a clinic, diameter of silicon wafer, financial trading policy, advertising channel, choice of manager" style="display: block; margin: 1rem auto; max-width: 100%; height: auto;" />
+<img src="/assets/images/knowledgegradient/discrete-choices.jpg" alt="Bar chart of seven discrete choices (A through G), each showing an estimated goal/metric with an uncertainty interval, alongside a list of example decision settings: type of drug, supplier, trading policy, product design, battery technology, price, web page design, product to advertise, location for a clinic, diameter of silicon wafer, financial trading policy, advertising channel, choice of manager" style="display: block; margin: 1rem auto; max-width: 80%; height: auto;" />
 
 In chapter 7 of my 2022 book, *Reinforcement Learning and Stochastic Optimization,* I show how this problem can be solved with any of the four classes of policies.  However, two are the most widely used: 
 
