@@ -21,7 +21,7 @@ This page is organized as follows:
 - [**The knowledge gradient for online learning**](#kg-online) — a remarkably simple extension of the offline KG.
 - [**UCB policies for offline and online learning**](#ucb) — how the same policy can be tuned for either objective.
 - [**KG vs. UCB and the problem of tuning**](#kg-vs-ucb) — a direct head-to-head comparison and why tuning is harder than it looks.
-- [Learning while doing - the cash management game](https://warrenpowell.org/learning-while-doing/) - This is an interactive game where you can apply a range of policies to tune a policy for determining cash reserves at a mutual fund
+- [**Learning while doing - the cash management game**](https://warrenpowell.org/learning-while-doing/) - This is an interactive game where you can apply a range of policies to tune a policy for determining cash reserves at a mutual fund
 - [**The Knowledge Gradient — the original research**](/knowledgegradient/) — the Test of Time Award paper, the research lineage, and Peter Frazier's open-source software.
 
 ## Classes of optimal learning problems {#classes}
