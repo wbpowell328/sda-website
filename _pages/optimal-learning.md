@@ -133,8 +133,6 @@ For problems with independent beliefs, the knowledge gradient can be computed wi
 
 There is one important feature that the knowledge gradient lacks — it has no tunable parameters. It requires a little more work, but it is much easier to use.
 
-This work served as the basis for six Ph.D. dissertations. For a summary of this work, the Test of Time award, and a link to Peter Frazier's software library for the knowledge gradient, see [The Knowledge Gradient — the original research](/knowledgegradient/).
-
 ### The knowledge gradient for online learning {#kg-online}
 
 Transitioning from offline learning to online learning is incredibly easy. Let $\nu_x^{\text{offline},n} = \nu_x^n$ (which we compute above) be the knowledge gradient in an offline setting, which means it only captures the value of an experiment on the final performance of a design. Now let $\nu_x^{\text{online},n}$ be the online version. Assume we have a budget of $N$ experiments which means that after the $n^{\text{th}}$ experiment, we have $(N - n)$ experiments remaining, where we want to maximize the performance of all these remaining experiments. Ilya Ryzhov showed that
