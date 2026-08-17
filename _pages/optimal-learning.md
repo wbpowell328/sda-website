@@ -21,7 +21,6 @@ This page is organized as follows:
 - [**UCB policies for offline and online learning**](#ucb) — how the same policy can be tuned for either objective.
 - [**KG vs. UCB and the problem of tuning**](#kg-vs-ucb) — a direct head-to-head comparison and why tuning is harder than it looks.
 - [**Learning while doing - the cash management game**](https://warrenpowell.org/learning-while-doing/) - This is an interactive game where you can apply a range of policies to tune a policy for determining cash reserves at a mutual fund
-- [**The Knowledge Gradient — the original research**](/knowledgegradient/) — the Test of Time Award paper, the research lineage, and Peter Frazier's open-source software.
 
 ## Classes of optimal learning problems {#classes}
 
@@ -143,6 +142,10 @@ Transitioning from offline learning to online learning is incredibly easy. Let $
 $$\nu_x^{\text{online},n} = \overline{\mu}_x^n + (N - n)\, \nu_x^{\text{offline},n}$$
 
 This formula captures the natural behavior that if there are many experiments remaining, we want to maximize $\nu_x^{\text{offline},n}$ (since $(N - n)$ is large), while if we have performed only a few experiments, we are going to put more emphasis on doing what appears to be best given what we know by maximizing $\overline{\mu}_x^n$.
+
+### The original research {#original-research}
+
+The knowledge gradient began with Peter Frazier while he was a Ph.D. student under Warren Powell's supervision, when he was given the challenge of learning how to collect information. For a thorough summary of this early research, and the work of a number of other students that grew out of Peter's original idea, [click here](https://warrenpowell.org/knowledgegradient/).
 
 ## UCB policies for offline and online learning {#ucb}
 
