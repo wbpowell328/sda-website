@@ -128,7 +128,7 @@ date: 2026-08-11
 </div>
 
 <h2 id="uncertainty-prioritization-tool" class="fp-section-h2">Uncertainty prioritization tool</h2>
-<p>This tool works the same as the decision prioritization tool above.</p>
+<p>This tool works the same as the decision prioritization tool above. <a href="https://warrenpowell.org/modeling-uncertainty/#categories">See here for help with identifying sources of uncertainty.</a></p>
 
 <div class="fp-grid fp-grid-narrow">
   <div class="fp-panel fp-uncertainties-panel">
