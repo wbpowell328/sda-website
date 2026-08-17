@@ -17,8 +17,7 @@ This page is organized as follows:
 - [**Classes of optimal learning problems**](#classes) — the dimensions that distinguish problems: the cost of experiments, offline vs. online, the role of physical resources, and risk.
 - [**The communities of optimal learning**](#communities) — the same problem under many names: bandits, derivative-free stochastic search, Bayesian optimization, design of experiments, ranking and selection, active learning.
 - [**A bit of history**](#history) — from the 1950s multiarmed bandit problem through Gittins indices to upper confidence bounding (UCB).
-- [**The knowledge gradient for offline learning**](#kg-offline) — a Bayesian, value-of-information policy with no tunable parameters that handles correlated beliefs.
-- [**The knowledge gradient for online learning**](#kg-online) — a remarkably simple extension of the offline KG.
+- [**The knowledge gradient**](#kg-offline) — a Bayesian, value-of-information policy with no tunable parameters that handles correlated beliefs, for both offline and online learning.
 - [**UCB policies for offline and online learning**](#ucb) — how the same policy can be tuned for either objective.
 - [**KG vs. UCB and the problem of tuning**](#kg-vs-ucb) — a direct head-to-head comparison and why tuning is harder than it looks.
 - [**Learning while doing - the cash management game**](https://warrenpowell.org/learning-while-doing/) - This is an interactive game where you can apply a range of policies to tune a policy for determining cash reserves at a mutual fund
@@ -94,7 +93,7 @@ where
 
 UCB-style policies have proven very popular in settings such as e-commerce where it is necessary to quickly identify which product to advertise when a customer brings up a webpage. However, they are not well suited to problems with expensive experiments and (invariably) smaller budgets.
 
-## The knowledge gradient for offline learning {#kg-offline}
+## The knowledge gradient {#kg-offline}
 
 In 2007 we started publishing papers based on maximizing the value of information that we called the "knowledge gradient," the name chosen by Peter Frazier, the Ph.D. student who launched this line of research. Peter's work focused on the "offline" learning problem where you perform a set of experiments (say in a lab or a simulator), and you only care about the performance of the final solution, without regard to the quality of solutions that are tested during the process of experimenting.
 
@@ -137,7 +136,7 @@ There is one important feature that the knowledge gradient lacks — it has no t
 
 This work served as the basis for six Ph.D. dissertations. For a summary of this work, the Test of Time award, and a link to Peter Frazier's software library for the knowledge gradient, see [The Knowledge Gradient — the original research](/knowledgegradient/).
 
-## The knowledge gradient for online learning {#kg-online}
+### The knowledge gradient for online learning {#kg-online}
 
 Transitioning from offline learning to online learning is incredibly easy. Let $\nu_x^{\text{offline},n} = \nu_x^n$ (which we compute above) be the knowledge gradient in an offline setting, which means it only captures the value of an experiment on the final performance of a design. Now let $\nu_x^{\text{online},n}$ be the online version. Assume we have a budget of $N$ experiments which means that after the $n^{\text{th}}$ experiment, we have $(N - n)$ experiments remaining, where we want to maximize the performance of all these remaining experiments. Ilya Ryzhov showed that
 
