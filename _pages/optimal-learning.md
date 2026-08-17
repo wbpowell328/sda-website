@@ -8,7 +8,7 @@ date: 2026-06-01
 {% raw %}
 The most common sequential decision problems arise when we have two or more choices, typically (but not always) discrete, where we have to make the best choice. The challenge is that we do not know how well each choice will perform, but we can learn from experience to guide future decisions. Examples of these problems are illustrated in the graphic below.
 
-<img src="/assets/images/optimal-learning/choices-with-uncertainty.png" alt="Bar chart of seven choices (A through G) with uncertainty bars, alongside a list of example problem settings: type of drug, supplier, trading policy, product design, battery technology, price, web page design, product to advertise, location for a clinic, diameter of silicon wafer, financial trading policy, advertising channel, choice of manager" style="display: block; margin: 1rem auto; max-width: 80%; height: auto;" />
+<img src="/assets/images/optimal-learning/choices-with-uncertainty.png" alt="Bar chart of seven choices (A through G) with uncertainty bars, alongside a list of example problem settings: type of drug, supplier, trading policy, product design, battery technology, price, web page design, product to advertise, location for a clinic, diameter of silicon wafer, financial trading policy, advertising channel, choice of manager" style="display: block; margin: 1rem auto; max-width: 64%; height: auto;" />
 
 These problems are ubiquitous. We may have two choices, or 10, or thousands. They come in a wide range of problem settings, which we review below. We then review different ways of deciding which choices to try which recognize the value of information on future decisions.
 
