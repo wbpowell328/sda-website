@@ -6,10 +6,6 @@ date: 2025-12-04 15:07:00
 ---
 
 {% raw %}
-Warren B Powell
-Professor Emeritus, Princeton University
-
-
 In 2025, Peter Frazier, one of my former Ph.D. students, won the 2025 "Test of Time" award for his paper on the knowledge gradient for correlated beliefs that he performed while a Ph.D. student in my lab (2005-2008).  Much more than a best paper award, the "Test of Time" award represents the judgment of everyone who adopted this approach in the years since it first appeared (2008-2009).   
 
 Peter's work opened up a decade of research performed by eight Ph.D. students and post-docs while in my lab. This webpage is a summary of this work.
