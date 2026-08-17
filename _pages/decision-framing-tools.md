@@ -12,7 +12,7 @@ date: 2026-08-11
   <li><a href="#decision-prioritization-tool"><strong>Decision prioritization tool</strong></a> — score each decision's impact on each pyramid-ordered metric (H / M / L / N), then reorder the decisions by their impact on the most important metrics.</li>
   <li><a href="#uncertainty-prioritization-tool"><strong>Uncertainty prioritization tool</strong></a> — same idea, applied to the uncertainties that affect performance.</li>
 </ol>
-<p>All the information you provide remains private. The <em>File</em> menu below lets you keep multiple named documents, and each contains the pyramid plus both matrices. If you would like to share your framing, hit <em>Copy URL</em> and paste it in an email.</p>
+<p>All the information you provide remains private. The <em>File</em> menu below lets you keep multiple named documents, and each contains the pyramid plus both matrices. If you would like to share your framing, hit <em>Copy URL</em> and paste it in an email — anyone with the link can view your framing.</p>
 
 <p style="background:#faf5e6; border-left: 4px solid #c9621e; padding: 10px 16px; border-radius: 3px;">
   <strong>New — <a href="#ask-professor-powell">Ask Professor Powell</a> to draft your framing.</strong>
