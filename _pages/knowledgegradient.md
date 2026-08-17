@@ -16,7 +16,6 @@ This page is organized as follows:
 - [**Background**](#background) — derivative-free stochastic search, and where the knowledge gradient fits in the policy taxonomy.
 - [**Software**](#software) — Peter Frazier's open-source KG library on GitHub.
 - [**Learning while doing video**](#video) — a non-mathematical demo of KG using a mutual-fund cash-management example.
-- [**Teaching materials**](#teaching) — pointers to course materials on sequential decision problems.
 - [**Students and papers related to the knowledge gradient**](#students) — work by eight Ph.D. students and post-docs over a decade.
 - [**Additional readings on the knowledge gradient**](/additional-readings-optimal-learning/) — curated bibliography by topic (belief models, online vs. offline learning, the S-curve effect, learning on graphs, and more).
 
@@ -72,14 +71,6 @@ Peter Frazier has made his software library for the knowledge gradient, includin
 A powerful strategy to achieve steady improvement of operations sometimes involves adjusting parameters in the field.  I prepared a video demonstrating this for a mutual fund struggling to find the right amount of cash to keep on hand to meet redemptions.  The video illustrates a UCB-style policy (called "Interval estimation") along with an application of the knowledge gradient, which is explained without mathematics.  The video brings out the challenge of tuning parameters in simpler policies such as those in the UCB class.  KG is somewhat more complex, but does a better job of exploiting prior knowledge, and does not have any tunable parameters.
 
 [Access the video here.](https://tinyurl.com/LearningWhileDoing/)
-
-## Teaching materials {#teaching}
-
-The "optimal learning" problems addressed by the knowledge gradient span an important class of sequential decision problems.  I would argue that this is by far the most common decision problem that people have to solve on a day-to-day basis.  I have prepared teaching materials on sequential decision problems:
-
-[Teaching materials for sequential decision problems](https://tinyurl.com/TeachingSDA/)
-
-Search on "Optimal/active learning" for the materials relevant to the knowledge gradient.
 
 ## Students and papers related to the knowledge gradient {#students}
 
