@@ -21,7 +21,7 @@ This page is organized as follows:
 - [**The knowledge gradient for online learning**](#kg-online) — a remarkably simple extension of the offline KG.
 - [**UCB policies for offline and online learning**](#ucb) — how the same policy can be tuned for either objective.
 - [**KG vs. UCB and the problem of tuning**](#kg-vs-ucb) — a direct head-to-head comparison and why tuning is harder than it looks.
-- [**A video application of UCB and KG**](#video) — a real-world mutual-fund cash-management problem.
+- [Learning while doing - the cash management game](https://warrenpowell.org/learning-while-doing/) - This is an interactive game where you can apply a range of policies to tune a policy for determining cash reserves at a mutual fund
 - [**The Knowledge Gradient — the original research**](/knowledgegradient/) — the Test of Time Award paper, the research lineage, and Peter Frazier's open-source software.
 
 ## Classes of optimal learning problems {#classes}
@@ -183,8 +183,4 @@ So, if IE is simpler to use and actually works better, why would we use a more s
 <br clear="all" />
 
 In short, the fact that KG does not have any tunable parameters is a huge advantage.
-
-## A video application of UCB and KG {#video}
-
-A nice illustration of both a UCB policy (interval estimation) and the knowledge gradient for correlated beliefs is based on a real-world problem of optimizing the amount of cash a mutual fund manager has to keep on hand. This is an example of an online learning problem that we call "Learning while Doing." [The video can be watched here.](https://tinyurl.com/LearningWhileDoing/)
 {% endraw %}
