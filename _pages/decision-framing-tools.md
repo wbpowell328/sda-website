@@ -19,6 +19,16 @@ date: 2026-08-11
   Skip to the bottom to describe your problem in a sentence or two (or drop in a case file, or a URL) and get all three tools filled in — you edit and refine from there.
 </p>
 
+<!-- Admin bar — hidden unless the URL contains ?admin=1. Gives library-owner
+     controls (publish / rename / delete public examples). See admin JS below. -->
+<div id="fp-admin-bar" class="fp-admin-bar" hidden>
+  <span class="fp-admin-badge" title="Admin mode is on for this browser tab because ?admin=1 is on the URL.">ADMIN</span>
+  <span class="fp-admin-status" id="fp-admin-status">Checking token…</span>
+  <button type="button" id="fp-admin-set-token">Set / change GitHub token…</button>
+  <button type="button" id="fp-admin-clear-token">Clear token</button>
+  <button type="button" id="fp-admin-help">How this works</button>
+</div>
+
 <div class="fp-toolbar">
   <details class="fp-menu" id="fp-file-menu">
     <summary>File ▾</summary>
@@ -572,6 +582,42 @@ date: 2026-08-11
     .fp-chip { border-color: #333; box-shadow: none; }
   }
 
+  /* ── Admin bar (visible only when ?admin=1) ───────────────── */
+  .fp-admin-bar {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    background: #2b2418; color: #f5e5b5;
+    padding: 8px 14px; border-radius: 4px;
+    margin: 12px 0; font-size: 0.9rem;
+  }
+  .fp-admin-badge {
+    background: #c9621e; color: #fff; font-weight: 700; font-size: 0.75em;
+    padding: 3px 8px; border-radius: 3px; letter-spacing: 0.5px;
+  }
+  .fp-admin-status { flex: 1; color: #e6d9b8; }
+  .fp-admin-status.fp-admin-status-ok { color: #a0d99f; }
+  .fp-admin-status.fp-admin-status-warn { color: #ffb84a; }
+  .fp-admin-bar button {
+    padding: 4px 10px; font-size: 0.85rem;
+    background: #4a3f2c; color: #f5e5b5;
+    border: 1px solid #6a5a3f; border-radius: 3px;
+    cursor: pointer;
+  }
+  .fp-admin-bar button:hover { background: #5a4d35; }
+  .fp-admin-actions {
+    display: flex; gap: 4px; margin-left: 8px;
+  }
+  .fp-admin-actions button {
+    padding: 3px 8px; font-size: 0.78rem; font-weight: 600;
+    background: #c9621e; color: #fff; border: 1px solid #a24e15;
+    border-radius: 3px; cursor: pointer;
+  }
+  .fp-admin-actions button:hover:not(:disabled) { background: #a24e15; }
+  .fp-admin-actions button.fp-admin-danger {
+    background: #fff; color: #a1250f; border-color: #d99f96;
+  }
+  .fp-admin-actions button.fp-admin-danger:hover:not(:disabled) { background: #ffe9e5; }
+  .fp-admin-actions button:disabled { opacity: 0.55; cursor: not-allowed; }
+
   /* ── Per-matrix controls (First draft / Reset) ────────────── */
   .fp-matrix-controls {
     display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
@@ -944,6 +990,19 @@ date: 2026-08-11
         deleteFile(name);
         renderFileList();
       });
+      // Admin-only: publish this private decision to the public library.
+      let pubBtn = null;
+      if (adminMode) {
+        pubBtn = document.createElement('button');
+        pubBtn.type = 'button';
+        pubBtn.className = 'fp-admin-publish';
+        pubBtn.textContent = 'Publish…';
+        pubBtn.title = 'Publish this decision to the public library (writes a commit to GitHub)';
+        pubBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          adminPublish(name);
+        });
+      }
       // The whole row is clickable — matches the hover highlight the
       // user already sees. Keyboard access via role=button + Enter/Space.
       row.tabIndex = 0;
@@ -961,6 +1020,12 @@ date: 2026-08-11
         }
       });
       row.appendChild(nameEl);
+      if (pubBtn) {
+        const actions = document.createElement('span');
+        actions.className = 'fp-admin-actions';
+        actions.appendChild(pubBtn);
+        row.appendChild(actions);
+      }
       row.appendChild(delBtn);
       list.appendChild(row);
     }
@@ -1059,6 +1124,24 @@ date: 2026-08-11
         }
       });
       row.appendChild(nameEl);
+      if (adminMode) {
+        const actions = document.createElement('span');
+        actions.className = 'fp-admin-actions';
+        const renameBtn = document.createElement('button');
+        renameBtn.type = 'button';
+        renameBtn.textContent = 'Rename…';
+        renameBtn.title = 'Rename this public example (title + description)';
+        renameBtn.addEventListener('click', (e) => { e.stopPropagation(); adminRename(ex); });
+        const delBtn = document.createElement('button');
+        delBtn.type = 'button';
+        delBtn.className = 'fp-admin-danger';
+        delBtn.textContent = 'Delete';
+        delBtn.title = 'Remove this public example from the library';
+        delBtn.addEventListener('click', (e) => { e.stopPropagation(); adminDelete(ex); });
+        actions.appendChild(renameBtn);
+        actions.appendChild(delBtn);
+        row.appendChild(actions);
+      }
       list.appendChild(row);
     }
   }
@@ -1083,6 +1166,293 @@ date: 2026-08-11
   function closeOpenModal() {
     const m = $('#fp-open-modal');
     if (m) m.hidden = true;
+  }
+
+  // ── Admin mode (?admin=1) — library management via GitHub API ─
+  // Warren enters admin mode by loading the page with ?admin=1 in
+  // the URL. He pastes a fine-grained GitHub PAT once (stored in
+  // localStorage on his machine only), and can then Publish saved
+  // decisions into /assets/framing-examples/, or Rename/Delete
+  // existing public examples. Every write is a real commit through
+  // the GitHub Contents API — GitHub Pages then rebuilds in ~90s.
+  const ADMIN_TOKEN_KEY = 'framing_admin_gh_token_v1';
+  const ADMIN_REPO_OWNER = 'wbpowell328';
+  const ADMIN_REPO_NAME = 'sda-website';
+  const ADMIN_MANIFEST_PATH = 'assets/framing-examples/index.json';
+  const ADMIN_FILES_DIR = 'assets/framing-examples';
+  const ADMIN_PAT_HELP_URL =
+    'https://github.com/settings/personal-access-tokens/new';
+  let adminMode = false;
+
+  function isAdminOn() {
+    try {
+      const u = new URL(window.location.href);
+      return u.searchParams.get('admin') === '1';
+    } catch (_) { return false; }
+  }
+  function getAdminToken() {
+    try { return localStorage.getItem(ADMIN_TOKEN_KEY) || ''; }
+    catch (_) { return ''; }
+  }
+  function setAdminToken(tok) {
+    try {
+      if (tok) localStorage.setItem(ADMIN_TOKEN_KEY, tok);
+      else localStorage.removeItem(ADMIN_TOKEN_KEY);
+    } catch (_) { /* ignore */ }
+  }
+  function ghHeaders() {
+    const tok = getAdminToken();
+    if (!tok) throw new Error('No GitHub token set. Use "Set token" in the admin bar.');
+    return {
+      'Authorization': 'Bearer ' + tok,
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+    };
+  }
+  function ghError(resp, bodyText) {
+    // Translate common GitHub responses into something actionable.
+    if (resp.status === 401) return 'GitHub rejected the token (401). It may be expired or wrong — set a new one.';
+    if (resp.status === 403) return 'GitHub returned 403 — the token is valid but lacks write access to this repo. Regenerate with Contents: Read and write on sda-website.';
+    if (resp.status === 404) return 'GitHub returned 404 — the file was not found (possibly deleted or renamed).';
+    if (resp.status === 409 || resp.status === 422) return 'GitHub returned ' + resp.status + ' — likely a stale SHA. Reload and try again. Details: ' + bodyText.slice(0, 200);
+    return 'GitHub request failed (' + resp.status + '): ' + bodyText.slice(0, 300);
+  }
+  // Base64 helpers that survive non-ASCII characters (metric names may
+  // contain UTF-8). atob/btoa alone break on multibyte chars.
+  function b64EncodeUtf8(str) {
+    return btoa(unescape(encodeURIComponent(str)));
+  }
+  function b64DecodeUtf8(b64) {
+    return decodeURIComponent(escape(atob(b64.replace(/\n/g, ''))));
+  }
+  async function ghGetFile(path) {
+    const url = 'https://api.github.com/repos/' + ADMIN_REPO_OWNER + '/'
+      + ADMIN_REPO_NAME + '/contents/' + path;
+    const resp = await fetch(url, { headers: ghHeaders() });
+    const text = await resp.text();
+    if (!resp.ok) throw new Error(ghError(resp, text));
+    const data = JSON.parse(text);
+    return { sha: data.sha, content: b64DecodeUtf8(data.content || '') };
+  }
+  async function ghPutFile(path, content, message, sha) {
+    const url = 'https://api.github.com/repos/' + ADMIN_REPO_OWNER + '/'
+      + ADMIN_REPO_NAME + '/contents/' + path;
+    const body = { message, content: b64EncodeUtf8(content) };
+    if (sha) body.sha = sha;
+    const resp = await fetch(url, {
+      method: 'PUT',
+      headers: Object.assign({ 'Content-Type': 'application/json' }, ghHeaders()),
+      body: JSON.stringify(body),
+    });
+    const text = await resp.text();
+    if (!resp.ok) throw new Error(ghError(resp, text));
+    return JSON.parse(text);
+  }
+  async function ghDeleteFile(path, message, sha) {
+    const url = 'https://api.github.com/repos/' + ADMIN_REPO_OWNER + '/'
+      + ADMIN_REPO_NAME + '/contents/' + path;
+    const resp = await fetch(url, {
+      method: 'DELETE',
+      headers: Object.assign({ 'Content-Type': 'application/json' }, ghHeaders()),
+      body: JSON.stringify({ message, sha }),
+    });
+    const text = await resp.text();
+    if (!resp.ok) throw new Error(ghError(resp, text));
+    return JSON.parse(text);
+  }
+  function slugify(text) {
+    return String(text || '').toLowerCase()
+      .replace(/&/g, ' and ')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 60) || 'framing';
+  }
+  function updateAdminStatus() {
+    const el = $('#fp-admin-status');
+    if (!el) return;
+    const tok = getAdminToken();
+    if (!tok) {
+      el.textContent = 'No GitHub token set — click "Set / change GitHub token…" to enable publish/rename/delete.';
+      el.className = 'fp-admin-status fp-admin-status-warn';
+    } else {
+      // Show only a fingerprint of the token, never the token itself.
+      const prefix = tok.slice(0, 7);
+      el.textContent = 'Token set (' + prefix + '…). Publish / Rename / Delete are enabled in the Open dialog.';
+      el.className = 'fp-admin-status fp-admin-status-ok';
+    }
+  }
+  function initAdmin() {
+    if (!isAdminOn()) return;
+    adminMode = true;
+    document.body.classList.add('fp-admin-on');
+    const bar = $('#fp-admin-bar');
+    if (bar) bar.hidden = false;
+    updateAdminStatus();
+  }
+  function promptForToken() {
+    const cur = getAdminToken();
+    const shown = cur ? '(a token is already set; leave blank to keep it, or paste a new one)' : '';
+    const tok = window.prompt(
+      'Paste your GitHub fine-grained PAT with Contents: Read and write on sda-website. ' + shown,
+      ''
+    );
+    if (tok == null) return;                // cancelled
+    const trimmed = tok.trim();
+    if (!trimmed) return;                   // empty = keep existing
+    setAdminToken(trimmed);
+    updateAdminStatus();
+    flashStatus('GitHub token saved to this browser only.');
+  }
+  function clearToken() {
+    if (!getAdminToken()) return;
+    if (!confirm('Clear the stored GitHub token from this browser?')) return;
+    setAdminToken('');
+    updateAdminStatus();
+    flashStatus('Token cleared.');
+  }
+  function showAdminHelp() {
+    alert(
+      'Admin mode is on because ?admin=1 is on the URL.\n\n' +
+      'To enable publish / rename / delete you need a GitHub fine-grained PAT.\n\n' +
+      '1. Open ' + ADMIN_PAT_HELP_URL + ' in a new tab.\n' +
+      '2. Repository access: Only select repositories → sda-website.\n' +
+      '3. Permissions: Repository permissions → Contents → Read and write.\n' +
+      '4. Generate the token, copy it, click "Set / change GitHub token…" here and paste it.\n\n' +
+      'The token is stored only in this browser\'s localStorage and only sent to api.github.com. ' +
+      'Anyone with access to this browser can use it — clear it when you\'re done on shared machines.\n\n' +
+      'Every Publish / Rename / Delete makes a real commit to sda-website; ' +
+      'GitHub Pages rebuilds in ~90 seconds.'
+    );
+  }
+
+  // Publish a private saved decision into /assets/framing-examples/
+  // via two commits: (1) create the JSON file, (2) update index.json.
+  async function adminPublish(privateName) {
+    const files = readFiles();
+    const file = files[privateName];
+    if (!file) { alert('Not found.'); return; }
+    if (!getAdminToken()) { promptForToken(); if (!getAdminToken()) return; }
+
+    const title = window.prompt('Public title (shown in the library):', privateName);
+    if (title == null) return;
+    const trimmedTitle = title.trim();
+    if (!trimmedTitle) { alert('Title cannot be empty.'); return; }
+    const description = window.prompt(
+      'One-line description (shown under the title in the library):', ''
+    );
+    if (description == null) return;
+
+    try {
+      flashStatus('Publishing… (2 commits to GitHub)');
+      // Read the manifest so we can (a) detect slug conflicts and (b) send its SHA on update.
+      const manifest = await ghGetFile(ADMIN_MANIFEST_PATH);
+      const manifestObj = JSON.parse(manifest.content);
+      const existing = new Set((manifestObj.examples || []).map(e => e.file));
+      const baseSlug = slugify(trimmedTitle);
+      let slug = baseSlug, n = 1;
+      while (existing.has(slug + '.json')) { n++; slug = baseSlug + '-' + n; }
+      const filename = slug + '.json';
+
+      const framing = {
+        metrics: file.metrics || [],
+        assignments: file.assignments || {},
+        decisions: file.decisions || [],
+        matrix: file.matrix || {},
+        uncertainties: file.uncertainties || [],
+        uMatrix: file.uMatrix || {},
+      };
+      const framingJson = JSON.stringify(framing, null, 2) + '\n';
+
+      // Commit 1: the framing JSON.
+      await ghPutFile(
+        ADMIN_FILES_DIR + '/' + filename,
+        framingJson,
+        'framing examples: publish "' + trimmedTitle + '"'
+      );
+      // Commit 2: append to the manifest.
+      manifestObj.examples = manifestObj.examples || [];
+      manifestObj.examples.push({
+        file: filename,
+        title: trimmedTitle,
+        description: description.trim(),
+      });
+      await ghPutFile(
+        ADMIN_MANIFEST_PATH,
+        JSON.stringify(manifestObj, null, 2) + '\n',
+        'framing examples: add ' + filename + ' to manifest',
+        manifest.sha
+      );
+      flashStatus('Published as "' + trimmedTitle + '". Live on the site in ~1–2 min.');
+      // Refresh the Open modal (in case it stays open).
+      renderPublicExamples();
+    } catch (err) {
+      console.error(err);
+      alert('Publish failed:\n\n' + (err && err.message ? err.message : String(err)));
+      flashStatus('Publish failed.');
+    }
+  }
+
+  async function adminRename(ex) {
+    if (!getAdminToken()) { promptForToken(); if (!getAdminToken()) return; }
+    const newTitle = window.prompt('New title:', ex.title || ex.file);
+    if (newTitle == null) return;
+    const t = newTitle.trim();
+    if (!t) { alert('Title cannot be empty.'); return; }
+    const newDesc = window.prompt('New description:', ex.description || '');
+    if (newDesc == null) return;
+
+    try {
+      flashStatus('Renaming… (1 commit to GitHub)');
+      const manifest = await ghGetFile(ADMIN_MANIFEST_PATH);
+      const manifestObj = JSON.parse(manifest.content);
+      const entry = (manifestObj.examples || []).find(e => e.file === ex.file);
+      if (!entry) { alert('Not found in manifest — reload and try again.'); return; }
+      entry.title = t;
+      entry.description = newDesc.trim();
+      await ghPutFile(
+        ADMIN_MANIFEST_PATH,
+        JSON.stringify(manifestObj, null, 2) + '\n',
+        'framing examples: rename ' + ex.file + ' → "' + t + '"',
+        manifest.sha
+      );
+      flashStatus('Renamed. Live on the site in ~1–2 min.');
+      renderPublicExamples();
+    } catch (err) {
+      console.error(err);
+      alert('Rename failed:\n\n' + (err && err.message ? err.message : String(err)));
+      flashStatus('Rename failed.');
+    }
+  }
+
+  async function adminDelete(ex) {
+    if (!getAdminToken()) { promptForToken(); if (!getAdminToken()) return; }
+    if (!confirm('Delete public example "' + (ex.title || ex.file) + '"? Cannot be undone from here (a git revert would still work).')) return;
+    try {
+      flashStatus('Deleting… (2 commits to GitHub)');
+      // Fetch the JSON file's SHA (Contents API DELETE needs it).
+      const file = await ghGetFile(ADMIN_FILES_DIR + '/' + ex.file);
+      await ghDeleteFile(
+        ADMIN_FILES_DIR + '/' + ex.file,
+        'framing examples: delete ' + ex.file,
+        file.sha
+      );
+      // Then drop from the manifest.
+      const manifest = await ghGetFile(ADMIN_MANIFEST_PATH);
+      const manifestObj = JSON.parse(manifest.content);
+      manifestObj.examples = (manifestObj.examples || []).filter(e => e.file !== ex.file);
+      await ghPutFile(
+        ADMIN_MANIFEST_PATH,
+        JSON.stringify(manifestObj, null, 2) + '\n',
+        'framing examples: remove ' + ex.file + ' from manifest',
+        manifest.sha
+      );
+      flashStatus('Deleted. Live on the site in ~1–2 min.');
+      renderPublicExamples();
+    } catch (err) {
+      console.error(err);
+      alert('Delete failed:\n\n' + (err && err.message ? err.message : String(err)));
+      flashStatus('Delete failed.');
+    }
   }
 
   // Close the File dropdown after any menu-item click.
@@ -1659,6 +2029,7 @@ date: 2026-08-11
 
   // ── Init ────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
+    initAdmin();                                         // reveals admin bar if ?admin=1
     load();
     $('#fp-metrics-input').value       = state.metrics.join('\n');
     $('#fp-decisions-input').value     = state.decisions.join('\n');
@@ -1748,6 +2119,13 @@ date: 2026-08-11
       }
     });
     $('#fp-print').addEventListener('click', () => window.print());
+    // Admin bar buttons (only meaningful when ?admin=1 unhid the bar).
+    const adminSetBtn   = $('#fp-admin-set-token');
+    const adminClearBtn = $('#fp-admin-clear-token');
+    const adminHelpBtn  = $('#fp-admin-help');
+    if (adminSetBtn)   adminSetBtn.addEventListener('click', promptForToken);
+    if (adminClearBtn) adminClearBtn.addEventListener('click', clearToken);
+    if (adminHelpBtn)  adminHelpBtn.addEventListener('click', showAdminHelp);
     // Per-matrix First-draft / Reset buttons (delegated: covers both matrices).
     document.addEventListener('click', (e) => {
       const draft = e.target.closest('.fp-matrix-draft');
