@@ -34,11 +34,6 @@
       "file": "northstar-inventory-medium.json",
       "title": "Northstar Living — the inventory bet (medium, blank)",
       "description": "A compact-appliance retailer committing to holiday-season purchases 7-11 weeks in advance under uncertain demand and lead times. 6 metrics, 5 decisions, 5 uncertainties."
-    },
-    {
-      "file": "decision-factory.json",
-      "title": "The Decision Factory (large, pre-scored)",
-      "description": "A trucking/logistics operation viewed as a decision factory — many interlocking decisions running in parallel across dispatch, inventory, driver management, and safety-stock policy, under demand spikes, disruptions, and rare correlated events. 10 metrics, 8 decisions, 8 uncertainties."
     }
   ]
 }
