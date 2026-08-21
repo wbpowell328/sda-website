@@ -491,15 +491,25 @@ date: 2026-08-11
     gap: 24px;
     align-items: start;
   }
-  /* Decisions/matrix grid: give the matrix more room than the pyramid
-     grid does — decisions column is a compact ~25% of the panel width
-     so the matrix can breathe. */
+  /* Decisions/matrix and Uncertainties/matrix sections stack the list
+     panel above a full-width matrix. A side-by-side layout starved the
+     matrix of horizontal room once you had many metrics; users need
+     to see as many H/M/L/N columns as possible without scrolling. */
   .fp-grid-narrow {
-    grid-template-columns: minmax(180px, 1fr) minmax(380px, 3fr);
+    display: block;
+  }
+  .fp-grid-narrow > .fp-panel + .fp-panel {
+    margin-top: 16px;
+  }
+  /* The list textareas don't need to be full-width in the stacked
+     layout — a modest width keeps the section visually anchored on
+     the left without wasting vertical space. */
+  .fp-grid-narrow .fp-decisions-panel,
+  .fp-grid-narrow .fp-uncertainties-panel {
+    max-width: 480px;
   }
   @media (max-width: 800px) {
-    .fp-grid,
-    .fp-grid-narrow { grid-template-columns: 1fr; }
+    .fp-grid { grid-template-columns: 1fr; }
   }
 
   .fp-panel h3 { margin: 0 0 4px 0; color: #5a4a35; }
@@ -1748,23 +1758,15 @@ date: 2026-08-11
     requestAnimationFrame(alignMatrixTextareas);
   }
   function alignMatrixTextareas() {
+    // Historically pushed the textarea down so its top lined up with
+    // the matrix's first data row in the SIDE-BY-SIDE layout. The
+    // Decisions/Uncertainties sections are now stacked (list above,
+    // matrix full-width below), so alignment is a no-op — we just
+    // reset any lingering margin from an earlier layout.
     for (const kind of ['decision', 'uncertainty']) {
       const cfg = MATRIX[kind];
-      const wrap = $(cfg.wrapSel);
       const textarea = $(cfg.textareaSel);
-      if (!wrap || !textarea) continue;
-      // Reset any prior offset so the measurement is a clean
-      // baseline. The h3 above stays where it is; we push ONLY the
-      // textarea down so its top aligns with the matrix's first
-      // data row while the "Decisions" / "Uncertainties" label
-      // stays level with "Impact matrix" at the panel top.
-      textarea.style.marginTop = '';
-      const firstRow = wrap.querySelector('tbody tr');
-      if (!firstRow) continue;
-      const target = firstRow.getBoundingClientRect().top;
-      const current = textarea.getBoundingClientRect().top;
-      const delta = target - current;
-      if (delta > 0) textarea.style.marginTop = delta + 'px';
+      if (textarea) textarea.style.marginTop = '';
     }
   }
   function cycleCell(kind, name, metric, cell) {
