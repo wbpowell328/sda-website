@@ -35,6 +35,7 @@ date: 2026-08-11
     <div class="fp-menu-items">
       <button type="button" id="fp-menu-new">New decision</button>
       <button type="button" id="fp-menu-open">Open…</button>
+      <button type="button" id="fp-menu-import" title="Load a decision from a .json file someone sent you (or one you exported earlier)">Import from JSON…</button>
       <button type="button" id="fp-menu-save">Save</button>
       <button type="button" id="fp-menu-saveas">Save as…</button>
       <button type="button" id="fp-menu-duplicate" title="Save a copy of the currently loaded decision (adds &quot; (2)&quot; to the name)">Duplicate</button>
@@ -1035,6 +1036,55 @@ date: 2026-08-11
     renderPublicExamples();   // fires an async fetch; list fills in when it lands
     const m = $('#fp-open-modal');
     if (m) m.hidden = false;
+  }
+
+  // ── Import from JSON ────────────────────────────────────────
+  // Counterpart to Export. Reads a .json file the user picks from
+  // disk, validates it, and drops it into the workspace with a
+  // doc-title of "Imported — <basename>". Does NOT set a save-
+  // target — the user hits Save as… to keep it, matching the
+  // public-example load pattern.
+  function importFromJsonFile(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(String(reader.result || ''));
+        if (!parsed || !Array.isArray(parsed.metrics)) {
+          throw new Error('This file does not look like a framing (no metrics array).');
+        }
+        state = normalizeState(parsed);
+        setCurrentName(null);
+        const base = (file.name || 'file').replace(/\.json$/i, '');
+        setDocTitle('Imported — ' + base);
+        $('#fp-metrics-input').value       = state.metrics.join('\n');
+        $('#fp-decisions-input').value     = state.decisions.join('\n');
+        $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
+        render(); renderAllMatrices(); autoSave();
+        flashStatus('Imported "' + file.name + '". Use Save as… to keep a copy.');
+      } catch (err) {
+        alert('Could not import this file:\n\n' + (err && err.message ? err.message : String(err)));
+      }
+    };
+    reader.onerror = () => alert('Failed to read the file.');
+    reader.readAsText(file);
+  }
+  function openImportPicker() {
+    // Build a fresh hidden input each time so the same file can be
+    // re-picked after a mistake (browsers suppress change events
+    // when re-selecting an already-picked file on a re-used input).
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json,application/json';
+    input.style.display = 'none';
+    input.addEventListener('change', () => {
+      const f = input.files && input.files[0];
+      if (f) importFromJsonFile(f);
+      // Detach so we don't leak input nodes.
+      setTimeout(() => { if (input.parentNode) input.parentNode.removeChild(input); }, 100);
+    });
+    document.body.appendChild(input);
+    input.click();
   }
 
   // ── Export as JSON ──────────────────────────────────────────
@@ -2058,6 +2108,10 @@ date: 2026-08-11
     $('#fp-menu-open').addEventListener('click', () => {
       closeFileMenu();
       openOpenModal();
+    });
+    $('#fp-menu-import').addEventListener('click', () => {
+      closeFileMenu();
+      openImportPicker();
     });
     $('#fp-menu-save').addEventListener('click', () => {
       closeFileMenu();
