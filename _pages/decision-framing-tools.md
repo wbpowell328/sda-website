@@ -461,7 +461,11 @@ date: 2026-08-11
   .fp-matrix-decision {
     font-weight: 600; color: #5a4a35;
     max-width: 220px;
-    word-break: break-word;
+    /* Prefer breaks at spaces, hyphens, and the <wbr> markers we
+       insert after slashes — only break mid-word as a last resort
+       when a single word is too long to fit the column. */
+    word-break: normal;
+    overflow-wrap: break-word;
     line-height: 1.2;
   }
 
@@ -1714,11 +1718,12 @@ date: 2026-08-11
     }
     return out;
   }
-  // Set a matrix-header cell's text with <wbr> markers after every
-  // "/" so the browser prefers breaking at those spots. Text before
-  // and after each slash stays intact — no more single-letter
-  // orphans from mid-word breaking.
-  function appendMetricHeaderText(el, text) {
+  // Set a matrix cell's text with <wbr> markers after every "/" so
+  // the browser prefers breaking at those spots. Text before and
+  // after each slash stays intact — no more mid-word orphans like
+  // "acquisition/dive\nsture" or "Rev/driver/w\nk". Used for both
+  // metric-column headers AND decision/uncertainty row labels.
+  function appendTextWithSlashBreaks(el, text) {
     el.textContent = '';
     const parts = String(text).split('/');
     for (let i = 0; i < parts.length; i++) {
@@ -1774,7 +1779,7 @@ date: 2026-08-11
       // after every "/". Metrics-per-something (e.g. Rev/driver/wk,
       // Operating margin/mile) then wrap cleanly at the slash
       // instead of dropping a random tail letter to the next line.
-      appendMetricHeaderText(th, metric);
+      appendTextWithSlashBreaks(th, metric);
       th.title = 'Tier ' + tier + ' — ' + metric;
       hr.appendChild(th);
     }
@@ -1795,7 +1800,7 @@ date: 2026-08-11
 
       const nameTd = document.createElement('td');
       nameTd.className = 'fp-matrix-decision';
-      nameTd.textContent = name;
+      appendTextWithSlashBreaks(nameTd, name);
       tr.appendChild(nameTd);
 
       for (const { metric } of metrics) {
