@@ -35,11 +35,11 @@ date: 2026-08-11
     <div class="fp-menu-items">
       <button type="button" id="fp-menu-new">New decision</button>
       <button type="button" id="fp-menu-open">Open…</button>
-      <button type="button" id="fp-menu-import" title="Load a decision from a .json file someone sent you (or one you exported earlier)">Import from JSON…</button>
       <button type="button" id="fp-menu-save">Save</button>
       <button type="button" id="fp-menu-saveas">Save as…</button>
       <button type="button" id="fp-menu-duplicate" title="Save a copy of the currently loaded decision (adds &quot; (2)&quot; to the name)">Duplicate</button>
       <button type="button" id="fp-menu-export" title="Download the current decision as a JSON file (useful for sharing or contributing to the public examples library)">Export as JSON…</button>
+      <button type="button" id="fp-menu-import" title="Load a decision from a .json file someone sent you (or one you exported earlier)">Import from JSON…</button>
     </div>
   </details>
   <span class="fp-toolbar-sep" aria-hidden="true"></span>
