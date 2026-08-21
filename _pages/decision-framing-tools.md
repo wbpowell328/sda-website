@@ -1534,16 +1534,58 @@ date: 2026-08-11
   }
   function syncMetricsFromTextarea() {
     const newMetrics = parseTextareaToMetrics();
-    // Keep assignments for metrics still in the list; drop the rest.
+    const oldMetrics = state.metrics || [];
+    const oldAssignments = state.assignments || {};
+    const oldSet = new Set(oldMetrics);
+    const newSet = new Set(newMetrics);
+
+    // Pass 1: exact-match preservation of tier assignments.
     const kept = {};
     for (const m of newMetrics) {
-      if (state.assignments[m] != null) kept[m] = state.assignments[m];
+      if (oldAssignments[m] != null && oldSet.has(m)) kept[m] = oldAssignments[m];
     }
+    // Pass 2: rename detection. A "vanished" metric is in old but not
+    // in new; an "appeared" metric is the reverse. Pair them positionally
+    // (i-th vanished ↔ i-th appeared) and treat as a rename, transferring
+    // the tier assignment AND rekeying every affected matrix column.
+    // This lets Warren tweak the wording of a metric ("Operating margin"
+    // → "Op margin") without losing its tier or any of its column scores
+    // across both matrices. Only metrics that vanish with no counterpart
+    // appearing are treated as deletions.
+    const vanished = oldMetrics.filter(m => !newSet.has(m));
+    const appeared = newMetrics.filter(m => !oldSet.has(m));
+    const pairs = Math.min(vanished.length, appeared.length);
+    const renameMap = {};
+    for (let i = 0; i < pairs; i++) {
+      const from = vanished[i];
+      const to   = appeared[i];
+      if (oldAssignments[from] != null && kept[to] == null) {
+        kept[to] = oldAssignments[from];
+      }
+      renameMap[from] = to;
+    }
+    // Apply renames to both matrices — for every row, move any score
+    // stored under the old metric key onto the new metric key.
+    if (Object.keys(renameMap).length) {
+      for (const mx of [state.matrix, state.uMatrix]) {
+        for (const row of Object.keys(mx)) {
+          for (const from of Object.keys(renameMap)) {
+            if (mx[row][from] !== undefined) {
+              const to = renameMap[from];
+              if (mx[row][to] === undefined) mx[row][to] = mx[row][from];
+              delete mx[row][from];
+            }
+          }
+        }
+      }
+    }
+
     state.metrics = newMetrics;
     state.assignments = kept;
-    // Also prune BOTH matrix objects (decisions + uncertainties) of any
-    // cell values referencing metrics that no longer exist. Values
-    // under still-present metrics are untouched.
+
+    // Prune matrix cells that reference truly-deleted (not renamed) metrics.
+    // A rename already moved its score onto the new name above, so the OLD
+    // key is gone by the time this runs.
     const metricSet = new Set(newMetrics);
     for (const mx of [state.matrix, state.uMatrix]) {
       for (const row of Object.keys(mx)) {
