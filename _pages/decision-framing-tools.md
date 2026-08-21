@@ -413,8 +413,9 @@ date: 2026-08-11
   table.fp-matrix th,
   table.fp-matrix td {
     border: 1px solid #eae0c8;
-    padding: 6px 8px;
+    padding: 3px 6px;
     vertical-align: middle;
+    line-height: 1.2;
   }
   table.fp-matrix thead th {
     background: #faf5e6;
@@ -423,9 +424,9 @@ date: 2026-08-11
     font-size: 0.85rem;
     position: sticky; top: 0; z-index: 1;
   }
-  .fp-matrix-decision-header { min-width: 140px; text-align: left; }
+  .fp-matrix-decision-header { min-width: 120px; text-align: left; }
   .fp-matrix-metric-header {
-    min-width: 60px; max-width: 110px;
+    min-width: 52px; max-width: 100px;
     text-align: center;
     /* Prefer to break on <wbr> markers (which we insert after each
        "/" in headers via JS) rather than mid-word. If the header
@@ -433,7 +434,7 @@ date: 2026-08-11
        as a fallback so nothing spills outside the cell. */
     word-break: normal;
     overflow-wrap: break-word;
-    line-height: 1.15;
+    line-height: 1.05;
   }
   /* Tier bands on the header columns so the pyramid grouping is visible. */
   .fp-matrix-tier-1 { background: #eadfc0 !important; }
@@ -446,7 +447,7 @@ date: 2026-08-11
     text-align: center;
     cursor: pointer; user-select: none;
     font-weight: 700; font-size: 0.9rem;
-    min-width: 44px; height: 34px;
+    min-width: 34px; height: 24px;
     transition: filter 0.1s;
   }
   .fp-matrix-cell:hover { filter: brightness(0.95); }
@@ -459,8 +460,9 @@ date: 2026-08-11
 
   .fp-matrix-decision {
     font-weight: 600; color: #5a4a35;
-    max-width: 260px;
+    max-width: 220px;
     word-break: break-word;
+    line-height: 1.2;
   }
 
   /* Drag handle (grip) column */
@@ -469,9 +471,9 @@ date: 2026-08-11
     color: #7a6a55;
     cursor: grab;
     user-select: none;
-    width: 24px;
+    width: 20px;
     background: #faf5e6;
-    font-size: 1.1rem;
+    font-size: 0.95rem;
   }
   .fp-matrix-grip:active { cursor: grabbing; }
   tr.fp-matrix-dragging { opacity: 0.4; }
