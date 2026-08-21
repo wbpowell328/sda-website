@@ -1624,10 +1624,32 @@ date: 2026-08-11
   function syncListFromTextarea(kind) {
     const cfg = MATRIX[kind];
     const newList = parseTextareaList(cfg.textareaSel);
-    // Preserve matrix rows only for entries still in the list.
+    const oldList = state[cfg.listKey] || [];
+    const oldMatrix = state[cfg.matrixKey] || {};
+    const oldSet = new Set(oldList);
+    const newSet = new Set(newList);
     const kept = {};
-    const oldMatrix = state[cfg.matrixKey];
-    for (const name of newList) if (oldMatrix[name]) kept[name] = oldMatrix[name];
+    // Pass 1: exact-match preservation. A line that appears in both
+    // old and new lists keeps its matrix entry unchanged.
+    for (const name of newList) {
+      if (oldMatrix[name] && oldSet.has(name)) kept[name] = oldMatrix[name];
+    }
+    // Pass 2: treat vanished-and-appeared lines as renames, so a
+    // wording tweak on a decision (or uncertainty) preserves the row.
+    // A "vanished" name is one in oldList but not in newList; an
+    // "appeared" name is the reverse. We pair them positionally in
+    // the order they show up in the textarea. Only deleting a line
+    // outright (line disappears with no replacement appearing in
+    // parallel) drops that row's matrix entry — which matches user
+    // intent much better than "any wording change wipes the row."
+    const vanished = oldList.filter(n => !newSet.has(n));
+    const appeared = newList.filter(n => !oldSet.has(n));
+    const pairs = Math.min(vanished.length, appeared.length);
+    for (let i = 0; i < pairs; i++) {
+      const from = vanished[i];
+      const to   = appeared[i];
+      if (oldMatrix[from] && !kept[to]) kept[to] = oldMatrix[from];
+    }
     state[cfg.listKey]   = newList;
     state[cfg.matrixKey] = kept;
     renderImpactMatrix(kind);
