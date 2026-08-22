@@ -18,7 +18,9 @@ Framing a decision problem is the most important step — it sets the stage for 
 
 ## The framing process {#the-framing-process}
 
-The framing step starts with answering three questions, in English:
+The first step of decision framing is defining the scope of the decision problem. Are you helping with the decisions made by a single person? A group? A division of a company that works collaboratively to solve problems? Or perhaps the scope of a software package being developed to automate decisions?
+
+Once you have defined the scope, frame the decision problem by answering the three questions:
 
 1. What are the [**performance metrics**](#performance-metrics)?
 2. What are the [**types of decisions**](#types-of-decisions) (and who makes them)?
