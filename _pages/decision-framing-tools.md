@@ -169,7 +169,7 @@ date: 2026-08-11
 </div>
 
 <h2 id="ask-professor-powell" class="fp-section-h2">Ask Professor Powell</h2>
-<p>Describe a decision problem in a sentence or two, or drop in a case document (PDF, DOCX, TXT, MD) or point at a URL. The bot will draft a first-cut framing — metrics pyramid, decision matrix, uncertainty matrix, all pre-scored — and drop it into the three tools above for you to review and edit. Everything the bot produces is a starting point, not a final answer; the point of the tools is that <em>you</em> refine it.</p>
+<p>Describe your problem. This may be the only description, or it may supplement materials you provide from the other sources below.</p>
 
 <div class="fp-bot-card">
   <div class="fp-bot-row">
