@@ -11,6 +11,8 @@ This webpage contains some ideas on how to teach decision framing, with a focus 
 2. What types of decisions are being made (which might include discussing who makes the decisions)?
 3. What are the uncertainties that affect performance?
 
+Note that these questions have to be addressed from the perspective of a decision-maker, which can be an individual, a small group, or a computer system. Identifying who (or what) makes the decision is a step we call *scoping*.
+
 This webpage offers three ideas to help with teaching (more to come):
 
 - [Expanding the scope of an existing lecture](#expanding-the-scope-of-an-existing-lecture)
