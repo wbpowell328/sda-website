@@ -181,7 +181,7 @@ date: 2026-08-11
     <label for="fp-bot-scope" class="fp-bot-label">Who (or what) is making these decisions? <span style="font-weight:400; color:#7a6a55;">(optional but strongly recommended — sets the scope)</span></label>
     <textarea id="fp-bot-scope" rows="2" spellcheck="true"
       placeholder="e.g. A regional dispatch manager at a mid-sized trucking company with a weekly planning horizon. Or: The head of operations, quarterly cycle. Or: An autonomous dispatch system routing trucks in real time."></textarea>
-    <p class="fp-muted" style="margin: 4px 0 0 0;">Describe the decision-maker's role, altitude in the org, and planning horizon. The bot uses this to filter out decisions/metrics/uncertainties that belong to other roles above or below them.</p>
+    <p class="fp-muted" style="margin: 4px 0 0 0;">Describe the decision-maker's role, altitude in the org, and planning horizon. The bot uses this to filter out decisions/metrics/uncertainties that belong to other roles above or below them. <strong>This information is needed even if you upload the problem description from an external source.</strong></p>
   </div>
 
   <div class="fp-bot-row-inline">
