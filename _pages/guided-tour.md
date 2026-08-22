@@ -44,7 +44,7 @@ Next visit the second section which lists different types of decision settings. 
 
 **[Types of decision settings](/decisionsdecisions/#types-of-decision-settings)**
 
-There is a tendency to use relatively simple examples of decisions (what path, what move, how much to order, what price). In fact, the range of decisions is quite rich. We list 10 types of decision settings to illustrate the range of decision types. Be sure to look at the table in the section that follows, [From applications to decision types](/decisionsdecisions/#from-apps-to-types), for examples of decision types in a number of problem domains.
+There is a tendency to use relatively simple examples of decisions (what path, what move, how much to order, what price). In fact, the range of decisions is quite rich. We list 10 types of decision settings to illustrate the range of decision types. Be sure to look at the table in the section that follows, **[From applications to decision types](/decisionsdecisions/#from-apps-to-types)**, for examples of decision types in a number of problem domains.
 
 We are now going to make our way to the important task of framing decision problems. Our approach to framing lays the foundation for thinking about any sequential decision problem. It uses no math, but it asks the questions that would be needed if we choose to use a math model, which is a prerequisite to using the computer. This step consists of identifying performance metrics, types of decisions, and sources of uncertainty:
 
@@ -96,7 +96,7 @@ It helps to view sequential decision problems from the perspective of multiple a
 - The decision-maker – The decision-maker is an agent that acts on the system using his own state of knowledge, which we have been modeling as the state variable which literally captures the information known to the decision maker.
 - The environment – Any system with an exogenous information process implies that there is some external agent, which we are calling the environment, that knows the ground truth. The decision maker "sees" this ground truth in a noisy way.
 
-Start by going to the [multiagent modeling page](/multiagent-modeling/). Read the introductory section. Then proceed to the section **[Types and capabilities of agents](/multiagent-modeling/#types-of-agents)** followed by the section **[From stochastic optimization to a two-agent model](/multiagent-modeling/#two-agent)**. We are going to stop at this stage until we have covered more material, and then we will return to cover the notation for a full multiagent system (but feel free to peek at the next section if you appreciate the value of notation).
+Start by going to the page [**Multiagent modeling**](/multiagent-modeling/). Read the introductory section. Then proceed to the section **[Types and capabilities of agents](/multiagent-modeling/#types-of-agents)** followed by the section **[From stochastic optimization to a two-agent model](/multiagent-modeling/#two-agent)**. We are going to stop at this stage until we have covered more material, and then we will return to cover the notation for a full multiagent system (but feel free to peek at the next section if you appreciate the value of notation).
 
 ## The fourth pass – Designing policies {#fourth-pass}
 
