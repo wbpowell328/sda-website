@@ -50,7 +50,7 @@ date: 2026-08-22
 </style>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image1.jpeg"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3><a href="https://youtu.be/kueaR15iGIM">My background</a></h3>
@@ -64,7 +64,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image2.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3><a href="https://youtu.be/70NmogP-RDQ">History of research on sequential decision problems</a></h3>
@@ -78,7 +78,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image3.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3><a href="https://youtu.be/enabEbvwxCQ">Introduction to sequential decision problems</a></h3>
@@ -92,7 +92,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image4.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3><a href="https://youtu.be/gpLzHwkgoFQ">Framing decision problems</a></h3>
@@ -106,7 +106,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image5.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3><a href="https://youtu.be/yhA3snlJI-8">The universal modeling framework (high level)</a></h3>
@@ -120,7 +120,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image6.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3><a href="https://youtu.be/AX7wxR4YES4">Estimation methods</a></h3>
@@ -134,7 +134,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image7.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3><a href="https://youtu.be/Vl5hipcYtyo">Universal modeling framework (detailed)</a></h3>
@@ -148,7 +148,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image8.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3><a href="https://youtu.be/YSCDfyu2Ry4">State variables</a></h3>
@@ -162,7 +162,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image9.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3><a href="https://youtu.be/Eencb1XLT-Q">Designing policies</a></h3>
@@ -176,7 +176,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image10.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3><a href="https://youtu.be/VC24ZLEGYFI">Choosing policies</a></h3>
@@ -190,7 +190,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image11.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3><a href="https://youtu.be/G-Sw7JKNdr0">Policy function approximations</a></h3>
@@ -204,7 +204,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image12.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3><a href="https://youtu.be/LY2ATnP-vSw">Cost function approximations</a></h3>
@@ -218,7 +218,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image13.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3><a href="https://youtu.be/OLt_yd-Nmk4">Value function approximations I — Introduction to dynamic programming</a></h3>
@@ -232,7 +232,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image14.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3><a href="https://youtu.be/_NO6HweAboY">Value function approximations II — VFA-based policies</a></h3>
@@ -246,7 +246,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image15.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3><a href="https://youtu.be/gkjncBxeIZ8">Value function approximations III — Reinforcement learning</a></h3>
@@ -260,7 +260,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image16.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3>Value function approximations IV</h3>
@@ -274,7 +274,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image17.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3>Value function approximations V — Applications</h3>
@@ -288,7 +288,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image18.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3><a href="https://youtu.be/yfpRl7eeN68">Direct lookahead approximations I — Overview</a></h3>
@@ -302,7 +302,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image19.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3><a href="https://youtu.be/fuf6MkUV6DA">Direct lookahead approximations II — Deterministic lookaheads</a></h3>
@@ -316,7 +316,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image20.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3><a href="https://youtu.be/ho4a9-PBmRA">Direct lookahead approximations III — Stochastic lookaheads</a></h3>
@@ -330,7 +330,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image21.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3><a href="https://youtu.be/jd25cgsOAI8">Direct lookahead approximations IV — Discrete actions</a></h3>
@@ -344,7 +344,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image22.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3><a href="https://youtu.be/AlbMn5IPy3o">Direct lookahead approximations V — Vector-valued actions</a></h3>
@@ -358,7 +358,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image23.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3><a href="https://youtu.be/vyeCPold1sA">Policy search</a></h3>
@@ -372,7 +372,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image24.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3>Optimal learning</h3>
@@ -386,7 +386,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image25.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3>Deterministic optimization as a sequential decision problem</h3>
@@ -400,7 +400,7 @@ date: 2026-08-22
 </div>
 
 <div class="video-module">
-  <img src="/assets/images/sda-video-modules/video-thumbnail.jpg"
+  <img src="/assets/images/sda-video-modules/image26.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
     <h3>Modeling matters</h3>
