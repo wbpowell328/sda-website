@@ -6,6 +6,8 @@ date: 2026-08-11
 ---
 
 {% raw %}
+<p>When framing a problem, be sure to follow the guidelines on <a href="/framingproblems/#the-framing-process">The Framing Process</a>, paying special attention to identifying the scope of your decision problem, such as who (or what) is making decisions.</p>
+
 <p>Three companion tools for the framing process:</p>
 <ol>
   <li><a href="#metrics-pyramid-tool"><strong>Metrics pyramid tool</strong></a> — prioritize your performance metrics into a four-level pyramid.</li>
