@@ -173,6 +173,12 @@ date: 2026-08-11
 
 <div class="fp-bot-card">
   <div class="fp-bot-row">
+    <label for="fp-bot-scope" class="fp-bot-label">Who (or what) is making these decisions? <span style="font-weight:400; color:#7a6a55;">(optional but strongly recommended — sets the scope)</span></label>
+    <textarea id="fp-bot-scope" rows="2" spellcheck="true"
+      placeholder="e.g. A regional dispatch manager at a mid-sized trucking company with a weekly planning horizon. Or: The head of operations, quarterly cycle. Or: An autonomous dispatch system routing trucks in real time."></textarea>
+    <p class="fp-muted" style="margin: 4px 0 0 0;">Describe the decision-maker's role, altitude in the org, and planning horizon. The bot uses this to filter out decisions/metrics/uncertainties that belong to other roles above or below them.</p>
+  </div>
+  <div class="fp-bot-row">
     <label for="fp-bot-desc" class="fp-bot-label">Describe your problem</label>
     <textarea id="fp-bot-desc" rows="4" spellcheck="true"
       placeholder="e.g. A regional pharmacy chain has to decide, each week, how much of a slow-moving cold-and-flu medication to keep in each of 40 stores given uncertain seasonal demand, expiring inventory, and a shared central warehouse..."></textarea>
@@ -2107,8 +2113,9 @@ date: 2026-08-11
     if (anchor && anchor.scrollIntoView) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
   async function runFramingRequest() {
-    const desc = $('#fp-bot-desc').value.trim();
-    const url  = $('#fp-bot-url').value.trim();
+    const desc  = $('#fp-bot-desc').value.trim();
+    const url   = $('#fp-bot-url').value.trim();
+    const scope = $('#fp-bot-scope').value.trim();
     const file = $('#fp-bot-file').files && $('#fp-bot-file').files[0];
     const size = $('#fp-bot-size').value || 'medium';
     if (!desc && !url && !file) {
@@ -2122,8 +2129,9 @@ date: 2026-08-11
     setBotStatus('Contacting Professor Powell… (first request after idle can take ~30 s while the server wakes up)', 'working');
     try {
       const form = new FormData();
-      if (desc) form.append('description', desc);
-      if (url)  form.append('url', url);
+      if (scope) form.append('scope', scope);
+      if (desc)  form.append('description', desc);
+      if (url)   form.append('url', url);
       if (file) form.append('file', file, file.name);
       form.append('size', size);
 
@@ -2146,8 +2154,9 @@ date: 2026-08-11
     }
   }
   function clearBotInputs() {
-    $('#fp-bot-desc').value = '';
-    $('#fp-bot-url').value  = '';
+    $('#fp-bot-scope').value = '';
+    $('#fp-bot-desc').value  = '';
+    $('#fp-bot-url').value   = '';
     $('#fp-bot-file').value = '';
     setBotStatus('');
   }

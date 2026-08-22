@@ -481,11 +481,25 @@ app.post('/framing', framingLimiter, (req, res) => {
       }
       const description = String(req.body?.description || '').trim().slice(0, FRAMING_MAX_CHARS);
       const url = String(req.body?.url || '').trim();
+      const scope = String(req.body?.scope || '').trim().slice(0, 2000);
       const { size, metrics: nM, decisions: nD, uncertainties: nU } = sizeInstructions(req.body?.size);
 
       // Build the user content: any combination of file + URL + text is fine,
       // but the user must provide at least one signal.
       const userContent = [];
+      // Scope goes FIRST so the model reads it before the source material —
+      // this is what filters the framing down to what the described
+      // decision-maker actually owns, instead of the CEO-eye-view default.
+      if (scope) {
+        userContent.push({
+          type: 'text',
+          text:
+            `SCOPE — who (or what) is making these decisions:\n${scope}\n\n` +
+            `Every metric, decision, and uncertainty you propose must belong to ` +
+            `THIS decision-maker's altitude and planning horizon. Read the source ` +
+            `material below with that filter on.`,
+        });
+      }
       if (req.file) {
         userContent.push(await fileToContentBlock(
           req.file.buffer,
@@ -502,8 +516,8 @@ app.post('/framing', framingLimiter, (req, res) => {
       if (description) {
         userContent.push({ type: 'text', text: `User description:\n${description}` });
       }
-      if (userContent.length === 0) {
-        return res.status(400).json({ error: 'Provide a description, a URL, or an uploaded document.' });
+      if (userContent.length === 0 || (userContent.length === 1 && scope)) {
+        return res.status(400).json({ error: 'Provide a description, a URL, or an uploaded document (scope alone is not enough).' });
       }
 
       userContent.push({
@@ -513,6 +527,11 @@ app.post('/framing', framingLimiter, (req, res) => {
           `  - exactly ${nM} metrics\n` +
           `  - exactly ${nD} decisions\n` +
           `  - exactly ${nU} uncertainties\n` +
+          (scope
+            ? `Keep every item strictly inside the SCOPE described at the top. ` +
+              `Do NOT include items that belong to roles above or below this ` +
+              `decision-maker, even if they're prominent in the source. `
+            : ``) +
           `Pre-score both impact matrices. Call the record_framing tool.`,
       });
 
