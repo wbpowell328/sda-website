@@ -15,7 +15,6 @@ This page outlines a series of courses and seminars, some of which were taught a
 - [**RLSO as a weekly seminar series**](#rlso-seminar) — how the RLSO course could be self-taught as a weekly seminar series.
 - [**Optimal Learning**](#optimal-learning) — I taught this course for 10 years at Princeton at the undergraduate level.
 - [**Designing an introductory optimization course**](/teachingoptimization/) — an outline for an introductory optimization course for undergraduates and masters students, organized around the book *A Modern Approach to Teaching an Introduction to Optimization*.
-- [**How to teach optimization**](/howtoteachoptimization/) — based on a 2025 talk to Cornell's ORIE department, making the case that most deterministic optimization problems are actually policies for sequential decision problems.
 
 ## Framing Decision Problems {#framing}
 
