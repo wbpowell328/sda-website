@@ -74,8 +74,6 @@
       url: /supervising-theses/
     - title: Books
       url: /teaching-books/
-    - title: Videos
-      url: /teaching-videos/
     - title: SDA video modules
       url: /sda-video-modules/
     - title: Games
@@ -91,6 +89,8 @@
       url: /powellseniortheses/
     - title: Datasets
       url: /datasets/
+    - title: Videos
+      url: /teaching-videos/
 
 - section: About
   items:
