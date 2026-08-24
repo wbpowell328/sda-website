@@ -76,16 +76,16 @@ We have identified 12 different ways that information can impact the behavior of
 
 A complete discussion is on the [Modeling uncertainty](/modeling-uncertainty/) page.
 
-## Decision framing tools {#decision-framing-tools}
+## The decision framing tool {#decision-framing-tools}
 
-A companion interactive tool for building the [metrics pyramid](#performance-metrics) described above. Type your list of metrics, drag each into one of four priority tiers, and share the resulting pyramid as a URL or print it for classroom use. Everything runs in the browser — nothing leaves your device unless you copy the share URL.
+A companion interactive tool for building the [metrics pyramid](#performance-metrics) described above, plus impact matrices for prioritizing decisions and uncertainties. Type your list of metrics, drag each into one of four priority tiers, score how each decision and uncertainty affects each metric, and share or print the result. All the information you provide stays in your browser.
 
 <p style="margin: 1rem 0;">
   <a href="/decision-framing-tools/"
      style="display: inline-block; background: #c9621e; color: #fff;
             padding: 8px 20px; border-radius: 4px; text-decoration: none;
             font-weight: 600; font-size: 0.95rem;">
-    Open the decision framing tools →
+    Open the decision framing tool →
   </a>
 </p>
 {% endraw %}
