@@ -1,6 +1,6 @@
 ---
 layout: null
-permalink: /metrics-pyramid/
+permalink: /decision-framing-tools/
 sitemap: false
 ---
 <!doctype html>
