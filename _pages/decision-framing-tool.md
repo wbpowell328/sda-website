@@ -84,6 +84,16 @@ date: 2026-08-11
     <h3>Metrics</h3>
     <p class="fp-muted">One per line. Chips appear below and can be dragged into the pyramid on the right.</p>
     <textarea id="fp-metrics-input" spellcheck="true" placeholder="Revenue growth&#10;Customer satisfaction&#10;Employee retention&#10;On-time delivery&#10;Product quality"></textarea>
+    <div class="fp-chip-legend" aria-hidden="true">
+      <p class="fp-chip-legend-help">Click a chip to cycle its flavor:</p>
+      <div class="fp-chip-legend-grid">
+        <span class="fp-legend-swatch" data-color="max" title="Maximize — an objective you want more of (e.g. revenue, service)">Max</span>
+        <span class="fp-legend-swatch" data-color="min" title="Minimize — an objective you want less of (e.g. cost, delay)">Min</span>
+        <span class="fp-legend-swatch" data-color="target" title="Target — a specific value you want to hit">Target</span>
+        <span class="fp-legend-swatch" data-color="limit-floor" title="Floor — a minimum this metric must stay above (e.g. demand covered)">Floor</span>
+        <span class="fp-legend-swatch" data-color="limit-ceiling" title="Ceiling — a maximum this metric must stay below (e.g. lost demand)">Ceiling</span>
+      </div>
+    </div>
     <div class="fp-unassigned-label">Unassigned <span class="fp-tier-hint">(drag into a tier)</span></div>
     <div class="fp-drop-zone fp-unassigned" data-tier="0"></div>
   </div>
@@ -598,6 +608,63 @@ date: 2026-08-11
   .fp-chip:hover { background: #faf5e6; }
   .fp-chip.fp-dragging { opacity: 0.4; cursor: grabbing; }
 
+  /* Chip flavor colors — cycled by clicking a chip in the metrics list
+     or pyramid. Legend swatches share these selectors so the legend and
+     the live chips always stay in sync. */
+  .fp-chip[data-color="max"],
+  .fp-legend-swatch[data-color="max"] {
+    background: #4d9d5f; color: #fff; border-color: #3d8a4e;
+  }
+  .fp-chip[data-color="min"],
+  .fp-legend-swatch[data-color="min"] {
+    background: #cf5a55; color: #fff; border-color: #b34842;
+  }
+  .fp-chip[data-color="target"],
+  .fp-legend-swatch[data-color="target"] {
+    background: #8b60a5; color: #fff; border-color: #74508b;
+  }
+  .fp-chip[data-color="limit-floor"],
+  .fp-legend-swatch[data-color="limit-floor"] {
+    background: #cae6ce; color: #2d5c3a; border-color: #a5cfab;
+  }
+  .fp-chip[data-color="limit-ceiling"],
+  .fp-legend-swatch[data-color="limit-ceiling"] {
+    background: #efcdca; color: #6c2e2a; border-color: #cfaba7;
+  }
+  .fp-chip[data-color]:hover { filter: brightness(0.95); background: inherit; }
+
+  /* Legend for the chip colors — lives inside the Metrics panel, right
+     below the textarea. Two rows: max / min / target on top, then
+     limit-floor / limit-ceiling on the bottom (aligned so light green
+     sits under dark green, light red sits under dark red). */
+  .fp-chip-legend {
+    margin: 10px 0;
+    padding: 8px 10px;
+    background: #fdfaf1;
+    border: 1px solid #eae0c8;
+    border-radius: 4px;
+  }
+  .fp-chip-legend-help {
+    font-size: 0.82rem;
+    color: #7a6a55;
+    margin: 0 0 6px 0;
+  }
+  .fp-chip-legend-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    row-gap: 6px;
+  }
+  .fp-legend-swatch {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 4px 8px;
+    border: 1px solid transparent; border-radius: 20px;
+    font-size: 0.82rem; font-weight: 500;
+    text-align: center;
+    cursor: help; user-select: none;
+    min-width: 0;
+  }
+
   @media print {
     .fp-toolbar, .fp-metrics-panel, .fp-muted { display: none !important; }
     .fp-drop-zone:empty::before { display: none; }
@@ -760,7 +827,7 @@ date: 2026-08-11
   //   matrix       : { decision: { metric: 'H'|'M'|'L'|'N' } } —
   //                  missing = blank (not yet scored).
   let state = {
-    metrics: [], assignments: {},
+    metrics: [], assignments: {}, chipColors: {},
     decisions: [], matrix: {},
     uncertainties: [], uMatrix: {},
   };
@@ -804,6 +871,7 @@ date: 2026-08-11
     return {
       metrics:       Array.isArray(s && s.metrics)       ? s.metrics       : [],
       assignments:   (s && s.assignments)                ? s.assignments   : {},
+      chipColors:    (s && s.chipColors)                 ? s.chipColors    : {},
       decisions:     Array.isArray(s && s.decisions)     ? s.decisions     : [],
       matrix:        (s && s.matrix)                     ? s.matrix        : {},
       uncertainties: Array.isArray(s && s.uncertainties) ? s.uncertainties : [],
@@ -894,6 +962,7 @@ date: 2026-08-11
     return {
       metrics: state.metrics,
       assignments: state.assignments,
+      chipColors: state.chipColors,
       decisions: state.decisions,
       matrix: state.matrix,
       uncertainties: state.uncertainties,
@@ -1548,13 +1617,16 @@ date: 2026-08-11
     const newMetrics = parseTextareaToMetrics();
     const oldMetrics = state.metrics || [];
     const oldAssignments = state.assignments || {};
+    const oldChipColors = state.chipColors || {};
     const oldSet = new Set(oldMetrics);
     const newSet = new Set(newMetrics);
 
-    // Pass 1: exact-match preservation of tier assignments.
+    // Pass 1: exact-match preservation of tier assignments AND chip colors.
     const kept = {};
+    const keptColors = {};
     for (const m of newMetrics) {
       if (oldAssignments[m] != null && oldSet.has(m)) kept[m] = oldAssignments[m];
+      if (oldChipColors[m] && oldSet.has(m))          keptColors[m] = oldChipColors[m];
     }
     // Pass 2: rename detection. A "vanished" metric is in old but not
     // in new; an "appeared" metric is the reverse. Pair them positionally
@@ -1573,6 +1645,9 @@ date: 2026-08-11
       const to   = appeared[i];
       if (oldAssignments[from] != null && kept[to] == null) {
         kept[to] = oldAssignments[from];
+      }
+      if (oldChipColors[from] && keptColors[to] == null) {
+        keptColors[to] = oldChipColors[from];
       }
       renameMap[from] = to;
     }
@@ -1594,6 +1669,7 @@ date: 2026-08-11
 
     state.metrics = newMetrics;
     state.assignments = kept;
+    state.chipColors = keptColors;
 
     // Prune matrix cells that reference truly-deleted (not renamed) metrics.
     // A rename already moved its score onto the new name above, so the OLD
@@ -1613,20 +1689,51 @@ date: 2026-08-11
   }
 
   // ── Render ──────────────────────────────────────────────────
+  // Chip color cycle — mirrors the H/M/L/N pattern in the impact matrix.
+  // Blank → Max (dark green) → Min (dark red) → Target (purple) →
+  // Floor (light green) → Ceiling (light red) → blank.
+  const CHIP_COLOR_ORDER = ['', 'max', 'min', 'target', 'limit-floor', 'limit-ceiling'];
+  function cycleChipColor(metric, chip) {
+    const cur = state.chipColors[metric] || '';
+    const idx = CHIP_COLOR_ORDER.indexOf(cur);
+    const next = CHIP_COLOR_ORDER[(idx + 1) % CHIP_COLOR_ORDER.length];
+    if (!next) {
+      delete state.chipColors[metric];
+      chip.removeAttribute('data-color');
+    } else {
+      state.chipColors[metric] = next;
+      chip.dataset.color = next;
+    }
+    autoSave();
+  }
   function makeChip(metric) {
     const chip = document.createElement('span');
     chip.className = 'fp-chip';
     chip.textContent = metric;
     chip.draggable = true;
     chip.dataset.metric = metric;
-    chip.title = 'Drag me into a tier';
+    // Restore any stored color for this metric.
+    const storedColor = state.chipColors && state.chipColors[metric];
+    if (storedColor) chip.dataset.color = storedColor;
+    chip.title = 'Drag to a tier · Click to cycle color (Max → Min → Target → Floor → Ceiling → blank)';
+    // Track whether the current pointer interaction started a drag so a
+    // click that follows a drag operation doesn't ALSO fire a color cycle.
+    let dragOccurred = false;
     chip.addEventListener('dragstart', (e) => {
+      dragOccurred = true;
       e.dataTransfer.setData('text/plain', metric);
       e.dataTransfer.effectAllowed = 'move';
       chip.classList.add('fp-dragging');
     });
     chip.addEventListener('dragend', () => {
       chip.classList.remove('fp-dragging');
+      // Reset the flag AFTER any trailing click event that browsers may
+      // still fire in some drag-cancel scenarios.
+      setTimeout(() => { dragOccurred = false; }, 0);
+    });
+    chip.addEventListener('click', () => {
+      if (dragOccurred) return;
+      cycleChipColor(metric, chip);
     });
     return chip;
   }
@@ -2178,7 +2285,7 @@ date: 2026-08-11
       closeFileMenu();
       if (!confirm('Start a new decision? Anything on screen is discarded (Save first if you want to keep it).')) return;
       state = {
-        metrics: [], assignments: {},
+        metrics: [], assignments: {}, chipColors: {},
         decisions: [], matrix: {},
         uncertainties: [], uMatrix: {},
       };
@@ -2236,7 +2343,7 @@ date: 2026-08-11
     $('#fp-reset').addEventListener('click', () => {
       if (!confirm('Delete every metric, decision, and uncertainty, clear the pyramid and both matrices, and unload the current document? (Saved documents in File > Open are not affected.) Cannot be undone.')) return;
       state = {
-        metrics: [], assignments: {},
+        metrics: [], assignments: {}, chipColors: {},
         decisions: [], matrix: {},
         uncertainties: [], uMatrix: {},
       };
