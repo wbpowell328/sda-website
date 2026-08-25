@@ -1516,58 +1516,116 @@ date: 2026-08-11
     if (title == null) return;
     const trimmedTitle = title.trim();
     if (!trimmedTitle) { alert('Title cannot be empty.'); return; }
-    const description = window.prompt(
-      'One-line description (shown under the title in the library):', ''
-    );
-    if (description == null) return;
 
     try {
-      flashStatus('Publishing… (2 commits to GitHub)');
-      // Read the manifest so we can (a) detect slug conflicts and (b) send its SHA on update.
+      flashStatus('Checking public library…');
       const manifest = await ghGetFile(ADMIN_MANIFEST_PATH);
       const manifestObj = JSON.parse(manifest.content);
-      const existing = new Set((manifestObj.examples || []).map(e => e.file));
-      const baseSlug = slugify(trimmedTitle);
-      let slug = baseSlug, n = 1;
-      while (existing.has(slug + '.json')) { n++; slug = baseSlug + '-' + n; }
-      const filename = slug + '.json';
+      const examples = manifestObj.examples || [];
+
+      // Upsert detection — if a public entry with the exact same title
+      // already exists, offer to update it in place rather than forcing
+      // a delete-then-publish dance. Cancel falls through to create a
+      // suffix-numbered separate copy (old behavior).
+      let existingEntry = examples.find(e => e.title === trimmedTitle);
+      let filename;
+      let existingFileSha = null;
+      let isUpdate = false;
+
+      if (existingEntry) {
+        const useExisting = window.confirm(
+          'A public example titled "' + trimmedTitle + '" already exists.\n\n' +
+          'OK — Update it in place (replaces the existing framing).\n' +
+          'Cancel — Publish as a separate copy under "' + trimmedTitle + ' (2)".'
+        );
+        if (useExisting) {
+          isUpdate = true;
+          filename = existingEntry.file;
+          try {
+            const existingFile = await ghGetFile(ADMIN_FILES_DIR + '/' + filename);
+            existingFileSha = existingFile.sha;
+          } catch (e) {
+            alert('Could not read the existing public file:\n\n' + (e && e.message ? e.message : String(e)));
+            flashStatus('');
+            return;
+          }
+        } else {
+          existingEntry = null;
+        }
+      }
+
+      if (!isUpdate) {
+        const existingFiles = new Set(examples.map(e => e.file));
+        const baseSlug = slugify(trimmedTitle);
+        let slug = baseSlug, n = 1;
+        while (existingFiles.has(slug + '.json')) { n++; slug = baseSlug + '-' + n; }
+        filename = slug + '.json';
+      }
+
+      // Description prompt — pre-fill with existing description when
+      // updating so the user doesn't have to retype it.
+      const description = window.prompt(
+        'One-line description (shown under the title in the library):',
+        (existingEntry && existingEntry.description) || ''
+      );
+      if (description == null) return;
 
       const framing = {
-        metrics: file.metrics || [],
-        assignments: file.assignments || {},
-        decisions: file.decisions || [],
-        matrix: file.matrix || {},
+        scope:         file.scope || '',
+        metrics:       file.metrics || [],
+        assignments:   file.assignments || {},
+        chipColors:    file.chipColors || {},
+        decisions:     file.decisions || [],
+        matrix:        file.matrix || {},
         uncertainties: file.uncertainties || [],
-        uMatrix: file.uMatrix || {},
+        uMatrix:       file.uMatrix || {},
       };
       const framingJson = JSON.stringify(framing, null, 2) + '\n';
 
-      // Commit 1: the framing JSON.
+      flashStatus((isUpdate ? 'Updating' : 'Publishing') + ' "' + trimmedTitle + '"… (2 commits to GitHub)');
+
+      // Commit 1: the framing JSON. Pass sha when updating so GitHub
+      // treats it as an overwrite (not a duplicate-create failure).
       await ghPutFile(
         ADMIN_FILES_DIR + '/' + filename,
         framingJson,
-        'framing examples: publish "' + trimmedTitle + '"'
+        (isUpdate ? 'framing examples: update "' : 'framing examples: publish "') + trimmedTitle + '"',
+        existingFileSha
       );
-      // Commit 2: append to the manifest.
-      manifestObj.examples = manifestObj.examples || [];
-      manifestObj.examples.push({
-        file: filename,
-        title: trimmedTitle,
-        description: description.trim(),
-      });
+
+      // Commit 2: manifest — update the existing entry's description,
+      // or append a new entry.
+      if (isUpdate) {
+        for (const e of manifestObj.examples) {
+          if (e.file === filename) {
+            e.title = trimmedTitle;
+            e.description = description.trim();
+          }
+        }
+      } else {
+        manifestObj.examples = manifestObj.examples || [];
+        manifestObj.examples.push({
+          file: filename,
+          title: trimmedTitle,
+          description: description.trim(),
+        });
+      }
       await ghPutFile(
         ADMIN_MANIFEST_PATH,
         JSON.stringify(manifestObj, null, 2) + '\n',
-        'framing examples: add ' + filename + ' to manifest',
+        (isUpdate ? 'framing examples: refresh manifest for ' : 'framing examples: add ') + filename,
         manifest.sha
       );
-      flashStatus('Published as "' + trimmedTitle + '". Live on the site in ~1–2 min.');
-      // Refresh the Open modal (in case it stays open).
+
+      flashStatus(
+        (isUpdate ? 'Updated' : 'Published') +
+        ' "' + trimmedTitle + '". Live on the site in ~1–2 min.'
+      );
       renderPublicExamples();
     } catch (err) {
       console.error(err);
-      alert('Publish failed:\n\n' + (err && err.message ? err.message : String(err)));
-      flashStatus('Publish failed.');
+      alert('Publish/update failed:\n\n' + (err && err.message ? err.message : String(err)));
+      flashStatus('Publish/update failed.');
     }
   }
 
