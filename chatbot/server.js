@@ -270,6 +270,106 @@ const FRAMING_TOOL = {
   },
 };
 
+// ---- create_framing_link (AskPP chatbot tool) -----------------------------
+// Lets the AskPP chatbot hand the user a URL that opens Warren's decision
+// framing tool with a fully-populated framing. The framing tool already
+// reads its whole state from the ?p= URL param (that's how Copy URL works);
+// we just base64url-encode the framing here and prepend &src=askpp so the
+// tool page can badge the banner as "AI draft — Ask Professor Powell".
+const FRAMING_TOOL_URL = process.env.FRAMING_TOOL_URL
+  || 'https://warrenpowell.org/decision-framing-tool/';
+const CREATE_FRAMING_LINK_TOOL = {
+  name: 'create_framing_link',
+  description:
+    'Produce a URL that opens Warren\'s decision framing tool with a pre-populated framing (scope + metrics pyramid + decision × metric matrix + uncertainty × metric matrix, all pre-scored). Call this when the user has explained a decision problem in enough detail (or explicitly asks for a framing draft or "what would the framing look like") — NOT when they are just discussing framing concepts. Include the returned URL in your reply as a Markdown link like [Open in the decision framing tool →](URL), and add one or two sentences describing what the user will see.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      scope: {
+        type: 'string',
+        description: 'Who or what makes these decisions — role + altitude in the org + planning horizon. Every item below must fit this decision-maker.',
+      },
+      metrics: {
+        type: 'array',
+        items: { type: 'string' },
+        description: 'Short performance metric names (2–4 words each), 4–10 items, ordered by pyramid tier.',
+      },
+      assignments: {
+        type: 'object',
+        additionalProperties: { type: 'integer', minimum: 1, maximum: 4 },
+        description: 'Every metric → pyramid tier 1–4. Exactly one metric maps to 1.',
+      },
+      decisions: {
+        type: 'array',
+        items: { type: 'string' },
+        description: 'The levers the decision-maker actually controls (3–8 items), ordered most-impactful first.',
+      },
+      matrix: {
+        type: 'object',
+        description: 'Impact matrix keyed by decision name → object keyed by metric name → "H"|"M"|"L"|"N". Include every (decision, metric) pair.',
+        additionalProperties: {
+          type: 'object',
+          additionalProperties: { type: 'string', enum: ['H', 'M', 'L', 'N'] },
+        },
+      },
+      uncertainties: {
+        type: 'array',
+        items: { type: 'string' },
+        description: 'External uncertain factors the decision-maker must react to (3–8 items), ordered most-impactful first.',
+      },
+      uMatrix: {
+        type: 'object',
+        description: 'Impact matrix keyed by uncertainty name → object keyed by metric name → "H"|"M"|"L"|"N". Include every (uncertainty, metric) pair.',
+        additionalProperties: {
+          type: 'object',
+          additionalProperties: { type: 'string', enum: ['H', 'M', 'L', 'N'] },
+        },
+      },
+    },
+    required: ['metrics', 'assignments', 'decisions', 'matrix', 'uncertainties', 'uMatrix'],
+  },
+};
+
+function encodeFramingToUrl(input) {
+  // Coerce every field into the framing tool's state shape.
+  const doc = {
+    scope:         String((input && input.scope) || ''),
+    metrics:       Array.isArray(input && input.metrics)       ? input.metrics       : [],
+    assignments:   (input && input.assignments && typeof input.assignments === 'object') ? input.assignments : {},
+    chipColors:    {},   // chatbot doesn't set metric flavors
+    decisions:     Array.isArray(input && input.decisions)     ? input.decisions     : [],
+    matrix:        (input && input.matrix && typeof input.matrix === 'object') ? input.matrix : {},
+    uncertainties: Array.isArray(input && input.uncertainties) ? input.uncertainties : [],
+    uMatrix:       (input && input.uMatrix && typeof input.uMatrix === 'object') ? input.uMatrix : {},
+  };
+  const enc = Buffer.from(JSON.stringify(doc), 'utf8').toString('base64')
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  return FRAMING_TOOL_URL + '?p=' + enc + '&src=askpp';
+}
+
+const ASKPP_TOOL_INSTRUCTIONS =
+  '\n\n## Tool: create_framing_link\n\n' +
+  'You have a `create_framing_link` tool that hands the user a URL opening ' +
+  'Warren\'s decision framing tool with a fully-populated framing (scope, ' +
+  'metrics pyramid, decision × metric matrix, uncertainty × metric matrix, ' +
+  'all pre-scored H / M / L / N). Use it ONLY when the user has explained ' +
+  'a specific decision problem in enough detail to justify a draft — or ' +
+  'explicitly asks for one ("give me the framing", "what would the framing ' +
+  'look like", "draft it in the tool"). Do NOT call it when the user is ' +
+  'just discussing framing concepts or asking definitional questions.\n\n' +
+  'When you do call it:\n' +
+  '  1. Silently construct a first-cut framing following Warren\'s methodology: ' +
+  'a short scope (role + altitude + horizon), 4–10 metrics organized into a ' +
+  '4-tier pyramid (exactly one Tier 1), 3–8 decisions the decision-maker ' +
+  'controls, and 3–8 uncertainties they must react to. Pre-score both ' +
+  'matrices honestly (not every cell is H — discriminate).\n' +
+  '  2. Pass it to the tool; you\'ll get back a URL.\n' +
+  '  3. In your reply, include the URL as a Markdown link: ' +
+  '`[Open in the decision framing tool →](URL)`. Add one or two sentences ' +
+  'so the user knows what they\'ll see (Tier 1 metric, rough count of ' +
+  'decisions and uncertainties). Do NOT dump the full framing in the chat ' +
+  'body — the tool page is the artifact.';
+
 // Very small HTML → text so pages fetched by URL are usable prompt input.
 // Strips scripts/styles, unwraps tags, collapses whitespace. Not perfect but
 // good enough — Claude tolerates messy input.
@@ -646,6 +746,9 @@ app.post('/chat', chatLimiter, async (req, res) => {
         text: '\n\n' + ragBlock + '\nWhen relevant, cite excerpts inline using their [N] number.',
       });
     }
+    // Append tool-use instructions AFTER any RAG block so the main persona
+    // prompt keeps its cache prefix intact.
+    systemBlocks.push({ type: 'text', text: ASKPP_TOOL_INSTRUCTIONS });
 
     // --- Call Claude ------------------------------------------------------
     // Strip any non-API fields the widget attached for its own bookkeeping
@@ -680,25 +783,78 @@ app.post('/chat', chatLimiter, async (req, res) => {
       }
     }
 
-    const stream = client.messages.stream({
-      model: MODEL,
-      max_tokens: 4096,
-      system: systemBlocks,
-      messages: cleanMessages,
-    });
-
+    // --- Streaming tool-use loop -----------------------------------------
+    // First turn: model may emit text and/or tool_use blocks. If it emits
+    // a tool_use, we execute it server-side, feed the tool_result back as
+    // a fresh user turn, and stream the model's follow-up. Loop bounded by
+    // MAX_TOOL_ROUNDS to prevent runaway. Text deltas from every turn are
+    // forwarded live to the SSE client, so the user sees continuous output.
+    const MAX_TOOL_ROUNDS = 3;
+    const chatTools = [CREATE_FRAMING_LINK_TOOL];
     let assistantText = '';
-    for await (const event of stream) {
-      if (event.type === 'content_block_delta' && event.delta?.type === 'text_delta') {
-        assistantText += event.delta.text;
-        send({ delta: event.delta.text });
+    let lastUsage = null;
+    const cumUsage = { input: 0, output: 0, cacheCreate: 0, cacheRead: 0 };
+
+    for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
+      const stream = client.messages.stream({
+        model: MODEL,
+        max_tokens: 4096,
+        system: systemBlocks,
+        tools: chatTools,
+        messages: cleanMessages,
+      });
+      for await (const event of stream) {
+        if (event.type === 'content_block_delta' && event.delta?.type === 'text_delta') {
+          assistantText += event.delta.text;
+          send({ delta: event.delta.text });
+        }
       }
+      const final = await stream.finalMessage();
+      lastUsage = final.usage;
+      cumUsage.input       += final.usage?.input_tokens || 0;
+      cumUsage.output      += final.usage?.output_tokens || 0;
+      cumUsage.cacheCreate += final.usage?.cache_creation_input_tokens || 0;
+      cumUsage.cacheRead   += final.usage?.cache_read_input_tokens || 0;
+
+      const toolUses = (final.content || []).filter(b => b.type === 'tool_use');
+      if (toolUses.length === 0) break;
+
+      // Preserve the assistant turn (with its tool_use blocks) so the
+      // model can reference the tool_use_ids on the next round.
+      cleanMessages.push({ role: 'assistant', content: final.content });
+
+      // Execute each tool call and build tool_result blocks.
+      const toolResults = [];
+      for (const tu of toolUses) {
+        let resultText;
+        try {
+          if (tu.name === 'create_framing_link') {
+            resultText = encodeFramingToUrl(tu.input || {});
+          } else {
+            resultText = 'Unknown tool: ' + tu.name;
+          }
+        } catch (err) {
+          console.error('Tool ' + tu.name + ' failed:', err);
+          resultText = 'Tool error: ' + (err && err.message ? err.message : String(err));
+        }
+        toolResults.push({
+          type: 'tool_result',
+          tool_use_id: tu.id,
+          content: resultText,
+        });
+      }
+      cleanMessages.push({ role: 'user', content: toolResults });
     }
-    const final = await stream.finalMessage();
+
     send({
       done: true,
-      usage: final.usage,
-      citations,  // surface what was retrieved so the UI can show sources
+      usage: {
+        input_tokens: cumUsage.input,
+        output_tokens: cumUsage.output,
+        cache_creation_input_tokens: cumUsage.cacheCreate,
+        cache_read_input_tokens: cumUsage.cacheRead,
+      },
+      citations,   // surface what was retrieved so the UI can show sources
     });
 
     // Log the assistant's reply after the stream completes.
@@ -707,10 +863,10 @@ app.post('/chat', chatLimiter, async (req, res) => {
       role: 'assistant',
       content: assistantText,
       ipHash,
-      inputTokens: final.usage?.input_tokens,
-      outputTokens: final.usage?.output_tokens,
-      cacheCreationTokens: final.usage?.cache_creation_input_tokens,
-      cacheReadTokens: final.usage?.cache_read_input_tokens,
+      inputTokens: cumUsage.input,
+      outputTokens: cumUsage.output,
+      cacheCreationTokens: cumUsage.cacheCreate,
+      cacheReadTokens: cumUsage.cacheRead,
       citations,
     });
   } catch (err) {

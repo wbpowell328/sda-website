@@ -2307,6 +2307,15 @@ date: 2026-08-11
   document.addEventListener('DOMContentLoaded', () => {
     initAdmin();                                         // reveals admin bar if ?admin=1
     load();
+    // If the URL came from the Ask Professor Powell chatbot (via the
+    // create_framing_link tool), stamp the banner so users see this is
+    // an AI draft — same treatment as drafts from the on-page bot.
+    try {
+      const src = new URLSearchParams(window.location.search).get('src');
+      if (src === 'askpp' && state.metrics && state.metrics.length > 0) {
+        setDocTitle('AI draft — Ask Professor Powell (chatbot)');
+      }
+    } catch (_) { /* ignore malformed URLs */ }
     $('#fp-scope-input').value         = state.scope || '';
     $('#fp-metrics-input').value       = state.metrics.join('\n');
     $('#fp-decisions-input').value     = state.decisions.join('\n');
