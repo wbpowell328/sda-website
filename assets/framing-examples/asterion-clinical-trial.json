@@ -1,4 +1,5 @@
 {
+  "scope": "Product manager for drug",
   "metrics": [
     "Program NPV",
     "Prob. trial success",
@@ -12,16 +13,27 @@
     "Cost/patient-year"
   ],
   "assignments": {
-    "Program NPV":              1,
-    "Prob. trial success":      2,
-    "Serious safety events":    2,
-    "Time to approval":         2,
-    "Peak annual sales":        3,
-    "Patients reached at peak": 3,
-    "Cash runway preserved":    3,
+    "Program NPV": 1,
+    "Prob. trial success": 2,
+    "Serious safety events": 2,
+    "Time to approval": 2,
+    "Peak annual sales": 3,
+    "Cash runway preserved": 3,
     "Data quality/consistency": 3,
-    "Enrollment rate":          4,
-    "Cost/patient-year":        4
+    "Enrollment rate": 4,
+    "Cost/patient-year": 4
+  },
+  "chipColors": {
+    "Program NPV": "max",
+    "Prob. trial success": "max",
+    "Serious safety events": "min",
+    "Time to approval": "limit-ceiling",
+    "Peak annual sales": "max",
+    "Patients reached at peak": "limit-floor",
+    "Cash runway preserved": "limit-floor",
+    "Data quality/consistency": "limit-ceiling",
+    "Enrollment rate": "max",
+    "Cost/patient-year": "limit-ceiling"
   },
   "decisions": [
     "Development path",
@@ -35,44 +47,100 @@
   ],
   "matrix": {
     "Development path": {
-      "Program NPV": "H", "Prob. trial success": "H", "Serious safety events": "L", "Time to approval": "H",
-      "Peak annual sales": "M", "Patients reached at peak": "M", "Cash runway preserved": "H", "Data quality/consistency": "M",
-      "Enrollment rate": "M", "Cost/patient-year": "M"
+      "Program NPV": "H",
+      "Prob. trial success": "H",
+      "Serious safety events": "L",
+      "Time to approval": "H",
+      "Peak annual sales": "M",
+      "Patients reached at peak": "M",
+      "Cash runway preserved": "H",
+      "Data quality/consistency": "M",
+      "Enrollment rate": "M",
+      "Cost/patient-year": "M"
     },
     "Dose selection": {
-      "Program NPV": "H", "Prob. trial success": "H", "Serious safety events": "H", "Time to approval": "L",
-      "Peak annual sales": "M", "Patients reached at peak": "M", "Cash runway preserved": "L", "Data quality/consistency": "L",
-      "Enrollment rate": "L", "Cost/patient-year": "L"
+      "Program NPV": "H",
+      "Prob. trial success": "H",
+      "Serious safety events": "H",
+      "Time to approval": "L",
+      "Peak annual sales": "M",
+      "Patients reached at peak": "M",
+      "Cash runway preserved": "L",
+      "Data quality/consistency": "L",
+      "Enrollment rate": "L",
+      "Cost/patient-year": "L"
     },
     "Patient population": {
-      "Program NPV": "H", "Prob. trial success": "H", "Serious safety events": "L", "Time to approval": "M",
-      "Peak annual sales": "H", "Patients reached at peak": "H", "Cash runway preserved": "M", "Data quality/consistency": "M",
-      "Enrollment rate": "H", "Cost/patient-year": "L"
+      "Program NPV": "H",
+      "Prob. trial success": "H",
+      "Serious safety events": "L",
+      "Time to approval": "M",
+      "Peak annual sales": "H",
+      "Patients reached at peak": "H",
+      "Cash runway preserved": "M",
+      "Data quality/consistency": "M",
+      "Enrollment rate": "H",
+      "Cost/patient-year": "L"
     },
     "Site network strategy": {
-      "Program NPV": "M", "Prob. trial success": "L", "Serious safety events": "L", "Time to approval": "H",
-      "Peak annual sales": "L", "Patients reached at peak": "L", "Cash runway preserved": "M", "Data quality/consistency": "H",
-      "Enrollment rate": "H", "Cost/patient-year": "M"
+      "Program NPV": "M",
+      "Prob. trial success": "L",
+      "Serious safety events": "L",
+      "Time to approval": "H",
+      "Peak annual sales": "L",
+      "Patients reached at peak": "L",
+      "Cash runway preserved": "M",
+      "Data quality/consistency": "H",
+      "Enrollment rate": "H",
+      "Cost/patient-year": "M"
     },
     "Recruitment investments": {
-      "Program NPV": "M", "Prob. trial success": "L", "Serious safety events": "L", "Time to approval": "M",
-      "Peak annual sales": "L", "Patients reached at peak": "L", "Cash runway preserved": "M", "Data quality/consistency": "M",
-      "Enrollment rate": "H", "Cost/patient-year": "M"
+      "Program NPV": "M",
+      "Prob. trial success": "L",
+      "Serious safety events": "L",
+      "Time to approval": "M",
+      "Peak annual sales": "L",
+      "Patients reached at peak": "L",
+      "Cash runway preserved": "M",
+      "Data quality/consistency": "M",
+      "Enrollment rate": "H",
+      "Cost/patient-year": "M"
     },
     "Financing strategy": {
-      "Program NPV": "H", "Prob. trial success": "L", "Serious safety events": "N", "Time to approval": "M",
-      "Peak annual sales": "H", "Patients reached at peak": "L", "Cash runway preserved": "H", "Data quality/consistency": "L",
-      "Enrollment rate": "L", "Cost/patient-year": "L"
+      "Program NPV": "H",
+      "Prob. trial success": "L",
+      "Serious safety events": "N",
+      "Time to approval": "M",
+      "Peak annual sales": "H",
+      "Patients reached at peak": "L",
+      "Cash runway preserved": "H",
+      "Data quality/consistency": "L",
+      "Enrollment rate": "L",
+      "Cost/patient-year": "L"
     },
     "Manufacturing capacity": {
-      "Program NPV": "M", "Prob. trial success": "N", "Serious safety events": "L", "Time to approval": "H",
-      "Peak annual sales": "M", "Patients reached at peak": "M", "Cash runway preserved": "H", "Data quality/consistency": "L",
-      "Enrollment rate": "N", "Cost/patient-year": "L"
+      "Program NPV": "M",
+      "Prob. trial success": "N",
+      "Serious safety events": "L",
+      "Time to approval": "H",
+      "Peak annual sales": "M",
+      "Patients reached at peak": "M",
+      "Cash runway preserved": "H",
+      "Data quality/consistency": "L",
+      "Enrollment rate": "N",
+      "Cost/patient-year": "L"
     },
     "Continuation/stopping rules": {
-      "Program NPV": "H", "Prob. trial success": "M", "Serious safety events": "H", "Time to approval": "M",
-      "Peak annual sales": "L", "Patients reached at peak": "L", "Cash runway preserved": "H", "Data quality/consistency": "L",
-      "Enrollment rate": "N", "Cost/patient-year": "M"
+      "Program NPV": "H",
+      "Prob. trial success": "M",
+      "Serious safety events": "H",
+      "Time to approval": "M",
+      "Peak annual sales": "L",
+      "Patients reached at peak": "L",
+      "Cash runway preserved": "H",
+      "Data quality/consistency": "L",
+      "Enrollment rate": "N",
+      "Cost/patient-year": "M"
     }
   },
   "uncertainties": [
@@ -87,44 +155,100 @@
   ],
   "uMatrix": {
     "Efficacy replication": {
-      "Program NPV": "H", "Prob. trial success": "H", "Serious safety events": "N", "Time to approval": "M",
-      "Peak annual sales": "H", "Patients reached at peak": "H", "Cash runway preserved": "M", "Data quality/consistency": "L",
-      "Enrollment rate": "L", "Cost/patient-year": "L"
+      "Program NPV": "H",
+      "Prob. trial success": "H",
+      "Serious safety events": "N",
+      "Time to approval": "M",
+      "Peak annual sales": "H",
+      "Patients reached at peak": "H",
+      "Cash runway preserved": "M",
+      "Data quality/consistency": "L",
+      "Enrollment rate": "L",
+      "Cost/patient-year": "L"
     },
     "High-dose safety profile": {
-      "Program NPV": "H", "Prob. trial success": "H", "Serious safety events": "H", "Time to approval": "M",
-      "Peak annual sales": "H", "Patients reached at peak": "H", "Cash runway preserved": "M", "Data quality/consistency": "L",
-      "Enrollment rate": "M", "Cost/patient-year": "L"
+      "Program NPV": "H",
+      "Prob. trial success": "H",
+      "Serious safety events": "H",
+      "Time to approval": "M",
+      "Peak annual sales": "H",
+      "Patients reached at peak": "H",
+      "Cash runway preserved": "M",
+      "Data quality/consistency": "L",
+      "Enrollment rate": "M",
+      "Cost/patient-year": "L"
     },
     "Regulatory requirements": {
-      "Program NPV": "H", "Prob. trial success": "H", "Serious safety events": "L", "Time to approval": "H",
-      "Peak annual sales": "M", "Patients reached at peak": "M", "Cash runway preserved": "M", "Data quality/consistency": "M",
-      "Enrollment rate": "L", "Cost/patient-year": "L"
+      "Program NPV": "H",
+      "Prob. trial success": "H",
+      "Serious safety events": "L",
+      "Time to approval": "H",
+      "Peak annual sales": "M",
+      "Patients reached at peak": "M",
+      "Cash runway preserved": "M",
+      "Data quality/consistency": "M",
+      "Enrollment rate": "L",
+      "Cost/patient-year": "L"
     },
     "Enrollment velocity": {
-      "Program NPV": "H", "Prob. trial success": "L", "Serious safety events": "L", "Time to approval": "H",
-      "Peak annual sales": "M", "Patients reached at peak": "L", "Cash runway preserved": "H", "Data quality/consistency": "L",
-      "Enrollment rate": "H", "Cost/patient-year": "M"
+      "Program NPV": "H",
+      "Prob. trial success": "L",
+      "Serious safety events": "L",
+      "Time to approval": "H",
+      "Peak annual sales": "M",
+      "Patients reached at peak": "L",
+      "Cash runway preserved": "H",
+      "Data quality/consistency": "L",
+      "Enrollment rate": "H",
+      "Cost/patient-year": "M"
     },
     "Competitor trajectory": {
-      "Program NPV": "H", "Prob. trial success": "L", "Serious safety events": "N", "Time to approval": "L",
-      "Peak annual sales": "H", "Patients reached at peak": "H", "Cash runway preserved": "N", "Data quality/consistency": "N",
-      "Enrollment rate": "M", "Cost/patient-year": "N"
+      "Program NPV": "H",
+      "Prob. trial success": "L",
+      "Serious safety events": "N",
+      "Time to approval": "L",
+      "Peak annual sales": "H",
+      "Patients reached at peak": "H",
+      "Cash runway preserved": "N",
+      "Data quality/consistency": "N",
+      "Enrollment rate": "M",
+      "Cost/patient-year": "N"
     },
     "Payer/reimbursement policy": {
-      "Program NPV": "H", "Prob. trial success": "N", "Serious safety events": "N", "Time to approval": "L",
-      "Peak annual sales": "H", "Patients reached at peak": "H", "Cash runway preserved": "L", "Data quality/consistency": "L",
-      "Enrollment rate": "N", "Cost/patient-year": "N"
+      "Program NPV": "H",
+      "Prob. trial success": "N",
+      "Serious safety events": "N",
+      "Time to approval": "L",
+      "Peak annual sales": "H",
+      "Patients reached at peak": "H",
+      "Cash runway preserved": "L",
+      "Data quality/consistency": "L",
+      "Enrollment rate": "N",
+      "Cost/patient-year": "N"
     },
     "Physician prescribing behavior": {
-      "Program NPV": "H", "Prob. trial success": "N", "Serious safety events": "N", "Time to approval": "N",
-      "Peak annual sales": "H", "Patients reached at peak": "H", "Cash runway preserved": "N", "Data quality/consistency": "L",
-      "Enrollment rate": "L", "Cost/patient-year": "N"
+      "Program NPV": "H",
+      "Prob. trial success": "N",
+      "Serious safety events": "N",
+      "Time to approval": "N",
+      "Peak annual sales": "H",
+      "Patients reached at peak": "H",
+      "Cash runway preserved": "N",
+      "Data quality/consistency": "L",
+      "Enrollment rate": "L",
+      "Cost/patient-year": "N"
     },
     "Manufacturing/supply reliability": {
-      "Program NPV": "M", "Prob. trial success": "N", "Serious safety events": "L", "Time to approval": "M",
-      "Peak annual sales": "M", "Patients reached at peak": "M", "Cash runway preserved": "M", "Data quality/consistency": "L",
-      "Enrollment rate": "L", "Cost/patient-year": "L"
+      "Program NPV": "M",
+      "Prob. trial success": "N",
+      "Serious safety events": "L",
+      "Time to approval": "M",
+      "Peak annual sales": "M",
+      "Patients reached at peak": "M",
+      "Cash runway preserved": "M",
+      "Data quality/consistency": "L",
+      "Enrollment rate": "L",
+      "Cost/patient-year": "L"
     }
   }
 }
