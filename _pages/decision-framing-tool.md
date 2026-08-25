@@ -6,19 +6,20 @@ date: 2026-08-11
 ---
 
 {% raw %}
-<p>When framing a problem, be sure to follow the guidelines on <a href="/framingproblems/#the-framing-process">The Framing Process</a>, paying special attention to identifying the scope of your decision problem, such as who (or what) is making decisions.</p>
+<p>When framing a problem, be sure to follow the guidelines given on <a href="/framingproblems/#the-framing-process">The Framing Process</a>.</p>
 
-<p>The decision framing tool has three parts:</p>
+<p>The decision framing tool has four parts:</p>
 <ol>
+  <li><a href="#scope-of-the-decision-frame"><strong>Scope of the decision frame</strong></a> — identify the perspective of who is making the decision.</li>
   <li><a href="#metrics-pyramid-tool"><strong>Metrics pyramid tool</strong></a> — prioritize your performance metrics into a four-level pyramid.</li>
   <li><a href="#decision-prioritization-tool"><strong>Decision prioritization tool</strong></a> — score each decision's impact on each pyramid-ordered metric (H / M / L / N), then reorder the decisions by their impact on the most important metrics.</li>
   <li><a href="#uncertainty-prioritization-tool"><strong>Uncertainty prioritization tool</strong></a> — same idea, applied to the uncertainties that affect performance.</li>
 </ol>
-<p>All the information you provide remains private. The <em>File</em> menu below lets you keep multiple named documents, and each contains the pyramid plus both matrices. If you would like to share your framing, hit <em>Copy URL</em> and paste it in an email — anyone with the link can view your framing.</p>
+<p>All the information you provide remains private. The <em>File</em> menu below lets you keep multiple named documents, and each contains the scope, the pyramid, and both matrices. If you would like to share your framing, hit <em>Copy URL</em> and paste it in an email — anyone with the link can view your framing.</p>
 
 <p style="background:#faf5e6; border-left: 4px solid #c9621e; padding: 10px 16px; border-radius: 3px;">
   <strong>New — <a href="#ask-professor-powell">Ask Professor Powell</a> to draft your framing.</strong>
-  Skip to the bottom to describe your problem in a sentence or two (or drop in a case file, or a URL) and get all three tools filled in — you edit and refine from there.
+  Skip to the bottom to describe your problem in a sentence or two (or drop in a case file, or a URL) and get all four parts filled in — you edit and refine from there.
 </p>
 
 <!-- Admin bar — hidden unless the URL contains ?admin=1. Gives library-owner
@@ -74,6 +75,11 @@ date: 2026-08-11
 </div>
 
 <h2 id="fp-doc-title" class="fp-doc-title" aria-live="polite"></h2>
+
+<h2 id="scope-of-the-decision-frame" class="fp-section-h2">Scope of the decision frame</h2>
+<p>A decision frame has to reflect the perspective of a decision maker, which can be a person, a team, a division of a company, or a piece of software. This perspective should help define (and limit) the set of decisions to those that are under control of the decision maker. Identify this perspective in the box below, which can be a name, a title, the name of a group, or the name of a software package. Or, simply provide a short summary that communicates the decision-maker's perspective.</p>
+<input type="text" id="fp-scope-input" class="fp-scope-input" spellcheck="true"
+  placeholder="e.g. Regional dispatch manager  ·  VP of operations, weekly planning cycle  ·  Autonomous routing engine" />
 
 <h2 id="metrics-pyramid-tool" class="fp-section-h2">Metrics pyramid tool</h2>
 <p>Metrics quantify what you want to achieve. They come in three flavors: metrics to be maximized or minimized, along with targets you want to hit, and limits where you specify a minimum or maximum for a metric. The top metric should be in the first category.</p>
@@ -608,6 +614,22 @@ date: 2026-08-11
   .fp-chip:hover { background: #faf5e6; }
   .fp-chip.fp-dragging { opacity: 0.4; cursor: grabbing; }
 
+  /* Scope-of-the-decision-frame input — sits at the top of the tool,
+     one-line text field that spans the content width. Long entries scroll
+     horizontally inside the input (native input[type=text] behavior). */
+  .fp-scope-input {
+    width: 100%; box-sizing: border-box;
+    padding: 8px 12px;
+    font-family: inherit; font-size: 0.95rem;
+    border: 1px solid #c9b891; border-radius: 4px;
+    background: #fff; color: #333;
+    margin: 8px 0 24px 0;
+  }
+  .fp-scope-input:focus {
+    outline: none; border-color: #c9621e;
+    box-shadow: 0 0 0 2px rgba(201, 98, 30, 0.15);
+  }
+
   /* Chip flavor colors — cycled by clicking a chip in the metrics list
      or pyramid. Legend swatches share these selectors so the legend and
      the live chips always stay in sync. */
@@ -827,6 +849,7 @@ date: 2026-08-11
   //   matrix       : { decision: { metric: 'H'|'M'|'L'|'N' } } —
   //                  missing = blank (not yet scored).
   let state = {
+    scope: '',
     metrics: [], assignments: {}, chipColors: {},
     decisions: [], matrix: {},
     uncertainties: [], uMatrix: {},
@@ -869,6 +892,7 @@ date: 2026-08-11
   // links or files saved before newer fields existed).
   function normalizeState(s) {
     return {
+      scope:         (s && typeof s.scope === 'string')  ? s.scope         : '',
       metrics:       Array.isArray(s && s.metrics)       ? s.metrics       : [],
       assignments:   (s && s.assignments)                ? s.assignments   : {},
       chipColors:    (s && s.chipColors)                 ? s.chipColors    : {},
@@ -960,6 +984,7 @@ date: 2026-08-11
   }
   function snapshotForSave() {
     return {
+      scope: state.scope,
       metrics: state.metrics,
       assignments: state.assignments,
       chipColors: state.chipColors,
@@ -1020,6 +1045,7 @@ date: 2026-08-11
     if (!file) return;
     state = normalizeState(file);
     setCurrentName(name);
+    $('#fp-scope-input').value         = state.scope || '';
     $('#fp-metrics-input').value       = state.metrics.join('\n');
     $('#fp-decisions-input').value     = state.decisions.join('\n');
     $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -1150,6 +1176,7 @@ date: 2026-08-11
         setCurrentName(null);
         const base = (file.name || 'file').replace(/\.json$/i, '');
         setDocTitle('Imported — ' + base);
+        $('#fp-scope-input').value         = state.scope || '';
         $('#fp-metrics-input').value       = state.metrics.join('\n');
         $('#fp-decisions-input').value     = state.decisions.join('\n');
         $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -1296,6 +1323,7 @@ date: 2026-08-11
       state = normalizeState(data);
       setCurrentName(null);   // no save-target → next Save prompts Save as…
       setDocTitle(ex.title || ex.file);   // but DO show the example name in the banner
+      $('#fp-scope-input').value         = state.scope || '';
       $('#fp-metrics-input').value       = state.metrics.join('\n');
       $('#fp-decisions-input').value     = state.decisions.join('\n');
       $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -2205,10 +2233,15 @@ date: 2026-08-11
       uMatrix: norm(f.uMatrix, uncertainties),
     };
   }
-  function applyFraming(framing, sourceLabel) {
+  function applyFraming(framing, sourceLabel, scopeText) {
     state = normalizeState(coerceFraming(framing));
+    // The bot's own scope input is the authoritative scope for the
+    // generated framing — propagate it into the top-level scope box so
+    // the user doesn't have to re-type it above.
+    if (scopeText && !state.scope) state.scope = scopeText;
     setCurrentName(null);                                  // AI drafts have no save-target
     setDocTitle('AI draft — ' + (sourceLabel || 'Ask Professor Powell'));
+    $('#fp-scope-input').value         = state.scope || '';
     $('#fp-metrics-input').value       = state.metrics.join('\n');
     $('#fp-decisions-input').value     = state.decisions.join('\n');
     $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -2250,7 +2283,7 @@ date: 2026-08-11
       const sourceLabel = file ? file.name
                               : url ? url
                               : (desc.length > 60 ? desc.slice(0, 57) + '…' : desc);
-      applyFraming(data.framing, sourceLabel);
+      applyFraming(data.framing, sourceLabel, scope);
       setBotStatus('Draft ready — scroll up to review and edit. Use File → Save as… to keep it.', '');
     } catch (err) {
       console.error('Framing request failed:', err);
@@ -2272,11 +2305,16 @@ date: 2026-08-11
   document.addEventListener('DOMContentLoaded', () => {
     initAdmin();                                         // reveals admin bar if ?admin=1
     load();
+    $('#fp-scope-input').value         = state.scope || '';
     $('#fp-metrics-input').value       = state.metrics.join('\n');
     $('#fp-decisions-input').value     = state.decisions.join('\n');
     $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
     renderCurrentFileLabel();
     $$('.fp-drop-zone').forEach(wireDropZone);
+    $('#fp-scope-input').addEventListener('input', () => {
+      state.scope = $('#fp-scope-input').value;
+      autoSave();
+    });
     $('#fp-metrics-input').addEventListener('input',       syncMetricsFromTextarea);
     $('#fp-decisions-input').addEventListener('input',     () => syncListFromTextarea('decision'));
     $('#fp-uncertainties-input').addEventListener('input', () => syncListFromTextarea('uncertainty'));
@@ -2291,6 +2329,7 @@ date: 2026-08-11
       };
       setCurrentName(null);
       setDocTitle(null);   // wipe the banner too
+      $('#fp-scope-input').value         = '';
       $('#fp-metrics-input').value       = '';
       $('#fp-decisions-input').value     = '';
       $('#fp-uncertainties-input').value = '';
@@ -2349,6 +2388,7 @@ date: 2026-08-11
       };
       setCurrentName(null);
       setDocTitle(null);   // also wipe the banner
+      $('#fp-scope-input').value         = '';
       $('#fp-metrics-input').value       = '';
       $('#fp-decisions-input').value     = '';
       $('#fp-uncertainties-input').value = '';
