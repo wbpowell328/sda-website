@@ -609,7 +609,11 @@ date: 2026-08-11
     word-break: break-word;
     text-align: center;
   }
-  .fp-chip:hover { background: #faf5e6; }
+  /* Only tint the background on hover for UNCOLORED chips. A colored
+     chip keeps its flavor color and only gets a subtle brightness dip
+     on hover — otherwise the tan hover would mask the new color the
+     click just applied until the cursor left the chip. */
+  .fp-chip:not([data-color]):hover { background: #faf5e6; }
   .fp-chip.fp-dragging { opacity: 0.4; cursor: grabbing; }
 
   /* Scope-of-the-decision-frame input — sits at the top of the tool,
@@ -651,7 +655,7 @@ date: 2026-08-11
   .fp-legend-swatch[data-color="limit-ceiling"] {
     background: #efcdca; color: #6c2e2a; border-color: #cfaba7;
   }
-  .fp-chip[data-color]:hover { filter: brightness(0.95); background: inherit; }
+  .fp-chip[data-color]:hover { filter: brightness(0.95); }
 
   /* Legend for the chip colors — lives inside the Metrics panel, right
      below the textarea. Two rows: max / min / target on top, then
