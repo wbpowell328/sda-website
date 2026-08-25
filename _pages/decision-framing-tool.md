@@ -1240,7 +1240,12 @@ date: 2026-08-11
   const EXAMPLES_BASE = '/assets/framing-examples/';
   async function fetchExamplesManifest() {
     try {
-      const resp = await fetch(EXAMPLES_BASE + 'index.json', { cache: 'no-cache' });
+      // Cache-bust: GitHub Pages sets Cache-Control: max-age=600 on
+      // static assets, and cache:'no-cache' doesn't reliably force CDN
+      // revalidation quickly enough after an admin Publish/Update. A
+      // per-load query param makes every request unique.
+      const bust = new Date().getTime();
+      const resp = await fetch(EXAMPLES_BASE + 'index.json?t=' + bust, { cache: 'reload' });
       if (!resp.ok) return [];
       const parsed = await resp.json();
       return Array.isArray(parsed && parsed.examples) ? parsed.examples : [];
@@ -1319,7 +1324,8 @@ date: 2026-08-11
   }
   async function loadPublicExample(ex) {
     try {
-      const resp = await fetch(EXAMPLES_BASE + ex.file, { cache: 'no-cache' });
+      const bust = new Date().getTime();
+      const resp = await fetch(EXAMPLES_BASE + ex.file + '?t=' + bust, { cache: 'reload' });
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       const data = await resp.json();
       state = normalizeState(data);
