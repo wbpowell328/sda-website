@@ -1,4 +1,5 @@
 {
+  "scope": "Regional manager",
   "metrics": [
     "Contribution/visit",
     "Recurring customer rate",
@@ -6,10 +7,16 @@
     "Completion rate"
   ],
   "assignments": {
-    "Contribution/visit":      1,
+    "Contribution/visit": 1,
     "Recurring customer rate": 2,
-    "Cleaner retention":       2,
-    "Completion rate":         3
+    "Cleaner retention": 2,
+    "Completion rate": 3
+  },
+  "chipColors": {
+    "Contribution/visit": "max",
+    "Recurring customer rate": "limit-floor",
+    "Cleaner retention": "target",
+    "Completion rate": "target"
   },
   "decisions": [
     "Launch geography",
