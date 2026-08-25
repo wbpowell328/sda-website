@@ -1323,8 +1323,14 @@ date: 2026-08-11
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       const data = await resp.json();
       state = normalizeState(data);
-      setCurrentName(null);   // no save-target → next Save prompts Save as…
-      setDocTitle(ex.title || ex.file);   // but DO show the example name in the banner
+      // Treat the loaded example as a named framing so that plain Save
+      // (after the user edits) writes to the private library under the
+      // example's title, rather than falling through to Save-as… and
+      // forcing a rename. This creates a private copy on first Save —
+      // the shared public JSON file in the repo is not touched. If a
+      // private entry with the same title already exists, Save will
+      // overwrite it silently (that's the standard Save contract).
+      setCurrentName(ex.title || ex.file);
       $('#fp-scope-input').value         = state.scope || '';
       $('#fp-metrics-input').value       = state.metrics.join('\n');
       $('#fp-decisions-input').value     = state.decisions.join('\n');
