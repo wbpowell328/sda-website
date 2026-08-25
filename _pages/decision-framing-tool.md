@@ -1331,6 +1331,9 @@ date: 2026-08-11
       // private entry with the same title already exists, Save will
       // overwrite it silently (that's the standard Save contract).
       setCurrentName(ex.title || ex.file);
+      // Remember the manifest's description so a later Publish of edits
+      // can pre-fill it even if the public entry was deleted first.
+      if (ex.description) rememberPublishDescription(ex.title || ex.file, ex.description);
       $('#fp-scope-input').value         = state.scope || '';
       $('#fp-metrics-input').value       = state.metrics.join('\n');
       $('#fp-decisions-input').value     = state.decisions.join('\n');
@@ -1359,6 +1362,27 @@ date: 2026-08-11
   const ADMIN_REPO_NAME = 'sda-website';
   const ADMIN_MANIFEST_PATH = 'assets/framing-examples/index.json';
   const ADMIN_FILES_DIR = 'assets/framing-examples';
+  // Remember one-line public-library descriptions across sessions/deletes so
+  // the Publish prompt can pre-fill them. Keyed by the framing's title.
+  // Populated when a public example is loaded (from its manifest entry) and
+  // updated on every successful publish/update.
+  const PUBLISH_DESC_KEY = 'framing_publish_desc_v1';
+  function readPublishDescCache() {
+    try { const raw = localStorage.getItem(PUBLISH_DESC_KEY); return raw ? (JSON.parse(raw) || {}) : {}; }
+    catch (_) { return {}; }
+  }
+  function rememberPublishDescription(title, description) {
+    if (!title) return;
+    try {
+      const map = readPublishDescCache();
+      map[title] = description || '';
+      localStorage.setItem(PUBLISH_DESC_KEY, JSON.stringify(map));
+    } catch (_) { /* ignore */ }
+  }
+  function recallPublishDescription(title) {
+    if (!title) return '';
+    return readPublishDescCache()[title] || '';
+  }
   const ADMIN_PAT_HELP_URL =
     'https://github.com/settings/personal-access-tokens/new';
   let adminMode = false;
@@ -1549,9 +1573,11 @@ date: 2026-08-11
             flashStatus('');
             return;
           }
-        } else {
-          existingEntry = null;
         }
+        // NOTE: on Cancel we intentionally keep existingEntry set so its
+        // description can still pre-fill the description prompt below —
+        // the user chose a separate copy but likely still wants the same
+        // description to seed from.
       }
 
       if (!isUpdate) {
@@ -1562,11 +1588,21 @@ date: 2026-08-11
         filename = slug + '.json';
       }
 
-      // Description prompt — pre-fill with existing description when
-      // updating so the user doesn't have to retype it.
+      // Description prompt — pre-fill priority:
+      //   1. the matching manifest entry's current description (update path),
+      //   2. a remembered description under the same title (survives deletes
+      //      and cross-session use), or
+      //   3. a remembered description under the private name (in case the
+      //      title was tweaked in the title prompt above), or
+      //   4. empty.
+      const descriptionPrefill =
+        (existingEntry && existingEntry.description) ||
+        recallPublishDescription(trimmedTitle) ||
+        recallPublishDescription(privateName) ||
+        '';
       const description = window.prompt(
         'One-line description (shown under the title in the library):',
-        (existingEntry && existingEntry.description) || ''
+        descriptionPrefill
       );
       if (description == null) return;
 
@@ -1616,6 +1652,11 @@ date: 2026-08-11
         (isUpdate ? 'framing examples: refresh manifest for ' : 'framing examples: add ') + filename,
         manifest.sha
       );
+
+      // Cache the description under the actual published title so the next
+      // Publish of the same case can pre-fill it, even if the public entry
+      // is later deleted and re-published from scratch.
+      rememberPublishDescription(trimmedTitle, description.trim());
 
       flashStatus(
         (isUpdate ? 'Updated' : 'Published') +
