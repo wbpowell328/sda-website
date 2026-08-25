@@ -6,8 +6,6 @@ date: 2026-08-11
 ---
 
 {% raw %}
-<p>When framing a problem, be sure to follow the guidelines given on <a href="/framingproblems/#the-framing-process">The Framing Process</a>.</p>
-
 <p>The decision framing tool has four parts:</p>
 <ol>
   <li><a href="#scope-of-the-decision-frame"><strong>Scope of the decision frame</strong></a> — identify the perspective of who is making the decision.</li>
@@ -15,6 +13,7 @@ date: 2026-08-11
   <li><a href="#decision-prioritization-tool"><strong>Decision prioritization tool</strong></a> — score each decision's impact on each pyramid-ordered metric (H / M / L / N), then reorder the decisions by their impact on the most important metrics.</li>
   <li><a href="#uncertainty-prioritization-tool"><strong>Uncertainty prioritization tool</strong></a> — same idea, applied to the uncertainties that affect performance.</li>
 </ol>
+<p>When framing a problem, be sure to follow the guidelines given on <a href="/framingproblems/#the-framing-process">The Framing Process</a>.</p>
 <p>All the information you provide remains private. The <em>File</em> menu below lets you keep multiple named documents, and each contains the scope, the pyramid, and both matrices. If you would like to share your framing, hit <em>Copy URL</em> and paste it in an email — anyone with the link can view your framing.</p>
 
 <p style="background:#faf5e6; border-left: 4px solid #c9621e; padding: 10px 16px; border-radius: 3px;">
@@ -189,15 +188,14 @@ date: 2026-08-11
 
 <div class="fp-bot-card">
   <div class="fp-bot-row">
+    <label for="fp-bot-scope" class="fp-bot-label">Start by describing the decision maker so we know the scope of the problem:</label>
+    <textarea id="fp-bot-scope" rows="2" spellcheck="true"
+      placeholder="e.g. A regional dispatch manager at a mid-sized trucking company with a weekly planning horizon. Or: The head of operations, quarterly cycle. Or: An autonomous dispatch system routing trucks in real time."></textarea>
+  </div>
+  <div class="fp-bot-row">
     <label for="fp-bot-desc" class="fp-bot-label">Describe your problem</label>
     <textarea id="fp-bot-desc" rows="4" spellcheck="true"
       placeholder="e.g. A regional pharmacy chain has to decide, each week, how much of a slow-moving cold-and-flu medication to keep in each of 40 stores given uncertain seasonal demand, expiring inventory, and a shared central warehouse..."></textarea>
-  </div>
-  <div class="fp-bot-row">
-    <label for="fp-bot-scope" class="fp-bot-label">Who (or what) is making these decisions? <span style="font-weight:400; color:#7a6a55;">(optional but strongly recommended — sets the scope)</span></label>
-    <textarea id="fp-bot-scope" rows="2" spellcheck="true"
-      placeholder="e.g. A regional dispatch manager at a mid-sized trucking company with a weekly planning horizon. Or: The head of operations, quarterly cycle. Or: An autonomous dispatch system routing trucks in real time."></textarea>
-    <p class="fp-muted" style="margin: 4px 0 0 0;">Describe the decision-maker's role, altitude in the org, and planning horizon. The bot uses this to filter out decisions/metrics/uncertainties that belong to other roles above or below them. <strong>This information is needed even if you upload the problem description from an external source.</strong></p>
   </div>
 
   <div class="fp-bot-row-inline">
