@@ -58,25 +58,27 @@ Feel free to download any of the cases for use in classes or simply to obtain a 
 
 ### Decision framing questions {#framing-questions}
 
-Each of the cases below contains a set of questions that challenge students to frame the case by identifying performance metrics, types of decisions, and types of uncertainties. These questions, listed below, are the same for each case. There are links to relevant supporting information on the SDA website.
+Each of the cases below contains the same set of decision framing questions, so students can practice the framing process by identifying the decision maker's scope, performance metrics, types of decisions, and sources of uncertainty. Use the [decision framing tool](/decision-framing-tool/) to help answer them.
 
-1. Identify the different metrics that can be used to evaluate every aspect of the performance of the system. Organize these into a pyramid to indicate the relative importance, following the style given [here](/framingproblems/#performance-metrics).
+1. Identify and describe the responsibilities of the decision maker. This should set the scope of the problem.
 
-2. What are the types of decisions? Use the [list of decision types here as a guide](/decisionsdecisions/#types-of-decision-settings), illustrated by the [applications here](/decisionsdecisions/#from-apps-to-types).
+2. Use the [metrics pyramid tool](/decision-framing-tool/#metrics-pyramid-tool) to identify and prioritize the different performance metrics. Click on the oval holding the metric to identify whether it is a metric to be maximized (green), minimized (red), a target that is a floor (light green) or a ceiling (light red), or finally a target (purple).
 
-3. Use the [decision framing tool](/decision-framing-tool/) to identify the decisions that have the greatest impact on the most important metrics.
+3. Use the [decision prioritization tool](/decision-framing-tool/#decision-prioritization-tool) to first list the different types of decisions (use the [types of decisions](/decisionsdecisions/#types-of-decision-settings) as a guide). These will then populate the rows of the matrix to the right, where the columns are the performance metrics sorted left to right by the priority in the pyramid above. Click on each cell to indicate if the impact of the decision on each metric is high (red), medium (orange), low (yellow) or none (white).
 
-4. What are the different sources of uncertainty? Use the [12 categories of uncertainty here as a guide](/modeling-uncertainty/#categories).
+4. You can grab the handle (three bars) farthest to the left on each row to move it up or down. Sort the rows so that the decisions with the greatest impact on the most important metrics are toward the top. The cells in the upper left-hand corner should have the greatest concentration of red and orange cells. At this point identify the decisions that should receive the most attention in your study. If you do not have any decisions with a medium or high impact on the most important metrics, revisit your list of decisions.
 
-5. Repeat the exercise in (3) using the impact matrix for uncertainties:
+5. Repeat the process to list and prioritize the uncertainties. Use the [categories of uncertainty](/modeling-uncertainty/#categories) to help you identify these.
+
+6. It is important to differentiate uncertainties that can be evaluated on average, or as risk events:
    - a) Which sources of uncertainty would be captured using average performance over time?
    - b) Which sources of uncertainty represent forms of risk that are not properly captured using averages?
 
-6. Choose the single decision that seems to have the highest impact on the most important metric.
+7. Choose the single decision that seems to have the highest impact on the most important metric.
    - a) What approach do you think you would use to make this decision?
-   - b) What data appears to be necessary to make this decision, including the calculation of any performance metrics where the decision would have a high or medium impact?
+   - b) What data appears to be necessary to make this decision, including the calculation of any performance metrics where the decision would have a high or medium impact.
 
-7. Using the same decision you identified in (6), identify the people, departments, groups or organizations that you would need to work with to implement the decision.
+8. Using the same decision you identified in (7), identify the people, departments, groups or organizations that you would need to work with to implement the decision.
 
 ### List of decision framing cases {#list-of-cases}
 
