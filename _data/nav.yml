@@ -70,14 +70,14 @@
       url: /teaching-courses/
     - title: Decision framing
       url: /teaching-framing/
-    - title: Supervising theses
-      url: /supervising-theses/
     - title: Books
       url: /teaching-books/
     - title: SDA video modules
       url: /sda-video-modules/
-    - title: Games
+    - title: Learning While Doing Game
       url: /learning-while-doing/
+    - title: Supervising theses
+      url: /supervising-theses/
 
 - section: Extra materials
   items:
