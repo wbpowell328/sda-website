@@ -232,7 +232,7 @@ const FRAMING_TOOL = {
       metrics: {
         type: 'array',
         items: { type: 'string' },
-        description: 'Short performance metric names (2–4 words), ordered by pyramid tier (Tier 1 first). Length must match the requested size: small=4, medium=6, large=10.',
+        description: 'Short performance metric names (2–4 words), ordered by pyramid tier (Tier 1 first). Length must match the requested size: small=4, medium=6, large=10, max=20.',
       },
       assignments: {
         type: 'object',
@@ -242,7 +242,7 @@ const FRAMING_TOOL = {
       decisions: {
         type: 'array',
         items: { type: 'string' },
-        description: 'Decisions the decision-maker controls, ordered most-impactful first. Length must match: small=3, medium=5, large=8.',
+        description: 'Decisions the decision-maker controls, ordered most-impactful first. Length must match: small=3, medium=5, large=8, max=20.',
       },
       matrix: {
         type: 'object',
@@ -255,7 +255,7 @@ const FRAMING_TOOL = {
       uncertainties: {
         type: 'array',
         items: { type: 'string' },
-        description: 'External uncertain factors, ordered most-impactful first. Length must match: small=3, medium=5, large=8.',
+        description: 'External uncertain factors, ordered most-impactful first. Length must match: small=3, medium=5, large=8, max=20.',
       },
       uMatrix: {
         type: 'object',
@@ -465,7 +465,7 @@ async function urlToContentBlock(url) {
 
 function sizeInstructions(size) {
   const s = String(size || 'medium').toLowerCase();
-  const spec = { small: [4, 3, 3], medium: [6, 5, 5], large: [10, 8, 8] };
+  const spec = { small: [4, 3, 3], medium: [6, 5, 5], large: [10, 8, 8], max: [20, 20, 20] };
   const [m, d, u] = spec[s] || spec.medium;
   return { size: s in spec ? s : 'medium', metrics: m, decisions: d, uncertainties: u };
 }
@@ -637,7 +637,10 @@ app.post('/framing', framingLimiter, (req, res) => {
 
       const response = await client.messages.create({
         model: FRAMING_MODEL,
-        max_tokens: 4096,
+        // Bumped from 4096 so a "max" size framing (20/20/20) doesn't
+        // truncate mid-generation — its JSON output (two 20x20 H/M/L/N
+        // matrices plus the lists) can exceed 4k output tokens.
+        max_tokens: 8192,
         system: framingPrompt,
         tools: [FRAMING_TOOL],
         tool_choice: { type: 'tool', name: FRAMING_TOOL.name },

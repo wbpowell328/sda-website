@@ -39,8 +39,9 @@ Time horizon matters too. A "weekly planner" doesn't decide today's routing (fro
 - **small**  → 4 metrics, 3 decisions, 3 uncertainties
 - **medium** → 6 metrics, 5 decisions, 5 uncertainties
 - **large**  → 10 metrics, 8 decisions, 8 uncertainties
+- **max**    → 20 metrics, 20 decisions, 20 uncertainties
 
-Do NOT exceed these counts. If forced to choose, prefer the metric/decision/uncertainty that matters MOST to the decision-maker's real trade-offs.
+Do NOT exceed these counts. If forced to choose, prefer the metric/decision/uncertainty that matters MOST to the decision-maker's real trade-offs. At the **max** size the goal is exhaustive coverage — reach 20 by including the borderline items you would otherwise trim (secondary metrics, edge-case decisions, low-probability uncertainties) rather than duplicating existing entries under different names.
 
 ## Pyramid tier assignments
 

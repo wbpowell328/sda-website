@@ -216,6 +216,7 @@ date: 2026-08-11
         <option value="small">Small — 4 metrics, 3 decisions, 3 uncertainties</option>
         <option value="medium" selected>Medium — 6 metrics, 5 decisions, 5 uncertainties</option>
         <option value="large">Large — 10 metrics, 8 decisions, 8 uncertainties</option>
+        <option value="max">Max — 20 metrics, 20 decisions, 20 uncertainties</option>
       </select>
     </label>
     <div class="fp-bot-actions">
