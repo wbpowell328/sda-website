@@ -68,7 +68,7 @@ Each of the cases below contains the same set of decision framing questions, so 
 
 4. You can grab the handle (three bars) farthest to the left on each row to move it up or down. Sort the rows so that the decisions with the greatest impact on the most important metrics are toward the top. The cells in the upper left-hand corner should have the greatest concentration of red and orange cells. At this point identify the decisions that should receive the most attention in your study. If you do not have any decisions with a medium or high impact on the most important metrics, revisit your list of decisions.
 
-5. Repeat the process to list and prioritize the uncertainties. Use the [categories of uncertainty](/modeling-uncertainty/#categories) to help you identify these.
+5. Repeat the process to list and prioritize the uncertainties using the [uncertainty prioritization tool](/decision-framing-tool/#uncertainty-prioritization-tool). Use the [categories of uncertainty](/modeling-uncertainty/#categories) to help you identify these.
 
 6. It is important to differentiate uncertainties that can be evaluated on average, or as risk events:
    - a) Which sources of uncertainty would be captured using average performance over time?
