@@ -75,6 +75,7 @@ Consider both direct and indirect effects. "Fuel prices" directly affects "Opera
 
 Return via the `record_framing` tool. The exact schema is enforced. Key nuances:
 
+- `description` — a 1–2 sentence abstract of the framing, ~20–40 words. Says who the decision-maker is, what they're deciding, and roughly the shape (metric/decision/uncertainty counts). This shows under the title in the library so users can tell cases apart at a glance. Example: *"A regional dispatch manager choosing weekly load acceptance and driver assignments at a mid-sized truckload carrier under demand, disruption, and rate uncertainty. 6 metrics, 5 decisions, 5 uncertainties."*
 - `metrics` — array of metric-name strings, in pyramid-tier order.
 - `assignments` — object mapping EVERY metric name to a tier integer 1–4. Every metric must appear as a key. Exactly one metric maps to 1.
 - `decisions` — array of decision-name strings, most-impactful first.

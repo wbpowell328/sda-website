@@ -2403,12 +2403,15 @@ date: 2026-08-11
     };
 
     return {
+      scope:       (typeof f.scope === 'string')       ? f.scope       : '',
+      description: (typeof f.description === 'string') ? f.description : '',
       metrics,
       assignments,
+      chipColors:  (f.chipColors && typeof f.chipColors === 'object') ? f.chipColors : {},
       decisions,
-      matrix: norm(f.matrix, decisions),
+      matrix:      norm(f.matrix, decisions),
       uncertainties,
-      uMatrix: norm(f.uMatrix, uncertainties),
+      uMatrix:     norm(f.uMatrix, uncertainties),
     };
   }
   function applyFraming(framing, sourceLabel, scopeText) {

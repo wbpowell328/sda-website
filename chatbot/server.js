@@ -229,6 +229,10 @@ const FRAMING_TOOL = {
   input_schema: {
     type: 'object',
     properties: {
+      description: {
+        type: 'string',
+        description: 'A 1–2 sentence abstract of the framed decision problem — who the decision-maker is, what they\'re deciding, and roughly the shape (e.g. "A regional dispatch manager choosing weekly load and driver assignments under demand and disruption uncertainty. 6 metrics, 5 decisions, 5 uncertainties."). Shown under the title in the library. Aim for 20–40 words.',
+      },
       metrics: {
         type: 'array',
         items: { type: 'string' },
@@ -289,6 +293,10 @@ const CREATE_FRAMING_LINK_TOOL = {
         type: 'string',
         description: 'Who or what makes these decisions — role + altitude in the org + planning horizon. Every item below must fit this decision-maker.',
       },
+      description: {
+        type: 'string',
+        description: 'A 1–2 sentence abstract of the framed decision problem — who the decision-maker is, what they\'re deciding, and roughly the shape (e.g. "A regional dispatch manager choosing weekly load and driver assignments under demand and disruption uncertainty. 6 metrics, 5 decisions, 5 uncertainties."). Shown under the title in the library. Aim for 20–40 words.',
+      },
       metrics: {
         type: 'array',
         items: { type: 'string' },
@@ -334,6 +342,7 @@ function encodeFramingToUrl(input) {
   // Coerce every field into the framing tool's state shape.
   const doc = {
     scope:         String((input && input.scope) || ''),
+    description:   String((input && input.description) || ''),
     metrics:       Array.isArray(input && input.metrics)       ? input.metrics       : [],
     assignments:   (input && input.assignments && typeof input.assignments === 'object') ? input.assignments : {},
     chipColors:    {},   // chatbot doesn't set metric flavors
