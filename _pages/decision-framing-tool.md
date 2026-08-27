@@ -139,7 +139,7 @@ date: 2026-08-11
     <textarea id="fp-decisions-input" spellcheck="true" placeholder="Set the price&#10;Choose a supplier&#10;Approve the design&#10;Schedule production"></textarea>
   </div>
   <div class="fp-panel fp-matrix-panel">
-    <h3>Impact matrix</h3>
+    <h3>Decision impact matrix</h3>
     <div class="fp-matrix-controls">
       <button type="button" class="fp-matrix-draft" data-kind="decision"
         title="Use the AI to fill in H/M/L/N for every cell based on your current metrics and decisions. Review carefully.">
@@ -167,7 +167,7 @@ date: 2026-08-11
     <textarea id="fp-uncertainties-input" spellcheck="true" placeholder="Demand volatility&#10;Supplier reliability&#10;Currency fluctuation&#10;Regulatory change"></textarea>
   </div>
   <div class="fp-panel fp-matrix-panel">
-    <h3>Impact matrix</h3>
+    <h3>Uncertainty impact matrix</h3>
     <div class="fp-matrix-controls">
       <button type="button" class="fp-matrix-draft" data-kind="uncertainty"
         title="Use the AI to fill in H/M/L/N for every cell based on your current metrics and uncertainties. Review carefully.">
