@@ -73,7 +73,10 @@ date: 2026-08-11
   </div>
 </div>
 
-<h2 id="fp-doc-title" class="fp-doc-title" aria-live="polite"></h2>
+<div id="fp-doc-banner" class="fp-doc-banner">
+  <h2 id="fp-doc-title" class="fp-doc-title" aria-live="polite"></h2>
+  <p id="fp-doc-description" class="fp-doc-description" hidden></p>
+</div>
 
 <h2 id="scope-of-the-decision-frame" class="fp-section-h2">Scope of the decision frame</h2>
 <p>A decision frame has to reflect the perspective of a decision maker, which can be a person, a team, a division of a company, or a piece of software. This perspective should help define (and limit) the set of decisions to those that are under control of the decision maker. Identify this perspective in the box below, which can be a name, a title, the name of a group, or the name of a software package. Or, simply provide a short summary that communicates the decision-maker's perspective.</p>
@@ -245,16 +248,20 @@ date: 2026-08-11
     display: inline-block; width: 1px; height: 24px; background: #d9c99d;
     margin: 0 4px;
   }
-  /* Document title — the currently loaded case's name, shown as a
-     workspace-wide header directly below the toolbar. Always
-     visible; when no named document is loaded the banner shows a
-     muted placeholder pointing at File > Open. */
-  .fp-doc-title {
+  /* Document banner — the currently loaded case's title (h2) and its
+     one-line description, shown as a workspace-wide header directly
+     below the toolbar. Always visible; when no named document is
+     loaded the banner shows a muted placeholder pointing at File >
+     Open. */
+  .fp-doc-banner {
     margin: 16px 0 8px 0;
     padding: 10px 16px;
     background: #faf5e6;
     border-left: 4px solid #c9621e;
     border-radius: 3px;
+  }
+  .fp-doc-title {
+    margin: 0;
     font-size: 1.15rem;
     font-weight: 700;
     color: #5a4a35;
@@ -262,6 +269,13 @@ date: 2026-08-11
   .fp-doc-title.fp-doc-title-empty {
     color: #a79974;
     font-weight: 500;
+    font-style: italic;
+  }
+  .fp-doc-description {
+    margin: 4px 0 0 0;
+    color: #7a6a55;
+    font-size: 0.93rem;
+    line-height: 1.4;
     font-style: italic;
   }
 
@@ -852,7 +866,7 @@ date: 2026-08-11
   //   matrix       : { decision: { metric: 'H'|'M'|'L'|'N' } } —
   //                  missing = blank (not yet scored).
   let state = {
-    scope: '',
+    scope: '', description: '',
     metrics: [], assignments: {}, chipColors: {},
     decisions: [], matrix: {},
     uncertainties: [], uMatrix: {},
@@ -895,8 +909,9 @@ date: 2026-08-11
   // links or files saved before newer fields existed).
   function normalizeState(s) {
     return {
-      scope:         (s && typeof s.scope === 'string')  ? s.scope         : '',
-      metrics:       Array.isArray(s && s.metrics)       ? s.metrics       : [],
+      scope:         (s && typeof s.scope === 'string')       ? s.scope        : '',
+      description:   (s && typeof s.description === 'string') ? s.description  : '',
+      metrics:       Array.isArray(s && s.metrics)            ? s.metrics      : [],
       assignments:   (s && s.assignments)                ? s.assignments   : {},
       chipColors:    (s && s.chipColors)                 ? s.chipColors    : {},
       decisions:     Array.isArray(s && s.decisions)     ? s.decisions     : [],
@@ -984,10 +999,20 @@ date: 2026-08-11
       el.textContent = 'No document loaded — use File > Open to load one, or Save as… to name the current work.';
       el.classList.add('fp-doc-title-empty');
     }
+    // Description sits just below the title inside the same banner.
+    // Hidden entirely when there's nothing to show (no doc, or a doc
+    // that hasn't had a description written yet).
+    const dEl = $('#fp-doc-description');
+    if (dEl) {
+      const showDesc = !!docTitle && !!state.description;
+      dEl.textContent = showDesc ? state.description : '';
+      dEl.hidden = !showDesc;
+    }
   }
   function snapshotForSave() {
     return {
       scope: state.scope,
+      description: state.description,
       metrics: state.metrics,
       assignments: state.assignments,
       chipColors: state.chipColors,
@@ -1000,22 +1025,43 @@ date: 2026-08-11
   }
   function saveFile() {
     if (!currentName) return saveAsFile();   // no current name → prompt
+    // First-Save-of-a-freshly-named-doc — if there's no description yet,
+    // prompt for a one-liner so the entry has an abstract in the library.
+    // Subsequent Saves don't ask again (description is already set).
+    if (!state.description) {
+      const desc = window.prompt(
+        'Short description for this decision (1–2 lines shown under the title in the library):',
+        ''
+      );
+      if (desc == null) return;   // cancelled
+      state.description = desc.trim();
+    }
     const files = readFiles();
     files[currentName] = snapshotForSave();
     writeFiles(files);
+    renderCurrentFileLabel();
     flashStatus('Saved to "' + currentName + '".');
   }
   function saveAsFile() {
     const suggested = currentName || '';
-    const raw = window.prompt('Save this pyramid as:', suggested);
+    const raw = window.prompt('Save this decision as:', suggested);
     if (raw == null) return;
     const name = raw.trim();
     if (!name) return;
     const files = readFiles();
     if (files[name] && !window.confirm('"' + name + '" already exists. Overwrite it?')) return;
+    // Description prompt (pre-fills with whatever's on the current state
+    // so a rename doesn't force re-typing the abstract).
+    const descRaw = window.prompt(
+      'Short description (1–2 lines shown under the title in the library):',
+      state.description || ''
+    );
+    if (descRaw == null) return;
+    state.description = descRaw.trim();
     files[name] = snapshotForSave();
     writeFiles(files);
     setCurrentName(name);
+    renderCurrentFileLabel();
     flashStatus('Saved as "' + name + '".');
   }
   // Duplicate — copy the current document under a new name that
@@ -1068,7 +1114,11 @@ date: 2026-08-11
   function listFiles() {
     const files = readFiles();
     return Object.keys(files)
-      .map(name => ({ name, savedAt: files[name].savedAt || null }))
+      .map(name => ({
+        name,
+        savedAt:     files[name].savedAt || null,
+        description: files[name].description || '',
+      }))
       .sort((a, b) => (b.savedAt || '').localeCompare(a.savedAt || ''));
   }
 
@@ -1090,7 +1140,7 @@ date: 2026-08-11
     if (!list) return;
     list.innerHTML = '';
     const entries = listFiles();
-    for (const { name, savedAt } of entries) {
+    for (const { name, savedAt, description } of entries) {
       const row = document.createElement('div');
       row.className = 'fp-file-row';
       const nameEl = document.createElement('span');
@@ -1101,6 +1151,14 @@ date: 2026-08-11
         meta.className = 'fp-file-meta';
         meta.textContent = fmtSavedAt(savedAt);
         nameEl.appendChild(meta);
+      }
+      if (description) {
+        const desc = document.createElement('span');
+        desc.className = 'fp-file-meta';
+        desc.style.display = 'block';
+        desc.style.marginLeft = '0';
+        desc.textContent = description;
+        nameEl.appendChild(desc);
       }
       const delBtn = document.createElement('button');
       delBtn.type = 'button';
@@ -1330,6 +1388,11 @@ date: 2026-08-11
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       const data = await resp.json();
       state = normalizeState(data);
+      // The manifest carries the authoritative description for public
+      // examples — use it in preference to whatever the JSON blob may
+      // (or may not) include, so a case that was published without a
+      // description in its JSON still gets the manifest's one-liner.
+      if (ex.description) state.description = ex.description;
       // Treat the loaded example as a named framing so that plain Save
       // (after the user edits) writes to the private library under the
       // example's title, rather than falling through to Save-as… and
@@ -1604,6 +1667,7 @@ date: 2026-08-11
       //   4. empty.
       const descriptionPrefill =
         (existingEntry && existingEntry.description) ||
+        state.description ||
         recallPublishDescription(trimmedTitle) ||
         recallPublishDescription(privateName) ||
         '';
