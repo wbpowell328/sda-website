@@ -536,7 +536,11 @@ app.post('/framing/matrix', framingLimiter, express.json({ limit: '256kb' }), as
 
     const response = await client.messages.create({
       model: FRAMING_MODEL,
-      max_tokens: 2048,
+      // Sized for a 20x20 matrix (max framing size). Each cell entry in
+      // the JSON is ~7-10 tokens once the metric name is repeated in the
+      // key, so 400 cells alone can push ~4000 output tokens; leaving
+      // headroom keeps large matrices from truncating mid-generation.
+      max_tokens: 8192,
       system: systemText,
       tools: [MATRIX_TOOL],
       tool_choice: { type: 'tool', name: MATRIX_TOOL.name },
@@ -637,10 +641,15 @@ app.post('/framing', framingLimiter, (req, res) => {
 
       const response = await client.messages.create({
         model: FRAMING_MODEL,
-        // Bumped from 4096 so a "max" size framing (20/20/20) doesn't
-        // truncate mid-generation — its JSON output (two 20x20 H/M/L/N
-        // matrices plus the lists) can exceed 4k output tokens.
-        max_tokens: 8192,
+        // Sized for a "max" framing (20 metrics x 20 decisions +
+        // 20 metrics x 20 uncertainties = 800 H/M/L/N cells) plus the
+        // scope, assignments, and list strings. Each cell entry is
+        // ~7-10 tokens (the metric name is repeated in every key), so
+        // both matrices together can approach 12k output tokens.
+        // Warren's initial "max" run of Aurora Motors got a decisions
+        // matrix but no uncertainties matrix at 8192 — bumping to give
+        // room for both matrices to complete.
+        max_tokens: 16384,
         system: framingPrompt,
         tools: [FRAMING_TOOL],
         tool_choice: { type: 'tool', name: FRAMING_TOOL.name },
