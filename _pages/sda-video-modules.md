@@ -53,7 +53,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image1.jpeg"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3><a href="https://youtu.be/kueaR15iGIM">My background</a></h3>
+    <h3><a href="https://tinyurl.com/SDAvideo1">My background</a></h3>
     <p><strong>Summary:</strong> Experience matters, and in this brief presentation I give a peek into my 40+ years of experience thinking about, working on, and implementing systems for solving a wide range of sequential decision problems.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> None<br />
@@ -67,7 +67,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image2.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3><a href="https://youtu.be/70NmogP-RDQ">History of research on sequential decision problems</a></h3>
+    <h3><a href="https://tinyurl.com/SDAvideo2">History of research on sequential decision problems</a></h3>
     <p><strong>Summary:</strong> This is a brief history starting with "reinforcement learning" circa 1900, up through its re-introduction in the 1950s, optimal control in the 1970s, modern reinforcement learning in the 1980s, and approximate dynamic programming in the 1990s.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> None<br />
@@ -81,7 +81,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image3.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3><a href="https://youtu.be/enabEbvwxCQ">Introduction to sequential decision problems</a></h3>
+    <h3><a href="https://tinyurl.com/SDAvideo3">Introduction to sequential decision problems</a></h3>
     <p><strong>Summary:</strong> A presentation of examples of the diversity of sequential decision problems, from the simple inventory problems to complex logistics problems, including an initial introduction to optimal learning problems.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> None<br />
@@ -95,7 +95,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image4.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3><a href="https://youtu.be/gpLzHwkgoFQ">Framing decision problems</a></h3>
+    <h3><a href="https://tinyurl.com/SDAvideo4">Framing decision problems</a></h3>
     <p><strong>Summary:</strong> This is the first step to understanding a sequential decision problem, which starts by identifying metrics, decisions and uncertainties.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> None<br />
@@ -109,7 +109,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image5.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3><a href="https://youtu.be/yhA3snlJI-8">The universal modeling framework (high level)</a></h3>
+    <h3><a href="https://tinyurl.com/SDAvideo5">The universal modeling framework (high level)</a></h3>
     <p><strong>Summary:</strong> This is how we model <em>any</em> sequential decision problem, consisting of five elements.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> Framing decision problems<br />
@@ -123,7 +123,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image6.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3><a href="https://youtu.be/AX7wxR4YES4">Estimation methods</a></h3>
+    <h3><a href="https://tinyurl.com/SDAvideo6">Estimation methods</a></h3>
     <p><strong>Summary:</strong> Modeling and solving sequential decision problems draws heavily on the use of estimation methods from machine learning. This is a high level overview.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> Universal modeling framework<br />
@@ -137,7 +137,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image7.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3><a href="https://youtu.be/Vl5hipcYtyo">Universal modeling framework (detailed)</a></h3>
+    <h3><a href="https://tinyurl.com/SDAvideo7">Universal modeling framework (detailed)</a></h3>
     <p><strong>Summary:</strong> I now step through the individual elements of the universal modeling framework.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> The universal modeling framework (high level)<br />
@@ -151,7 +151,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image8.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3><a href="https://youtu.be/YSCDfyu2Ry4">State variables</a></h3>
+    <h3><a href="https://tinyurl.com/SDAvideo8">State variables</a></h3>
     <p><strong>Summary:</strong> This module addresses the astonishing lack of understanding of state variables in various communities (applied probability, dynamic programming). State variables are fundamental to sequential decision problems.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> Universal modeling framework (detailed)<br />
@@ -165,7 +165,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image9.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3><a href="https://youtu.be/Eencb1XLT-Q">Designing policies</a></h3>
+    <h3><a href="https://tinyurl.com/SDAvideo9">Designing policies</a></h3>
     <p><strong>Summary:</strong> This is the first introduction to the four classes of policies.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> The universal modeling framework (high level)<br />
@@ -179,7 +179,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image10.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3><a href="https://youtu.be/VC24ZLEGYFI">Choosing policies</a></h3>
+    <h3><a href="https://tinyurl.com/SDAvideo10">Choosing policies</a></h3>
     <p><strong>Summary:</strong> Having presented all four classes of policies, we now tackle the question of actually choosing one (or a hybrid).</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> Designing policies<br />
@@ -193,7 +193,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image11.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3><a href="https://youtu.be/G-Sw7JKNdr0">Policy function approximations</a></h3>
+    <h3><a href="https://tinyurl.com/SDAvideo11">Policy function approximations</a></h3>
     <p><strong>Summary:</strong> These are analytical functions that map states to actions, without an imbedded optimization problem.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> Designing policies, Choosing policies<br />
@@ -207,7 +207,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image12.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3><a href="https://youtu.be/LY2ATnP-vSw">Cost function approximations</a></h3>
+    <h3><a href="https://tinyurl.com/SDAvideo12">Cost function approximations</a></h3>
     <p><strong>Summary:</strong> We introduce the powerful idea of using parameterized versions of deterministic optimization models that are tuned to work well over time.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> Policy function approximations; The universal modeling framework<br />
@@ -221,7 +221,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image13.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3><a href="https://youtu.be/OLt_yd-Nmk4">Value function approximations I — Introduction to dynamic programming</a></h3>
+    <h3><a href="https://tinyurl.com/SDAvideo13">Value function approximations I — Introduction to dynamic programming</a></h3>
     <p><strong>Summary:</strong> We start our discussion by introducing Bellman's equation and describing the three curses of dimensionality.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> The universal modeling framework; State variables<br />
@@ -235,7 +235,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image14.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3><a href="https://youtu.be/_NO6HweAboY">Value function approximations II — VFA-based policies</a></h3>
+    <h3><a href="https://tinyurl.com/SDAvideo14">Value function approximations II — VFA-based policies</a></h3>
     <p><strong>Summary:</strong> We introduce the idea of creating a policy that uses an approximation of the state that a decision takes us to.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> VFA I; State variables<br />
@@ -249,7 +249,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image15.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3><a href="https://youtu.be/gkjncBxeIZ8">Value function approximations III — Reinforcement learning</a></h3>
+    <h3><a href="https://tinyurl.com/SDAvideo15">Value function approximations III — Reinforcement learning</a></h3>
     <p><strong>Summary:</strong> We introduce approximate dynamic programming as it is typically presented under the banner of "reinforcement learning," using the language typically found in computer science.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> VFA II<br />
@@ -291,7 +291,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image18.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3><a href="https://youtu.be/yfpRl7eeN68">Direct lookahead approximations I — Overview</a></h3>
+    <h3><a href="https://tinyurl.com/SDAvideo18">Direct lookahead approximations I — Overview</a></h3>
     <p><strong>Summary:</strong> We set up the notation for lookahead models, and identify the different ways to approximate lookahead models to make a decision now.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> The universal modeling framework<br />
@@ -305,7 +305,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image19.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3><a href="https://youtu.be/fuf6MkUV6DA">Direct lookahead approximations II — Deterministic lookaheads</a></h3>
+    <h3><a href="https://tinyurl.com/SDAvideo19">Direct lookahead approximations II — Deterministic lookaheads</a></h3>
     <p><strong>Summary:</strong> A generalization of cost function approximations (which do not plan into the future) is to parameterize deterministic models which do plan into the future.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> DLA I; Cost function approximations<br />
@@ -319,7 +319,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image20.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3><a href="https://youtu.be/ho4a9-PBmRA">Direct lookahead approximations III — Stochastic lookaheads</a></h3>
+    <h3><a href="https://tinyurl.com/SDAvideo20">Direct lookahead approximations III — Stochastic lookaheads</a></h3>
     <p><strong>Summary:</strong> Focuses on the issue of choosing the "policy-within-a-policy" required by stochastic lookahead models. We illustrate PFAs, CFAs and VFAs.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> Policy function approximations; Cost function approximations; Value function approximations<br />
@@ -333,7 +333,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image21.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3><a href="https://youtu.be/jd25cgsOAI8">Direct lookahead approximations IV — Discrete actions</a></h3>
+    <h3><a href="https://tinyurl.com/SDAvideo21">Direct lookahead approximations IV — Discrete actions</a></h3>
     <p><strong>Summary:</strong> We introduce the idea of using decision trees for small problems, and Monte Carlo tree search for larger problems.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> DLA I<br />
@@ -347,7 +347,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image22.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3><a href="https://youtu.be/AlbMn5IPy3o">Direct lookahead approximations V — Vector-valued actions</a></h3>
+    <h3><a href="https://tinyurl.com/SDAvideo22">Direct lookahead approximations V — Vector-valued actions</a></h3>
     <p><strong>Summary:</strong> We introduce two-stage stochastic programming illustrated by its use in power planning. We then introduce the idea of solving the stochastic lookahead problem using classical stochastic search.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> DLA I, DLA IV<br />
@@ -361,7 +361,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image23.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3><a href="https://youtu.be/vyeCPold1sA">Policy search</a></h3>
+    <h3><a href="https://tinyurl.com/SDAvideo23">Policy search</a></h3>
     <p><strong>Summary:</strong> We address the challenge of tuning a parameterized policy using derivative-based and derivative-free stochastic search. Stochastic search is presented as a sequential decision problem, and illustrated using a mutual fund cash balance problem.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> Universal modeling framework; Policy function approximations; Cost function approximations; DLA II<br />
