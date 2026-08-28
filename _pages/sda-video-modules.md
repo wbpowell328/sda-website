@@ -263,7 +263,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image16.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3>Value function approximations IV</h3>
+    <h3>Value function approximations IV — Forward ADP and linear approximations</h3>
     <p><strong>Summary:</strong> We present the classical techniques of forward approximate dynamic programming, with an emphasis on the use of linear models to approximate the value function.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> VFA I–III<br />
