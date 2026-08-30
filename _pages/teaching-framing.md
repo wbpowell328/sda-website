@@ -16,7 +16,7 @@ Note that these questions have to be addressed from the perspective of a decisio
 This webpage offers three ideas to help with teaching (more to come):
 
 - [Expanding the scope of an existing lecture](#expanding-the-scope-of-an-existing-lecture)
-- [Framing a lecture from a guest speaker](#framing-a-lecture-from-a-guest-speaker)
+- [Framing a talk](#framing-a-talk)
 - [Case studies on framing](#case-studies-on-framing)
   - [Decision framing questions](#framing-questions)
   - [List of decision framing cases](#list-of-cases)
@@ -36,7 +36,7 @@ It is possible to manage this discussion so that you summarize the core elements
 
 The goal is to repeat this exercise as often as possible, in a wide range of settings, so that thinking about metrics, decisions, and uncertainties becomes second nature.
 
-## Framing a lecture from a guest speaker
+## Framing a talk {#framing-a-talk}
 
 Now imagine that you have invited someone from industry to talk about a problem. This speaker will not know anything about our framing process, and will discuss a problem setting in a general way using the vocabulary of their community.
 
