@@ -50,7 +50,13 @@ Instead of the three elements illustrated for deterministic optimization problem
 4. **State transition model** $S_{t+1} = S^M(S_t, x_t, W_{t+1})$ — how our state variable evolves given $x_t$ and $W_{t+1}$.
 5. **Objective function** for finding the best policy:
 
-$$\max_\pi F^\pi(S_0) = C(S_0, X^\pi(S_0)) + \cdots + C(S_T, X^\pi(S_T))$$
+$$\max_{f \in \mathcal{F}}\; \max_{\theta \in \Theta^f}\; \mathbb{E}_W \Big\{ \sum_{t=0}^T C\big(S_t,\, X^\pi(S_t \mid \theta)\big) \,\Big|\, S_0 \Big\}$$
+
+where the system evolves according to
+
+$$S_{t+1} = S^M(S_t,\, x_t = X^\pi(S_t \mid \theta),\, W_{t+1}(S_t, x_t)).$$
+
+We assume that any constraints are captured in the policy $X^\pi(S_t \mid \theta)$.
 
 These five elements make up the **Universal Modeling Framework (UMF)**, and we claim that it can be used to model *any* sequential decision problem. Note that just as the deterministic optimization model above is the basis for searching for a good (ideally optimal) decision $x$, the UMF is the basis for searching for the best **policy** $X^\pi(S_t  \mid  \theta)$, which is rarely optimal and has to perform well according to multiple criteria.
 
