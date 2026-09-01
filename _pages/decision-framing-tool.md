@@ -1043,7 +1043,27 @@ date: 2026-08-11
     flashStatus('Saved to "' + currentName + '".');
   }
   function saveAsFile() {
-    const suggested = currentName || '';
+    // Prompt pre-fill priority:
+    //   1. currentName if the doc already has a save-target,
+    //   2. otherwise a cleaned-up version of the banner's docTitle so
+    //      an AI draft ("AI draft — <source>") or JSON import
+    //      ("Imported — <basename>") pre-fills as just <source> /
+    //      <basename> — Warren doesn't want to retype what's already
+    //      shown at the top of the workspace.
+    const cleanedFromBanner = docTitle
+      ? String(docTitle)
+          .replace(/^\s*AI draft\s*[—-]\s*/i, '')
+          .replace(/^\s*Imported\s*[—-]\s*/i, '')
+          .replace(/\.(pdf|docx|txt|md|json)$/i, '')
+          .trim()
+      : '';
+    // Never pre-fill with just the AskPP source-less default ("AI draft
+    // — Ask Professor Powell (chatbot)" strips down to "Ask Professor
+    // Powell (chatbot)", which isn't a case name) — fall through to
+    // empty in that case.
+    const cleanedFinal = /^ask professor powell/i.test(cleanedFromBanner)
+      ? '' : cleanedFromBanner;
+    const suggested = currentName || cleanedFinal || '';
     const raw = window.prompt('Save this decision as:', suggested);
     if (raw == null) return;
     const name = raw.trim();
