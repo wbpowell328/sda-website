@@ -232,17 +232,22 @@ img, video { max-width: 100%; height: auto; display: block; }
 .content p { margin: 0 0 1rem; }
 .content ul, .content ol { padding-left: 1.5rem; }
 
-/* Body links get a color + underline treatment for legibility.
+/* Body links get a color + weight + underline treatment for legibility.
    Scope to .content so header nav, sidebar, cards, and search widget
-   keep their own hover-only underline behavior. */
+   keep their own hover-only underline behavior. Font-weight makes every
+   content link render bold so we don't rely on authors remembering to
+   wrap links in **markdown bold** (which was inconsistent). */
 .content a {
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
+  font-weight: 700;
 }
-/* Don't underline heading-anchor links or image-wrapping links. */
+/* Don't underline heading-anchor links or image-wrapping links, and
+   let heading-anchor links inherit the heading's own font-weight
+   rather than force-doubling it. */
 .content h1 a, .content h2 a, .content h3 a, .content h4 a,
-.content a:has(> img) { text-decoration: none; }
+.content a:has(> img) { text-decoration: none; font-weight: inherit; }
 
 .content blockquote {
   border-left: 4px solid #c9621e;
