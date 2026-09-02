@@ -277,12 +277,12 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image16.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3>Value function approximations IV — Forward ADP and linear approximations</h3>
+    <h3><a href="https://tinyurl.com/SDAvideo16">Value function approximations IV — Forward ADP and linear approximations</a></h3>
     <p><strong>Summary:</strong> We present the classical techniques of forward approximate dynamic programming, with an emphasis on the use of linear models to approximate the value function.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> VFA I–III<br />
       <strong>Technical level:</strong> Advanced<br />
-      <span class="video-module-under-dev">Under development</span>
+      <strong>Time:</strong> 17:43 &nbsp;·&nbsp; <strong>Posted:</strong> September 2, 2026
     </p>
   </div>
 </div>
@@ -291,12 +291,12 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image17.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3>Value function approximations V — Applications</h3>
+    <h3><a href="https://tinyurl.com/SDAvideo17">Value function approximations V — Applications</a></h3>
     <p><strong>Summary:</strong> This segment summarizes a series of applications using VFA-based policies, typically in the context of resource allocation problems.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> TBD<br />
-      <strong>Technical level:</strong> TBD<br />
-      <span class="video-module-under-dev">Under development</span>
+      <strong>Technical level:</strong> Low<br />
+      <strong>Time:</strong> 17:01 &nbsp;·&nbsp; <strong>Posted:</strong> September 2, 2026
     </p>
   </div>
 </div>
