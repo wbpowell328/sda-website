@@ -14,7 +14,7 @@ body {
   background: #f5ecd6;  /* parchment */
 }
 
-a { color: #8a3a1a; text-decoration: none; }
+a, a:visited { color: #8a3a1a; text-decoration: none; }
 a:hover { text-decoration: underline; }
 
 img, video { max-width: 100%; height: auto; display: block; }
