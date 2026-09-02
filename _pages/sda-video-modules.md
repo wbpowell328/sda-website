@@ -165,7 +165,7 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/modeling-uncertainty.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3><a href="https://youtu.be/8r28RLvuEtg">Modeling uncertainty</a></h3>
+    <h3><a href="https://tinyurl.com/SDAvideo27">Modeling uncertainty</a></h3>
     <p><strong>Summary:</strong> This module addresses the challenging area of modeling exogenous information processes. It covers the 12 categories of uncertainties, different flavors of uncertainty, and presents three approaches for representing uncertainty from using history to mathematical models.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> Universal modeling framework (detailed); State variables<br />
