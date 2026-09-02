@@ -123,7 +123,7 @@ People who are interested in solving real problems always prefer the simplest po
 
 *The price of simplicity is tunable parameters… and tuning is hard!*
 
-Once you have absorbed the material on the initial **Policies** page, it helps to choose one (or a few) applications and then start the process of learning more about each of the four classes by clicking on the menu items for each of the four classes under **Policies**. I recommend touring the policies in the following order:
+Once you have absorbed the material on the initial **[Policies](/policies/)** page, it helps to choose one (or a few) applications and then start the process of learning more about each of the four classes by clicking on the menu items for each of the four classes under **[Policies](/policies/)**. I recommend touring the policies in the following order:
 
 1. [Policy function approximations (PFAs)](/policy-function-approximations/) – These are the simplest policies, and the only class which does not involve an imbedded optimization problem.
 2. [Cost function approximations (CFAs)](/cost-function-approximations/) – CFAs involve an imbedded optimization, which is typically a simple sort where different choices are evaluated according to some metric. However, a CFA can be a deterministic linear, nonlinear or integer program, as might be used to assign machines to tasks.
