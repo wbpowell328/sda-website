@@ -26,7 +26,7 @@ Motivated by decades of working on complex, real-world problems, we start in Eng
 2. What types of decisions are being made (and who makes them)?
 3. What are the sources of uncertainty?
 
-Be sure to check out our [new decision framing tool](/decision-framing-tool/).
+Be sure to check out our [new decision framing tool](/decision-framing-tool/) and the new [page of video modules](/sda-video-modules/).
 
 These questions help to clarify *thinking* about problems, which is all that is needed for most decisions. For applications that warrant more careful analysis, the questions lay the foundation for the **Universal Modeling Framework** which can represent any sequential decision problem as a mathematical model.
 
