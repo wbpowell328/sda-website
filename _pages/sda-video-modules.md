@@ -389,12 +389,12 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image24.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3>Optimal learning</h3>
+    <h3><a href="https://tinyurl.com/SDAvideo24">Optimal learning</a></h3>
     <p><strong>Summary:</strong> One of the most important sequential decision problems involves learning over time, either in an offline setting (laboratory, computer simulation) or an online setting. We compare a CFA-based policy (interval estimation) to a DLA-based policy (the knowledge gradient).</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> Universal modeling framework<br />
       <strong>Technical level:</strong> Moderate to advanced<br />
-      <span class="video-module-under-dev">Under development</span>
+      <strong>Time:</strong> 14:35 &nbsp;·&nbsp; <strong>Posted:</strong> September 3, 2026
     </p>
   </div>
 </div>
@@ -403,12 +403,12 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image25.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3>Deterministic optimization as a sequential decision problem</h3>
+    <h3><a href="https://tinyurl.com/SDAvideo25">Deterministic optimization as a sequential decision problem</a></h3>
     <p><strong>Summary:</strong> There are many classical deterministic optimization problems that, in practice, are solved repeatedly over time. How a deterministic optimization models are used is often overlooked, especially when they are hard integer or nonlinear programs.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> Universal modeling framework<br />
       <strong>Technical level:</strong> Requires knowledge of deterministic optimization<br />
-      <span class="video-module-under-dev">Under development</span>
+      <strong>Time:</strong> 9:39 &nbsp;·&nbsp; <strong>Posted:</strong> September 3, 2026
     </p>
   </div>
 </div>
