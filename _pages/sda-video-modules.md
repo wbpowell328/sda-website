@@ -10,6 +10,13 @@ date: 2026-08-22
 
 <p>If any faculty would like access to the PowerPoint slides for use in lectures, email me at <a href="mailto:wbpowell328@gmail.com">wbpowell328@gmail.com</a>.</p>
 
+<ul>
+  <li><a href="#introductory-material"><strong>Introductory material</strong></a></li>
+  <li><a href="#problem-framing-and-modeling"><strong>Problem framing and modeling</strong></a></li>
+  <li><a href="#designing-policies"><strong>Designing policies</strong></a></li>
+  <li><a href="#additional-topics"><strong>Additional topics</strong></a></li>
+</ul>
+
 <style>
   .video-module {
     display: flex; gap: 20px; align-items: flex-start;
@@ -46,6 +53,8 @@ date: 2026-08-22
     .video-module-img { width: 100%; max-width: 380px; }
   }
 </style>
+
+<h2 id="introductory-material">Introductory material</h2>
 
 <div class="video-module">
   <img src="/assets/images/sda-video-modules/image1.jpeg"
@@ -88,6 +97,8 @@ date: 2026-08-22
     </p>
   </div>
 </div>
+
+<h2 id="problem-framing-and-modeling">Problem framing and modeling</h2>
 
 <div class="video-module">
   <img src="/assets/images/sda-video-modules/image4.png"
@@ -172,6 +183,8 @@ date: 2026-08-22
     </p>
   </div>
 </div>
+
+<h2 id="designing-policies">Designing policies</h2>
 
 <div class="video-module">
   <img src="/assets/images/sda-video-modules/image9.png"
@@ -382,6 +395,8 @@ date: 2026-08-22
     </p>
   </div>
 </div>
+
+<h2 id="additional-topics">Additional topics</h2>
 
 <div class="video-module">
   <img src="/assets/images/sda-video-modules/image24.png"
