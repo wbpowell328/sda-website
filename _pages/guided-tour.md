@@ -10,6 +10,8 @@ Sequential decision problems are a fantastically rich area, spanning virtually a
 
 This webpage represents a guided tour of the SDA website, helping newcomers to progress from basic starting material up through designing policies suited to specific situations. As you work down through the page, there are numerous links to various pages on the website. A useful strategy is to start by just reading this page, without clicking on the links. However, you will see that we are leaving a lot of information on the webpages within the website. If you click on the link to visit the page, be sure to return to this page to continue the tour.
 
+For readers interested in a serious introduction to sequential decision analytics, we have prepared a series of [video modules](/sda-video-modules/) which are organized as a natural progression through the material. These videos can be viewed at your own pace.
+
 We are going to conduct our tour using a series of passes:
 
 - [**The first pass – Decisions and framing the problem**](#first-pass) This pass will introduce a first-time visitor to the most important elements of sequential decision problems, using minimal mathematics. Visitors will see examples of sequential decision problems, and how we approach the critical step of framing. For people working in an application domain who are not interested in developing models and automating the process of making decisions, this is a good stopping point.
