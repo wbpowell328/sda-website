@@ -6,9 +6,7 @@ date: 2026-08-22
 ---
 
 {% raw %}
-<p>This page contains a series of short video modules that started as a three-hour tutorial for the 2026 AIMOR workshop in Banff. Each module is 5 to 25 minutes long, and lists guidelines on technical level and recommended predecessor modules.</p>
-
-<p>The initial modules were posted in August, 2026. I anticipate improving the presentations and adding new modules, so pay attention to the posting and updating dates.</p>
+<p>The video modules on this page represent a natural progression through the material on sequential decision analytics. The modules are organized in a natural progression, but feel free to skip forward to material of greatest interest. Each module contains information about recommended predecessor modules, and an indication of the technical level.</p>
 
 <p>If any faculty would like access to the PowerPoint slides for use in lectures, email me at <a href="mailto:wbpowell328@gmail.com">wbpowell328@gmail.com</a>.</p>
 
