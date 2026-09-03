@@ -417,12 +417,12 @@ date: 2026-08-22
   <img src="/assets/images/sda-video-modules/image26.png"
        alt="SDA video module thumbnail" class="video-module-img" />
   <div class="video-module-text">
-    <h3>Modeling matters</h3>
+    <h3><a href="https://tinyurl.com/SDAvideo26">Modeling matters</a></h3>
     <p><strong>Summary:</strong> This module illustrates a published example of a paper that makes the mistake of assuming that you can use information that does not arrive until the future. This type of mistake is not unusual in engineering communities.</p>
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> DLA I<br />
       <strong>Technical level:</strong> Modest<br />
-      <span class="video-module-under-dev">Under development</span>
+      <strong>Time:</strong> 5:04 &nbsp;·&nbsp; <strong>Posted:</strong> September 3, 2026
     </p>
   </div>
 </div>
