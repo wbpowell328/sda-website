@@ -22,6 +22,16 @@ where
 
 This view is from the perspective of a single decision-making agent; if there is more than one decision-maker, we model each one separately, along with the interactions between them.
 
+Sequential decision problems come in a range of settings from the perspective of the sequencing of decisions and information:
+
+1. **Static, deterministic:** Information ($S_0$), decision ($x_0$), stop.
+2. **Stochastic search:** Information ($S_0$), decision ($x_0$), information ($W_1$), stop.
+3. **Two-stage stochastic programming:** Information ($S_0$), decision ($x_0$), information ($W_1$), decision ($x_1$), stop.
+4. **Finite horizon:** Information ($S_0$), decision ($x_0$), information ($W_1$), decision ($x_1$), information ($W_2$), ..., decision ($x_{T-1}$), information ($W_T$), stop.
+5. **Infinite horizon:** Information ($S_0$), decision ($x_0$), information ($W_1$), decision ($x_1$), information ($W_2$), ..., decision ($x_t$), information ($W_{t+1}$),...
+
+We use the fourth type as our default model since it is widely used, and the first three are simply special cases. Our experience is that infinite horizon problems are primarily of theoretical interest.
+
 <img src="/assets/images/sequential-decision-problems/applications-collage.jpg" alt="A collage of application areas: trucking, financial markets, robotics, healthcare, energy, e-commerce, aviation, manufacturing" width="468" align="right" style="max-width: 100%; height: auto; margin-left: 1rem; margin-bottom: 0.5rem;" />
 We are typically evaluating our performance using one or more metrics. Decisions are made with some method we call a *policy*, which depends on the information in the state variable $S_t$. This leads to the final challenge of designing a policy that works well over time, according to the relevant performance metrics.
 
