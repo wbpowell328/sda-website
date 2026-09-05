@@ -10,7 +10,7 @@ date: 2026-08-11
 <ol>
   <li><a href="#scope-of-the-decision-frame"><strong>Scope of the decision frame</strong></a> — identify the perspective of who is making the decision.</li>
   <li><a href="#metrics-pyramid-tool"><strong>Metrics pyramid tool</strong></a> — prioritize your performance metrics into a four-level pyramid.</li>
-  <li><a href="#decision-prioritization-tool"><strong>Decision prioritization tool</strong></a> — score each decision's impact on each pyramid-ordered metric (H / M / L / N), then reorder the decisions by their impact on the most important metrics.</li>
+  <li><a href="#decision-prioritization-tool"><strong>Decision prioritization tool</strong></a> — score each decision's impact on each pyramid-ordered metric (H / M / L / N), then reorder the decisions by their impact on the most important metrics. Decisions may be nested so that higher level decisions (choose supplier) can be broken into lower level decisions (list individual suppliers). Lower level decisions can be further divided into subclasses.</li>
   <li><a href="#uncertainty-prioritization-tool"><strong>Uncertainty prioritization tool</strong></a> — same idea, applied to the uncertainties that affect performance.</li>
 </ol>
 <p>When framing a problem, be sure to follow the guidelines given on <a href="/framingproblems/#the-framing-process">The Framing Process</a>.</p>
@@ -132,7 +132,7 @@ date: 2026-08-11
 
 <h2 id="decision-prioritization-tool" class="fp-section-h2">Decision prioritization tool</h2>
 <p>List the decisions you'd consider (one per line). The matrix below has one column per <em>tier-assigned</em> metric from the pyramid above, ordered top-to-bottom by tier (left-to-right within the same tier by the order the metrics appear in the metrics list). Click any cell to cycle through <b>H</b> (high impact) → <b>M</b> → <b>L</b> → <b>N</b> (none) → blank. When you're done scoring, drag any row up or down via the <span class="fp-grip-inline">☰</span> handle to prioritize decisions by their impact on the most important metrics.</p>
-<p class="fp-muted fp-drill-hint">To break a decision down into sub-decisions, click the <span class="fp-drill-inline">▸</span> button next to that decision (or right-click its row). You can nest sub-decisions to any depth; the metrics pyramid stays fixed.</p>
+<p>To break a decision down into sub-decisions, click the <span class="fp-drill-inline">▸</span> button next to that decision (or right-click its row). You can nest sub-decisions to any depth; the metrics pyramid stays fixed.</p>
 
 <div id="fp-decision-breadcrumb" class="fp-decision-breadcrumb" hidden></div>
 <div id="fp-decision-subscope" class="fp-decision-subscope" hidden>
