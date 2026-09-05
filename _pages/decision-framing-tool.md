@@ -38,11 +38,8 @@ date: 2026-08-11
       <button type="button" id="fp-menu-new">New decision</button>
       <button type="button" id="fp-menu-open">Open…</button>
       <button type="button" id="fp-menu-open-my-lib" title="Jump to your personal server library (published framings)" disabled>Open my library</button>
-      <button type="button" id="fp-menu-save" title="Save to this browser only (private, stays on this device)">Save (local)</button>
-      <button type="button" id="fp-menu-saveas" title="Save under a new name in this browser only">Save as… (local)</button>
-      <button type="button" id="fp-menu-publish" title="Save to the online library (get a URL that works from any browser). Creates a personal library the first time.">Publish to my library…</button>
-      <button type="button" id="fp-menu-duplicate" title="Save a copy of the currently loaded decision (adds &quot; (2)&quot; to the name)">Duplicate</button>
-      <button type="button" id="fp-menu-export" title="Download the current decision as a JSON file (useful for sharing or contributing to the public examples library)">Export as JSON…</button>
+      <button type="button" id="fp-menu-publish" title="Save the current framing to the online library. Creates your personal library on the first save; adds to it on subsequent saves.">Save to my library…</button>
+      <button type="button" id="fp-menu-export" title="Download the current decision as a JSON file (useful for sharing or archiving)">Export as JSON…</button>
       <button type="button" id="fp-menu-import" title="Load a decision from a .json file someone sent you (or one you exported earlier)">Import from JSON…</button>
     </div>
   </details>
@@ -61,8 +58,8 @@ date: 2026-08-11
       <h3 id="fp-modal-title">Open decision problem</h3>
       <button type="button" class="fp-modal-close" id="fp-modal-close" aria-label="Close">×</button>
     </div>
-    <h4 class="fp-modal-subheader">Your saved decisions</h4>
-    <p class="fp-muted" style="margin: 0 0 6px 0;">Saved on this browser. Click one to load it.</p>
+    <h4 class="fp-modal-subheader">Legacy local saves</h4>
+    <p class="fp-muted" style="margin: 0 0 6px 0;">Framings saved to this browser before the switch to server libraries. Click one to load it, then use <b>File → Save to my library…</b> to move it into your server library. This section will be removed once it's empty.</p>
     <div id="fp-file-list" class="fp-file-list"></div>
 
     <h4 class="fp-modal-subheader" style="margin-top: 16px;">My server libraries</h4>
@@ -1514,7 +1511,7 @@ date: 2026-08-11
       el.textContent = docTitle;
       el.classList.remove('fp-doc-title-empty');
     } else {
-      el.textContent = 'No document loaded — use File > Open to load one, or Save as… to name the current work.';
+      el.textContent = 'No document loaded — use File > Open to load one, or File > Save to my library… to save the current work.';
       el.classList.add('fp-doc-title-empty');
     }
     // Description sits just below the title inside the same banner.
@@ -3179,7 +3176,7 @@ date: 2026-08-11
     const lib = readMyLibrary();
     if (!lib) {
       btn.disabled = true;
-      btn.title = 'Publish a framing first to create your personal library';
+      btn.title = 'Save a framing to your library first to create it';
     } else {
       btn.disabled = false;
       btn.title = 'Open your personal server library: ' + (lib.name || 'My framings');
@@ -3286,7 +3283,7 @@ date: 2026-08-11
       empty.style.textAlign = 'center';
       empty.style.color = '#7a6a55';
       empty.style.fontStyle = 'italic';
-      empty.textContent = 'No server libraries visited yet — Publish a framing, or open a library URL someone shared with you.';
+      empty.textContent = 'No server libraries visited yet — Save a framing to your library, or open a library URL someone shared with you.';
       list.appendChild(empty);
       return;
     }
@@ -3504,7 +3501,7 @@ date: 2026-08-11
       } else {
         // Empty library — no framing to auto-open. Leave the tool in
         // its current state (whatever localStorage restored).
-        flashStatus('Library is empty — Publish a framing to add one.');
+        flashStatus('Library is empty — use File → Save to my library, or the "+ New framing" button (edit mode) to add one.');
       }
     } catch (err) {
       console.error('Failed to load node:', err);
@@ -3783,7 +3780,7 @@ date: 2026-08-11
   async function publishToLibrary() {
     const btn = $('#fp-menu-publish');
     const prevText = btn ? btn.textContent : '';
-    if (btn) { btn.disabled = true; btn.textContent = 'Publishing…'; }
+    if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
     try {
       // The framing title is best derived from whatever meaningful label
       // we already have — bot title, current save name, banner-derived
@@ -3832,8 +3829,8 @@ date: 2026-08-11
         // save these URLs. Subsequent publishes just flash a status.
         showUrlsModal({
           title: 'Your personal library is ready',
-          lede: 'Your first published framing — <b>' + escapeHtmlForModal(framingTitle) + '</b> — is saved. ' +
-                'Every future <em>Publish</em> will add to <b>the same library</b> at these URLs. ' +
+          lede: 'Your first saved framing — <b>' + escapeHtmlForModal(framingTitle) + '</b> — is on the server. ' +
+                'Every future <em>Save to my library</em> will add to <b>the same library</b> at these URLs. ' +
                 'You can revisit this library from any browser.',
           readUrl:  makeNodeUrl(lib.readId),
           writeUrl: makeNodeUrl(lib.readId, lib.writeToken),
@@ -3846,8 +3843,8 @@ date: 2026-08-11
         flashStatus('Added to your library.');
       }
     } catch (err) {
-      console.error('Publish failed:', err);
-      alert('Sorry — publish failed:\n\n' +
+      console.error('Save to library failed:', err);
+      alert('Sorry — save failed:\n\n' +
         ((err && err.message) ? err.message : String(err)) +
         '\n\n(First request after idle can take ~30 s while the server wakes up. Try again in a moment.)');
     } finally {
@@ -3936,19 +3933,7 @@ date: 2026-08-11
       closeFileMenu();
       openImportPicker();
     });
-    $('#fp-menu-save').addEventListener('click', () => {
-      closeFileMenu();
-      saveFile();
-    });
-    $('#fp-menu-saveas').addEventListener('click', () => {
-      closeFileMenu();
-      saveAsFile();
-    });
     $('#fp-menu-publish').addEventListener('click', publishToLibrary);
-    $('#fp-menu-duplicate').addEventListener('click', () => {
-      closeFileMenu();
-      duplicateFile();
-    });
     $('#fp-menu-export').addEventListener('click', () => {
       closeFileMenu();
       exportCurrentDocument();
