@@ -136,6 +136,8 @@ date: 2026-08-11
   <span class="fp-library-icon" aria-hidden="true">📚</span>
   <span id="fp-library-crumb" class="fp-library-crumb"></span>
   <span id="fp-library-mode" class="fp-library-mode"></span>
+  <button type="button" id="fp-library-save-framing" class="fp-library-browse fp-library-primary" title="Save your edits to the currently-open framing" hidden>Save changes</button>
+  <button type="button" id="fp-library-new-framing" class="fp-library-browse" title="Add a new empty framing to this library" hidden>+ New framing</button>
   <button type="button" id="fp-library-share" class="fp-library-browse" title="Show the View and Edit URLs for this library so you can copy or share them">Share URLs</button>
   <button type="button" id="fp-library-rename" class="fp-library-browse" title="Rename this library" hidden>Rename ✎</button>
   <button type="button" id="fp-library-browse" class="fp-library-browse">Browse framings ▾</button>
@@ -577,6 +579,18 @@ date: 2026-08-11
     font-size: 0.9rem;
   }
   .fp-library-browse:hover { background: #f2e6c9; }
+  .fp-library-primary {
+    background: #8a3a1a;
+    color: #fff;
+    border-color: #6a2a10;
+  }
+  .fp-library-primary:hover { background: #6a2a10; color: #fff; }
+  .fp-library-primary:disabled {
+    background: #d6c4a3;
+    border-color: #d6c4a3;
+    color: #fff;
+    cursor: not-allowed;
+  }
   .fp-file-list {
     flex: 1 1 auto;
     min-height: 60px; max-height: 50vh;
@@ -3545,6 +3559,137 @@ date: 2026-08-11
     // token — server will reject if it's actually not authorized.
     const renameBtn = $('#fp-library-rename');
     if (renameBtn) renameBtn.hidden = !loadedNode.writeToken;
+    // Save changes / New framing — content-write on this node only.
+    const saveBtn = $('#fp-library-save-framing');
+    if (saveBtn) saveBtn.hidden = !loadedNode.writeToken;
+    const newBtn = $('#fp-library-new-framing');
+    if (newBtn) newBtn.hidden = !loadedNode.writeToken;
+  }
+
+  // Persist the current in-memory framing to the server. Requires a
+  // loaded node in edit mode; the framing must already exist on the
+  // server (i.e. loadedNode.currentFramingId is set). For an empty
+  // library or a freshly-created framing that hasn't been persisted,
+  // fall through to addNewFramingToLoadedLibrary().
+  async function saveCurrentFramingToServer() {
+    if (!loadedNode || !loadedNode.writeToken) return;
+    const btn = $('#fp-library-save-framing');
+    const prevText = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+    try {
+      const title = (docTitle || '').replace(/^\s*AI draft\s*[—-]\s*/i, '')
+        .replace(/^\s*Imported\s*[—-]\s*/i, '')
+        .trim() || 'Untitled framing';
+      if (!loadedNode.currentFramingId) {
+        // Nothing on the server yet — add as a fresh framing.
+        return await addCurrentFramingToLoadedLibrary(title);
+      }
+      const resp = await apiFetch(
+        NODES_BASE + '/framings/' + encodeURIComponent(loadedNode.currentFramingId) +
+          '?w=' + encodeURIComponent(loadedNode.writeToken),
+        {
+          method: 'PUT',
+          body: { title: title.slice(0, 200), content: snapshotForSave() },
+        }
+      );
+      // Update the local framings-list cache so Browse framings shows
+      // the fresh updated_at + title without a full re-fetch.
+      updateFramingInCache(resp.framing);
+      if (btn) { btn.textContent = 'Saved ✓'; setTimeout(() => { btn.textContent = prevText; btn.disabled = false; }, 1200); }
+      else flashStatus('Saved to library.');
+    } catch (err) {
+      console.error('Save framing failed:', err);
+      alert('Save failed:\n\n' + ((err && err.message) ? err.message : String(err)));
+      if (btn) { btn.disabled = false; btn.textContent = prevText; }
+    }
+  }
+
+  // Create a fresh framing (starting from the current in-memory state,
+  // OR an empty one if requested) in the currently-loaded library.
+  async function addNewFramingToLoadedLibrary() {
+    if (!loadedNode || !loadedNode.writeToken) return;
+    const useCurrent = window.confirm(
+      'Add a NEW framing to "' + (loadedNode.name || 'this library') + '".\n\n' +
+      'OK — start from the framing currently on screen (adds a copy alongside).\n' +
+      'Cancel — start from a blank framing (clears the workspace).'
+    );
+    if (useCurrent) {
+      const title = (docTitle || 'New framing').replace(/^\s*AI draft\s*[—-]\s*/i, '')
+        .replace(/^\s*Imported\s*[—-]\s*/i, '')
+        .trim() || 'New framing';
+      const raw = window.prompt('Name this new framing:', title);
+      if (raw == null) return;
+      const finalTitle = raw.trim() || 'New framing';
+      await addCurrentFramingToLoadedLibrary(finalTitle);
+    } else {
+      // Blank framing — reset state, prompt for a name, then save.
+      const raw = window.prompt('Name for the new blank framing:', 'New framing');
+      if (raw == null) return;
+      const finalTitle = raw.trim() || 'New framing';
+      state = {
+        title: '', scope: '', description: '',
+        metrics: [], assignments: {}, chipColors: {},
+        decisions: [], matrix: {}, subframes: {},
+        uncertainties: [], uMatrix: {},
+      };
+      currentPath = [];
+      $('#fp-scope-input').value         = '';
+      $('#fp-metrics-input').value       = '';
+      $('#fp-decisions-input').value     = '';
+      $('#fp-uncertainties-input').value = '';
+      render();
+      renderAllMatrices();
+      setDocTitle(finalTitle);
+      await addCurrentFramingToLoadedLibrary(finalTitle);
+    }
+  }
+
+  async function addCurrentFramingToLoadedLibrary(title) {
+    if (!loadedNode || !loadedNode.writeToken) return;
+    const btn = $('#fp-library-new-framing');
+    const prevText = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = 'Adding…'; }
+    try {
+      const resp = await apiFetch(
+        NODES_BASE + '/framings?nodeReadId=' + encodeURIComponent(loadedNode.readId) +
+          '&w=' + encodeURIComponent(loadedNode.writeToken),
+        {
+          method: 'POST',
+          body: { title: title.slice(0, 200), content: snapshotForSave() },
+        }
+      );
+      // Push into local cache and mark this new framing as the currently-open one.
+      loadedNode.framings.unshift({
+        id:         resp.framing.id,
+        title:      resp.framing.title,
+        size_bytes: resp.framing.size_bytes,
+        created_at: resp.framing.created_at,
+        updated_at: resp.framing.updated_at,
+      });
+      loadedNode.currentFramingId = resp.framing.id;
+      setDocTitle(resp.framing.title);
+      flashStatus('Added to library.');
+    } catch (err) {
+      console.error('Add framing failed:', err);
+      alert('Add framing failed:\n\n' + ((err && err.message) ? err.message : String(err)));
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = prevText; }
+    }
+  }
+
+  function updateFramingInCache(fresh) {
+    if (!loadedNode || !Array.isArray(loadedNode.framings) || !fresh) return;
+    const idx = loadedNode.framings.findIndex(f => f.id === fresh.id);
+    if (idx >= 0) {
+      loadedNode.framings[idx].title      = fresh.title;
+      loadedNode.framings[idx].updated_at = fresh.updated_at;
+      loadedNode.framings[idx].size_bytes = fresh.size_bytes;
+      // Re-sort by updated_at DESC so the freshly-saved framing bubbles
+      // to the top of the Browse list, matching the server's sort.
+      loadedNode.framings.sort(
+        (a, b) => (b.updated_at || '').localeCompare(a.updated_at || '')
+      );
+    }
   }
 
   async function renameLoadedLibrary() {
@@ -3848,6 +3993,10 @@ date: 2026-08-11
       if (renameBtn) renameBtn.addEventListener('click', renameLoadedLibrary);
       const shareBtn = $('#fp-library-share');
       if (shareBtn) shareBtn.addEventListener('click', shareLoadedLibraryUrls);
+      const saveBtn = $('#fp-library-save-framing');
+      if (saveBtn) saveBtn.addEventListener('click', saveCurrentFramingToServer);
+      const newBtn  = $('#fp-library-new-framing');
+      if (newBtn)  newBtn.addEventListener('click', addNewFramingToLoadedLibrary);
     })();
     // URL modal wiring — Done/close are locked until the user
     // confirms they've saved both URLs, so an accidental Enter can't
