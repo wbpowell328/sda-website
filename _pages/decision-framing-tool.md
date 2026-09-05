@@ -505,6 +505,7 @@ date: 2026-08-11
     border-radius: 6px;
     font-size: 0.95rem;
   }
+  .fp-library-bar[hidden] { display: none; }
   .fp-library-icon { font-size: 1.15rem; }
   .fp-library-crumb {
     color: #5a3e1f;
@@ -762,6 +763,7 @@ date: 2026-08-11
     border-radius: 6px;
     font-size: 0.95rem;
   }
+  .fp-decision-breadcrumb[hidden] { display: none; }
   .fp-decision-breadcrumb .fp-crumb {
     background: transparent;
     border: none;
