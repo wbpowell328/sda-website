@@ -118,6 +118,36 @@ date: 2026-08-11
   </div>
 </div>
 
+<!-- Library bar — only visible when the user loaded the page with a
+     ?node= URL. Shows the ancestry breadcrumb + edit/view mode + a
+     Browse button that opens the library modal. -->
+<div id="fp-library-bar" class="fp-library-bar" hidden>
+  <span class="fp-library-icon" aria-hidden="true">📚</span>
+  <span id="fp-library-crumb" class="fp-library-crumb"></span>
+  <span id="fp-library-mode" class="fp-library-mode"></span>
+  <button type="button" id="fp-library-browse" class="fp-library-browse">Browse framings ▾</button>
+</div>
+
+<!-- Library browse modal — lists framings in the currently-loaded
+     library node so the user can jump between them. Populated at
+     open time from loadedNode.framings. -->
+<div id="fp-library-modal" class="fp-modal" hidden>
+  <div class="fp-modal-card">
+    <div class="fp-modal-header">
+      <h3>Library — <span id="fp-library-modal-name"></span></h3>
+      <button type="button" class="fp-modal-close" id="fp-library-modal-close" aria-label="Close">×</button>
+    </div>
+    <p class="fp-muted" style="margin: 0 0 6px 0;">
+      <span id="fp-library-modal-crumb"></span>
+    </p>
+    <h4 class="fp-modal-subheader">Framings in this library</h4>
+    <div id="fp-library-framing-list" class="fp-file-list"></div>
+    <div class="fp-modal-actions">
+      <button type="button" id="fp-library-modal-cancel">Close</button>
+    </div>
+  </div>
+</div>
+
 <div id="fp-doc-banner" class="fp-doc-banner">
   <h2 id="fp-doc-title" class="fp-doc-title" aria-live="polite"></h2>
   <p id="fp-doc-description" class="fp-doc-description" hidden></p>
@@ -461,6 +491,49 @@ date: 2026-08-11
   }
   #fp-urls-done:hover:not(:disabled) { background: #6a2a10; }
   #fp-urls-done:disabled { background: #d6c4a3; color: #fff; cursor: not-allowed; }
+
+  /* Library bar — shown at the top of the page whenever a ?node= URL
+     was used to open a server-backed library. */
+  .fp-library-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    margin-bottom: 12px;
+    background: #f2e6c9;
+    border: 1px solid #c9a76a;
+    border-radius: 6px;
+    font-size: 0.95rem;
+  }
+  .fp-library-icon { font-size: 1.15rem; }
+  .fp-library-crumb {
+    color: #5a3e1f;
+    font-weight: 600;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .fp-library-mode {
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .fp-library-mode.edit { background: #dcfce7; color: #14532d; }
+  .fp-library-mode.view { background: #dbeafe; color: #1e3a8a; }
+  .fp-library-browse {
+    padding: 5px 12px;
+    background: #fff;
+    border: 1px solid #c9a76a;
+    color: #5a3e1f;
+    border-radius: 4px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.9rem;
+  }
+  .fp-library-browse:hover { background: #f2e6c9; }
   .fp-file-list {
     flex: 1 1 auto;
     min-height: 60px; max-height: 50vh;
@@ -3095,6 +3168,139 @@ date: 2026-08-11
     $('#fp-urls-close').disabled = true;
     $('#fp-urls-modal').hidden = false;
   }
+  // Module-level state for the currently-loaded server library, if any.
+  // Populated when the page opens with ?node=<readId> (and optionally
+  // ?w=<writeToken>). Null if the user's just working locally.
+  let loadedNode = null;
+
+  function isReadIdString(s)     { return typeof s === 'string' && /^[A-Za-z0-9]{10}$/.test(s); }
+  function isWriteTokenString(s) { return typeof s === 'string' && /^[A-Za-z0-9]{16}$/.test(s); }
+
+  async function initFromNodeUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const readId     = params.get('node');
+    const writeToken = params.get('w');
+    if (!isReadIdString(readId)) return;
+    try {
+      const resp = await apiFetch(NODES_BASE + '/nodes/' + encodeURIComponent(readId));
+      loadedNode = {
+        readId,
+        writeToken: isWriteTokenString(writeToken) ? writeToken : null,
+        name:       resp.node.name,
+        ancestry:   Array.isArray(resp.ancestry) ? resp.ancestry : [],
+        children:   Array.isArray(resp.children) ? resp.children : [],
+        framings:   Array.isArray(resp.framings) ? resp.framings : [],
+        currentFramingId: null,
+      };
+      renderLibraryBar();
+      // Auto-open the most-recently-edited framing (the framings list
+      // comes back sorted DESC by updated_at, so element 0 is newest).
+      if (loadedNode.framings.length > 0) {
+        await openFramingFromLoadedNode(loadedNode.framings[0].id);
+      } else {
+        // Empty library — no framing to auto-open. Leave the tool in
+        // its current state (whatever localStorage restored).
+        flashStatus('Library is empty — Publish a framing to add one.');
+      }
+    } catch (err) {
+      console.error('Failed to load node:', err);
+      alert('Could not load library from URL:\n\n' +
+        ((err && err.message) ? err.message : String(err)) +
+        '\n\n(First request after idle can take ~30 s while the server wakes up.)');
+    }
+  }
+
+  async function openFramingFromLoadedNode(framingId) {
+    if (!loadedNode) return;
+    try {
+      const resp = await apiFetch(
+        NODES_BASE + '/framings/' + encodeURIComponent(framingId) +
+          '?readId=' + encodeURIComponent(loadedNode.readId)
+      );
+      state = normalizeState(resp.framing.content);
+      currentPath = [];
+      loadedNode.currentFramingId = framingId;
+      setCurrentName(null);
+      setDocTitle(resp.framing.title || 'Untitled framing');
+      $('#fp-scope-input').value         = state.scope || '';
+      $('#fp-metrics-input').value       = state.metrics.join('\n');
+      $('#fp-decisions-input').value     = state.decisions.join('\n');
+      $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
+      render();
+      renderAllMatrices();
+      autoSave();
+    } catch (err) {
+      console.error('Failed to open framing:', err);
+      alert('Could not open framing:\n\n' + ((err && err.message) ? err.message : String(err)));
+    }
+  }
+
+  function renderLibraryBar() {
+    const bar = $('#fp-library-bar');
+    if (!bar) return;
+    if (!loadedNode) { bar.hidden = true; return; }
+    bar.hidden = false;
+    const mode = loadedNode.writeToken ? 'edit' : 'view';
+    // Ancestry breadcrumb — root → … → current node — labels only per
+    // the locked design (users can see where they are but never click
+    // upward past their access).
+    const crumb = (loadedNode.ancestry || []).join(' › ') || loadedNode.name;
+    $('#fp-library-crumb').textContent = '📁 ' + crumb;
+    const modeEl = $('#fp-library-mode');
+    modeEl.textContent = mode === 'edit' ? 'Edit mode' : 'View only';
+    modeEl.className = 'fp-library-mode ' + mode;
+  }
+
+  function openLibraryModal() {
+    if (!loadedNode) return;
+    $('#fp-library-modal-name').textContent = loadedNode.name;
+    $('#fp-library-modal-crumb').textContent =
+      (loadedNode.ancestry || []).join(' › ');
+    const list = $('#fp-library-framing-list');
+    list.innerHTML = '';
+    if (!loadedNode.framings.length) {
+      const empty = document.createElement('div');
+      empty.style.padding = '16px';
+      empty.style.textAlign = 'center';
+      empty.style.color = '#7a6a55';
+      empty.style.fontStyle = 'italic';
+      empty.textContent = 'No framings in this library yet.';
+      list.appendChild(empty);
+    } else {
+      for (const f of loadedNode.framings) {
+        const row = document.createElement('div');
+        row.className = 'fp-file-row';
+        row.style.cursor = 'pointer';
+        const nameEl = document.createElement('span');
+        nameEl.style.flex = '1';
+        nameEl.textContent = f.title || 'Untitled framing';
+        row.appendChild(nameEl);
+        const meta = document.createElement('span');
+        meta.className = 'fp-muted';
+        meta.style.fontSize = '0.85rem';
+        try {
+          meta.textContent = 'edited ' + new Date(f.updated_at).toLocaleString();
+        } catch (_) { meta.textContent = ''; }
+        row.appendChild(meta);
+        if (loadedNode.currentFramingId === f.id) {
+          const badge = document.createElement('span');
+          badge.textContent = '★ open';
+          badge.style.marginLeft = '8px';
+          badge.style.color = '#8a3a1a';
+          badge.style.fontWeight = '600';
+          badge.style.fontSize = '0.85rem';
+          row.appendChild(badge);
+        }
+        row.addEventListener('click', () => {
+          $('#fp-library-modal').hidden = true;
+          openFramingFromLoadedNode(f.id);
+        });
+        list.appendChild(row);
+      }
+    }
+    $('#fp-library-modal').hidden = false;
+  }
+
   async function publishToLibrary() {
     const btn = $('#fp-menu-publish');
     const prevText = btn ? btn.textContent : '';
@@ -3175,6 +3381,12 @@ date: 2026-08-11
   document.addEventListener('DOMContentLoaded', () => {
     initAdmin();                                         // reveals admin bar if ?admin=1
     load();
+    // ?node= URL wins over localStorage — deferred (async) so it can
+    // fetch the server-side node in parallel with the rest of init.
+    // The initial paint uses whatever load() restored; if a node URL
+    // is present, initFromNodeUrl overwrites state when the fetch
+    // returns.
+    initFromNodeUrl();
     // If the URL came from the Ask Professor Powell chatbot (via the
     // create_framing_link tool), stamp the banner so users see this is
     // an AI draft — same treatment as drafts from the on-page bot.
@@ -3264,6 +3476,20 @@ date: 2026-08-11
       // Click on the backdrop (not the card itself) closes the modal.
       if (e.target === $('#fp-open-modal')) closeOpenModal();
     });
+    // Library bar / browse-modal wiring.
+    (function wireLibraryModal() {
+      const openBtn  = $('#fp-library-browse');
+      const modal    = $('#fp-library-modal');
+      const closeBtn = $('#fp-library-modal-close');
+      const cancel   = $('#fp-library-modal-cancel');
+      if (openBtn) openBtn.addEventListener('click', openLibraryModal);
+      const dismiss = () => { if (modal) modal.hidden = true; };
+      if (closeBtn) closeBtn.addEventListener('click', dismiss);
+      if (cancel)   cancel.addEventListener('click', dismiss);
+      if (modal)    modal.addEventListener('click', (e) => {
+        if (e.target === modal) dismiss();
+      });
+    })();
     // URL modal wiring — Done/close are locked until the user
     // confirms they've saved both URLs, so an accidental Enter can't
     // dismiss the only view of the write token.
