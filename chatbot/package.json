@@ -7,7 +7,8 @@
   "scripts": {
     "build-context": "node build-context.js",
     "ingest": "node ingest.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "bootstrap-framing-nodes": "node framing-nodes/bootstrap.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.0",
@@ -20,6 +21,7 @@
     "mammoth": "^1.8.0",
     "multer": "^1.4.5-lts.1",
     "p-limit": "^7.3.0",
+    "pg": "^8.23.0",
     "sqlite-vec": "^0.1.9"
   }
 }

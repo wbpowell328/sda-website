@@ -16,6 +16,7 @@ import { fileURLToPath } from 'node:url';
 import { retrieve, formatContext, stats } from './rag.js';
 import { initLogger, loggerEnabled, logMessage, hashIp } from './logger.js';
 import adminRouter from './admin.js';
+import framingNodesRouter from './framing-nodes/routes.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, '.env'), override: true });
@@ -147,6 +148,10 @@ app.get('/health', (req, res) => {
 function safeStats() { try { return { enabled: true, ...stats() }; } catch (e) { return { enabled: false, error: e.message }; } }
 
 app.use(adminRouter);
+// Framing tool v2 — server-backed multi-user library.
+// Silently 503s if DATABASE_URL isn't configured yet, so the chatbot
+// keeps working before Warren adds the Render Postgres addon.
+app.use('/api/framing-nodes', framingNodesRouter);
 
 // ---- Upload / attachment endpoints ----------------------------------------
 const uploadLimiter = rateLimit({

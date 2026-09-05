@@ -30,6 +30,10 @@ services:
         sync: false           # paste in Render dashboard
       - key: IP_HASH_SALT
         sync: false           # paste any random string in Render dashboard
+      - key: DATABASE_URL
+        sync: false           # paste from Render Postgres "Internal Database URL"
+      - key: FRAMING_TOOL_URL
+        sync: false           # paste https://warrenpowell.org/decision-framing-tool/
       - key: CLAUDE_MODEL
         value: claude-haiku-4-5-20251001
       - key: CHAT_RATE_LIMIT
