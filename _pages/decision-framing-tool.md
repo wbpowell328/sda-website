@@ -136,6 +136,7 @@ date: 2026-08-11
   <span class="fp-library-icon" aria-hidden="true">📚</span>
   <span id="fp-library-crumb" class="fp-library-crumb"></span>
   <span id="fp-library-mode" class="fp-library-mode"></span>
+  <button type="button" id="fp-library-share" class="fp-library-browse" title="Show the View and Edit URLs for this library so you can copy or share them">Share URLs</button>
   <button type="button" id="fp-library-rename" class="fp-library-browse" title="Rename this library" hidden>Rename ✎</button>
   <button type="button" id="fp-library-browse" class="fp-library-browse">Browse framings ▾</button>
 </div>
@@ -3384,22 +3385,77 @@ date: 2026-08-11
   // Reusable modal — called after any URL-producing operation (first
   // publish, sub-library create, regenerate). Locks the close/done
   // buttons until the user checks "I have saved both URLs".
+  // Pass opts.alreadySaved = true when the caller is just SHOWING URLs
+  // the user already has (Share button, review URLs) — the checkbox
+  // gate is pre-checked and the warning is toned down since there's
+  // no "you're about to lose your only view of this token" risk.
+  // Pass opts.writeUrl = '' to hide the Edit URL row (view-only share).
   function showUrlsModal(opts) {
+    const alreadySaved = !!opts.alreadySaved;
+    const hasWrite = !!(opts.writeUrl && opts.writeUrl.length);
     $('#fp-urls-title').textContent = opts.title || 'Your library URLs';
     $('#fp-urls-lede').innerHTML    = opts.lede || '';
-    $('#fp-urls-read').value        = opts.readUrl;
-    $('#fp-urls-write').value       = opts.writeUrl;
+    $('#fp-urls-read').value        = opts.readUrl || '';
+    $('#fp-urls-write').value       = opts.writeUrl || '';
+
+    // Hide the Edit URL row when there's nothing to show (view-only user).
+    const writeRow = $('#fp-urls-write').closest('.fp-url-row');
+    if (writeRow) writeRow.hidden = !hasWrite;
+
     const emailBody =
       (opts.emailIntro ? opts.emailIntro + '\r\n\r\n' : '') +
-      'View URL: ' + opts.readUrl + '\r\n' +
-      'Edit URL (KEEP PRIVATE): ' + opts.writeUrl;
+      'View URL: ' + (opts.readUrl || '') +
+      (hasWrite ? ('\r\nEdit URL (KEEP PRIVATE): ' + opts.writeUrl) : '');
     $('#fp-urls-email').href = 'mailto:?subject=' +
       encodeURIComponent(opts.emailSubject || 'My framing library URLs') +
       '&body=' + encodeURIComponent(emailBody);
-    $('#fp-urls-confirm-cb').checked = false;
-    $('#fp-urls-done').disabled  = true;
-    $('#fp-urls-close').disabled = true;
+
+    // Toggle the warning + confirmation gate based on context.
+    const warning = document.querySelector('.fp-urls-warning');
+    const confirmLabel = $('#fp-urls-confirm-cb').closest('.fp-urls-confirm');
+    if (alreadySaved) {
+      if (warning) {
+        warning.innerHTML = hasWrite
+          ? '<strong>Sharing tip:</strong> the View URL is safe to share (view-only). Keep the Edit URL private — anyone with it can edit or delete this library.'
+          : '<strong>Sharing tip:</strong> this View URL is safe to share — recipients get view-only access.';
+      }
+      if (confirmLabel) confirmLabel.hidden = true;
+      $('#fp-urls-confirm-cb').checked = true;
+      $('#fp-urls-done').disabled  = false;
+      $('#fp-urls-close').disabled = false;
+    } else {
+      if (warning) {
+        warning.innerHTML =
+          '<strong>Save both URLs now.</strong> Losing the Edit URL means nobody can rescue you — there is no admin console, no password reset, and no way to email you a fresh link. A password manager entry, an encrypted note, or an email to yourself all work. The View URL can be regenerated with the Edit URL later, so the Edit URL is the master key.';
+      }
+      if (confirmLabel) confirmLabel.hidden = false;
+      $('#fp-urls-confirm-cb').checked = false;
+      $('#fp-urls-done').disabled  = true;
+      $('#fp-urls-close').disabled = true;
+    }
     $('#fp-urls-modal').hidden = false;
+  }
+
+  function shareLoadedLibraryUrls() {
+    if (!loadedNode) return;
+    const readUrl  = makeNodeUrl(loadedNode.readId);
+    const writeUrl = loadedNode.writeToken
+      ? makeNodeUrl(loadedNode.readId, loadedNode.writeToken)
+      : '';
+    const name = loadedNode.name || 'this library';
+    showUrlsModal({
+      title: 'Share — ' + name,
+      lede: 'URLs for <b>' + escapeHtmlForModal(name) + '</b>. ' +
+        (writeUrl
+          ? 'Share the View URL to give someone read-only access. Keep the Edit URL private.'
+          : 'You have View-only access to this library. Share the URL below to give someone else the same access.'),
+      readUrl,
+      writeUrl,
+      emailSubject: 'Framing library — ' + name,
+      emailIntro: 'You can open this library from any browser using the URL' +
+        (writeUrl ? 's' : '') + ' below.',
+      alreadySaved: true,
+    });
   }
   // Module-level state for the currently-loaded server library, if any.
   // Populated when the page opens with ?node=<readId> (and optionally
@@ -3790,6 +3846,8 @@ date: 2026-08-11
       });
       const renameBtn = $('#fp-library-rename');
       if (renameBtn) renameBtn.addEventListener('click', renameLoadedLibrary);
+      const shareBtn = $('#fp-library-share');
+      if (shareBtn) shareBtn.addEventListener('click', shareLoadedLibraryUrls);
     })();
     // URL modal wiring — Done/close are locked until the user
     // confirms they've saved both URLs, so an accidental Enter can't
