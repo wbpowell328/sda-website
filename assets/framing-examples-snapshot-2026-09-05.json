@@ -1,0 +1,988 @@
+{
+  "snapshot_date": "2026-09-05",
+  "source_path": "assets/framing-examples",
+  "note": "Snapshot of the public library at retirement (framing-tool v2 rewrite). Original files were deleted from /assets/framing-examples/. index.json included as _index; each example JSON included by filename.",
+  "_index": {
+    "examples": [
+      {
+        "file": "asterion-clinical-trial.json",
+        "title": "Asterion Therapeutics — the enrollment clock (large, pre-scored)",
+        "description": "A biotech's chief development officer deciding whether to accelerate, restructure, or pause a Phase II trial. 10 metrics, 8 decisions, 8 uncertainties."
+      },
+      {
+        "file": "prairieline-truckload.json",
+        "title": "PrairieLine Freight — the Friday afternoon dispatch (medium, pre-scored)",
+        "description": "A truckload carrier's VP of operations balancing today's load acceptance and driver assignments against Monday's fleet, brokerage, and domicile decisions. 6 metrics, 5 decisions, 5 uncertainties."
+      },
+      {
+        "file": "brightnest-launch.json",
+        "title": "BrightNest Home Services — the two-sided launch (small, blank)",
+        "description": "A cleaning-service startup deciding how densely to launch. 4 metrics, 3 decisions, 3 uncertainties."
+      },
+      {
+        "file": "aurora-motors.json",
+        "title": "Aurora Motors — the flow coordination dilemma (medium, pre-scored)",
+        "description": "A hybrid-vehicle manufacturer coordinating imported parts, production sequencing, and dealer commitments under tariff, incentive, and fuel-price uncertainty. 6 metrics, 5 decisions, 5 uncertainties."
+      },
+      {
+        "file": "summit-ridge-cash.json",
+        "title": "Summit Ridge Asset Management — the Monday morning cash decision (medium, pre-scored)",
+        "description": "A mutual fund CIO balancing redemption liquidity against performance drag from cash after a weekend market shock. 6 metrics, 5 decisions, 5 uncertainties."
+      },
+      {
+        "file": "northstar-inventory-small.json",
+        "title": "Northstar Living — the inventory bet (small, blank)",
+        "description": "A compact-appliance retailer committing to holiday-season purchases 7-11 weeks in advance under uncertain demand and lead times. 4 metrics, 3 decisions, 3 uncertainties."
+      },
+      {
+        "file": "northstar-inventory-medium.json",
+        "title": "Northstar Living — the inventory bet (medium, blank)",
+        "description": "A compact-appliance retailer committing to holiday-season purchases 7-11 weeks in advance under uncertain demand and lead times. 6 metrics, 5 decisions, 5 uncertainties."
+      },
+      {
+        "file": "the-decision-factory.json",
+        "title": "The Decision Factory",
+        "description": "Framing of The Decision Factory by Adam DeJans and John Elam, Chs 1-2"
+      }
+    ]
+  },
+  "examples": {
+    "asterion-clinical-trial.json": {
+      "scope": "Product manager for drug",
+      "metrics": [
+        "Program NPV",
+        "Prob. trial success",
+        "Serious safety events",
+        "Time to approval",
+        "Peak annual sales",
+        "Patients reached at peak",
+        "Cash runway preserved",
+        "Data quality/consistency",
+        "Enrollment rate",
+        "Cost/patient-year"
+      ],
+      "assignments": {
+        "Program NPV": 1,
+        "Prob. trial success": 2,
+        "Serious safety events": 2,
+        "Time to approval": 2,
+        "Peak annual sales": 3,
+        "Cash runway preserved": 3,
+        "Data quality/consistency": 3,
+        "Enrollment rate": 4,
+        "Cost/patient-year": 4
+      },
+      "chipColors": {
+        "Program NPV": "max",
+        "Prob. trial success": "max",
+        "Serious safety events": "min",
+        "Time to approval": "limit-ceiling",
+        "Peak annual sales": "max",
+        "Patients reached at peak": "limit-floor",
+        "Cash runway preserved": "limit-floor",
+        "Data quality/consistency": "limit-ceiling",
+        "Enrollment rate": "max",
+        "Cost/patient-year": "limit-ceiling"
+      },
+      "decisions": [
+        "Development path",
+        "Dose selection",
+        "Patient population",
+        "Site network strategy",
+        "Recruitment investments",
+        "Financing strategy",
+        "Manufacturing capacity",
+        "Continuation/stopping rules"
+      ],
+      "matrix": {
+        "Development path": {
+          "Program NPV": "H",
+          "Prob. trial success": "H",
+          "Serious safety events": "L",
+          "Time to approval": "H",
+          "Peak annual sales": "M",
+          "Patients reached at peak": "M",
+          "Cash runway preserved": "H",
+          "Data quality/consistency": "M",
+          "Enrollment rate": "M",
+          "Cost/patient-year": "M"
+        },
+        "Dose selection": {
+          "Program NPV": "H",
+          "Prob. trial success": "H",
+          "Serious safety events": "H",
+          "Time to approval": "L",
+          "Peak annual sales": "M",
+          "Patients reached at peak": "M",
+          "Cash runway preserved": "L",
+          "Data quality/consistency": "L",
+          "Enrollment rate": "L",
+          "Cost/patient-year": "L"
+        },
+        "Patient population": {
+          "Program NPV": "H",
+          "Prob. trial success": "H",
+          "Serious safety events": "L",
+          "Time to approval": "M",
+          "Peak annual sales": "H",
+          "Patients reached at peak": "H",
+          "Cash runway preserved": "M",
+          "Data quality/consistency": "M",
+          "Enrollment rate": "H",
+          "Cost/patient-year": "L"
+        },
+        "Site network strategy": {
+          "Program NPV": "M",
+          "Prob. trial success": "L",
+          "Serious safety events": "L",
+          "Time to approval": "H",
+          "Peak annual sales": "L",
+          "Patients reached at peak": "L",
+          "Cash runway preserved": "M",
+          "Data quality/consistency": "H",
+          "Enrollment rate": "H",
+          "Cost/patient-year": "M"
+        },
+        "Recruitment investments": {
+          "Program NPV": "M",
+          "Prob. trial success": "L",
+          "Serious safety events": "L",
+          "Time to approval": "M",
+          "Peak annual sales": "L",
+          "Patients reached at peak": "L",
+          "Cash runway preserved": "M",
+          "Data quality/consistency": "M",
+          "Enrollment rate": "H",
+          "Cost/patient-year": "M"
+        },
+        "Financing strategy": {
+          "Program NPV": "H",
+          "Prob. trial success": "L",
+          "Serious safety events": "N",
+          "Time to approval": "M",
+          "Peak annual sales": "H",
+          "Patients reached at peak": "L",
+          "Cash runway preserved": "H",
+          "Data quality/consistency": "L",
+          "Enrollment rate": "L",
+          "Cost/patient-year": "L"
+        },
+        "Manufacturing capacity": {
+          "Program NPV": "M",
+          "Prob. trial success": "N",
+          "Serious safety events": "L",
+          "Time to approval": "H",
+          "Peak annual sales": "M",
+          "Patients reached at peak": "M",
+          "Cash runway preserved": "H",
+          "Data quality/consistency": "L",
+          "Enrollment rate": "N",
+          "Cost/patient-year": "L"
+        },
+        "Continuation/stopping rules": {
+          "Program NPV": "H",
+          "Prob. trial success": "M",
+          "Serious safety events": "H",
+          "Time to approval": "M",
+          "Peak annual sales": "L",
+          "Patients reached at peak": "L",
+          "Cash runway preserved": "H",
+          "Data quality/consistency": "L",
+          "Enrollment rate": "N",
+          "Cost/patient-year": "M"
+        }
+      },
+      "uncertainties": [
+        "Efficacy replication",
+        "High-dose safety profile",
+        "Regulatory requirements",
+        "Enrollment velocity",
+        "Competitor trajectory",
+        "Payer/reimbursement policy",
+        "Physician prescribing behavior",
+        "Manufacturing/supply reliability"
+      ],
+      "uMatrix": {
+        "Efficacy replication": {
+          "Program NPV": "H",
+          "Prob. trial success": "H",
+          "Serious safety events": "N",
+          "Time to approval": "M",
+          "Peak annual sales": "H",
+          "Patients reached at peak": "H",
+          "Cash runway preserved": "M",
+          "Data quality/consistency": "L",
+          "Enrollment rate": "L",
+          "Cost/patient-year": "L"
+        },
+        "High-dose safety profile": {
+          "Program NPV": "H",
+          "Prob. trial success": "H",
+          "Serious safety events": "H",
+          "Time to approval": "M",
+          "Peak annual sales": "H",
+          "Patients reached at peak": "H",
+          "Cash runway preserved": "M",
+          "Data quality/consistency": "L",
+          "Enrollment rate": "M",
+          "Cost/patient-year": "L"
+        },
+        "Regulatory requirements": {
+          "Program NPV": "H",
+          "Prob. trial success": "H",
+          "Serious safety events": "L",
+          "Time to approval": "H",
+          "Peak annual sales": "M",
+          "Patients reached at peak": "M",
+          "Cash runway preserved": "M",
+          "Data quality/consistency": "M",
+          "Enrollment rate": "L",
+          "Cost/patient-year": "L"
+        },
+        "Enrollment velocity": {
+          "Program NPV": "H",
+          "Prob. trial success": "L",
+          "Serious safety events": "L",
+          "Time to approval": "H",
+          "Peak annual sales": "M",
+          "Patients reached at peak": "L",
+          "Cash runway preserved": "H",
+          "Data quality/consistency": "L",
+          "Enrollment rate": "H",
+          "Cost/patient-year": "M"
+        },
+        "Competitor trajectory": {
+          "Program NPV": "H",
+          "Prob. trial success": "L",
+          "Serious safety events": "N",
+          "Time to approval": "L",
+          "Peak annual sales": "H",
+          "Patients reached at peak": "H",
+          "Cash runway preserved": "N",
+          "Data quality/consistency": "N",
+          "Enrollment rate": "M",
+          "Cost/patient-year": "N"
+        },
+        "Payer/reimbursement policy": {
+          "Program NPV": "H",
+          "Prob. trial success": "N",
+          "Serious safety events": "N",
+          "Time to approval": "L",
+          "Peak annual sales": "H",
+          "Patients reached at peak": "H",
+          "Cash runway preserved": "L",
+          "Data quality/consistency": "L",
+          "Enrollment rate": "N",
+          "Cost/patient-year": "N"
+        },
+        "Physician prescribing behavior": {
+          "Program NPV": "H",
+          "Prob. trial success": "N",
+          "Serious safety events": "N",
+          "Time to approval": "N",
+          "Peak annual sales": "H",
+          "Patients reached at peak": "H",
+          "Cash runway preserved": "N",
+          "Data quality/consistency": "L",
+          "Enrollment rate": "L",
+          "Cost/patient-year": "N"
+        },
+        "Manufacturing/supply reliability": {
+          "Program NPV": "M",
+          "Prob. trial success": "N",
+          "Serious safety events": "L",
+          "Time to approval": "M",
+          "Peak annual sales": "M",
+          "Patients reached at peak": "M",
+          "Cash runway preserved": "M",
+          "Data quality/consistency": "L",
+          "Enrollment rate": "L",
+          "Cost/patient-year": "L"
+        }
+      }
+    },
+    "aurora-motors.json": {
+      "metrics": [
+        "Contribution margin",
+        "On-time delivery",
+        "Weekly output",
+        "Dealer fill rate",
+        "Working capital",
+        "Premium freight"
+      ],
+      "assignments": {
+        "Contribution margin": 1,
+        "On-time delivery": 2,
+        "Weekly output": 2,
+        "Dealer fill rate": 3,
+        "Working capital": 3,
+        "Premium freight": 3
+      },
+      "decisions": [
+        "Component expediting",
+        "Incomplete-vehicle staging",
+        "Regional allocation",
+        "Production plan level",
+        "Supply-chain redesign"
+      ],
+      "matrix": {
+        "Component expediting": {
+          "Contribution margin": "M",
+          "On-time delivery": "H",
+          "Weekly output": "H",
+          "Dealer fill rate": "H",
+          "Working capital": "M",
+          "Premium freight": "H"
+        },
+        "Incomplete-vehicle staging": {
+          "Contribution margin": "L",
+          "On-time delivery": "L",
+          "Weekly output": "H",
+          "Dealer fill rate": "M",
+          "Working capital": "M",
+          "Premium freight": "N"
+        },
+        "Regional allocation": {
+          "Contribution margin": "H",
+          "On-time delivery": "L",
+          "Weekly output": "N",
+          "Dealer fill rate": "M",
+          "Working capital": "L",
+          "Premium freight": "L"
+        },
+        "Production plan level": {
+          "Contribution margin": "H",
+          "On-time delivery": "M",
+          "Weekly output": "H",
+          "Dealer fill rate": "H",
+          "Working capital": "H",
+          "Premium freight": "M"
+        },
+        "Supply-chain redesign": {
+          "Contribution margin": "M",
+          "On-time delivery": "L",
+          "Weekly output": "L",
+          "Dealer fill rate": "L",
+          "Working capital": "H",
+          "Premium freight": "L"
+        }
+      },
+      "uncertainties": [
+        "Tariff changes",
+        "Federal incentive changes",
+        "Fuel price shocks",
+        "Supplier lead times",
+        "Dealer cancellations"
+      ],
+      "uMatrix": {
+        "Tariff changes": {
+          "Contribution margin": "H",
+          "On-time delivery": "L",
+          "Weekly output": "L",
+          "Dealer fill rate": "L",
+          "Working capital": "M",
+          "Premium freight": "L"
+        },
+        "Federal incentive changes": {
+          "Contribution margin": "H",
+          "On-time delivery": "L",
+          "Weekly output": "M",
+          "Dealer fill rate": "M",
+          "Working capital": "M",
+          "Premium freight": "L"
+        },
+        "Fuel price shocks": {
+          "Contribution margin": "H",
+          "On-time delivery": "M",
+          "Weekly output": "M",
+          "Dealer fill rate": "M",
+          "Working capital": "L",
+          "Premium freight": "M"
+        },
+        "Supplier lead times": {
+          "Contribution margin": "M",
+          "On-time delivery": "H",
+          "Weekly output": "H",
+          "Dealer fill rate": "H",
+          "Working capital": "M",
+          "Premium freight": "H"
+        },
+        "Dealer cancellations": {
+          "Contribution margin": "H",
+          "On-time delivery": "N",
+          "Weekly output": "L",
+          "Dealer fill rate": "L",
+          "Working capital": "H",
+          "Premium freight": "N"
+        }
+      }
+    },
+    "brightnest-launch.json": {
+      "scope": "Regional manager",
+      "metrics": [
+        "Contribution/visit",
+        "Recurring customer rate",
+        "Cleaner retention",
+        "Completion rate"
+      ],
+      "assignments": {
+        "Contribution/visit": 1,
+        "Recurring customer rate": 2,
+        "Cleaner retention": 2,
+        "Completion rate": 3
+      },
+      "chipColors": {
+        "Contribution/visit": "max",
+        "Recurring customer rate": "limit-floor",
+        "Cleaner retention": "target",
+        "Completion rate": "target"
+      },
+      "decisions": [
+        "Launch geography",
+        "Cleaner compensation",
+        "Customer discount level"
+      ],
+      "matrix": {},
+      "uncertainties": [
+        "Customer demand",
+        "Cleaner labor supply",
+        "Geographic matching"
+      ],
+      "uMatrix": {}
+    },
+    "northstar-inventory-medium.json": {
+      "metrics": [
+        "Operating margin",
+        "Stockout rate",
+        "Excess inventory",
+        "Retailer OTIF",
+        "Emergency freight $",
+        "Working capital"
+      ],
+      "assignments": {
+        "Operating margin": 1,
+        "Stockout rate": 2,
+        "Excess inventory": 2,
+        "Retailer OTIF": 3,
+        "Emergency freight $": 3,
+        "Working capital": 3
+      },
+      "decisions": [
+        "Purchase quantities",
+        "Supplier allocation",
+        "Transportation & air reserve",
+        "Pricing & promotions",
+        "Channel allocation"
+      ],
+      "matrix": {},
+      "uncertainties": [
+        "Holiday demand",
+        "Supplier lead times",
+        "Competitor pricing",
+        "Retailer cancellations",
+        "Rare disruptions"
+      ],
+      "uMatrix": {}
+    },
+    "northstar-inventory-small.json": {
+      "metrics": [
+        "Operating margin",
+        "Stockout rate",
+        "Excess inventory",
+        "Retailer OTIF"
+      ],
+      "assignments": {
+        "Operating margin": 1,
+        "Stockout rate": 2,
+        "Excess inventory": 2,
+        "Retailer OTIF": 3
+      },
+      "decisions": [
+        "Purchase quantities",
+        "Supplier allocation",
+        "Pricing & promotions"
+      ],
+      "matrix": {},
+      "uncertainties": [
+        "Holiday demand",
+        "Supplier lead times",
+        "Competitor pricing"
+      ],
+      "uMatrix": {}
+    },
+    "prairieline-truckload.json": {
+      "metrics": [
+        "Operating margin",
+        "Customer acceptance rate",
+        "Driver turnover",
+        "Empty miles %",
+        "Home-time compliance",
+        "Miles/driver/wk"
+      ],
+      "assignments": {
+        "Operating margin": 1,
+        "Customer acceptance rate": 2,
+        "Driver turnover": 2,
+        "Empty miles %": 2,
+        "Home-time compliance": 3,
+        "Miles/driver/wk": 3
+      },
+      "decisions": [
+        "Load acceptance policy",
+        "Driver-to-load assignment",
+        "Empty repositioning",
+        "Brokerage vs asset use",
+        "Fleet size & domicile mix"
+      ],
+      "matrix": {
+        "Load acceptance policy": {
+          "Operating margin": "H",
+          "Customer acceptance rate": "H",
+          "Driver turnover": "L",
+          "Empty miles %": "M",
+          "Home-time compliance": "M",
+          "Miles/driver/wk": "M"
+        },
+        "Driver-to-load assignment": {
+          "Operating margin": "H",
+          "Customer acceptance rate": "M",
+          "Driver turnover": "M",
+          "Empty miles %": "H",
+          "Home-time compliance": "H",
+          "Miles/driver/wk": "H"
+        },
+        "Empty repositioning": {
+          "Operating margin": "M",
+          "Customer acceptance rate": "M",
+          "Driver turnover": "L",
+          "Empty miles %": "H",
+          "Home-time compliance": "L",
+          "Miles/driver/wk": "M"
+        },
+        "Brokerage vs asset use": {
+          "Operating margin": "H",
+          "Customer acceptance rate": "H",
+          "Driver turnover": "L",
+          "Empty miles %": "L",
+          "Home-time compliance": "L",
+          "Miles/driver/wk": "M"
+        },
+        "Fleet size & domicile mix": {
+          "Operating margin": "H",
+          "Customer acceptance rate": "M",
+          "Driver turnover": "H",
+          "Empty miles %": "H",
+          "Home-time compliance": "H",
+          "Miles/driver/wk": "M"
+        }
+      },
+      "uncertainties": [
+        "Freight demand tendering",
+        "Market rates",
+        "Driver availability",
+        "Fuel prices",
+        "Customer plant/delivery schedules"
+      ],
+      "uMatrix": {
+        "Freight demand tendering": {
+          "Operating margin": "H",
+          "Customer acceptance rate": "H",
+          "Driver turnover": "M",
+          "Empty miles %": "M",
+          "Home-time compliance": "M",
+          "Miles/driver/wk": "H"
+        },
+        "Market rates": {
+          "Operating margin": "H",
+          "Customer acceptance rate": "L",
+          "Driver turnover": "M",
+          "Empty miles %": "L",
+          "Home-time compliance": "N",
+          "Miles/driver/wk": "L"
+        },
+        "Driver availability": {
+          "Operating margin": "M",
+          "Customer acceptance rate": "H",
+          "Driver turnover": "L",
+          "Empty miles %": "L",
+          "Home-time compliance": "M",
+          "Miles/driver/wk": "H"
+        },
+        "Fuel prices": {
+          "Operating margin": "H",
+          "Customer acceptance rate": "N",
+          "Driver turnover": "N",
+          "Empty miles %": "N",
+          "Home-time compliance": "N",
+          "Miles/driver/wk": "N"
+        },
+        "Customer plant/delivery schedules": {
+          "Operating margin": "M",
+          "Customer acceptance rate": "M",
+          "Driver turnover": "M",
+          "Empty miles %": "L",
+          "Home-time compliance": "M",
+          "Miles/driver/wk": "M"
+        }
+      }
+    },
+    "summit-ridge-cash.json": {
+      "metrics": [
+        "Return vs benchmark",
+        "AUM",
+        "Redemption coverage",
+        "Trading cost",
+        "Portfolio drift",
+        "Cash drag"
+      ],
+      "assignments": {
+        "Return vs benchmark": 1,
+        "AUM": 2,
+        "Redemption coverage": 2,
+        "Trading cost": 3,
+        "Portfolio drift": 3,
+        "Cash drag": 3
+      },
+      "decisions": [
+        "Cash policy",
+        "Order-of-sale rule",
+        "Credit facility usage",
+        "Futures overlay",
+        "Portfolio liquidity design"
+      ],
+      "matrix": {
+        "Cash policy": {
+          "Return vs benchmark": "H",
+          "AUM": "M",
+          "Redemption coverage": "H",
+          "Trading cost": "H",
+          "Portfolio drift": "M",
+          "Cash drag": "H"
+        },
+        "Order-of-sale rule": {
+          "Return vs benchmark": "M",
+          "AUM": "L",
+          "Redemption coverage": "M",
+          "Trading cost": "H",
+          "Portfolio drift": "H",
+          "Cash drag": "L"
+        },
+        "Credit facility usage": {
+          "Return vs benchmark": "L",
+          "AUM": "L",
+          "Redemption coverage": "H",
+          "Trading cost": "H",
+          "Portfolio drift": "H",
+          "Cash drag": "N"
+        },
+        "Futures overlay": {
+          "Return vs benchmark": "M",
+          "AUM": "L",
+          "Redemption coverage": "L",
+          "Trading cost": "L",
+          "Portfolio drift": "L",
+          "Cash drag": "H"
+        },
+        "Portfolio liquidity design": {
+          "Return vs benchmark": "M",
+          "AUM": "L",
+          "Redemption coverage": "H",
+          "Trading cost": "H",
+          "Portfolio drift": "M",
+          "Cash drag": "L"
+        }
+      },
+      "uncertainties": [
+        "Redemption timing/magnitude",
+        "Market direction",
+        "Interest rates",
+        "Institutional client behavior",
+        "Trading liquidity conditions"
+      ],
+      "uMatrix": {
+        "Redemption timing/magnitude": {
+          "Return vs benchmark": "M",
+          "AUM": "H",
+          "Redemption coverage": "H",
+          "Trading cost": "H",
+          "Portfolio drift": "H",
+          "Cash drag": "L"
+        },
+        "Market direction": {
+          "Return vs benchmark": "M",
+          "AUM": "H",
+          "Redemption coverage": "L",
+          "Trading cost": "H",
+          "Portfolio drift": "L",
+          "Cash drag": "M"
+        },
+        "Interest rates": {
+          "Return vs benchmark": "L",
+          "AUM": "M",
+          "Redemption coverage": "L",
+          "Trading cost": "L",
+          "Portfolio drift": "L",
+          "Cash drag": "H"
+        },
+        "Institutional client behavior": {
+          "Return vs benchmark": "M",
+          "AUM": "H",
+          "Redemption coverage": "H",
+          "Trading cost": "H",
+          "Portfolio drift": "H",
+          "Cash drag": "L"
+        },
+        "Trading liquidity conditions": {
+          "Return vs benchmark": "M",
+          "AUM": "L",
+          "Redemption coverage": "M",
+          "Trading cost": "H",
+          "Portfolio drift": "H",
+          "Cash drag": "L"
+        }
+      }
+    },
+    "the-decision-factory.json": {
+      "metrics": [
+        "Operating margin",
+        "On-time delivery rate",
+        "Emergency freight $",
+        "Customer retention",
+        "Driver overtime %",
+        "Stockout rate",
+        "Empty miles %",
+        "Fleet utilization",
+        "Inventory holding cost",
+        "Contract penalty exposure"
+      ],
+      "assignments": {
+        "Operating margin": 1,
+        "On-time delivery rate": 2,
+        "Emergency freight $": 2,
+        "Customer retention": 2,
+        "Driver overtime %": 3,
+        "Stockout rate": 3,
+        "Empty miles %": 3,
+        "Fleet utilization": 3,
+        "Inventory holding cost": 4,
+        "Contract penalty exposure": 4
+      },
+      "decisions": [
+        "Re-optimization frequency/trigger",
+        "Driver & fleet reserve capacity",
+        "Inventory allocation across warehouses",
+        "Real-time re-routing policy",
+        "Demand forecast update cadence",
+        "Emergency driver sourcing policy",
+        "Load acceptance & prioritization policy",
+        "Safety stock / buffer levels"
+      ],
+      "matrix": {
+        "Re-optimization frequency/trigger": {
+          "Operating margin": "H",
+          "On-time delivery rate": "H",
+          "Emergency freight $": "H",
+          "Customer retention": "M",
+          "Driver overtime %": "M",
+          "Stockout rate": "M",
+          "Empty miles %": "M",
+          "Fleet utilization": "H",
+          "Inventory holding cost": "L",
+          "Contract penalty exposure": "M"
+        },
+        "Driver & fleet reserve capacity": {
+          "Operating margin": "M",
+          "On-time delivery rate": "H",
+          "Emergency freight $": "H",
+          "Customer retention": "M",
+          "Driver overtime %": "H",
+          "Stockout rate": "N",
+          "Empty miles %": "L",
+          "Fleet utilization": "H",
+          "Inventory holding cost": "N",
+          "Contract penalty exposure": "M"
+        },
+        "Inventory allocation across warehouses": {
+          "Operating margin": "M",
+          "On-time delivery rate": "H",
+          "Emergency freight $": "H",
+          "Customer retention": "M",
+          "Driver overtime %": "L",
+          "Stockout rate": "H",
+          "Empty miles %": "M",
+          "Fleet utilization": "L",
+          "Inventory holding cost": "H",
+          "Contract penalty exposure": "M"
+        },
+        "Real-time re-routing policy": {
+          "Operating margin": "H",
+          "On-time delivery rate": "H",
+          "Emergency freight $": "M",
+          "Customer retention": "M",
+          "Driver overtime %": "M",
+          "Stockout rate": "N",
+          "Empty miles %": "H",
+          "Fleet utilization": "H",
+          "Inventory holding cost": "N",
+          "Contract penalty exposure": "M"
+        },
+        "Demand forecast update cadence": {
+          "Operating margin": "M",
+          "On-time delivery rate": "M",
+          "Emergency freight $": "M",
+          "Customer retention": "L",
+          "Driver overtime %": "L",
+          "Stockout rate": "H",
+          "Empty miles %": "L",
+          "Fleet utilization": "M",
+          "Inventory holding cost": "M",
+          "Contract penalty exposure": "L"
+        },
+        "Emergency driver sourcing policy": {
+          "Operating margin": "M",
+          "On-time delivery rate": "H",
+          "Emergency freight $": "H",
+          "Customer retention": "M",
+          "Driver overtime %": "H",
+          "Stockout rate": "N",
+          "Empty miles %": "L",
+          "Fleet utilization": "M",
+          "Inventory holding cost": "N",
+          "Contract penalty exposure": "M"
+        },
+        "Load acceptance & prioritization policy": {
+          "Operating margin": "H",
+          "On-time delivery rate": "H",
+          "Emergency freight $": "M",
+          "Customer retention": "H",
+          "Driver overtime %": "L",
+          "Stockout rate": "L",
+          "Empty miles %": "M",
+          "Fleet utilization": "M",
+          "Inventory holding cost": "L",
+          "Contract penalty exposure": "H"
+        },
+        "Safety stock / buffer levels": {
+          "Operating margin": "M",
+          "On-time delivery rate": "M",
+          "Emergency freight $": "M",
+          "Customer retention": "L",
+          "Driver overtime %": "N",
+          "Stockout rate": "H",
+          "Empty miles %": "N",
+          "Fleet utilization": "L",
+          "Inventory holding cost": "H",
+          "Contract penalty exposure": "L"
+        }
+      },
+      "uncertainties": [
+        "Demand spikes/volatility",
+        "Traffic/road disruptions",
+        "Driver absenteeism",
+        "Travel time variability",
+        "Inventory record errors",
+        "Vehicle breakdowns",
+        "Customer delivery window changes",
+        "Rare correlated disruptions"
+      ],
+      "uMatrix": {
+        "Demand spikes/volatility": {
+          "Operating margin": "H",
+          "On-time delivery rate": "H",
+          "Emergency freight $": "H",
+          "Customer retention": "M",
+          "Driver overtime %": "M",
+          "Stockout rate": "H",
+          "Empty miles %": "L",
+          "Fleet utilization": "M",
+          "Inventory holding cost": "M",
+          "Contract penalty exposure": "H"
+        },
+        "Traffic/road disruptions": {
+          "Operating margin": "M",
+          "On-time delivery rate": "H",
+          "Emergency freight $": "H",
+          "Customer retention": "M",
+          "Driver overtime %": "M",
+          "Stockout rate": "N",
+          "Empty miles %": "H",
+          "Fleet utilization": "M",
+          "Inventory holding cost": "N",
+          "Contract penalty exposure": "H"
+        },
+        "Driver absenteeism": {
+          "Operating margin": "M",
+          "On-time delivery rate": "H",
+          "Emergency freight $": "M",
+          "Customer retention": "L",
+          "Driver overtime %": "H",
+          "Stockout rate": "N",
+          "Empty miles %": "L",
+          "Fleet utilization": "H",
+          "Inventory holding cost": "N",
+          "Contract penalty exposure": "M"
+        },
+        "Travel time variability": {
+          "Operating margin": "L",
+          "On-time delivery rate": "H",
+          "Emergency freight $": "M",
+          "Customer retention": "L",
+          "Driver overtime %": "M",
+          "Stockout rate": "N",
+          "Empty miles %": "M",
+          "Fleet utilization": "M",
+          "Inventory holding cost": "N",
+          "Contract penalty exposure": "M"
+        },
+        "Inventory record errors": {
+          "Operating margin": "L",
+          "On-time delivery rate": "M",
+          "Emergency freight $": "M",
+          "Customer retention": "L",
+          "Driver overtime %": "N",
+          "Stockout rate": "H",
+          "Empty miles %": "N",
+          "Fleet utilization": "N",
+          "Inventory holding cost": "M",
+          "Contract penalty exposure": "L"
+        },
+        "Vehicle breakdowns": {
+          "Operating margin": "L",
+          "On-time delivery rate": "M",
+          "Emergency freight $": "M",
+          "Customer retention": "L",
+          "Driver overtime %": "L",
+          "Stockout rate": "N",
+          "Empty miles %": "L",
+          "Fleet utilization": "H",
+          "Inventory holding cost": "N",
+          "Contract penalty exposure": "L"
+        },
+        "Customer delivery window changes": {
+          "Operating margin": "L",
+          "On-time delivery rate": "M",
+          "Emergency freight $": "L",
+          "Customer retention": "M",
+          "Driver overtime %": "L",
+          "Stockout rate": "N",
+          "Empty miles %": "M",
+          "Fleet utilization": "L",
+          "Inventory holding cost": "N",
+          "Contract penalty exposure": "M"
+        },
+        "Rare correlated disruptions": {
+          "Operating margin": "H",
+          "On-time delivery rate": "H",
+          "Emergency freight $": "H",
+          "Customer retention": "H",
+          "Driver overtime %": "H",
+          "Stockout rate": "H",
+          "Empty miles %": "M",
+          "Fleet utilization": "H",
+          "Inventory holding cost": "M",
+          "Contract penalty exposure": "H"
+        }
+      }
+    }
+  }
+}
