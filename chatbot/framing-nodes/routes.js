@@ -154,6 +154,100 @@ function hashIp(rawIp) {
   return createHash('sha256').update(s).digest('hex').slice(0, 32);
 }
 
+// ---- one-time bootstrap (admin-gated) ------------------------------------
+// GET /bootstrap-ui?p=<ADMIN_PASSWORD>
+// Idempotent — creates root + Public users nodes if they don't exist and
+// returns an HTML page showing both URL pairs. Safe to leave in production:
+// gated by the shared ADMIN_PASSWORD env var; a second call just re-shows
+// the existing URLs. Warren uses this once, bookmarks his root URLs, and
+// then never touches it again.
+router.get('/bootstrap-ui', dbRoute(async (req, res) => {
+  const provided = String(req.query.p || '');
+  if (!process.env.ADMIN_PASSWORD || provided !== process.env.ADMIN_PASSWORD) {
+    return res.status(401).type('text/plain').send('Admin password required (add ?p=<ADMIN_PASSWORD> to the URL).');
+  }
+
+  const publicBase = (process.env.FRAMING_TOOL_URL || 'https://warrenpowell.org/decision-framing-tool/').replace(/\/+$/, '');
+  const fmtUrls = (n) => ({
+    read:  publicBase + '/?node=' + n.read_id,
+    write: publicBase + '/?node=' + n.read_id + '&w=' + n.write_token,
+  });
+
+  // Ensure root
+  let rootRow = (await query('SELECT * FROM nodes WHERE is_root = true LIMIT 1')).rows[0];
+  let rootCreated = false;
+  if (!rootRow) {
+    rootRow = (await query(
+      `INSERT INTO nodes (read_id, write_token, parent_id, name, owner_label, is_root)
+       VALUES ($1, $2, NULL, $3, $4, true) RETURNING *`,
+      [newReadId(), newWriteToken(), 'Root (Warren)', 'Warren Powell']
+    )).rows[0];
+    rootCreated = true;
+  }
+
+  // Ensure Public users
+  let pubRow = (await query('SELECT * FROM nodes WHERE is_public_users = true LIMIT 1')).rows[0];
+  let pubCreated = false;
+  if (!pubRow) {
+    pubRow = (await query(
+      `INSERT INTO nodes (read_id, write_token, parent_id, name, owner_label, is_public_users)
+       VALUES ($1, $2, $3, $4, $5, true) RETURNING *`,
+      [newReadId(), newWriteToken(), rootRow.id, 'Public users', 'Warren Powell']
+    )).rows[0];
+    pubCreated = true;
+  }
+
+  const rootUrls = fmtUrls(rootRow);
+  const pubUrls  = fmtUrls(pubRow);
+
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+
+  res.type('text/html').send(`<!doctype html>
+<html><head><meta charset="utf-8"><title>Framing tool v2 — bootstrap</title>
+<style>
+  body { font: 14px/1.4 system-ui, -apple-system, Segoe UI, sans-serif; max-width: 900px; margin: 24px auto; padding: 0 16px; color: #333; }
+  h1 { color: #8a3a1a; }
+  h2 { color: #5a3e1f; margin-top: 32px; border-bottom: 1px solid #e6d8bf; padding-bottom: 4px; }
+  .status { padding: 6px 10px; border-radius: 4px; display: inline-block; font-size: 0.9em; }
+  .created { background: #dcfce7; color: #14532d; }
+  .existing { background: #fef3c7; color: #78350f; }
+  .row { display: flex; align-items: center; gap: 8px; margin: 12px 0; }
+  .label { font-weight: 600; min-width: 100px; color: #5a3e1f; }
+  .url { flex: 1; font-family: ui-monospace, Menlo, monospace; font-size: 0.9em; padding: 6px 10px; background: #faf5e6; border: 1px solid #d6c4a3; border-radius: 4px; word-break: break-all; }
+  button { padding: 6px 12px; border: 1px solid #c9a76a; background: #fff; color: #5a3e1f; border-radius: 4px; cursor: pointer; font: inherit; }
+  button:hover { background: #f2e6c9; }
+  .warning { background: #fee2e2; color: #991b1b; padding: 12px 16px; border-radius: 6px; margin-top: 24px; border-left: 4px solid #dc2626; }
+</style>
+</head><body>
+<h1>Framing tool v2 — bootstrap</h1>
+
+<h2>Root node <span class="status ${rootCreated ? 'created' : 'existing'}">${rootCreated ? 'newly created' : 'already existed'}</span></h2>
+<p><b>Owner:</b> ${esc(rootRow.owner_label)} · <b>Name:</b> ${esc(rootRow.name)}</p>
+<div class="row"><span class="label">Read URL</span><span class="url" id="r-read">${esc(rootUrls.read)}</span><button onclick="copy('r-read')">Copy</button></div>
+<div class="row"><span class="label">Write URL</span><span class="url" id="r-write">${esc(rootUrls.write)}</span><button onclick="copy('r-write')">Copy</button></div>
+
+<h2>Public users node <span class="status ${pubCreated ? 'created' : 'existing'}">${pubCreated ? 'newly created' : 'already existed'}</span></h2>
+<p><b>Owner:</b> ${esc(pubRow.owner_label)} · <b>Name:</b> ${esc(pubRow.name)} (children created here by first-save)</p>
+<div class="row"><span class="label">Read URL</span><span class="url" id="p-read">${esc(pubUrls.read)}</span><button onclick="copy('p-read')">Copy</button></div>
+<div class="row"><span class="label">Write URL</span><span class="url" id="p-write">${esc(pubUrls.write)}</span><button onclick="copy('p-write')">Copy</button></div>
+
+<div class="warning"><b>Save the ROOT WRITE URL somewhere very safe.</b> Losing it means nobody can rescue you — no admin console exists. A password manager entry, an encrypted note, or a printed copy in a physical safe all work.</div>
+
+<script>
+  function copy(id) {
+    const t = document.getElementById(id).textContent;
+    navigator.clipboard.writeText(t).then(() => {
+      // brief inline confirmation on the button
+      event.target.textContent = 'Copied ✓';
+      setTimeout(() => { event.target.textContent = 'Copy'; }, 1200);
+    });
+  }
+</script>
+</body></html>`);
+}));
+
 // ---- routes --------------------------------------------------------------
 
 // POST /nodes  — first-save auto-create under Public users
