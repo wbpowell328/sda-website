@@ -508,8 +508,9 @@ date: 2026-08-11
      was used to open a server-backed library. */
   .fp-library-bar {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 10px;
+    gap: 8px 10px;
     padding: 10px 16px;
     margin-bottom: 12px;
     background: #f2e6c9;
@@ -551,11 +552,11 @@ date: 2026-08-11
   .fp-library-crumb {
     color: #5a3e1f;
     font-weight: 600;
-    flex: 1;
+    flex: 1 1 100%;
     min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
   .fp-library-mode {
     padding: 2px 10px;
@@ -3547,6 +3548,7 @@ date: 2026-08-11
     // upward past their access).
     const crumb = (loadedNode.ancestry || []).join(' › ') || loadedNode.name;
     $('#fp-library-crumb').textContent = '📁 ' + crumb;
+    $('#fp-library-crumb').title = crumb;
     const modeEl = $('#fp-library-mode');
     modeEl.textContent = mode === 'edit' ? 'Edit mode' : 'View only';
     modeEl.className = 'fp-library-mode ' + mode;
