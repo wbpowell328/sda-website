@@ -2750,6 +2750,36 @@ date: 2026-08-11
       return out;
     };
 
+    // Sub-decisions arrive from the bot as { <parentDecisionName>: string[] }.
+    // Translate into the tool's subframes tree — one sub-frame per parent
+    // that actually has options, keyed by the top-level decision name.
+    // Only parents that appear in `decisions` produce a sub-frame; stray
+    // keys the model may have hallucinated are dropped silently.
+    const subframes = {};
+    const rawSubs = (f.subDecisions && typeof f.subDecisions === 'object')
+      ? f.subDecisions
+      : ((f.subframes && typeof f.subframes === 'object') ? null : {});
+    if (rawSubs) {
+      const parentSet = new Set(decisions);
+      for (const parent of Object.keys(rawSubs)) {
+        if (!parentSet.has(parent)) continue;
+        const subs = rawSubs[parent];
+        if (!Array.isArray(subs)) continue;
+        const clean = subs.filter(Boolean).map(String);
+        if (clean.length) {
+          subframes[parent] = {
+            scope: '', decisions: clean, matrix: {}, subframes: {},
+          };
+        }
+      }
+    }
+    // If the framing already carries a subframes tree (URL share, JSON
+    // import, older bot output), let normalizeState pick it up rather
+    // than overwriting it with an empty map.
+    const outSubframes = (f.subframes && typeof f.subframes === 'object' && !f.subDecisions)
+      ? f.subframes
+      : subframes;
+
     return {
       scope:       (typeof f.scope === 'string')       ? f.scope       : '',
       description: (typeof f.description === 'string') ? f.description : '',
@@ -2758,6 +2788,7 @@ date: 2026-08-11
       chipColors:  (f.chipColors && typeof f.chipColors === 'object') ? f.chipColors : {},
       decisions,
       matrix:      norm(f.matrix, decisions),
+      subframes:   outSubframes,
       uncertainties,
       uMatrix:     norm(f.uMatrix, uncertainties),
     };

@@ -32,6 +32,32 @@ Time horizon matters too. A "weekly planner" doesn't decide today's routing (fro
 
 **Decisions** are the levers the decision-maker actually controls — the things they DO. They should be things reasonable people could disagree about. Not outcomes, not uncertainties. 3–4 word noun phrases: "Purchase quantities", "Fleet size & domicile mix", "Load acceptance policy".
 
+**Categorical decisions** get sub-options. When a top-level decision is really "which one to pick" from a short list of concrete alternatives, populate `subDecisions[decision name]` with the ordered option list. Examples:
+
+- "Choose production location" → ["Austin, TX", "Reno, NV", "Guadalajara, MX", "Bratislava, SK"]
+- "Pick supplier" → ["ContractCo (domestic)", "Zephyr (offshore)", "GlobalParts (regional)"]
+- "Which drug candidate to advance" → ["Compound A (kinase inhibitor)", "Compound B (monoclonal Ab)", "Compound C (small molecule)"]
+- "Which market to enter next" → ["Germany", "Brazil", "Southeast Asia", "Middle East"]
+
+Do NOT create `subDecisions` for ATOMIC decisions — decisions that are single-valued, continuous, or an activity rather than a choice among named alternatives:
+
+- "Set the price" — atomic (continuous variable)
+- "Approve the design" — atomic (yes/no gate)
+- "Schedule production" — atomic (activity)
+- "Set safety-stock levels" — atomic (continuous)
+
+If NONE of the top-level decisions are categorical, OMIT the `subDecisions` field entirely.
+
+**Sub-decision counts per size (per-parent caps):**
+- small ≤ 4 options per parent
+- medium ≤ 6 options per parent
+- large ≤ 8 options per parent
+- max ≤ 12 options per parent
+
+Sub-decisions live at ONE level below the parent — do NOT nest further. If a sub-option itself needs decomposition, the user can drill in and add it by hand.
+
+The top-level `matrix` and `uMatrix` are keyed by the top-level decision/uncertainty names only. Do NOT include sub-decision rows in these matrices; sub-decision impact matrices are filled in later by the user (or by a separate matrix call).
+
 **Uncertainties** are external factors that affect performance but the decision-maker does NOT control. 2–4 word noun phrases: "Freight demand", "Fuel prices", "Supplier lead times", "Rare disruptions". Include at least one uncommon-but-consequential item ("rare disruptions", "black swan events") when the problem calls for it.
 
 ## Sizing (respect the user's request exactly)
@@ -79,7 +105,8 @@ Return via the `record_framing` tool. The exact schema is enforced. Key nuances:
 - `metrics` — array of metric-name strings, in pyramid-tier order.
 - `assignments` — object mapping EVERY metric name to a tier integer 1–4. Every metric must appear as a key. Exactly one metric maps to 1.
 - `decisions` — array of decision-name strings, most-impactful first.
-- `matrix` — object keyed by decision name; each value is an object keyed by metric name with H/M/L/N values. INCLUDE every (decision, metric) pair.
+- `subDecisions` — OPTIONAL object keyed by top-level decision name → array of sub-option strings. Include ONLY for categorical decisions; omit the field entirely if no decision is categorical.
+- `matrix` — object keyed by TOP-level decision name; each value is an object keyed by metric name with H/M/L/N values. INCLUDE every (top-level decision, metric) pair. Do NOT include sub-decision rows here.
 - `uncertainties` — array of uncertainty-name strings.
 - `uMatrix` — same shape as `matrix` but keyed by uncertainty name.
 

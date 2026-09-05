@@ -248,9 +248,17 @@ const FRAMING_TOOL = {
         items: { type: 'string' },
         description: 'Decisions the decision-maker controls, ordered most-impactful first. Length must match: small=3, medium=5, large=8, max=20.',
       },
+      subDecisions: {
+        type: 'object',
+        description: 'OPTIONAL. For any top-level decision that is CATEGORICAL — a choice among concrete alternatives (e.g. "Choose supplier" → specific suppliers, "Choose production location" → specific cities, "Which drug candidate to advance" → specific compounds) — provide the ordered list of options. Keys must match top-level decision names exactly. OMIT entries for atomic decisions (e.g. "Set price", "Approve design", "Schedule production"). Sub-count caps per size: small≤4, medium≤6, large≤8, max≤12 per parent. Do NOT nest further — this is the ONLY additional level.',
+        additionalProperties: {
+          type: 'array',
+          items: { type: 'string' },
+        },
+      },
       matrix: {
         type: 'object',
-        description: 'Impact matrix keyed by decision name → object keyed by metric name → "H"|"M"|"L"|"N". Include every (decision, metric) pair.',
+        description: 'Impact matrix keyed by decision name → object keyed by metric name → "H"|"M"|"L"|"N". Include every (decision, metric) pair. Keyed by the TOP-level decision names only — do NOT include sub-decision rows here.',
         additionalProperties: {
           type: 'object',
           additionalProperties: { type: 'string', enum: ['H', 'M', 'L', 'N'] },
@@ -312,9 +320,17 @@ const CREATE_FRAMING_LINK_TOOL = {
         items: { type: 'string' },
         description: 'The levers the decision-maker actually controls (3–8 items), ordered most-impactful first.',
       },
+      subDecisions: {
+        type: 'object',
+        description: 'OPTIONAL. For any top-level decision that is CATEGORICAL — a choice among concrete alternatives (e.g. "Choose supplier" → specific suppliers, "Choose production location" → specific cities, "Which drug candidate to advance" → specific compounds) — provide the ordered list of options. Keys must match top-level decision names exactly. OMIT entries for atomic decisions. Up to ~6 options per parent for a typical chat-generated framing. Do NOT nest further — this is the ONLY additional level.',
+        additionalProperties: {
+          type: 'array',
+          items: { type: 'string' },
+        },
+      },
       matrix: {
         type: 'object',
-        description: 'Impact matrix keyed by decision name → object keyed by metric name → "H"|"M"|"L"|"N". Include every (decision, metric) pair.',
+        description: 'Impact matrix keyed by decision name → object keyed by metric name → "H"|"M"|"L"|"N". Include every (decision, metric) pair. Keyed by the TOP-level decision names only — do NOT include sub-decision rows here.',
         additionalProperties: {
           type: 'object',
           additionalProperties: { type: 'string', enum: ['H', 'M', 'L', 'N'] },
@@ -340,14 +356,34 @@ const CREATE_FRAMING_LINK_TOOL = {
 
 function encodeFramingToUrl(input) {
   // Coerce every field into the framing tool's state shape.
+  const decisions = Array.isArray(input && input.decisions) ? input.decisions : [];
+  // Translate the model's subDecisions map into the tool's subframes tree.
+  // Only include entries whose parent name matches an actual top-level
+  // decision — silently drop stray keys the model may have hallucinated.
+  const subframes = {};
+  const rawSubs = (input && input.subDecisions && typeof input.subDecisions === 'object')
+    ? input.subDecisions : {};
+  const parents = new Set(decisions.map(String));
+  for (const parent of parents) {
+    const subs = rawSubs[parent];
+    if (Array.isArray(subs)) {
+      const clean = subs.filter(Boolean).map(String);
+      if (clean.length) {
+        subframes[parent] = {
+          scope: '', decisions: clean, matrix: {}, subframes: {},
+        };
+      }
+    }
+  }
   const doc = {
     scope:         String((input && input.scope) || ''),
     description:   String((input && input.description) || ''),
     metrics:       Array.isArray(input && input.metrics)       ? input.metrics       : [],
     assignments:   (input && input.assignments && typeof input.assignments === 'object') ? input.assignments : {},
     chipColors:    {},   // chatbot doesn't set metric flavors
-    decisions:     Array.isArray(input && input.decisions)     ? input.decisions     : [],
+    decisions,
     matrix:        (input && input.matrix && typeof input.matrix === 'object') ? input.matrix : {},
+    subframes,
     uncertainties: Array.isArray(input && input.uncertainties) ? input.uncertainties : [],
     uMatrix:       (input && input.uMatrix && typeof input.uMatrix === 'object') ? input.uMatrix : {},
   };
@@ -371,7 +407,13 @@ const ASKPP_TOOL_INSTRUCTIONS =
   'a short scope (role + altitude + horizon), 4–10 metrics organized into a ' +
   '4-tier pyramid (exactly one Tier 1), 3–8 decisions the decision-maker ' +
   'controls, and 3–8 uncertainties they must react to. Pre-score both ' +
-  'matrices honestly (not every cell is H — discriminate).\n' +
+  'matrices honestly (not every cell is H — discriminate). ' +
+  'When a top-level decision is CATEGORICAL (choose-among-options — e.g. ' +
+  '"Choose supplier", "Choose production location", "Which drug candidate to ' +
+  'advance"), populate `subDecisions[decision name]` with the specific ' +
+  'options (up to ~6). OMIT subDecisions for atomic decisions ("Set price", ' +
+  '"Approve design"). Sub-decisions live at ONE level below the parent — ' +
+  'no deeper.\n' +
   '  2. Pass it to the tool; you\'ll get back a URL.\n' +
   '  3. In your reply, include the URL as a Markdown link: ' +
   '`[Open in the decision framing tool →](URL)`. Add one or two sentences ' +
@@ -474,9 +516,16 @@ async function urlToContentBlock(url) {
 
 function sizeInstructions(size) {
   const s = String(size || 'medium').toLowerCase();
-  const spec = { small: [4, 3, 3], medium: [6, 5, 5], large: [10, 8, 8], max: [20, 20, 20] };
-  const [m, d, u] = spec[s] || spec.medium;
-  return { size: s in spec ? s : 'medium', metrics: m, decisions: d, uncertainties: u };
+  // Fourth number is the per-parent sub-decision cap for categorical
+  // top-level decisions — 0 disables sub-decisions entirely.
+  const spec = {
+    small:  [4,  3,  3,  4],
+    medium: [6,  5,  5,  6],
+    large:  [10, 8,  8,  8],
+    max:    [20, 20, 20, 12],
+  };
+  const [m, d, u, subCap] = spec[s] || spec.medium;
+  return { size: s in spec ? s : 'medium', metrics: m, decisions: d, uncertainties: u, subCap };
 }
 
 // Per-matrix scoring: given the metrics + rows already on the page, fill in
@@ -595,7 +644,7 @@ app.post('/framing', framingLimiter, (req, res) => {
       const description = String(req.body?.description || '').trim().slice(0, FRAMING_MAX_CHARS);
       const url = String(req.body?.url || '').trim();
       const scope = String(req.body?.scope || '').trim().slice(0, 2000);
-      const { size, metrics: nM, decisions: nD, uncertainties: nU } = sizeInstructions(req.body?.size);
+      const { size, metrics: nM, decisions: nD, uncertainties: nU, subCap } = sizeInstructions(req.body?.size);
 
       // Build the user content: any combination of file + URL + text is fine,
       // but the user must provide at least one signal.
@@ -640,12 +689,13 @@ app.post('/framing', framingLimiter, (req, res) => {
           `  - exactly ${nM} metrics\n` +
           `  - exactly ${nD} decisions\n` +
           `  - exactly ${nU} uncertainties\n` +
+          `  - for CATEGORICAL top-level decisions (choose-among-options), up to ${subCap} sub-options per parent via subDecisions. OMIT subDecisions for atomic decisions.\n` +
           (scope
             ? `Keep every item strictly inside the SCOPE described at the top. ` +
               `Do NOT include items that belong to roles above or below this ` +
               `decision-maker, even if they're prominent in the source. `
             : ``) +
-          `Pre-score both impact matrices. Call the record_framing tool.`,
+          `Pre-score both impact matrices (top-level only — sub-decision matrices are filled later). Call the record_framing tool.`,
       });
 
       const response = await client.messages.create({
