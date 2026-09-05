@@ -229,6 +229,10 @@ const FRAMING_TOOL = {
   input_schema: {
     type: 'object',
     properties: {
+      title: {
+        type: 'string',
+        description: 'A short case name (2–5 words) suitable for a filename or a library card title. This is NOT a description — it is a compact identifier. Examples: "Aurora Motors", "Northstar Inventory", "Regional Freight Dispatch", "Meningitis Trial Design". No punctuation at the end, no leading article. Derive from the company / problem / domain named in the source material.',
+      },
       description: {
         type: 'string',
         description: 'A 1–2 sentence abstract of the framed decision problem — who the decision-maker is, what they\'re deciding, and roughly the shape (e.g. "A regional dispatch manager choosing weekly load and driver assignments under demand and disruption uncertainty. 6 metrics, 5 decisions, 5 uncertainties."). Shown under the title in the library. Aim for 20–40 words.',
@@ -297,6 +301,10 @@ const CREATE_FRAMING_LINK_TOOL = {
   input_schema: {
     type: 'object',
     properties: {
+      title: {
+        type: 'string',
+        description: 'A short case name (2–5 words) suitable for a filename or a library card title. NOT a description — a compact identifier. Examples: "Aurora Motors", "Northstar Inventory", "Regional Freight Dispatch". Derive from the company / problem / domain named in the user\'s message.',
+      },
       scope: {
         type: 'string',
         description: 'Who or what makes these decisions — role + altitude in the org + planning horizon. Every item below must fit this decision-maker.',
@@ -376,6 +384,7 @@ function encodeFramingToUrl(input) {
     }
   }
   const doc = {
+    title:         String((input && input.title) || ''),
     scope:         String((input && input.scope) || ''),
     description:   String((input && input.description) || ''),
     metrics:       Array.isArray(input && input.metrics)       ? input.metrics       : [],
@@ -404,6 +413,7 @@ const ASKPP_TOOL_INSTRUCTIONS =
   'just discussing framing concepts or asking definitional questions.\n\n' +
   'When you do call it:\n' +
   '  1. Silently construct a first-cut framing following Warren\'s methodology: ' +
+  'a short case `title` (2–5 words like "Aurora Motors" or "Northstar Inventory"), ' +
   'a short scope (role + altitude + horizon), 4–10 metrics organized into a ' +
   '4-tier pyramid (exactly one Tier 1), 3–8 decisions the decision-maker ' +
   'controls, and 3–8 uncertainties they must react to. Pre-score both ' +

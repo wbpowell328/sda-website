@@ -984,7 +984,7 @@ date: 2026-08-11
   //   matrix       : { decision: { metric: 'H'|'M'|'L'|'N' } } —
   //                  missing = blank (not yet scored).
   let state = {
-    scope: '', description: '',
+    title: '', scope: '', description: '',
     metrics: [], assignments: {}, chipColors: {},
     decisions: [], matrix: {}, subframes: {},
     uncertainties: [], uMatrix: {},
@@ -1030,6 +1030,7 @@ date: 2026-08-11
   // links or files saved before newer fields existed).
   function normalizeState(s) {
     return {
+      title:         (s && typeof s.title === 'string')       ? s.title        : '',
       scope:         (s && typeof s.scope === 'string')       ? s.scope        : '',
       description:   (s && typeof s.description === 'string') ? s.description  : '',
       metrics:       Array.isArray(s && s.metrics)            ? s.metrics      : [],
@@ -1285,6 +1286,7 @@ date: 2026-08-11
   }
   function snapshotForSave() {
     return {
+      title: state.title,
       scope: state.scope,
       description: state.description,
       metrics: state.metrics,
@@ -1317,14 +1319,36 @@ date: 2026-08-11
     renderCurrentFileLabel();
     flashStatus('Saved to "' + currentName + '".');
   }
+  // Best-effort short name when we have no explicit title/currentName
+  // /banner. Used as the LAST-resort pre-fill for Save-as so the prompt
+  // is never empty (an empty prompt lets Chrome autofill it with the
+  // current page URL, which is confusing).
+  function deriveSuggestedName() {
+    // First non-empty decision, capped at ~5 words.
+    if (Array.isArray(state.decisions) && state.decisions.length) {
+      const first = String(state.decisions[0]).trim();
+      if (first) return first.split(/\s+/).slice(0, 5).join(' ');
+    }
+    // Tier-1 metric name.
+    if (state.assignments && Array.isArray(state.metrics)) {
+      for (const m of state.metrics) {
+        if (Number(state.assignments[m]) === 1) return String(m).trim();
+      }
+    }
+    // Date-stamped placeholder — enough to defeat URL autofill.
+    return 'New framing ' + new Date().toISOString().slice(0, 10);
+  }
   function saveAsFile() {
     // Prompt pre-fill priority:
     //   1. currentName if the doc already has a save-target,
-    //   2. otherwise a cleaned-up version of the banner's docTitle so
+    //   2. otherwise state.title (the bot's compact case name),
+    //   3. otherwise a cleaned-up version of the banner's docTitle so
     //      an AI draft ("AI draft — <source>") or JSON import
     //      ("Imported — <basename>") pre-fills as just <source> /
-    //      <basename> — Warren doesn't want to retype what's already
-    //      shown at the top of the workspace.
+    //      <basename>,
+    //   4. finally a smart fallback derived from state so the box is
+    //      NEVER empty — an empty prompt lets some browsers autofill
+    //      it with the current page URL, which is very confusing.
     const cleanedFromBanner = docTitle
       ? String(docTitle)
           .replace(/^\s*AI draft\s*[—-]\s*/i, '')
@@ -1334,11 +1358,13 @@ date: 2026-08-11
       : '';
     // Never pre-fill with just the AskPP source-less default ("AI draft
     // — Ask Professor Powell (chatbot)" strips down to "Ask Professor
-    // Powell (chatbot)", which isn't a case name) — fall through to
-    // empty in that case.
+    // Powell (chatbot)", which isn't a case name).
     const cleanedFinal = /^ask professor powell/i.test(cleanedFromBanner)
       ? '' : cleanedFromBanner;
-    const suggested = currentName || cleanedFinal || '';
+    const suggested = currentName
+      || (state.title && state.title.trim())
+      || cleanedFinal
+      || deriveSuggestedName();
     const raw = window.prompt('Save this decision as:', suggested);
     if (raw == null) return;
     const name = raw.trim();
@@ -2781,6 +2807,7 @@ date: 2026-08-11
       : subframes;
 
     return {
+      title:       (typeof f.title === 'string')       ? f.title       : '',
       scope:       (typeof f.scope === 'string')       ? f.scope       : '',
       description: (typeof f.description === 'string') ? f.description : '',
       metrics,
@@ -2801,7 +2828,13 @@ date: 2026-08-11
     // the user doesn't have to re-type it above.
     if (scopeText && !state.scope) state.scope = scopeText;
     setCurrentName(null);                                  // AI drafts have no save-target
-    setDocTitle('AI draft — ' + (sourceLabel || 'Ask Professor Powell'));
+    // Prefer the bot's `title` for the banner so Save-as pre-fills with a
+    // useful short case name ("Aurora Motors") rather than the whole source
+    // URL / filename / message the user pasted in.
+    const draftLabel = (state.title && state.title.trim())
+      ? state.title.trim()
+      : (sourceLabel || 'Ask Professor Powell');
+    setDocTitle('AI draft — ' + draftLabel);
     $('#fp-scope-input').value         = state.scope || '';
     $('#fp-metrics-input').value       = state.metrics.join('\n');
     $('#fp-decisions-input').value     = state.decisions.join('\n');
@@ -2872,7 +2905,13 @@ date: 2026-08-11
     try {
       const src = new URLSearchParams(window.location.search).get('src');
       if (src === 'askpp' && state.metrics && state.metrics.length > 0) {
-        setDocTitle('AI draft — Ask Professor Powell (chatbot)');
+        // Prefer the case title the bot generated ("Aurora Motors") so the
+        // banner AND the Save-as prefill are usefully specific. Fall through
+        // to the generic label only when no title is present.
+        const askppLabel = (state.title && state.title.trim())
+          ? ('AI draft — ' + state.title.trim())
+          : 'AI draft — Ask Professor Powell (chatbot)';
+        setDocTitle(askppLabel);
       }
     } catch (_) { /* ignore malformed URLs */ }
     $('#fp-scope-input').value         = state.scope || '';
@@ -2903,7 +2942,7 @@ date: 2026-08-11
       closeFileMenu();
       if (!confirm('Start a new decision? Anything on screen is discarded (Save first if you want to keep it).')) return;
       state = {
-        scope: '', description: '',
+        title: '', scope: '', description: '',
         metrics: [], assignments: {}, chipColors: {},
         decisions: [], matrix: {}, subframes: {},
         uncertainties: [], uMatrix: {},
@@ -2964,7 +3003,7 @@ date: 2026-08-11
     $('#fp-reset').addEventListener('click', () => {
       if (!confirm('Delete every metric, decision, and uncertainty, clear the pyramid and both matrices, and unload the current document? (Saved documents in File > Open are not affected.) Cannot be undone.')) return;
       state = {
-        scope: '', description: '',
+        title: '', scope: '', description: '',
         metrics: [], assignments: {}, chipColors: {},
         decisions: [], matrix: {}, subframes: {},
         uncertainties: [], uMatrix: {},
