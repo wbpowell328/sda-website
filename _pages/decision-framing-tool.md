@@ -130,7 +130,6 @@ date: 2026-08-11
      ?node= URL. Shows the ancestry breadcrumb + edit/view mode + a
      Browse button that opens the library modal. -->
 <div id="fp-library-bar" class="fp-library-bar" hidden>
-  <span class="fp-library-icon" aria-hidden="true">📚</span>
   <span id="fp-library-crumb" class="fp-library-crumb"></span>
   <span id="fp-library-mode" class="fp-library-mode"></span>
   <button type="button" id="fp-library-save-framing" class="fp-library-browse fp-library-primary" title="Save your edits to the currently-open framing" hidden>Save changes</button>
@@ -548,7 +547,6 @@ date: 2026-08-11
   }
   .fp-add-lib-row button:hover { background: #f2e6c9; }
   .fp-add-lib-row button:disabled { opacity: 0.5; cursor: not-allowed; }
-  .fp-library-icon { font-size: 1.15rem; }
   .fp-library-crumb {
     color: #5a3e1f;
     font-weight: 600;
