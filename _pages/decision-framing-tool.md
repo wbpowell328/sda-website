@@ -126,6 +126,7 @@ date: 2026-08-11
   <span class="fp-library-icon" aria-hidden="true">📚</span>
   <span id="fp-library-crumb" class="fp-library-crumb"></span>
   <span id="fp-library-mode" class="fp-library-mode"></span>
+  <button type="button" id="fp-library-rename" class="fp-library-browse" title="Rename this library" hidden>Rename ✎</button>
   <button type="button" id="fp-library-browse" class="fp-library-browse">Browse framings ▾</button>
 </div>
 
@@ -3276,6 +3277,50 @@ date: 2026-08-11
     const modeEl = $('#fp-library-mode');
     modeEl.textContent = mode === 'edit' ? 'Edit mode' : 'View only';
     modeEl.className = 'fp-library-mode ' + mode;
+    // Rename is a structural-admin action; content-write on this node
+    // is sufficient, and a parent-owner also has structural admin
+    // (server enforces flow-down). Show it whenever we have a write
+    // token — server will reject if it's actually not authorized.
+    const renameBtn = $('#fp-library-rename');
+    if (renameBtn) renameBtn.hidden = !loadedNode.writeToken;
+  }
+
+  async function renameLoadedLibrary() {
+    if (!loadedNode || !loadedNode.writeToken) return;
+    const current = loadedNode.name || '';
+    const raw = window.prompt(
+      'Rename this library:\n\n(This changes the display label only — your URLs stay the same.)',
+      current
+    );
+    if (raw == null) return;
+    const trimmed = raw.trim();
+    if (!trimmed) return;
+    if (trimmed === current) return;
+    try {
+      const resp = await apiFetch(
+        NODES_BASE + '/nodes/' + encodeURIComponent(loadedNode.readId) +
+          '?w=' + encodeURIComponent(loadedNode.writeToken),
+        { method: 'PATCH', body: { name: trimmed } }
+      );
+      loadedNode.name = resp.node.name;
+      // The ancestry breadcrumb ends with THIS node, so also update the
+      // last element (a re-fetch would be more thorough but this is
+      // cheaper and correct for the common case).
+      if (Array.isArray(loadedNode.ancestry) && loadedNode.ancestry.length) {
+        loadedNode.ancestry[loadedNode.ancestry.length - 1] = resp.node.name;
+      }
+      renderLibraryBar();
+      // If this was the user's personal library, update localStorage
+      // so the tooltip on "Open my library" stays fresh.
+      const myLib = readMyLibrary();
+      if (myLib && myLib.readId === loadedNode.readId) {
+        writeMyLibrary(myLib.readId, myLib.writeToken, resp.node.name);
+      }
+      flashStatus('Library renamed.');
+    } catch (err) {
+      console.error('Rename failed:', err);
+      alert('Rename failed:\n\n' + ((err && err.message) ? err.message : String(err)));
+    }
   }
 
   function openLibraryModal() {
@@ -3521,6 +3566,8 @@ date: 2026-08-11
       if (modal)    modal.addEventListener('click', (e) => {
         if (e.target === modal) dismiss();
       });
+      const renameBtn = $('#fp-library-rename');
+      if (renameBtn) renameBtn.addEventListener('click', renameLoadedLibrary);
     })();
     // URL modal wiring — Done/close are locked until the user
     // confirms they've saved both URLs, so an accidental Enter can't

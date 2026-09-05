@@ -474,6 +474,48 @@ router.get('/nodes/:readId', dbRoute(async (req, res) => {
   });
 }));
 
+// PATCH /nodes/:readId  — rename / update node metadata
+// Auth: write_token matching this node OR any ancestor (structural admin
+// flows down, per locked design). Not content-write — a rename is
+// metadata, and structural admins can rename their sub-tree's nodes.
+router.patch('/nodes/:readId', dbRoute(async (req, res) => {
+  const node = await getNodeByReadId(req.params.readId);
+  if (!node) return res.status(404).json({ error: 'Node not found' });
+
+  const writeToken = String(req.query.w || '');
+  const validAdminTokens = await collectAncestorWriteTokens(node.id);
+  if (!isWriteToken(writeToken) || !validAdminTokens.has(writeToken)) {
+    return res.status(403).json({
+      error: 'Write token required (must match this node or an ancestor).',
+    });
+  }
+
+  const patch = {};
+  if (typeof req.body?.name === 'string') {
+    const trimmed = req.body.name.trim().slice(0, 200);
+    if (!trimmed) return res.status(400).json({ error: 'Name cannot be empty' });
+    patch.name = trimmed;
+  }
+  if (typeof req.body?.owner_label === 'string') {
+    patch.owner_label = req.body.owner_label.slice(0, 200);
+  }
+  if (!Object.keys(patch).length) {
+    return res.json({ node: shapeNode(node) });
+  }
+
+  const sets = [];
+  const params = [];
+  let i = 1;
+  if (patch.name !== undefined)        { sets.push('name = $' + (i++));        params.push(patch.name); }
+  if (patch.owner_label !== undefined) { sets.push('owner_label = $' + (i++)); params.push(patch.owner_label); }
+  params.push(node.id);
+  const row = (await query(
+    'UPDATE nodes SET ' + sets.join(', ') + ' WHERE id = $' + i + ' RETURNING *',
+    params
+  )).rows[0];
+  res.json({ node: shapeNode(row) });
+}));
+
 // POST /nodes/:readId/regenerate  — mint fresh URLs, invalidating the old ones
 router.post('/nodes/:readId/regenerate', dbRoute(async (req, res) => {
   const node = await getNodeByReadId(req.params.readId);
