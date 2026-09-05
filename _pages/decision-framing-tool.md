@@ -65,6 +65,10 @@ date: 2026-08-11
     <p class="fp-muted" style="margin: 0 0 6px 0;">Saved on this browser. Click one to load it.</p>
     <div id="fp-file-list" class="fp-file-list"></div>
 
+    <h4 class="fp-modal-subheader" style="margin-top: 16px;">My server libraries</h4>
+    <p class="fp-muted" style="margin: 0 0 6px 0;">Server-backed libraries you've visited on this browser. Includes your own personal library and any public / shared library you've opened. Click to reopen.</p>
+    <div id="fp-server-lib-list" class="fp-file-list"></div>
+
     <h4 class="fp-modal-subheader" style="margin-top: 16px;">Public examples</h4>
     <p class="fp-muted" style="margin: 0 0 6px 0;">Curated decision problems. Loading one drops it into your workspace as an unnamed document — use <em>Save as…</em> to keep your own copy.</p>
     <div id="fp-example-list" class="fp-file-list"></div>
@@ -1724,6 +1728,7 @@ date: 2026-08-11
   }
   function openOpenModal() {
     renderFileList();
+    renderServerLibraryList();
     renderPublicExamples();   // fires an async fetch; list fills in when it lands
     const m = $('#fp-open-modal');
     if (m) m.hidden = false;
@@ -3139,6 +3144,132 @@ date: 2026-08-11
     window.location.href = url.toString();
   }
 
+  // LocalStorage: history of server libraries the user has visited on
+  // this browser. Keyed by readId. Includes their own personal library
+  // and any public / shared library URL they've opened. Write token is
+  // upgraded when the user later visits with ?w=; leaf name + full
+  // ancestry breadcrumb are cached for the display.
+  const VISITED_LIBS_KEY = 'framing_visited_libraries_v1';
+  function readVisitedLibraries() {
+    try {
+      const raw = localStorage.getItem(VISITED_LIBS_KEY);
+      const obj = raw ? JSON.parse(raw) : {};
+      return (obj && typeof obj === 'object') ? obj : {};
+    } catch (_) { return {}; }
+  }
+  function writeVisitedLibraries(obj) {
+    try { localStorage.setItem(VISITED_LIBS_KEY, JSON.stringify(obj)); }
+    catch (_) { /* private mode / quota */ }
+  }
+  function rememberVisitedLibrary(readId, writeToken, name, ancestry) {
+    if (!readId) return;
+    const map = readVisitedLibraries();
+    const existing = map[readId] || {};
+    map[readId] = {
+      readId,
+      // Never downgrade: if we previously had a write token for this
+      // node, keep it even if the current visit was read-only.
+      writeToken: writeToken || existing.writeToken || null,
+      name: name || existing.name || '(unnamed library)',
+      ancestryLabel: Array.isArray(ancestry) ? ancestry.join(' › ') : (existing.ancestryLabel || ''),
+      lastVisited: new Date().toISOString(),
+    };
+    writeVisitedLibraries(map);
+  }
+  function forgetVisitedLibrary(readId) {
+    const map = readVisitedLibraries();
+    if (map[readId]) {
+      delete map[readId];
+      writeVisitedLibraries(map);
+    }
+  }
+  function renderServerLibraryList() {
+    const list = $('#fp-server-lib-list');
+    if (!list) return;
+    list.innerHTML = '';
+    const map = readVisitedLibraries();
+    const entries = Object.values(map).sort(
+      (a, b) => (b.lastVisited || '').localeCompare(a.lastVisited || '')
+    );
+    if (!entries.length) {
+      const empty = document.createElement('div');
+      empty.style.padding = '16px';
+      empty.style.textAlign = 'center';
+      empty.style.color = '#7a6a55';
+      empty.style.fontStyle = 'italic';
+      empty.textContent = 'No server libraries visited yet — Publish a framing, or open a library URL someone shared with you.';
+      list.appendChild(empty);
+      return;
+    }
+    for (const lib of entries) {
+      const row = document.createElement('div');
+      row.className = 'fp-file-row';
+      row.style.cursor = 'pointer';
+      const nameEl = document.createElement('span');
+      nameEl.style.flex = '1';
+      nameEl.style.minWidth = '0';
+      nameEl.style.overflow = 'hidden';
+      nameEl.style.textOverflow = 'ellipsis';
+      nameEl.style.whiteSpace = 'nowrap';
+      const label = lib.ancestryLabel && lib.ancestryLabel.length
+        ? lib.ancestryLabel
+        : lib.name;
+      nameEl.textContent = label;
+      nameEl.title = label;
+      row.appendChild(nameEl);
+      const badge = document.createElement('span');
+      badge.style.padding = '2px 8px';
+      badge.style.borderRadius = '999px';
+      badge.style.fontSize = '0.75rem';
+      badge.style.fontWeight = '600';
+      badge.style.marginRight = '6px';
+      if (lib.writeToken) {
+        badge.style.background = '#dcfce7';
+        badge.style.color = '#14532d';
+        badge.textContent = 'Edit';
+      } else {
+        badge.style.background = '#dbeafe';
+        badge.style.color = '#1e3a8a';
+        badge.textContent = 'View';
+      }
+      row.appendChild(badge);
+      const meta = document.createElement('span');
+      meta.className = 'fp-muted';
+      meta.style.fontSize = '0.8rem';
+      meta.style.marginRight = '6px';
+      try {
+        const d = new Date(lib.lastVisited);
+        meta.textContent = d.toLocaleDateString();
+      } catch (_) { meta.textContent = ''; }
+      row.appendChild(meta);
+      const forget = document.createElement('button');
+      forget.type = 'button';
+      forget.textContent = '×';
+      forget.title = 'Remove from this list (does NOT delete the library on the server)';
+      forget.style.background = 'transparent';
+      forget.style.border = '1px solid #d6c4a3';
+      forget.style.borderRadius = '4px';
+      forget.style.padding = '2px 8px';
+      forget.style.cursor = 'pointer';
+      forget.style.fontSize = '0.9rem';
+      forget.style.color = '#7a6a55';
+      forget.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!confirm('Remove "' + label + '" from this list?\n\n(The library itself stays on the server — this only forgets it in your browser.)')) return;
+        forgetVisitedLibrary(lib.readId);
+        renderServerLibraryList();
+      });
+      row.appendChild(forget);
+      row.addEventListener('click', () => {
+        const url = new URL(window.location.origin + window.location.pathname);
+        url.searchParams.set('node', lib.readId);
+        if (lib.writeToken) url.searchParams.set('w', lib.writeToken);
+        window.location.href = url.toString();
+      });
+      list.appendChild(row);
+    }
+  }
+
   async function apiFetch(url, opts) {
     const o = opts || {};
     const resp = await fetch(url, {
@@ -3220,6 +3351,7 @@ date: 2026-08-11
         framings:   Array.isArray(resp.framings) ? resp.framings : [],
         currentFramingId: null,
       };
+      rememberVisitedLibrary(loadedNode.readId, loadedNode.writeToken, loadedNode.name, loadedNode.ancestry);
       renderLibraryBar();
       // Auto-open the most-recently-edited framing (the framings list
       // comes back sorted DESC by updated_at, so element 0 is newest).
