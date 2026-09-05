@@ -37,8 +37,9 @@ date: 2026-08-11
     <div class="fp-menu-items">
       <button type="button" id="fp-menu-new">New decision</button>
       <button type="button" id="fp-menu-open">Open…</button>
-      <button type="button" id="fp-menu-save">Save</button>
-      <button type="button" id="fp-menu-saveas">Save as…</button>
+      <button type="button" id="fp-menu-save" title="Save to this browser only (private, stays on this device)">Save (local)</button>
+      <button type="button" id="fp-menu-saveas" title="Save under a new name in this browser only">Save as… (local)</button>
+      <button type="button" id="fp-menu-publish" title="Save to the online library (get a URL that works from any browser). Creates a personal library the first time.">Publish to my library…</button>
       <button type="button" id="fp-menu-duplicate" title="Save a copy of the currently loaded decision (adds &quot; (2)&quot; to the name)">Duplicate</button>
       <button type="button" id="fp-menu-export" title="Download the current decision as a JSON file (useful for sharing or contributing to the public examples library)">Export as JSON…</button>
       <button type="button" id="fp-menu-import" title="Load a decision from a .json file someone sent you (or one you exported earlier)">Import from JSON…</button>
@@ -69,6 +70,50 @@ date: 2026-08-11
 
     <div class="fp-modal-actions">
       <button type="button" id="fp-modal-cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- URL-display modal — shown after any server-side operation that
+     produces or refreshes URLs: first publish (creates a node under
+     Public users), sub-library creation, regenerate URLs. -->
+<div id="fp-urls-modal" class="fp-modal" hidden>
+  <div class="fp-modal-card" role="dialog" aria-modal="true" aria-labelledby="fp-urls-title">
+    <div class="fp-modal-header">
+      <h3 id="fp-urls-title">Your library URLs</h3>
+      <button type="button" class="fp-modal-close" id="fp-urls-close" aria-label="Close" disabled title="Confirm below first">×</button>
+    </div>
+    <p id="fp-urls-lede" class="fp-urls-lede"></p>
+
+    <div class="fp-url-row">
+      <label class="fp-url-label" for="fp-urls-read">View URL <span class="fp-muted">(share to let others view; no editing)</span></label>
+      <div class="fp-url-line">
+        <input type="text" id="fp-urls-read" readonly />
+        <button type="button" class="fp-url-copy" data-target="fp-urls-read">Copy</button>
+      </div>
+    </div>
+
+    <div class="fp-url-row">
+      <label class="fp-url-label" for="fp-urls-write">Edit URL <span class="fp-muted">(keep private — anyone with this can edit)</span></label>
+      <div class="fp-url-line">
+        <input type="text" id="fp-urls-write" readonly />
+        <button type="button" class="fp-url-copy" data-target="fp-urls-write">Copy</button>
+      </div>
+    </div>
+
+    <div class="fp-urls-warning" role="alert">
+      <strong>Save both URLs now.</strong> Losing the Edit URL means nobody can rescue you — there is no admin console, no password reset, and no way to email you a fresh link. A password manager entry, an encrypted note, or an email to yourself all work. The View URL can be regenerated with the Edit URL later, so the Edit URL is the master key.
+    </div>
+
+    <div class="fp-urls-actions">
+      <a id="fp-urls-email" class="fp-url-mail" href="#" target="_blank" rel="noopener">
+        ✉ Email these to me
+      </a>
+      <label class="fp-urls-confirm">
+        <input type="checkbox" id="fp-urls-confirm-cb" />
+        I have saved both URLs
+      </label>
+      <button type="button" id="fp-urls-done" disabled>Done</button>
     </div>
   </div>
 </div>
@@ -349,6 +394,73 @@ date: 2026-08-11
     color: #7a6a55;
   }
   .fp-modal-close:hover { color: #c9621e; }
+  .fp-modal-close:disabled { color: #d6c4a3; cursor: not-allowed; }
+
+  /* URL-display modal (first publish, sub-node creation, regenerate) */
+  .fp-urls-lede { margin: 0 0 12px 0; color: #5a4a35; font-size: 0.95rem; }
+  .fp-url-row { margin-bottom: 14px; }
+  .fp-url-label { display: block; font-weight: 600; color: #5a4a35; margin-bottom: 4px; font-size: 0.95rem; }
+  .fp-url-label .fp-muted { font-weight: 400; font-size: 0.85rem; color: #7a6a55; margin-left: 4px; }
+  .fp-url-line { display: flex; gap: 6px; align-items: center; }
+  .fp-url-line input {
+    flex: 1;
+    padding: 8px 10px;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 0.85rem;
+    color: #5a3e1f;
+    background: #faf5e6;
+    border: 1px solid #d6c4a3;
+    border-radius: 4px;
+  }
+  .fp-url-line input:focus { outline: 2px solid #c9a76a; outline-offset: -1px; }
+  .fp-url-copy {
+    padding: 8px 12px;
+    background: #fff;
+    border: 1px solid #c9a76a;
+    color: #5a3e1f;
+    border-radius: 4px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.9rem;
+  }
+  .fp-url-copy:hover { background: #f2e6c9; }
+  .fp-urls-warning {
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: #fee2e2;
+    color: #7a1c1c;
+    border-left: 4px solid #dc2626;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+  .fp-urls-actions {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .fp-url-mail {
+    padding: 6px 12px;
+    background: #fff;
+    border: 1px solid #c9a76a;
+    color: #5a3e1f;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  .fp-url-mail:hover { background: #f2e6c9; }
+  .fp-urls-confirm {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.95rem; color: #5a4a35;
+    margin-left: auto;
+  }
+  #fp-urls-done {
+    padding: 8px 20px;
+    background: #8a3a1a; color: #fff;
+    border: none; border-radius: 4px;
+    cursor: pointer; font: inherit; font-weight: 600;
+  }
+  #fp-urls-done:hover:not(:disabled) { background: #6a2a10; }
+  #fp-urls-done:disabled { background: #d6c4a3; color: #fff; cursor: not-allowed; }
   .fp-file-list {
     flex: 1 1 auto;
     min-height: 60px; max-height: 50vh;
@@ -2895,6 +3007,127 @@ date: 2026-08-11
     setBotStatus('');
   }
 
+  // ── Server-backed library (framing tool v2) ─────────────────
+  // Base URL for the framing-node backend (running on the chatbot Render
+  // service). Every endpoint accepts a read_id in the URL and, for writes,
+  // a write_token in ?w=.
+  const NODES_BASE = 'https://castle-chatbot.onrender.com/api/framing-nodes';
+  // LocalStorage map: read_id → { writeToken, framingId, name, publishedAt }.
+  // Lets us hint "already published" in the UI later and skip re-creating a
+  // node when the user hits Publish again after already publishing.
+  const PUBLISHED_KEY = 'framing_published_v1';
+
+  async function apiFetch(url, opts) {
+    const o = opts || {};
+    const resp = await fetch(url, {
+      method: o.method || 'GET',
+      headers: o.body ? { 'Content-Type': 'application/json' } : {},
+      body: o.body ? JSON.stringify(o.body) : undefined,
+    });
+    const data = await resp.json().catch(() => ({}));
+    if (!resp.ok) {
+      const err = new Error((data && data.error) || ('Request failed (' + resp.status + ')'));
+      err.status = resp.status;
+      throw err;
+    }
+    return data;
+  }
+  function makeNodeUrl(readId, writeToken) {
+    const url = new URL(window.location.origin + window.location.pathname);
+    url.searchParams.set('node', readId);
+    if (writeToken) url.searchParams.set('w', writeToken);
+    return url.toString();
+  }
+  function rememberPublishedNode(readId, writeToken, framingId, name) {
+    try {
+      const raw = localStorage.getItem(PUBLISHED_KEY);
+      const map = raw ? JSON.parse(raw) : {};
+      map[readId] = {
+        writeToken, framingId, name,
+        publishedAt: new Date().toISOString(),
+      };
+      localStorage.setItem(PUBLISHED_KEY, JSON.stringify(map));
+    } catch (_) { /* private mode / quota — ignore */ }
+  }
+  function escapeHtmlForModal(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  // Reusable modal — called after any URL-producing operation (first
+  // publish, sub-library create, regenerate). Locks the close/done
+  // buttons until the user checks "I have saved both URLs".
+  function showUrlsModal(opts) {
+    $('#fp-urls-title').textContent = opts.title || 'Your library URLs';
+    $('#fp-urls-lede').innerHTML    = opts.lede || '';
+    $('#fp-urls-read').value        = opts.readUrl;
+    $('#fp-urls-write').value       = opts.writeUrl;
+    const emailBody =
+      (opts.emailIntro ? opts.emailIntro + '\r\n\r\n' : '') +
+      'View URL: ' + opts.readUrl + '\r\n' +
+      'Edit URL (KEEP PRIVATE): ' + opts.writeUrl;
+    $('#fp-urls-email').href = 'mailto:?subject=' +
+      encodeURIComponent(opts.emailSubject || 'My framing library URLs') +
+      '&body=' + encodeURIComponent(emailBody);
+    $('#fp-urls-confirm-cb').checked = false;
+    $('#fp-urls-done').disabled  = true;
+    $('#fp-urls-close').disabled = true;
+    $('#fp-urls-modal').hidden = false;
+  }
+  async function publishToLibrary() {
+    const btn = $('#fp-menu-publish');
+    const prevText = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = 'Publishing…'; }
+    try {
+      // The node name is best derived from whatever meaningful label
+      // we already have — bot title, current save name, banner-derived
+      // suggestion, or a date-stamped placeholder as last resort.
+      const name = (state.title && state.title.trim())
+        || (currentName && currentName.trim())
+        || deriveSuggestedName();
+
+      // Create a node under Public users.
+      const nodeResp = await apiFetch(NODES_BASE + '/nodes', {
+        method: 'POST',
+        body: { name: name.slice(0, 200) },
+      });
+      const node = nodeResp.node;
+
+      // Save the current framing into that node.
+      const framingResp = await apiFetch(
+        NODES_BASE + '/framings?nodeReadId=' + encodeURIComponent(node.read_id) +
+          '&w=' + encodeURIComponent(node.write_token),
+        {
+          method: 'POST',
+          body: { title: name.slice(0, 200), content: snapshotForSave() },
+        }
+      );
+
+      rememberPublishedNode(node.read_id, node.write_token, framingResp.framing.id, name);
+
+      showUrlsModal({
+        title: 'Published to your library',
+        lede: '<b>' + escapeHtmlForModal(name) + '</b> is now saved on the server as a new personal library. ' +
+              'You can revisit this library from any browser using the URLs below. ' +
+              'The Edit URL also lets you create sub-libraries (for a class, a team, or a project).',
+        readUrl:  makeNodeUrl(node.read_id),
+        writeUrl: makeNodeUrl(node.read_id, node.write_token),
+        emailSubject: 'My framing library — ' + name,
+        emailIntro: 'You can revisit this library from any browser using the URLs below. ' +
+                    'Keep the Edit URL private — anyone with it can edit or delete your framings.',
+      });
+      flashStatus('Published to your library.');
+    } catch (err) {
+      console.error('Publish failed:', err);
+      alert('Sorry — publish failed:\n\n' +
+        ((err && err.message) ? err.message : String(err)) +
+        '\n\n(First request after idle can take ~30 s while the server wakes up. Try again in a moment.)');
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = prevText; }
+      closeFileMenu();
+    }
+  }
+
   // ── Init ────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
     initAdmin();                                         // reveals admin bar if ?admin=1
@@ -2972,6 +3205,7 @@ date: 2026-08-11
       closeFileMenu();
       saveAsFile();
     });
+    $('#fp-menu-publish').addEventListener('click', publishToLibrary);
     $('#fp-menu-duplicate').addEventListener('click', () => {
       closeFileMenu();
       duplicateFile();
@@ -2986,6 +3220,45 @@ date: 2026-08-11
     $('#fp-open-modal').addEventListener('click', (e) => {
       // Click on the backdrop (not the card itself) closes the modal.
       if (e.target === $('#fp-open-modal')) closeOpenModal();
+    });
+    // URL modal wiring — Done/close are locked until the user
+    // confirms they've saved both URLs, so an accidental Enter can't
+    // dismiss the only view of the write token.
+    (function wireUrlsModal() {
+      const cb    = $('#fp-urls-confirm-cb');
+      const done  = $('#fp-urls-done');
+      const close = $('#fp-urls-close');
+      const modal = $('#fp-urls-modal');
+      if (!cb || !done || !close || !modal) return;
+      cb.addEventListener('change', () => {
+        const on = !!cb.checked;
+        done.disabled  = !on;
+        close.disabled = !on;
+        close.title    = on ? 'Close' : 'Confirm below first';
+      });
+      const dismiss = () => { if (cb.checked) modal.hidden = true; };
+      done.addEventListener('click', dismiss);
+      close.addEventListener('click', dismiss);
+      // Backdrop click is a no-op (safer — no accidental loss).
+    })();
+    // Copy-button delegation for the URL modal's Copy buttons.
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.fp-url-copy');
+      if (!btn) return;
+      const target = document.getElementById(btn.dataset.target);
+      if (!target) return;
+      try { target.select(); target.setSelectionRange(0, target.value.length); } catch (_) { /* ignore */ }
+      const finish = () => {
+        const orig = btn.textContent;
+        btn.textContent = 'Copied ✓';
+        setTimeout(() => { btn.textContent = orig; }, 1400);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(target.value).then(finish, finish);
+      } else {
+        try { document.execCommand('copy'); } catch (_) { /* selection remains */ }
+        finish();
+      }
     });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !$('#fp-open-modal').hidden) closeOpenModal();
