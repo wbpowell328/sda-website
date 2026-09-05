@@ -14,7 +14,7 @@ date: 2026-08-11
   <li><a href="#uncertainty-prioritization-tool"><strong>Uncertainty prioritization tool</strong></a> — same idea, applied to the uncertainties that affect performance.</li>
 </ol>
 <p>When framing a problem, be sure to follow the guidelines given on <a href="/framingproblems/#the-framing-process">The Framing Process</a>.</p>
-<p>All the information you provide remains private. The <em>File</em> menu below lets you keep multiple named documents, and each contains the scope, the pyramid, and both matrices. If you would like to share your framing, hit <em>Copy URL</em> and paste it in an email — anyone with the link can view your framing.</p>
+<p>All the information you provide remains private. The <em>File</em> menu below lets you save framings to your personal server library (accessible from any browser via a URL you keep), each containing the scope, the pyramid, and both matrices. If you would like to share a single framing as a snapshot, hit <em>Copy URL</em> and paste it in an email — anyone with the link can view that framing.</p>
 
 <p style="background:#faf5e6; border-left: 4px solid #c9621e; padding: 10px 16px; border-radius: 3px;">
   <strong>New — <a href="#ask-professor-powell">Ask Professor Powell</a> to draft your framing.</strong>
@@ -35,18 +35,18 @@ date: 2026-08-11
   <details class="fp-menu" id="fp-file-menu">
     <summary>File ▾</summary>
     <div class="fp-menu-items">
-      <button type="button" id="fp-menu-new">New decision</button>
+      <button type="button" id="fp-menu-new">New framing</button>
       <button type="button" id="fp-menu-open">Open…</button>
       <button type="button" id="fp-menu-open-my-lib" title="Jump to your personal server library (published framings)" disabled>Open my library</button>
       <button type="button" id="fp-menu-publish" title="Save the current framing to the online library. Creates your personal library on the first save; adds to it on subsequent saves.">Save to my library…</button>
-      <button type="button" id="fp-menu-export" title="Download the current decision as a JSON file (useful for sharing or archiving)">Export as JSON…</button>
+      <button type="button" id="fp-menu-export" title="Download the current framing as a JSON file (useful for sharing or archiving)">Export as JSON…</button>
       <button type="button" id="fp-menu-import" title="Load a decision from a .json file someone sent you (or one you exported earlier)">Import from JSON…</button>
     </div>
   </details>
   <span class="fp-toolbar-sep" aria-hidden="true"></span>
   <button type="button" id="fp-clear">Clear pyramid</button>
   <button type="button" id="fp-reset">Reset all</button>
-  <button type="button" id="fp-share" title="Copy a URL that opens this document as a fresh snapshot in someone else's browser (their edits don't affect your copy)">Copy URL</button>
+  <button type="button" id="fp-share" title="Copy a URL that opens this framing as a fresh snapshot in someone else's browser (their edits don't affect your copy). NOT a library link — use Share URLs in the library bar for that.">Copy URL</button>
   <button type="button" id="fp-print">Print</button>
   <span id="fp-status" class="fp-status" role="status"></span>
 </div>
@@ -55,7 +55,7 @@ date: 2026-08-11
 <div id="fp-open-modal" class="fp-modal" hidden>
   <div class="fp-modal-card" role="dialog" aria-modal="true" aria-labelledby="fp-modal-title">
     <div class="fp-modal-header">
-      <h3 id="fp-modal-title">Open decision problem</h3>
+      <h3 id="fp-modal-title">Open framing</h3>
       <button type="button" class="fp-modal-close" id="fp-modal-close" aria-label="Close">×</button>
     </div>
     <h4 class="fp-modal-subheader">Legacy local saves</h4>
@@ -73,7 +73,7 @@ date: 2026-08-11
     <div id="fp-server-lib-list" class="fp-file-list"></div>
 
     <h4 class="fp-modal-subheader" style="margin-top: 16px;">Public examples</h4>
-    <p class="fp-muted" style="margin: 0 0 6px 0;">Curated decision problems. Loading one drops it into your workspace as an unnamed document — use <em>Save as…</em> to keep your own copy.</p>
+    <p class="fp-muted" style="margin: 0 0 6px 0;">Curated framings. Loading one drops it into your workspace as an unnamed document — use <em>Save to my library…</em> to keep your own copy.</p>
     <div id="fp-example-list" class="fp-file-list"></div>
 
     <div class="fp-modal-actions">
@@ -3904,7 +3904,7 @@ date: 2026-08-11
     // File menu
     $('#fp-menu-new').addEventListener('click', () => {
       closeFileMenu();
-      if (!confirm('Start a new decision? Anything on screen is discarded (Save first if you want to keep it).')) return;
+      if (!confirm('Start a new framing? Anything on screen is discarded (Save to your library first if you want to keep it).')) return;
       state = {
         title: '', scope: '', description: '',
         metrics: [], assignments: {}, chipColors: {},
@@ -4036,7 +4036,7 @@ date: 2026-08-11
       render(); renderAllMatrices(); autoSave();
     });
     $('#fp-reset').addEventListener('click', () => {
-      if (!confirm('Delete every metric, decision, and uncertainty, clear the pyramid and both matrices, and unload the current document? (Saved documents in File > Open are not affected.) Cannot be undone.')) return;
+      if (!confirm('Delete every metric, decision, and uncertainty, clear the pyramid and both matrices, and unload the current framing? (Framings saved to your library are not affected.) Cannot be undone.')) return;
       state = {
         title: '', scope: '', description: '',
         metrics: [], assignments: {}, chipColors: {},
