@@ -132,6 +132,14 @@ date: 2026-08-11
 
 <h2 id="decision-prioritization-tool" class="fp-section-h2">Decision prioritization tool</h2>
 <p>List the decisions you'd consider (one per line). The matrix below has one column per <em>tier-assigned</em> metric from the pyramid above, ordered top-to-bottom by tier (left-to-right within the same tier by the order the metrics appear in the metrics list). Click any cell to cycle through <b>H</b> (high impact) → <b>M</b> → <b>L</b> → <b>N</b> (none) → blank. When you're done scoring, drag any row up or down via the <span class="fp-grip-inline">☰</span> handle to prioritize decisions by their impact on the most important metrics.</p>
+<p class="fp-muted fp-drill-hint">To break a decision down into sub-decisions, click the <span class="fp-drill-inline">▸</span> button next to that decision (or right-click its row). You can nest sub-decisions to any depth; the metrics pyramid stays fixed.</p>
+
+<div id="fp-decision-breadcrumb" class="fp-decision-breadcrumb" hidden></div>
+<div id="fp-decision-subscope" class="fp-decision-subscope" hidden>
+  <label for="fp-decision-subscope-input">Scope for this sub-decision <span class="fp-muted">(optional — blank inherits from the parent)</span></label>
+  <textarea id="fp-decision-subscope-input" rows="2" spellcheck="true"
+    placeholder="e.g. Model engineering team, monthly release cycle."></textarea>
+</div>
 
 <div class="fp-grid fp-grid-narrow">
   <div class="fp-panel fp-decisions-panel">
@@ -521,9 +529,119 @@ date: 2026-08-11
   tr.fp-matrix-drop-above > td { box-shadow: inset 0 3px 0 0 #c9621e; }
   tr.fp-matrix-drop-below > td { box-shadow: inset 0 -3px 0 0 #c9621e; }
 
+  /* Drill-in button — appears on decision rows only, right after the
+     decision name. Faded until the decision has sub-decisions, then
+     highlighted so users can see which decisions have a sub-tree. */
+  .fp-drill-btn {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 6px;
+    font-size: 0.82rem;
+    line-height: 1.3;
+    border: 1px solid #d6c4a3;
+    border-radius: 4px;
+    background: #faf5e6;
+    color: #8a6a3a;
+    cursor: pointer;
+    vertical-align: 1px;
+    white-space: nowrap;
+  }
+  .fp-drill-btn:hover { background: #f2e6c9; color: #5a3e1f; }
+  .fp-drill-btn-has {
+    background: #f2e6c9;
+    color: #5a3e1f;
+    font-weight: 600;
+    border-color: #c9a76a;
+  }
+  .fp-drill-inline {
+    display: inline-block;
+    padding: 0 5px;
+    border: 1px solid #d6c4a3;
+    border-radius: 4px;
+    background: #faf5e6;
+    color: #8a6a3a;
+    font-size: 0.85em;
+  }
+  .fp-drill-hint { margin-top: -0.4rem; }
+
+  /* Breadcrumb strip — visible only when drilled below the top level. */
+  .fp-decision-breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+    margin: 6px 0 12px;
+    padding: 8px 12px;
+    background: #faf5e6;
+    border: 1px solid #e6d8bf;
+    border-radius: 6px;
+    font-size: 0.95rem;
+  }
+  .fp-decision-breadcrumb .fp-crumb {
+    background: transparent;
+    border: none;
+    padding: 2px 6px;
+    color: #8a3a1a;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    border-radius: 3px;
+  }
+  .fp-decision-breadcrumb .fp-crumb:hover { background: #f2e6c9; }
+  .fp-decision-breadcrumb .fp-crumb-current {
+    padding: 2px 6px;
+    color: #5a3e1f;
+    font-weight: 700;
+  }
+  .fp-decision-breadcrumb .fp-crumb-sep {
+    color: #a8926a;
+    padding: 0 2px;
+    font-weight: 700;
+  }
+  .fp-decision-breadcrumb .fp-crumb-back {
+    margin-left: auto;
+    background: #fff;
+    border: 1px solid #c9a76a;
+    color: #5a3e1f;
+    padding: 3px 10px;
+    font: inherit;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .fp-decision-breadcrumb .fp-crumb-back:hover { background: #f2e6c9; }
+
+  /* Per-level scope field — only shown when drilled in. */
+  .fp-decision-subscope {
+    margin: 4px 0 14px;
+    padding: 10px 12px;
+    background: #fdf9ec;
+    border: 1px dashed #d6c4a3;
+    border-radius: 6px;
+  }
+  .fp-decision-subscope label {
+    display: block;
+    font-weight: 600;
+    color: #5a3e1f;
+    margin-bottom: 4px;
+    font-size: 0.95rem;
+  }
+  .fp-decision-subscope textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px 8px;
+    border: 1px solid #d6c4a3;
+    border-radius: 4px;
+    background: #fff;
+    font: inherit;
+    resize: vertical;
+  }
+
   @media print {
     /* Keep the matrix on the printed page — it's a deliverable too. */
     .fp-matrix-grip { display: none; }
+    .fp-drill-btn { display: none; }
     .fp-decisions-panel,
     .fp-uncertainties-panel { display: none !important; }
   }
@@ -868,10 +986,13 @@ date: 2026-08-11
   let state = {
     scope: '', description: '',
     metrics: [], assignments: {}, chipColors: {},
-    decisions: [], matrix: {},
+    decisions: [], matrix: {}, subframes: {},
     uncertainties: [], uMatrix: {},
   };
   let currentName = null;   // which named file, if any, is currently loaded
+  // Current position in the decision tree. Empty array = top level.
+  // Each segment is a decision name within its parent frame.
+  let currentPath = [];
 
   // Impact-matrix configs — same UI, two entities. Kind key ('decision'
   // or 'uncertainty') selects which state fields to read/write, which
@@ -916,9 +1037,162 @@ date: 2026-08-11
       chipColors:    (s && s.chipColors)                 ? s.chipColors    : {},
       decisions:     Array.isArray(s && s.decisions)     ? s.decisions     : [],
       matrix:        (s && s.matrix)                     ? s.matrix        : {},
+      subframes:     normalizeSubframes(s && s.subframes),
       uncertainties: Array.isArray(s && s.uncertainties) ? s.uncertainties : [],
       uMatrix:       (s && s.uMatrix)                    ? s.uMatrix       : {},
     };
+  }
+  // A sub-frame tree — each key is a decision name at its parent
+  // level, each value is another frame with its own decisions, matrix,
+  // optional per-level scope, and (recursively) subframes.
+  function normalizeSubframes(sf) {
+    const out = {};
+    if (!sf || typeof sf !== 'object') return out;
+    for (const k of Object.keys(sf)) {
+      const f = sf[k];
+      if (!f || typeof f !== 'object') continue;
+      out[k] = {
+        scope:     (typeof f.scope === 'string') ? f.scope : '',
+        decisions: Array.isArray(f.decisions)    ? f.decisions : [],
+        matrix:    (f.matrix && typeof f.matrix === 'object') ? f.matrix : {},
+        subframes: normalizeSubframes(f.subframes),
+      };
+    }
+    return out;
+  }
+  // ── Decision-tree navigation ────────────────────────────────
+  // The top-level state IS the root frame (it carries decisions,
+  // matrix, and subframes at that level). Deeper frames live in
+  // state.subframes[name] recursively; each carries the same shape
+  // plus an optional per-level scope. Uncertainties are shared across
+  // levels — they only exist at the top level for now.
+  function getFrameAt(path) {
+    let f = state;
+    for (const name of path) {
+      const next = f.subframes && f.subframes[name];
+      if (!next) return null;
+      f = next;
+    }
+    return f;
+  }
+  function currentFrame() {
+    return getFrameAt(currentPath) || state;
+  }
+  function frameFor(kind) {
+    return kind === 'decision' ? currentFrame() : state;
+  }
+  function atTopLevel() { return currentPath.length === 0; }
+  function ensureSubframe(parentFrame, name) {
+    if (!parentFrame.subframes) parentFrame.subframes = {};
+    if (!parentFrame.subframes[name]) {
+      parentFrame.subframes[name] = {
+        scope: '', decisions: [], matrix: {}, subframes: {},
+      };
+    }
+    return parentFrame.subframes[name];
+  }
+  function subDecisionCount(parentFrame, name) {
+    const sf = parentFrame.subframes && parentFrame.subframes[name];
+    return (sf && Array.isArray(sf.decisions)) ? sf.decisions.length : 0;
+  }
+  function drillInto(name) {
+    const parent = currentFrame();
+    if (!parent.decisions || parent.decisions.indexOf(name) < 0) return;
+    ensureSubframe(parent, name);
+    currentPath = currentPath.concat([name]);
+    refreshDecisionUI();
+    autoSave();
+  }
+  function navigateToPath(newPath) {
+    currentPath = Array.isArray(newPath) ? newPath.slice() : [];
+    refreshDecisionUI();
+  }
+  function goUpOneLevel() {
+    if (atTopLevel()) return;
+    navigateToPath(currentPath.slice(0, -1));
+  }
+  // When decisions at the current level are renamed or deleted via
+  // the textarea, keep the subframes map keyed by the new names so
+  // sub-trees survive a wording tweak (and drop cleanly on delete).
+  function reconcileSubframes(parentFrame, renames, deletes) {
+    if (!parentFrame.subframes) return;
+    for (const [from, to] of renames) {
+      if (from === to) continue;
+      if (parentFrame.subframes[from]) {
+        // If the target key already exists (rare — user typed over
+        // an existing name), keep the target and drop the source
+        // rather than silently clobbering.
+        if (!parentFrame.subframes[to]) {
+          parentFrame.subframes[to] = parentFrame.subframes[from];
+        }
+        delete parentFrame.subframes[from];
+      }
+    }
+    for (const name of deletes) {
+      delete parentFrame.subframes[name];
+    }
+  }
+  // Refresh everything that depends on the currently-viewed frame:
+  // decisions textarea, breadcrumb, per-level scope field, and the
+  // decision impact matrix. Called on drill-in, drill-out, load, new,
+  // reset, import, and applyFraming.
+  function refreshDecisionUI() {
+    const frame = currentFrame();
+    const ta = $('#fp-decisions-input');
+    if (ta) ta.value = (frame.decisions || []).join('\n');
+    renderBreadcrumb();
+    renderSubScopeField();
+    renderImpactMatrix('decision');
+  }
+  function renderBreadcrumb() {
+    const wrap = $('#fp-decision-breadcrumb');
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    if (atTopLevel()) { wrap.hidden = true; return; }
+    wrap.hidden = false;
+    const top = document.createElement('button');
+    top.type = 'button';
+    top.className = 'fp-crumb';
+    top.textContent = 'Top';
+    top.title = 'Back to the top-level decisions';
+    top.addEventListener('click', () => navigateToPath([]));
+    wrap.appendChild(top);
+    for (let i = 0; i < currentPath.length; i++) {
+      const sep = document.createElement('span');
+      sep.className = 'fp-crumb-sep';
+      sep.textContent = '›';
+      wrap.appendChild(sep);
+      const isLast = i === currentPath.length - 1;
+      if (isLast) {
+        const cur = document.createElement('span');
+        cur.className = 'fp-crumb-current';
+        cur.textContent = currentPath[i];
+        wrap.appendChild(cur);
+      } else {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'fp-crumb';
+        btn.textContent = currentPath[i];
+        const jumpTo = currentPath.slice(0, i + 1);
+        btn.addEventListener('click', () => navigateToPath(jumpTo));
+        wrap.appendChild(btn);
+      }
+    }
+    const back = document.createElement('button');
+    back.type = 'button';
+    back.className = 'fp-crumb-back';
+    back.textContent = '↑ Up one level';
+    back.title = 'Go back to the parent decision list';
+    back.addEventListener('click', goUpOneLevel);
+    wrap.appendChild(back);
+  }
+  function renderSubScopeField() {
+    const wrap = $('#fp-decision-subscope');
+    const input = $('#fp-decision-subscope-input');
+    if (!wrap || !input) return;
+    if (atTopLevel()) { wrap.hidden = true; return; }
+    wrap.hidden = false;
+    input.value = currentFrame().scope || '';
   }
   function load() {
     // URL param wins — someone shared a link.
@@ -1018,6 +1292,7 @@ date: 2026-08-11
       chipColors: state.chipColors,
       decisions: state.decisions,
       matrix: state.matrix,
+      subframes: state.subframes,
       uncertainties: state.uncertainties,
       uMatrix: state.uMatrix,
       savedAt: new Date().toISOString(),
@@ -1113,6 +1388,7 @@ date: 2026-08-11
     const file = files[name];
     if (!file) return;
     state = normalizeState(file);
+    currentPath = [];                                       // fresh doc → top level
     setCurrentName(name);
     $('#fp-scope-input').value         = state.scope || '';
     $('#fp-metrics-input').value       = state.metrics.join('\n');
@@ -1254,6 +1530,7 @@ date: 2026-08-11
           throw new Error('This file does not look like a framing (no metrics array).');
         }
         state = normalizeState(parsed);
+        currentPath = [];                                    // fresh doc → top level
         setCurrentName(null);
         const base = (file.name || 'file').replace(/\.json$/i, '');
         setDocTitle('Imported — ' + base);
@@ -1408,6 +1685,7 @@ date: 2026-08-11
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       const data = await resp.json();
       state = normalizeState(data);
+      currentPath = [];                                     // fresh doc → top level
       // The manifest carries the authoritative description for public
       // examples — use it in preference to whatever the JSON blob may
       // (or may not) include, so a case that was published without a
@@ -1877,10 +2155,23 @@ date: 2026-08-11
       }
       renameMap[from] = to;
     }
-    // Apply renames to both matrices — for every row, move any score
-    // stored under the old metric key onto the new metric key.
+    // Collect every matrix in the document — top-level decision matrix,
+    // top-level uncertainty matrix, and every sub-frame's decision
+    // matrix. Metric renames/deletes have to touch all of them so a
+    // rename at the pyramid propagates through the entire decision tree.
+    const allMatrices = [state.matrix, state.uMatrix];
+    (function walk(sf) {
+      if (!sf) return;
+      for (const k of Object.keys(sf)) {
+        if (sf[k] && sf[k].matrix) allMatrices.push(sf[k].matrix);
+        walk(sf[k] && sf[k].subframes);
+      }
+    })(state.subframes);
+
+    // Apply renames to every collected matrix — for every row, move any
+    // score stored under the old metric key onto the new metric key.
     if (Object.keys(renameMap).length) {
-      for (const mx of [state.matrix, state.uMatrix]) {
+      for (const mx of allMatrices) {
         for (const row of Object.keys(mx)) {
           for (const from of Object.keys(renameMap)) {
             if (mx[row][from] !== undefined) {
@@ -1901,7 +2192,7 @@ date: 2026-08-11
     // A rename already moved its score onto the new name above, so the OLD
     // key is gone by the time this runs.
     const metricSet = new Set(newMetrics);
-    for (const mx of [state.matrix, state.uMatrix]) {
+    for (const mx of allMatrices) {
       for (const row of Object.keys(mx)) {
         for (const m of Object.keys(mx[row])) {
           if (!metricSet.has(m)) delete mx[row][m];
@@ -2010,9 +2301,10 @@ date: 2026-08-11
   }
   function syncListFromTextarea(kind) {
     const cfg = MATRIX[kind];
+    const frame = frameFor(kind);
     const newList = parseTextareaList(cfg.textareaSel);
-    const oldList = state[cfg.listKey] || [];
-    const oldMatrix = state[cfg.matrixKey] || {};
+    const oldList = frame[cfg.listKey] || [];
+    const oldMatrix = frame[cfg.matrixKey] || {};
     const oldSet = new Set(oldList);
     const newSet = new Set(newList);
     const kept = {};
@@ -2032,13 +2324,20 @@ date: 2026-08-11
     const vanished = oldList.filter(n => !newSet.has(n));
     const appeared = newList.filter(n => !oldSet.has(n));
     const pairs = Math.min(vanished.length, appeared.length);
+    const renames = [];
     for (let i = 0; i < pairs; i++) {
       const from = vanished[i];
       const to   = appeared[i];
       if (oldMatrix[from] && !kept[to]) kept[to] = oldMatrix[from];
+      renames.push([from, to]);
     }
-    state[cfg.listKey]   = newList;
-    state[cfg.matrixKey] = kept;
+    const deletes = vanished.slice(pairs);
+    frame[cfg.listKey]   = newList;
+    frame[cfg.matrixKey] = kept;
+    // Decision-level renames/deletes propagate to the sub-frames map
+    // so a renamed parent decision keeps its sub-tree and a deleted
+    // one drops it.
+    if (kind === 'decision') reconcileSubframes(frame, renames, deletes);
     renderImpactMatrix(kind);
     autoSave();
   }
@@ -2080,8 +2379,10 @@ date: 2026-08-11
     const cfg = MATRIX[kind];
     const wrap = $(cfg.wrapSel);
     if (!wrap) return;
+    if (kind === 'decision') { renderBreadcrumb(); renderSubScopeField(); }
+    const frame = frameFor(kind);
     const metrics = orderedMetrics();
-    const rows = state[cfg.listKey];
+    const rows = frame[cfg.listKey];
     if (metrics.length === 0 && rows.length === 0) {
       wrap.innerHTML = '<p class="fp-matrix-empty">' +
         'Add metrics (and drag them into pyramid tiers) above, and list ' +
@@ -2100,7 +2401,7 @@ date: 2026-08-11
         cfg.pluralLower + ' on the left to start scoring.</p>';
       return;
     }
-    const matrixObj = state[cfg.matrixKey];
+    const matrixObj = frame[cfg.matrixKey];
 
     const table = document.createElement('table');
     table.className = 'fp-matrix';
@@ -2142,6 +2443,30 @@ date: 2026-08-11
       const nameTd = document.createElement('td');
       nameTd.className = 'fp-matrix-decision';
       appendTextWithSlashBreaks(nameTd, name);
+      // Drill-in affordance — decisions only. Click (or right-click
+      // anywhere on the row) descends into this decision's own
+      // sub-decisions. The badge shows how many sub-decisions already
+      // exist so users can see which parent decisions have a sub-tree.
+      if (kind === 'decision') {
+        const count = subDecisionCount(frame, name);
+        const drill = document.createElement('button');
+        drill.type = 'button';
+        drill.className = 'fp-drill-btn' + (count > 0 ? ' fp-drill-btn-has' : '');
+        drill.textContent = count > 0 ? ('▸ ' + count) : '▸';
+        drill.title = count > 0
+          ? ('Drill into ' + count + ' sub-decision' + (count === 1 ? '' : 's'))
+          : 'Add sub-decisions for this decision';
+        drill.addEventListener('click', (e) => {
+          e.stopPropagation();
+          drillInto(name);
+        });
+        nameTd.appendChild(document.createTextNode(' '));
+        nameTd.appendChild(drill);
+        tr.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          drillInto(name);
+        });
+      }
       tr.appendChild(nameTd);
 
       for (const { metric } of metrics) {
@@ -2183,7 +2508,7 @@ date: 2026-08-11
   }
   function cycleCell(kind, name, metric, cell) {
     const cfg = MATRIX[kind];
-    const matrixObj = state[cfg.matrixKey];
+    const matrixObj = frameFor(kind)[cfg.matrixKey];
     const order = ['', 'H', 'M', 'L', 'N'];
     const cur = (matrixObj[name] && matrixObj[name][metric]) || '';
     const idx = order.indexOf(cur);
@@ -2226,9 +2551,10 @@ date: 2026-08-11
   }
   async function runMatrixDraft(kind) {
     const cfg = MATRIX[kind];
+    const frame = frameFor(kind);
     // Same column-source the table uses — only tier-assigned metrics count.
     const metrics = orderedMetrics().map(x => x.metric);
-    const rows = (state[cfg.listKey] || []).slice();
+    const rows = (frame[cfg.listKey] || []).slice();
     if (metrics.length === 0) {
       alert('Add metrics and drop them into pyramid tiers first — the matrix needs columns to score.');
       return;
@@ -2264,7 +2590,7 @@ date: 2026-08-11
         }
         if (Object.keys(scored).length) cleaned[row] = scored;
       }
-      state[cfg.matrixKey] = cleaned;
+      frame[cfg.matrixKey] = cleaned;
       renderImpactMatrix(kind);
       showAiNote(kind);
       autoSave();
@@ -2278,11 +2604,12 @@ date: 2026-08-11
   }
   function resetMatrix(kind) {
     const cfg = MATRIX[kind];
-    const rows = (state[cfg.listKey] || []).length;
+    const frame = frameFor(kind);
+    const rows = (frame[cfg.listKey] || []).length;
     if (rows === 0) return;                                  // nothing to clear
     if (!confirm('Clear every H/M/L/N in the ' + cfg.singularLower + ' impact matrix? The ' +
       cfg.pluralLower + ' and metrics are not touched.')) return;
-    state[cfg.matrixKey] = {};
+    frame[cfg.matrixKey] = {};
     hideAiNote(kind);
     renderImpactMatrix(kind);
     autoSave();
@@ -2331,7 +2658,8 @@ date: 2026-08-11
       const above = row.classList.contains('fp-matrix-drop-above');
       clearMatrixDropIndicators(wrap);
       if (!src || src === row.dataset.name) return;
-      const list = state[cfg.listKey].slice();
+      const frame = frameFor(kind);
+      const list = frame[cfg.listKey].slice();
       const srcIdx = list.indexOf(src);
       if (srcIdx < 0) return;
       list.splice(srcIdx, 1);
@@ -2339,10 +2667,10 @@ date: 2026-08-11
       if (dstIdx < 0) return;
       if (!above) dstIdx += 1;
       list.splice(dstIdx, 0, src);
-      state[cfg.listKey] = list;
+      frame[cfg.listKey] = list;
       // Keep the textarea in sync with the new row order so what
       // the user sees on the left matches the matrix.
-      $(cfg.textareaSel).value = state[cfg.listKey].join('\n');
+      $(cfg.textareaSel).value = frame[cfg.listKey].join('\n');
       renderImpactMatrix(kind);
       autoSave();
     });
@@ -2436,6 +2764,7 @@ date: 2026-08-11
   }
   function applyFraming(framing, sourceLabel, scopeText) {
     state = normalizeState(coerceFraming(framing));
+    currentPath = [];                                        // AI draft → top level
     // The bot's own scope input is the authoritative scope for the
     // generated framing — propagate it into the top-level scope box so
     // the user doesn't have to re-type it above.
@@ -2528,15 +2857,27 @@ date: 2026-08-11
     $('#fp-metrics-input').addEventListener('input',       syncMetricsFromTextarea);
     $('#fp-decisions-input').addEventListener('input',     () => syncListFromTextarea('decision'));
     $('#fp-uncertainties-input').addEventListener('input', () => syncListFromTextarea('uncertainty'));
+    // Per-level scope — only meaningful when drilled into a sub-decision;
+    // wrapper is hidden at top level via renderSubScopeField.
+    const subScopeInput = $('#fp-decision-subscope-input');
+    if (subScopeInput) {
+      subScopeInput.addEventListener('input', () => {
+        if (atTopLevel()) return;
+        currentFrame().scope = subScopeInput.value;
+        autoSave();
+      });
+    }
     // File menu
     $('#fp-menu-new').addEventListener('click', () => {
       closeFileMenu();
       if (!confirm('Start a new decision? Anything on screen is discarded (Save first if you want to keep it).')) return;
       state = {
+        scope: '', description: '',
         metrics: [], assignments: {}, chipColors: {},
-        decisions: [], matrix: {},
+        decisions: [], matrix: {}, subframes: {},
         uncertainties: [], uMatrix: {},
       };
+      currentPath = [];
       setCurrentName(null);
       setDocTitle(null);   // wipe the banner too
       $('#fp-scope-input').value         = '';
@@ -2592,10 +2933,12 @@ date: 2026-08-11
     $('#fp-reset').addEventListener('click', () => {
       if (!confirm('Delete every metric, decision, and uncertainty, clear the pyramid and both matrices, and unload the current document? (Saved documents in File > Open are not affected.) Cannot be undone.')) return;
       state = {
+        scope: '', description: '',
         metrics: [], assignments: {}, chipColors: {},
-        decisions: [], matrix: {},
+        decisions: [], matrix: {}, subframes: {},
         uncertainties: [], uMatrix: {},
       };
+      currentPath = [];
       setCurrentName(null);
       setDocTitle(null);   // also wipe the banner
       $('#fp-scope-input').value         = '';
