@@ -67,6 +67,12 @@ date: 2026-08-11
 
     <h4 class="fp-modal-subheader" style="margin-top: 16px;">My server libraries</h4>
     <p class="fp-muted" style="margin: 0 0 6px 0;">Server-backed libraries you've visited on this browser. Includes your own personal library and any public / shared library you've opened. Click to reopen.</p>
+    <div class="fp-add-lib-row">
+      <input type="url" id="fp-add-lib-input"
+        placeholder="Paste a library View or Edit URL to add it to this list…"
+        aria-label="Library URL to add" />
+      <button type="button" id="fp-add-lib-btn">Add</button>
+    </div>
     <div id="fp-server-lib-list" class="fp-file-list"></div>
 
     <h4 class="fp-modal-subheader" style="margin-top: 16px;">Public examples</h4>
@@ -512,6 +518,35 @@ date: 2026-08-11
     font-size: 0.95rem;
   }
   .fp-library-bar[hidden] { display: none; }
+
+  /* Add-library-by-URL row inside File → Open modal */
+  .fp-add-lib-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .fp-add-lib-row input {
+    flex: 1;
+    padding: 6px 8px;
+    border: 1px solid #d6c4a3;
+    border-radius: 4px;
+    font: inherit;
+    font-size: 0.9rem;
+    color: #5a3e1f;
+    background: #faf5e6;
+  }
+  .fp-add-lib-row input:focus { outline: 2px solid #c9a76a; outline-offset: -1px; }
+  .fp-add-lib-row button {
+    padding: 6px 14px;
+    background: #fff;
+    border: 1px solid #c9a76a;
+    color: #5a3e1f;
+    border-radius: 4px;
+    cursor: pointer;
+    font: inherit;
+  }
+  .fp-add-lib-row button:hover { background: #f2e6c9; }
+  .fp-add-lib-row button:disabled { opacity: 0.5; cursor: not-allowed; }
   .fp-library-icon { font-size: 1.15rem; }
   .fp-library-crumb {
     color: #5a3e1f;
@@ -3183,6 +3218,45 @@ date: 2026-08-11
       writeVisitedLibraries(map);
     }
   }
+  // Called from File → Open modal's "Add" button. Accepts a full library
+  // URL (View or Edit) and adds it to the visited-libraries list without
+  // navigating away. Fetches the node from the server first so the entry
+  // gets a proper display name + ancestry breadcrumb.
+  async function addServerLibraryByUrl(rawUrl) {
+    const btn = $('#fp-add-lib-btn');
+    const input = $('#fp-add-lib-input');
+    let readId = null;
+    let writeToken = null;
+    try {
+      const u = new URL(String(rawUrl || '').trim());
+      readId     = u.searchParams.get('node');
+      writeToken = u.searchParams.get('w');
+    } catch (_) {
+      alert('That does not look like a valid URL.');
+      return;
+    }
+    if (!isReadIdString(readId)) {
+      alert('URL must include a ?node=<readId> parameter (10 characters).');
+      return;
+    }
+    if (writeToken && !isWriteTokenString(writeToken)) writeToken = null;
+    if (btn) { btn.disabled = true; btn.textContent = 'Adding…'; }
+    try {
+      const resp = await apiFetch(NODES_BASE + '/nodes/' + encodeURIComponent(readId));
+      rememberVisitedLibrary(readId, writeToken, resp.node.name, resp.ancestry);
+      renderServerLibraryList();
+      if (input) input.value = '';
+      flashStatus('Added library "' + (resp.node.name || readId) + '".');
+    } catch (err) {
+      console.error('Add library failed:', err);
+      alert('Could not fetch that library:\n\n' +
+        ((err && err.message) ? err.message : String(err)) +
+        '\n\n(First request after idle can take ~30 s while the server wakes up.)');
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = 'Add'; }
+    }
+  }
+
   function renderServerLibraryList() {
     const list = $('#fp-server-lib-list');
     if (!list) return;
@@ -3681,6 +3755,22 @@ date: 2026-08-11
     // Open-modal wiring
     $('#fp-modal-close').addEventListener('click', closeOpenModal);
     $('#fp-modal-cancel').addEventListener('click', closeOpenModal);
+    // Add-library-by-URL wiring inside Open modal
+    (function wireAddLibrary() {
+      const btn   = $('#fp-add-lib-btn');
+      const input = $('#fp-add-lib-input');
+      if (!btn || !input) return;
+      btn.addEventListener('click', () => {
+        const val = input.value;
+        if (val && val.trim()) addServerLibraryByUrl(val);
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (input.value.trim()) addServerLibraryByUrl(input.value);
+        }
+      });
+    })();
     $('#fp-open-modal').addEventListener('click', (e) => {
       // Click on the backdrop (not the card itself) closes the modal.
       if (e.target === $('#fp-open-modal')) closeOpenModal();
