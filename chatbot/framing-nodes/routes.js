@@ -248,6 +248,139 @@ router.get('/bootstrap-ui', dbRoute(async (req, res) => {
 </body></html>`);
 }));
 
+// GET /admin/import-public-examples-ui?p=<ADMIN_PASSWORD>
+// One-shot: creates a "Public examples" node as a child of root (if not
+// already there), fetches the retirement snapshot of the old public
+// library from the site, and imports each example as a framing inside
+// the new node. Idempotent — re-runs skip framings whose title already
+// exists in the node. Returns an HTML page showing the new node's URLs.
+router.get('/admin/import-public-examples-ui', dbRoute(async (req, res) => {
+  const provided = String(req.query.p || '');
+  if (!process.env.ADMIN_PASSWORD || provided !== process.env.ADMIN_PASSWORD) {
+    return res.status(401).type('text/plain').send('Admin password required.');
+  }
+
+  const root = (await query('SELECT * FROM nodes WHERE is_root = true LIMIT 1')).rows[0];
+  if (!root) throw new Error('Root node not found — run bootstrap-ui first.');
+
+  // Idempotent: reuse an existing "Public examples" node by name if present.
+  let publicExamples = (await query(
+    `SELECT * FROM nodes WHERE parent_id = $1 AND name = 'Public examples' LIMIT 1`,
+    [root.id]
+  )).rows[0];
+  let nodeCreated = false;
+  if (!publicExamples) {
+    publicExamples = (await query(
+      `INSERT INTO nodes (read_id, write_token, parent_id, name, owner_label)
+       VALUES ($1, $2, $3, 'Public examples', 'Warren Powell')
+       RETURNING *`,
+      [newReadId(), newWriteToken(), root.id]
+    )).rows[0];
+    nodeCreated = true;
+  }
+
+  const snapshotUrl = (process.env.FRAMING_TOOL_URL
+      ? new URL(process.env.FRAMING_TOOL_URL).origin
+      : 'https://warrenpowell.org')
+    + '/assets/framing-examples-snapshot-2026-09-05.json';
+
+  let snapshot;
+  try {
+    const snapResp = await fetch(snapshotUrl);
+    if (!snapResp.ok) throw new Error('HTTP ' + snapResp.status);
+    snapshot = await snapResp.json();
+  } catch (e) {
+    throw new Error('Failed to fetch snapshot from ' + snapshotUrl + ': ' + (e.message || e));
+  }
+
+  const manifestEntries = (snapshot && snapshot._index && Array.isArray(snapshot._index.examples))
+    ? snapshot._index.examples : [];
+  const byFile = Object.fromEntries(manifestEntries.map(e => [e.file, e]));
+
+  const examples = (snapshot && snapshot.examples) || {};
+  const results = [];
+  for (const fname of Object.keys(examples)) {
+    const doc = examples[fname];
+    if (!doc || typeof doc !== 'object') continue;
+    const manifest = byFile[fname] || {};
+    const title = String(manifest.title || doc.title || fname.replace(/\.json$/, ''))
+      .slice(0, 200);
+    // Copy the manifest's description into the framing content so it
+    // shows in the library card / banner just like it did before.
+    if (manifest.description && !doc.description) doc.description = manifest.description;
+
+    const existing = (await query(
+      'SELECT id FROM framings WHERE node_id = $1 AND title = $2 LIMIT 1',
+      [publicExamples.id, title]
+    )).rows[0];
+    if (existing) {
+      results.push({ title, status: 'skipped (already exists)' });
+      continue;
+    }
+    await query(
+      `INSERT INTO framings (node_id, title, content) VALUES ($1, $2, $3::jsonb)`,
+      [publicExamples.id, title, JSON.stringify(doc)]
+    );
+    results.push({ title, status: 'imported' });
+  }
+
+  const publicBase = (process.env.FRAMING_TOOL_URL
+    || 'https://warrenpowell.org/decision-framing-tool/').replace(/\/+$/, '');
+  const readUrl  = publicBase + '/?node=' + publicExamples.read_id;
+  const writeUrl = publicBase + '/?node=' + publicExamples.read_id
+                 + '&w=' + publicExamples.write_token;
+
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+
+  const rows = results.map(r => `<tr>
+    <td>${esc(r.title)}</td>
+    <td><span class="status ${r.status.startsWith('imported') ? 'created' : 'skip'}">${esc(r.status)}</span></td>
+  </tr>`).join('');
+
+  res.type('text/html').send(`<!doctype html>
+<html><head><meta charset="utf-8"><title>Import public examples</title>
+<style>
+  body { font: 14px/1.4 system-ui, -apple-system, Segoe UI, sans-serif; max-width: 900px; margin: 24px auto; padding: 0 16px; color: #333; }
+  h1 { color: #8a3a1a; }
+  h2 { color: #5a3e1f; margin-top: 32px; border-bottom: 1px solid #e6d8bf; padding-bottom: 4px; }
+  .status { padding: 4px 10px; border-radius: 4px; display: inline-block; font-size: 0.85em; }
+  .created { background: #dcfce7; color: #14532d; }
+  .skip { background: #fef3c7; color: #78350f; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+  th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid #eee; }
+  th { background: #faf5e6; color: #5a3e1f; }
+  .row { display: flex; align-items: center; gap: 8px; margin: 12px 0; }
+  .label { font-weight: 600; min-width: 100px; color: #5a3e1f; }
+  .url { flex: 1; font-family: ui-monospace, Menlo, monospace; font-size: 0.9em; padding: 6px 10px; background: #faf5e6; border: 1px solid #d6c4a3; border-radius: 4px; word-break: break-all; }
+  button { padding: 6px 12px; border: 1px solid #c9a76a; background: #fff; color: #5a3e1f; border-radius: 4px; cursor: pointer; font: inherit; }
+  button:hover { background: #f2e6c9; }
+</style>
+</head><body>
+<h1>Public examples imported</h1>
+
+<h2>Public examples node <span class="status ${nodeCreated ? 'created' : 'skip'}">${nodeCreated ? 'newly created' : 'already existed'}</span></h2>
+<div class="row"><span class="label">Read URL</span><span class="url" id="u-read">${esc(readUrl)}</span><button onclick="copy('u-read')">Copy</button></div>
+<div class="row"><span class="label">Write URL</span><span class="url" id="u-write">${esc(writeUrl)}</span><button onclick="copy('u-write')">Copy</button></div>
+
+<h2>Results (${results.length} examples processed)</h2>
+<table><thead><tr><th>Title</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table>
+
+<p><em>The Read URL is what you'd put on the tool page as "Browse public examples." Bookmark the Write URL if you want to add more examples later. Re-running this URL is safe — already-imported framings (matched by title) are skipped.</em></p>
+
+<script>
+  function copy(id) {
+    const t = document.getElementById(id).textContent;
+    navigator.clipboard.writeText(t).then(() => {
+      event.target.textContent = 'Copied ✓';
+      setTimeout(() => { event.target.textContent = 'Copy'; }, 1200);
+    });
+  }
+</script>
+</body></html>`);
+}));
+
 // ---- routes --------------------------------------------------------------
 
 // POST /nodes  — first-save auto-create under Public users
