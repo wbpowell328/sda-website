@@ -3016,6 +3016,27 @@ date: 2026-08-11
   // Lets us hint "already published" in the UI later and skip re-creating a
   // node when the user hits Publish again after already publishing.
   const PUBLISHED_KEY = 'framing_published_v1';
+  // LocalStorage key holding { readId, writeToken, name } for the user's ONE
+  // personal library node. Set on first Publish; reused by every subsequent
+  // Publish so new framings accumulate in the same library instead of
+  // spawning a fresh one per click.
+  const MY_LIBRARY_KEY = 'framing_my_library_v1';
+
+  function readMyLibrary() {
+    try {
+      const raw = localStorage.getItem(MY_LIBRARY_KEY);
+      const obj = raw ? JSON.parse(raw) : null;
+      if (obj && obj.readId && obj.writeToken) return obj;
+    } catch (_) { /* ignore */ }
+    return null;
+  }
+  function writeMyLibrary(readId, writeToken, name) {
+    try {
+      localStorage.setItem(MY_LIBRARY_KEY, JSON.stringify({
+        readId, writeToken, name, createdAt: new Date().toISOString(),
+      }));
+    } catch (_) { /* ignore */ }
+  }
 
   async function apiFetch(url, opts) {
     const o = opts || {};
@@ -3079,44 +3100,66 @@ date: 2026-08-11
     const prevText = btn ? btn.textContent : '';
     if (btn) { btn.disabled = true; btn.textContent = 'Publishing…'; }
     try {
-      // The node name is best derived from whatever meaningful label
+      // The framing title is best derived from whatever meaningful label
       // we already have — bot title, current save name, banner-derived
       // suggestion, or a date-stamped placeholder as last resort.
-      const name = (state.title && state.title.trim())
+      const framingTitle = (state.title && state.title.trim())
         || (currentName && currentName.trim())
         || deriveSuggestedName();
 
-      // Create a node under Public users.
-      const nodeResp = await apiFetch(NODES_BASE + '/nodes', {
-        method: 'POST',
-        body: { name: name.slice(0, 200) },
-      });
-      const node = nodeResp.node;
+      // Do we already have a personal library on this browser? If so,
+      // ADD this framing to it. If not, create the library first, then
+      // add this framing as its first item.
+      let lib = readMyLibrary();
+      let isFirstPublish = false;
+      if (!lib) {
+        isFirstPublish = true;
+        // Library name: use the first framing's title as the library
+        // name for now — the user can rename later. Prefix "My framings —"
+        // makes it obvious this is a personal container, not a single
+        // case.
+        const libName = 'My framings — ' + framingTitle;
+        const nodeResp = await apiFetch(NODES_BASE + '/nodes', {
+          method: 'POST',
+          body: { name: libName.slice(0, 200) },
+        });
+        lib = {
+          readId:     nodeResp.node.read_id,
+          writeToken: nodeResp.node.write_token,
+          name:       libName,
+        };
+        writeMyLibrary(lib.readId, lib.writeToken, lib.name);
+      }
 
-      // Save the current framing into that node.
+      // Save the current framing into the library.
       const framingResp = await apiFetch(
-        NODES_BASE + '/framings?nodeReadId=' + encodeURIComponent(node.read_id) +
-          '&w=' + encodeURIComponent(node.write_token),
+        NODES_BASE + '/framings?nodeReadId=' + encodeURIComponent(lib.readId) +
+          '&w=' + encodeURIComponent(lib.writeToken),
         {
           method: 'POST',
-          body: { title: name.slice(0, 200), content: snapshotForSave() },
+          body: { title: framingTitle.slice(0, 200), content: snapshotForSave() },
         }
       );
+      rememberPublishedNode(lib.readId, lib.writeToken, framingResp.framing.id, framingTitle);
 
-      rememberPublishedNode(node.read_id, node.write_token, framingResp.framing.id, name);
-
-      showUrlsModal({
-        title: 'Published to your library',
-        lede: '<b>' + escapeHtmlForModal(name) + '</b> is now saved on the server as a new personal library. ' +
-              'You can revisit this library from any browser using the URLs below. ' +
-              'The Edit URL also lets you create sub-libraries (for a class, a team, or a project).',
-        readUrl:  makeNodeUrl(node.read_id),
-        writeUrl: makeNodeUrl(node.read_id, node.write_token),
-        emailSubject: 'My framing library — ' + name,
-        emailIntro: 'You can revisit this library from any browser using the URLs below. ' +
-                    'Keep the Edit URL private — anyone with it can edit or delete your framings.',
-      });
-      flashStatus('Published to your library.');
+      if (isFirstPublish) {
+        // Show the URL modal — this is the ONE moment the user must
+        // save these URLs. Subsequent publishes just flash a status.
+        showUrlsModal({
+          title: 'Your personal library is ready',
+          lede: 'Your first published framing — <b>' + escapeHtmlForModal(framingTitle) + '</b> — is saved. ' +
+                'Every future <em>Publish</em> will add to <b>the same library</b> at these URLs. ' +
+                'You can revisit this library from any browser.',
+          readUrl:  makeNodeUrl(lib.readId),
+          writeUrl: makeNodeUrl(lib.readId, lib.writeToken),
+          emailSubject: 'My framing library URLs',
+          emailIntro: 'You can revisit your library from any browser using the URLs below. ' +
+                      'Keep the Edit URL private — anyone with it can edit or delete your framings.',
+        });
+        flashStatus('Library created — first framing published.');
+      } else {
+        flashStatus('Added to your library.');
+      }
     } catch (err) {
       console.error('Publish failed:', err);
       alert('Sorry — publish failed:\n\n' +
