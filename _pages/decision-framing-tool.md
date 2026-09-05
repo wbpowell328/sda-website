@@ -37,6 +37,7 @@ date: 2026-08-11
     <div class="fp-menu-items">
       <button type="button" id="fp-menu-new">New decision</button>
       <button type="button" id="fp-menu-open">Open…</button>
+      <button type="button" id="fp-menu-open-my-lib" title="Jump to your personal server library (published framings)" disabled>Open my library</button>
       <button type="button" id="fp-menu-save" title="Save to this browser only (private, stays on this device)">Save (local)</button>
       <button type="button" id="fp-menu-saveas" title="Save under a new name in this browser only">Save as… (local)</button>
       <button type="button" id="fp-menu-publish" title="Save to the online library (get a URL that works from any browser). Creates a personal library the first time.">Publish to my library…</button>
@@ -3111,6 +3112,30 @@ date: 2026-08-11
         readId, writeToken, name, createdAt: new Date().toISOString(),
       }));
     } catch (_) { /* ignore */ }
+    refreshMyLibraryMenuItem();
+  }
+  // Enable/disable File → "Open my library" based on whether a personal
+  // library exists in localStorage. Also updates the tooltip so hovering
+  // shows the library name.
+  function refreshMyLibraryMenuItem() {
+    const btn = $('#fp-menu-open-my-lib');
+    if (!btn) return;
+    const lib = readMyLibrary();
+    if (!lib) {
+      btn.disabled = true;
+      btn.title = 'Publish a framing first to create your personal library';
+    } else {
+      btn.disabled = false;
+      btn.title = 'Open your personal server library: ' + (lib.name || 'My framings');
+    }
+  }
+  function openMyLibrary() {
+    const lib = readMyLibrary();
+    if (!lib) return;
+    const url = new URL(window.location.origin + window.location.pathname);
+    url.searchParams.set('node', lib.readId);
+    if (lib.writeToken) url.searchParams.set('w', lib.writeToken);
+    window.location.href = url.toString();
   }
 
   async function apiFetch(url, opts) {
@@ -3450,6 +3475,11 @@ date: 2026-08-11
       closeFileMenu();
       openOpenModal();
     });
+    $('#fp-menu-open-my-lib').addEventListener('click', () => {
+      closeFileMenu();
+      openMyLibrary();
+    });
+    refreshMyLibraryMenuItem();
     $('#fp-menu-import').addEventListener('click', () => {
       closeFileMenu();
       openImportPicker();
