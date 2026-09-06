@@ -14,7 +14,7 @@ date: 2026-08-11
   <li><a href="#uncertainty-prioritization-tool"><strong>Uncertainty prioritization tool</strong></a> — same idea, applied to the uncertainties that affect performance.</li>
   <li><a href="#ask-professor-powell"><strong>Ask Professor Powell</strong></a> — a chatbot for follow-up questions about your framing or anything else in Professor Powell's materials.</li>
 </ol>
-<p>When framing a problem, be sure to follow the guidelines given on <a href="/framingproblems/#the-framing-process">The Framing Process</a>.</p>
+<p>When framing a problem, be sure to follow the guidelines given on <a href="/framingproblems/">The Framing Process</a>.</p>
 <p>All the information you provide remains private. The <em>File</em> menu below lets you save framings to your personal server library (accessible from any browser via a URL you keep), each containing the scope, the pyramid, and both matrices. If you would like to share a single framing as a snapshot, hit <em>Copy URL</em> and paste it in an email — anyone with the link can view that framing.</p>
 
 <div class="fp-toolbar">
