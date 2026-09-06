@@ -43,7 +43,6 @@ It is astonishing that such a fundamental activity of people lacks a broadly acc
 2.  ***A choice from a set of alternatives.***** **The "decision" is the choice that is made (by some process) from a set of discrete alternatives, or within a feasible region such as $$Ax = b, x \geq 0$$ where $$x$$ is chosen to optimize some metric where $$x = (x_1, \ldots, x_K)$$.
 3.  ***A single choice in a set of alternatives.*** "What decision was made" refers to the specific choice (the single element in a set of choices) as opposed to the entire set.
 4.  ***A committed choice or action, separate from a plan that may or may not be implemented. ***The idea of distinguishing plans from commitments was introduced by the decision scientist Ron Howard in 1966 using the phrasing "*An irrevocable allocation of resources,"* to capture the commitment to implement a choice.  
-5.  ***The outcome of a competition or judgment.*** For example, the winner of a sports contest, the result of an election, a judicial opinion.
 
 A ***decision*** is distinct from the process of making a decision.  The decision may involve an explicit evaluation of all the possible choices, or it may be the output of a function or process that is designed to produce feasible decisions that perform well over time.
 
