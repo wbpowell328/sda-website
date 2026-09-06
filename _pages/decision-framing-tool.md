@@ -134,6 +134,7 @@ date: 2026-08-11
   <span id="fp-library-mode" class="fp-library-mode"></span>
   <button type="button" id="fp-library-save-framing" class="fp-library-browse fp-library-primary" title="Save your edits to the currently-open framing" hidden>Save changes</button>
   <button type="button" id="fp-library-new-framing" class="fp-library-browse" title="Add a new empty framing to this library" hidden>+ New framing</button>
+  <button type="button" id="fp-library-new-sublib" class="fp-library-browse" title="Create a new sub-library inside this library (for a class, team, or project)" hidden>+ New sub-library</button>
   <button type="button" id="fp-library-share" class="fp-library-browse" title="Show the View and Edit URLs for this library so you can copy or share them">Share URLs</button>
   <button type="button" id="fp-library-rename" class="fp-library-browse" title="Rename this library" hidden>Rename ✎</button>
   <button type="button" id="fp-library-browse" class="fp-library-browse">Browse ▾</button>
@@ -3567,6 +3568,66 @@ date: 2026-08-11
     if (saveBtn) saveBtn.hidden = !loadedNode.writeToken;
     const newBtn = $('#fp-library-new-framing');
     if (newBtn) newBtn.hidden = !loadedNode.writeToken;
+    // + New sub-library — structural admin. Server also accepts ancestor
+    // write tokens; we show the button whenever the current node has a
+    // write token in the URL, which is the common case.
+    const newSubBtn = $('#fp-library-new-sublib');
+    if (newSubBtn) newSubBtn.hidden = !loadedNode.writeToken;
+  }
+
+  async function createSubLibrary() {
+    if (!loadedNode || !loadedNode.writeToken) return;
+    const raw = window.prompt(
+      'Name for the new sub-library:\n\n' +
+      '(For example: "ORF 411 Fall 2026", "Alice Chen", "Team Zeta", or "Q3 planning drafts".)',
+      ''
+    );
+    if (raw == null) return;
+    const name = raw.trim();
+    if (!name) return;
+    const btn = $('#fp-library-new-sublib');
+    const prev = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = 'Creating…'; }
+    try {
+      const resp = await apiFetch(
+        NODES_BASE + '/nodes/' + encodeURIComponent(loadedNode.readId) + '/children' +
+          '?w=' + encodeURIComponent(loadedNode.writeToken),
+        { method: 'POST', body: { name: name.slice(0, 200) } }
+      );
+      // Local cache — child appears immediately in Browse ▾.
+      loadedNode.children.unshift({
+        read_id:        resp.node.read_id,
+        name:           resp.node.name,
+        owner_label:    resp.node.owner_label,
+        updated_at:     resp.node.updated_at,
+        first_write_at: resp.node.first_write_at,
+      });
+      // Remember it in "My server libraries" so File → Open shows it too.
+      const childAncestry = (loadedNode.ancestry || []).slice();
+      childAncestry.push(resp.node.name);
+      rememberVisitedLibrary(resp.node.read_id, resp.node.write_token, resp.node.name, childAncestry);
+      // Show URLs so the user can save them before doing anything else.
+      showUrlsModal({
+        title: 'Sub-library created — ' + resp.node.name,
+        lede: '<b>' + escapeHtmlForModal(resp.node.name) + '</b> is now a sub-library of <b>' +
+              escapeHtmlForModal(loadedNode.name) + '</b>. ' +
+              'To hand it to someone else (a student, a teammate), send them the Edit URL. ' +
+              'You still have structural admin over the sub-library via your parent Edit URL, ' +
+              'but you do NOT have content-write on it unless you keep the Edit URL below.',
+        readUrl:  makeNodeUrl(resp.node.read_id),
+        writeUrl: makeNodeUrl(resp.node.read_id, resp.node.write_token),
+        emailSubject: 'Framing library — ' + resp.node.name,
+        emailIntro: 'A framing library has been created for you. ' +
+                    'Keep the Edit URL private — anyone with it can edit or delete framings in this library.',
+      });
+      flashStatus('Sub-library "' + resp.node.name + '" created.');
+    } catch (err) {
+      console.error('Create sub-library failed:', err);
+      alert('Could not create sub-library:\n\n' +
+        ((err && err.message) ? err.message : String(err)));
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = prev; }
+    }
   }
 
   // Persist the current in-memory framing to the server. Requires a
@@ -4052,6 +4113,8 @@ date: 2026-08-11
       if (saveBtn) saveBtn.addEventListener('click', saveCurrentFramingToServer);
       const newBtn  = $('#fp-library-new-framing');
       if (newBtn)  newBtn.addEventListener('click', addNewFramingToLoadedLibrary);
+      const newSubBtn = $('#fp-library-new-sublib');
+      if (newSubBtn) newSubBtn.addEventListener('click', createSubLibrary);
     })();
     // URL modal wiring — Done/close are locked until the user
     // confirms they've saved both URLs, so an accidental Enter can't
