@@ -23,7 +23,7 @@ date: 2026-08-11
 
 <p style="background:#f2e6c9; border-left: 4px solid #5a3e1f; padding: 10px 16px; border-radius: 3px;">
   <strong><a href="/decision-framing-tool/?node=AJx6Ke2S3d" id="fp-public-examples-link">Browse public examples&nbsp;→</a></strong>
-  A growing collection of curated framings (Aurora Motors, Northstar Inventory, and more). Open any to see how a fully-worked framing looks; copy it into your own library as a starting point.
+  A collection of framings to illustrate the tool; copy it into your own library for editing.
 </p>
 
 <!-- Admin bar — hidden unless the URL contains ?admin=1. Gives library-owner
