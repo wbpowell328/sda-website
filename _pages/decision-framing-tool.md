@@ -26,16 +26,6 @@ date: 2026-08-11
   A collection of framings to illustrate the tool; copy it into your own library for editing.
 </p>
 
-<!-- Admin bar — hidden unless the URL contains ?admin=1. Gives library-owner
-     controls (publish / rename / delete public examples). See admin JS below. -->
-<div id="fp-admin-bar" class="fp-admin-bar" hidden>
-  <span class="fp-admin-badge" title="Admin mode is on for this browser tab because ?admin=1 is on the URL.">ADMIN</span>
-  <span class="fp-admin-status" id="fp-admin-status">Checking token…</span>
-  <button type="button" id="fp-admin-set-token">Set / change GitHub token…</button>
-  <button type="button" id="fp-admin-clear-token">Clear token</button>
-  <button type="button" id="fp-admin-help">How this works</button>
-</div>
-
 <div class="fp-toolbar">
   <details class="fp-menu" id="fp-file-menu">
     <summary>File ▾</summary>
@@ -78,10 +68,6 @@ date: 2026-08-11
       <button type="button" id="fp-add-lib-btn">Add</button>
     </div>
     <div id="fp-server-lib-list" class="fp-file-list"></div>
-
-    <h4 class="fp-modal-subheader" style="margin-top: 16px;">Public examples</h4>
-    <p class="fp-muted" style="margin: 0 0 6px 0;">Curated framings. Loading one drops it into your workspace as an unnamed document — use <em>Save to my library…</em> to keep your own copy.</p>
-    <div id="fp-example-list" class="fp-file-list"></div>
 
     <div class="fp-modal-actions">
       <button type="button" id="fp-modal-cancel">Cancel</button>
@@ -1278,42 +1264,6 @@ date: 2026-08-11
     .fp-chip { border-color: #333; box-shadow: none; }
   }
 
-  /* ── Admin bar (visible only when ?admin=1) ───────────────── */
-  .fp-admin-bar {
-    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-    background: #2b2418; color: #f5e5b5;
-    padding: 8px 14px; border-radius: 4px;
-    margin: 12px 0; font-size: 0.9rem;
-  }
-  .fp-admin-badge {
-    background: #c9621e; color: #fff; font-weight: 700; font-size: 0.75em;
-    padding: 3px 8px; border-radius: 3px; letter-spacing: 0.5px;
-  }
-  .fp-admin-status { flex: 1; color: #e6d9b8; }
-  .fp-admin-status.fp-admin-status-ok { color: #a0d99f; }
-  .fp-admin-status.fp-admin-status-warn { color: #ffb84a; }
-  .fp-admin-bar button {
-    padding: 4px 10px; font-size: 0.85rem;
-    background: #4a3f2c; color: #f5e5b5;
-    border: 1px solid #6a5a3f; border-radius: 3px;
-    cursor: pointer;
-  }
-  .fp-admin-bar button:hover { background: #5a4d35; }
-  .fp-admin-actions {
-    display: flex; gap: 4px; margin-left: 8px;
-  }
-  .fp-admin-actions button {
-    padding: 3px 8px; font-size: 0.78rem; font-weight: 600;
-    background: #c9621e; color: #fff; border: 1px solid #a24e15;
-    border-radius: 3px; cursor: pointer;
-  }
-  .fp-admin-actions button:hover:not(:disabled) { background: #a24e15; }
-  .fp-admin-actions button.fp-admin-danger {
-    background: #fff; color: #a1250f; border-color: #d99f96;
-  }
-  .fp-admin-actions button.fp-admin-danger:hover:not(:disabled) { background: #ffe9e5; }
-  .fp-admin-actions button:disabled { opacity: 0.55; cursor: not-allowed; }
-
   /* ── Per-matrix controls (First draft / Reset) ────────────── */
   .fp-matrix-controls {
     display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
@@ -1946,19 +1896,6 @@ date: 2026-08-11
         deleteFile(name);
         renderFileList();
       });
-      // Admin-only: publish this private decision to the public library.
-      let pubBtn = null;
-      if (adminMode) {
-        pubBtn = document.createElement('button');
-        pubBtn.type = 'button';
-        pubBtn.className = 'fp-admin-publish';
-        pubBtn.textContent = 'Publish…';
-        pubBtn.title = 'Publish this decision to the public library (writes a commit to GitHub)';
-        pubBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          adminPublish(name);
-        });
-      }
       // The whole row is clickable — matches the hover highlight the
       // user already sees. Keyboard access via role=button + Enter/Space.
       row.tabIndex = 0;
@@ -1976,12 +1913,6 @@ date: 2026-08-11
         }
       });
       row.appendChild(nameEl);
-      if (pubBtn) {
-        const actions = document.createElement('span');
-        actions.className = 'fp-admin-actions';
-        actions.appendChild(pubBtn);
-        row.appendChild(actions);
-      }
       row.appendChild(delBtn);
       list.appendChild(row);
     }
@@ -1989,7 +1920,6 @@ date: 2026-08-11
   function openOpenModal() {
     renderFileList();
     renderServerLibraryList();
-    renderPublicExamples();   // fires an async fetch; list fills in when it lands
     const m = $('#fp-open-modal');
     if (m) m.hidden = false;
   }
@@ -2073,513 +2003,9 @@ date: 2026-08-11
   // entry. Loading an example populates the workspace without
   // setting a current name — user must Save as… to keep a copy,
   // so the public example isn't accidentally overwritten.
-  const EXAMPLES_BASE = '/assets/framing-examples/';
-  async function fetchExamplesManifest() {
-    try {
-      // Cache-bust: GitHub Pages sets Cache-Control: max-age=600 on
-      // static assets, and cache:'no-cache' doesn't reliably force CDN
-      // revalidation quickly enough after an admin Publish/Update. A
-      // per-load query param makes every request unique.
-      const bust = new Date().getTime();
-      const resp = await fetch(EXAMPLES_BASE + 'index.json?t=' + bust, { cache: 'reload' });
-      if (!resp.ok) return [];
-      const parsed = await resp.json();
-      return Array.isArray(parsed && parsed.examples) ? parsed.examples : [];
-    } catch (_) { return []; }
-  }
-  async function renderPublicExamples() {
-    const list = $('#fp-example-list');
-    if (!list) return;
-    list.innerHTML = '';
-    // Loading placeholder while the fetch is in flight.
-    const loading = document.createElement('div');
-    loading.style.padding = '10px 12px';
-    loading.style.fontSize = '0.9rem';
-    loading.style.color = '#7a6a55';
-    loading.style.fontStyle = 'italic';
-    loading.textContent = 'Loading…';
-    list.appendChild(loading);
-    const examples = await fetchExamplesManifest();
-    list.innerHTML = '';
-    if (examples.length === 0) {
-      const empty = document.createElement('div');
-      empty.style.padding = '10px 12px';
-      empty.style.fontSize = '0.9rem';
-      empty.style.color = '#7a6a55';
-      empty.style.fontStyle = 'italic';
-      empty.textContent = 'No public examples yet.';
-      list.appendChild(empty);
-      return;
-    }
-    for (const ex of examples) {
-      const row = document.createElement('div');
-      row.className = 'fp-file-row';
-      const nameEl = document.createElement('span');
-      nameEl.className = 'fp-file-name';
-      nameEl.textContent = ex.title || ex.file;
-      if (ex.description) {
-        const meta = document.createElement('span');
-        meta.className = 'fp-file-meta';
-        meta.style.display = 'block';
-        meta.style.marginLeft = '0';
-        meta.textContent = ex.description;
-        nameEl.appendChild(meta);
-      }
-      // Whole-row click loads (no separate Load button needed).
-      row.tabIndex = 0;
-      row.setAttribute('role', 'button');
-      row.setAttribute('aria-label', 'Load ' + (ex.title || ex.file));
-      row.addEventListener('click', () => loadPublicExample(ex));
-      row.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          loadPublicExample(ex);
-        }
-      });
-      row.appendChild(nameEl);
-      if (adminMode) {
-        const actions = document.createElement('span');
-        actions.className = 'fp-admin-actions';
-        const renameBtn = document.createElement('button');
-        renameBtn.type = 'button';
-        renameBtn.textContent = 'Rename…';
-        renameBtn.title = 'Rename this public example (title + description)';
-        renameBtn.addEventListener('click', (e) => { e.stopPropagation(); adminRename(ex); });
-        const delBtn = document.createElement('button');
-        delBtn.type = 'button';
-        delBtn.className = 'fp-admin-danger';
-        delBtn.textContent = 'Delete';
-        delBtn.title = 'Remove this public example from the library';
-        delBtn.addEventListener('click', (e) => { e.stopPropagation(); adminDelete(ex); });
-        actions.appendChild(renameBtn);
-        actions.appendChild(delBtn);
-        row.appendChild(actions);
-      }
-      list.appendChild(row);
-    }
-  }
-  async function loadPublicExample(ex) {
-    try {
-      const bust = new Date().getTime();
-      const resp = await fetch(EXAMPLES_BASE + ex.file + '?t=' + bust, { cache: 'reload' });
-      if (!resp.ok) throw new Error('HTTP ' + resp.status);
-      const data = await resp.json();
-      state = normalizeState(data);
-      currentPath = [];                                     // fresh doc → top level
-      // The manifest carries the authoritative description for public
-      // examples — use it in preference to whatever the JSON blob may
-      // (or may not) include, so a case that was published without a
-      // description in its JSON still gets the manifest's one-liner.
-      if (ex.description) state.description = ex.description;
-      // Treat the loaded example as a named framing so that plain Save
-      // (after the user edits) writes to the private library under the
-      // example's title, rather than falling through to Save-as… and
-      // forcing a rename. This creates a private copy on first Save —
-      // the shared public JSON file in the repo is not touched. If a
-      // private entry with the same title already exists, Save will
-      // overwrite it silently (that's the standard Save contract).
-      setCurrentName(ex.title || ex.file);
-      // Remember the manifest's description so a later Publish of edits
-      // can pre-fill it even if the public entry was deleted first.
-      if (ex.description) rememberPublishDescription(ex.title || ex.file, ex.description);
-      $('#fp-scope-input').value         = state.scope || '';
-      $('#fp-metrics-input').value       = state.metrics.join('\n');
-      $('#fp-decisions-input').value     = state.decisions.join('\n');
-      $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
-      render(); renderAllMatrices(); autoSave();
-      closeOpenModal();
-      flashStatus('Loaded example "' + (ex.title || ex.file) + '". Use Save as… to keep a copy.');
-    } catch (e) {
-      alert('Failed to load example: ' + String(e && e.message || e));
-    }
-  }
   function closeOpenModal() {
     const m = $('#fp-open-modal');
     if (m) m.hidden = true;
-  }
-
-  // ── Admin mode (?admin=1) — library management via GitHub API ─
-  // Warren enters admin mode by loading the page with ?admin=1 in
-  // the URL. He pastes a fine-grained GitHub PAT once (stored in
-  // localStorage on his machine only), and can then Publish saved
-  // decisions into /assets/framing-examples/, or Rename/Delete
-  // existing public examples. Every write is a real commit through
-  // the GitHub Contents API — GitHub Pages then rebuilds in ~90s.
-  const ADMIN_TOKEN_KEY = 'framing_admin_gh_token_v1';
-  const ADMIN_REPO_OWNER = 'wbpowell328';
-  const ADMIN_REPO_NAME = 'sda-website';
-  const ADMIN_MANIFEST_PATH = 'assets/framing-examples/index.json';
-  const ADMIN_FILES_DIR = 'assets/framing-examples';
-  // Remember one-line public-library descriptions across sessions/deletes so
-  // the Publish prompt can pre-fill them. Keyed by the framing's title.
-  // Populated when a public example is loaded (from its manifest entry) and
-  // updated on every successful publish/update.
-  const PUBLISH_DESC_KEY = 'framing_publish_desc_v1';
-  function readPublishDescCache() {
-    try { const raw = localStorage.getItem(PUBLISH_DESC_KEY); return raw ? (JSON.parse(raw) || {}) : {}; }
-    catch (_) { return {}; }
-  }
-  function rememberPublishDescription(title, description) {
-    if (!title) return;
-    try {
-      const map = readPublishDescCache();
-      map[title] = description || '';
-      localStorage.setItem(PUBLISH_DESC_KEY, JSON.stringify(map));
-    } catch (_) { /* ignore */ }
-  }
-  function recallPublishDescription(title) {
-    if (!title) return '';
-    return readPublishDescCache()[title] || '';
-  }
-  const ADMIN_PAT_HELP_URL =
-    'https://github.com/settings/personal-access-tokens/new';
-  let adminMode = false;
-
-  function isAdminOn() {
-    try {
-      const u = new URL(window.location.href);
-      return u.searchParams.get('admin') === '1';
-    } catch (_) { return false; }
-  }
-  function getAdminToken() {
-    try { return localStorage.getItem(ADMIN_TOKEN_KEY) || ''; }
-    catch (_) { return ''; }
-  }
-  function setAdminToken(tok) {
-    try {
-      if (tok) localStorage.setItem(ADMIN_TOKEN_KEY, tok);
-      else localStorage.removeItem(ADMIN_TOKEN_KEY);
-    } catch (_) { /* ignore */ }
-  }
-  function ghHeaders() {
-    const tok = getAdminToken();
-    if (!tok) throw new Error('No GitHub token set. Use "Set token" in the admin bar.');
-    return {
-      'Authorization': 'Bearer ' + tok,
-      'Accept': 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28',
-    };
-  }
-  function ghError(resp, bodyText) {
-    // Translate common GitHub responses into something actionable.
-    if (resp.status === 401) return 'GitHub rejected the token (401). It may be expired or wrong — set a new one.';
-    if (resp.status === 403) return 'GitHub returned 403 — the token is valid but lacks write access to this repo. Regenerate with Contents: Read and write on sda-website.';
-    if (resp.status === 404) return 'GitHub returned 404 — the file was not found (possibly deleted or renamed).';
-    if (resp.status === 409 || resp.status === 422) return 'GitHub returned ' + resp.status + ' — likely a stale SHA. Reload and try again. Details: ' + bodyText.slice(0, 200);
-    return 'GitHub request failed (' + resp.status + '): ' + bodyText.slice(0, 300);
-  }
-  // Base64 helpers that survive non-ASCII characters (metric names may
-  // contain UTF-8). atob/btoa alone break on multibyte chars.
-  function b64EncodeUtf8(str) {
-    return btoa(unescape(encodeURIComponent(str)));
-  }
-  function b64DecodeUtf8(b64) {
-    return decodeURIComponent(escape(atob(b64.replace(/\n/g, ''))));
-  }
-  async function ghGetFile(path) {
-    const url = 'https://api.github.com/repos/' + ADMIN_REPO_OWNER + '/'
-      + ADMIN_REPO_NAME + '/contents/' + path;
-    const resp = await fetch(url, { headers: ghHeaders() });
-    const text = await resp.text();
-    if (!resp.ok) throw new Error(ghError(resp, text));
-    const data = JSON.parse(text);
-    return { sha: data.sha, content: b64DecodeUtf8(data.content || '') };
-  }
-  async function ghPutFile(path, content, message, sha) {
-    const url = 'https://api.github.com/repos/' + ADMIN_REPO_OWNER + '/'
-      + ADMIN_REPO_NAME + '/contents/' + path;
-    const body = { message, content: b64EncodeUtf8(content) };
-    if (sha) body.sha = sha;
-    const resp = await fetch(url, {
-      method: 'PUT',
-      headers: Object.assign({ 'Content-Type': 'application/json' }, ghHeaders()),
-      body: JSON.stringify(body),
-    });
-    const text = await resp.text();
-    if (!resp.ok) throw new Error(ghError(resp, text));
-    return JSON.parse(text);
-  }
-  async function ghDeleteFile(path, message, sha) {
-    const url = 'https://api.github.com/repos/' + ADMIN_REPO_OWNER + '/'
-      + ADMIN_REPO_NAME + '/contents/' + path;
-    const resp = await fetch(url, {
-      method: 'DELETE',
-      headers: Object.assign({ 'Content-Type': 'application/json' }, ghHeaders()),
-      body: JSON.stringify({ message, sha }),
-    });
-    const text = await resp.text();
-    if (!resp.ok) throw new Error(ghError(resp, text));
-    return JSON.parse(text);
-  }
-  function slugify(text) {
-    return String(text || '').toLowerCase()
-      .replace(/&/g, ' and ')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '')
-      .slice(0, 60) || 'framing';
-  }
-  function updateAdminStatus() {
-    const el = $('#fp-admin-status');
-    if (!el) return;
-    const tok = getAdminToken();
-    if (!tok) {
-      el.textContent = 'No GitHub token set — click "Set / change GitHub token…" to enable publish/rename/delete.';
-      el.className = 'fp-admin-status fp-admin-status-warn';
-    } else {
-      // Show only a fingerprint of the token, never the token itself.
-      const prefix = tok.slice(0, 7);
-      el.textContent = 'Token set (' + prefix + '…). Publish / Rename / Delete are enabled in the Open dialog.';
-      el.className = 'fp-admin-status fp-admin-status-ok';
-    }
-  }
-  function initAdmin() {
-    if (!isAdminOn()) return;
-    adminMode = true;
-    document.body.classList.add('fp-admin-on');
-    const bar = $('#fp-admin-bar');
-    if (bar) bar.hidden = false;
-    updateAdminStatus();
-  }
-  function promptForToken() {
-    const cur = getAdminToken();
-    const shown = cur ? '(a token is already set; leave blank to keep it, or paste a new one)' : '';
-    const tok = window.prompt(
-      'Paste your GitHub fine-grained PAT with Contents: Read and write on sda-website. ' + shown,
-      ''
-    );
-    if (tok == null) return;                // cancelled
-    const trimmed = tok.trim();
-    if (!trimmed) return;                   // empty = keep existing
-    setAdminToken(trimmed);
-    updateAdminStatus();
-    flashStatus('GitHub token saved to this browser only.');
-  }
-  function clearToken() {
-    if (!getAdminToken()) return;
-    if (!confirm('Clear the stored GitHub token from this browser?')) return;
-    setAdminToken('');
-    updateAdminStatus();
-    flashStatus('Token cleared.');
-  }
-  function showAdminHelp() {
-    alert(
-      'Admin mode is on because ?admin=1 is on the URL.\n\n' +
-      'To enable publish / rename / delete you need a GitHub fine-grained PAT.\n\n' +
-      '1. Open ' + ADMIN_PAT_HELP_URL + ' in a new tab.\n' +
-      '2. Repository access: Only select repositories → sda-website.\n' +
-      '3. Permissions: Repository permissions → Contents → Read and write.\n' +
-      '4. Generate the token, copy it, click "Set / change GitHub token…" here and paste it.\n\n' +
-      'The token is stored only in this browser\'s localStorage and only sent to api.github.com. ' +
-      'Anyone with access to this browser can use it — clear it when you\'re done on shared machines.\n\n' +
-      'Every Publish / Rename / Delete makes a real commit to sda-website; ' +
-      'GitHub Pages rebuilds in ~90 seconds.'
-    );
-  }
-
-  // Publish a private saved decision into /assets/framing-examples/
-  // via two commits: (1) create the JSON file, (2) update index.json.
-  async function adminPublish(privateName) {
-    const files = readFiles();
-    const file = files[privateName];
-    if (!file) { alert('Not found.'); return; }
-    if (!getAdminToken()) { promptForToken(); if (!getAdminToken()) return; }
-
-    const title = window.prompt('Public title (shown in the library):', privateName);
-    if (title == null) return;
-    const trimmedTitle = title.trim();
-    if (!trimmedTitle) { alert('Title cannot be empty.'); return; }
-
-    try {
-      flashStatus('Checking public library…');
-      const manifest = await ghGetFile(ADMIN_MANIFEST_PATH);
-      const manifestObj = JSON.parse(manifest.content);
-      const examples = manifestObj.examples || [];
-
-      // Upsert detection — if a public entry with the exact same title
-      // already exists, offer to update it in place rather than forcing
-      // a delete-then-publish dance. Cancel falls through to create a
-      // suffix-numbered separate copy (old behavior).
-      let existingEntry = examples.find(e => e.title === trimmedTitle);
-      let filename;
-      let existingFileSha = null;
-      let isUpdate = false;
-
-      if (existingEntry) {
-        const useExisting = window.confirm(
-          'A public example titled "' + trimmedTitle + '" already exists.\n\n' +
-          'OK — Update it in place (replaces the existing framing).\n' +
-          'Cancel — Publish as a separate copy under "' + trimmedTitle + ' (2)".'
-        );
-        if (useExisting) {
-          isUpdate = true;
-          filename = existingEntry.file;
-          try {
-            const existingFile = await ghGetFile(ADMIN_FILES_DIR + '/' + filename);
-            existingFileSha = existingFile.sha;
-          } catch (e) {
-            alert('Could not read the existing public file:\n\n' + (e && e.message ? e.message : String(e)));
-            flashStatus('');
-            return;
-          }
-        }
-        // NOTE: on Cancel we intentionally keep existingEntry set so its
-        // description can still pre-fill the description prompt below —
-        // the user chose a separate copy but likely still wants the same
-        // description to seed from.
-      }
-
-      if (!isUpdate) {
-        const existingFiles = new Set(examples.map(e => e.file));
-        const baseSlug = slugify(trimmedTitle);
-        let slug = baseSlug, n = 1;
-        while (existingFiles.has(slug + '.json')) { n++; slug = baseSlug + '-' + n; }
-        filename = slug + '.json';
-      }
-
-      // Description prompt — pre-fill priority:
-      //   1. the matching manifest entry's current description (update path),
-      //   2. a remembered description under the same title (survives deletes
-      //      and cross-session use), or
-      //   3. a remembered description under the private name (in case the
-      //      title was tweaked in the title prompt above), or
-      //   4. empty.
-      const descriptionPrefill =
-        (existingEntry && existingEntry.description) ||
-        state.description ||
-        recallPublishDescription(trimmedTitle) ||
-        recallPublishDescription(privateName) ||
-        '';
-      const description = window.prompt(
-        'One-line description (shown under the title in the library):',
-        descriptionPrefill
-      );
-      if (description == null) return;
-
-      const framing = {
-        scope:         file.scope || '',
-        metrics:       file.metrics || [],
-        assignments:   file.assignments || {},
-        chipColors:    file.chipColors || {},
-        decisions:     file.decisions || [],
-        matrix:        file.matrix || {},
-        uncertainties: file.uncertainties || [],
-        uMatrix:       file.uMatrix || {},
-      };
-      const framingJson = JSON.stringify(framing, null, 2) + '\n';
-
-      flashStatus((isUpdate ? 'Updating' : 'Publishing') + ' "' + trimmedTitle + '"… (2 commits to GitHub)');
-
-      // Commit 1: the framing JSON. Pass sha when updating so GitHub
-      // treats it as an overwrite (not a duplicate-create failure).
-      await ghPutFile(
-        ADMIN_FILES_DIR + '/' + filename,
-        framingJson,
-        (isUpdate ? 'framing examples: update "' : 'framing examples: publish "') + trimmedTitle + '"',
-        existingFileSha
-      );
-
-      // Commit 2: manifest — update the existing entry's description,
-      // or append a new entry.
-      if (isUpdate) {
-        for (const e of manifestObj.examples) {
-          if (e.file === filename) {
-            e.title = trimmedTitle;
-            e.description = description.trim();
-          }
-        }
-      } else {
-        manifestObj.examples = manifestObj.examples || [];
-        manifestObj.examples.push({
-          file: filename,
-          title: trimmedTitle,
-          description: description.trim(),
-        });
-      }
-      await ghPutFile(
-        ADMIN_MANIFEST_PATH,
-        JSON.stringify(manifestObj, null, 2) + '\n',
-        (isUpdate ? 'framing examples: refresh manifest for ' : 'framing examples: add ') + filename,
-        manifest.sha
-      );
-
-      // Cache the description under the actual published title so the next
-      // Publish of the same case can pre-fill it, even if the public entry
-      // is later deleted and re-published from scratch.
-      rememberPublishDescription(trimmedTitle, description.trim());
-
-      flashStatus(
-        (isUpdate ? 'Updated' : 'Published') +
-        ' "' + trimmedTitle + '". Live on the site in ~1–2 min.'
-      );
-      renderPublicExamples();
-    } catch (err) {
-      console.error(err);
-      alert('Publish/update failed:\n\n' + (err && err.message ? err.message : String(err)));
-      flashStatus('Publish/update failed.');
-    }
-  }
-
-  async function adminRename(ex) {
-    if (!getAdminToken()) { promptForToken(); if (!getAdminToken()) return; }
-    const newTitle = window.prompt('New title:', ex.title || ex.file);
-    if (newTitle == null) return;
-    const t = newTitle.trim();
-    if (!t) { alert('Title cannot be empty.'); return; }
-    const newDesc = window.prompt('New description:', ex.description || '');
-    if (newDesc == null) return;
-
-    try {
-      flashStatus('Renaming… (1 commit to GitHub)');
-      const manifest = await ghGetFile(ADMIN_MANIFEST_PATH);
-      const manifestObj = JSON.parse(manifest.content);
-      const entry = (manifestObj.examples || []).find(e => e.file === ex.file);
-      if (!entry) { alert('Not found in manifest — reload and try again.'); return; }
-      entry.title = t;
-      entry.description = newDesc.trim();
-      await ghPutFile(
-        ADMIN_MANIFEST_PATH,
-        JSON.stringify(manifestObj, null, 2) + '\n',
-        'framing examples: rename ' + ex.file + ' → "' + t + '"',
-        manifest.sha
-      );
-      flashStatus('Renamed. Live on the site in ~1–2 min.');
-      renderPublicExamples();
-    } catch (err) {
-      console.error(err);
-      alert('Rename failed:\n\n' + (err && err.message ? err.message : String(err)));
-      flashStatus('Rename failed.');
-    }
-  }
-
-  async function adminDelete(ex) {
-    if (!getAdminToken()) { promptForToken(); if (!getAdminToken()) return; }
-    if (!confirm('Delete public example "' + (ex.title || ex.file) + '"? Cannot be undone from here (a git revert would still work).')) return;
-    try {
-      flashStatus('Deleting… (2 commits to GitHub)');
-      // Fetch the JSON file's SHA (Contents API DELETE needs it).
-      const file = await ghGetFile(ADMIN_FILES_DIR + '/' + ex.file);
-      await ghDeleteFile(
-        ADMIN_FILES_DIR + '/' + ex.file,
-        'framing examples: delete ' + ex.file,
-        file.sha
-      );
-      // Then drop from the manifest.
-      const manifest = await ghGetFile(ADMIN_MANIFEST_PATH);
-      const manifestObj = JSON.parse(manifest.content);
-      manifestObj.examples = (manifestObj.examples || []).filter(e => e.file !== ex.file);
-      await ghPutFile(
-        ADMIN_MANIFEST_PATH,
-        JSON.stringify(manifestObj, null, 2) + '\n',
-        'framing examples: remove ' + ex.file + ' from manifest',
-        manifest.sha
-      );
-      flashStatus('Deleted. Live on the site in ~1–2 min.');
-      renderPublicExamples();
-    } catch (err) {
-      console.error(err);
-      alert('Delete failed:\n\n' + (err && err.message ? err.message : String(err)));
-      flashStatus('Delete failed.');
-    }
   }
 
   // Close the File dropdown after any menu-item click.
@@ -4807,7 +4233,6 @@ date: 2026-08-11
 
   // ── Init ────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
-    initAdmin();                                         // reveals admin bar if ?admin=1
     load();
     // ?node= URL wins over localStorage — deferred (async) so it can
     // fetch the server-side node in parallel with the rest of init.
@@ -5045,13 +4470,6 @@ date: 2026-08-11
       }
     });
     $('#fp-print').addEventListener('click', () => window.print());
-    // Admin bar buttons (only meaningful when ?admin=1 unhid the bar).
-    const adminSetBtn   = $('#fp-admin-set-token');
-    const adminClearBtn = $('#fp-admin-clear-token');
-    const adminHelpBtn  = $('#fp-admin-help');
-    if (adminSetBtn)   adminSetBtn.addEventListener('click', promptForToken);
-    if (adminClearBtn) adminClearBtn.addEventListener('click', clearToken);
-    if (adminHelpBtn)  adminHelpBtn.addEventListener('click', showAdminHelp);
     // Per-matrix First-draft / Reset buttons (delegated: covers both matrices).
     document.addEventListener('click', (e) => {
       const draft = e.target.closest('.fp-matrix-draft');
