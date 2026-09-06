@@ -671,11 +671,18 @@ date: 2026-08-11
   }
   /* When the tree pane is on-screen, shift the main content left so
      it doesn't hide behind the pane. Applied via a body class from JS. */
+  /* Shift the main content just enough to keep the tree pane from
+     overlapping. On wide viewports (Warren's ~1920px) the Jekyll
+     layout is already centered inside a max-width column with
+     whitespace on the right, so only a small shift is needed. On
+     narrower viewports the shift is larger. Formula: assume the tree
+     pane sits at viewport-right 20 wide 320, and back off from the
+     max-width layout by (360 - viewport slack / 2), clamped to 20 min. */
   @media (min-width: 1100px) {
     body.fp-tree-open .page-container,
     body.fp-tree-open .content,
     body.fp-tree-open main {
-      padding-right: 360px;
+      padding-right: max(20px, calc(360px - (100vw - 1360px) / 2));
     }
   }
 
@@ -4261,6 +4268,18 @@ date: 2026-08-11
   // ── Init ────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
     load();
+    // Pre-set the tree-open body class if the URL will trigger a tree
+    // pane — the padding-right shift runs synchronously so the layout
+    // lands in its final position on first paint. Prevents the flash
+    // of wide content followed by a collapse when the tree fetch
+    // returns. Removed later if the fetch fails or the URL lacked a
+    // valid node param.
+    try {
+      const nodeParam = new URLSearchParams(window.location.search).get('node');
+      if (nodeParam && /^[A-Za-z0-9]{10}$/.test(nodeParam)) {
+        document.body.classList.add('fp-tree-open');
+      }
+    } catch (_) { /* ignore */ }
     // ?node= URL wins over localStorage — deferred (async) so it can
     // fetch the server-side node in parallel with the rest of init.
     // The initial paint uses whatever load() restored; if a node URL
