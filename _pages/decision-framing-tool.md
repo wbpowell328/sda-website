@@ -258,6 +258,17 @@ date: 2026-08-11
 
   <div class="fp-panel fp-pyramid-panel">
     <h3>Priority pyramid</h3>
+    <div class="fp-matrix-controls">
+      <button type="button" class="fp-matrix-draft" id="fp-pyramid-draft"
+        title="Use the AI to propose a metrics pyramid from your scope/description/URL/file in the Problem scope section above. Review carefully.">
+        First draft (AI)
+      </button>
+      <button type="button" class="fp-matrix-reset" id="fp-pyramid-reset"
+        title="Clear every metric and empty the pyramid. Decisions and uncertainties are not touched.">
+        Reset pyramid
+      </button>
+      <span class="fp-matrix-ai-note" id="fp-pyramid-ai-note" hidden>AI-generated — be sure to review carefully.</span>
+    </div>
     <p class="fp-muted">Tier 1 = most important. Drop chips onto any tier; drag between tiers to re-order.</p>
     <div class="fp-pyramid">
       <div class="fp-tier fp-tier-1">
@@ -2491,6 +2502,7 @@ date: 2026-08-11
   // Note is session-only — not persisted across page reloads or saves.
   // It's a "you just clicked First draft" reminder, not a permanent tag.
   const MATRIX_ENDPOINT = 'https://castle-chatbot.onrender.com/framing/matrix';
+  const PYRAMID_ENDPOINT = 'https://castle-chatbot.onrender.com/framing/pyramid';
   function showAiNote(kind) {
     const el = document.querySelector('.fp-matrix-ai-note[data-kind="' + kind + '"]');
     if (el) el.hidden = false;
@@ -2572,6 +2584,108 @@ date: 2026-08-11
     frame[cfg.matrixKey] = {};
     hideAiNote(kind);
     renderImpactMatrix(kind);
+    autoSave();
+  }
+
+  // ── Metrics pyramid: First draft (AI) + Reset ─────────────
+  // Parallels the per-matrix AI buttons. Pulls scope/description/URL/file
+  // from the Problem scope section at the top of the page and asks the
+  // model to invent a metrics pyramid. Existing decisions/uncertainties
+  // (if any) are sent as context so the generated metrics align with
+  // what the user already has on screen. Does NOT touch decisions,
+  // uncertainties, or matrices.
+  function showPyramidAiNote() {
+    const el = $('#fp-pyramid-ai-note');
+    if (el) el.hidden = false;
+  }
+  function hidePyramidAiNote() {
+    const el = $('#fp-pyramid-ai-note');
+    if (el) el.hidden = true;
+  }
+  function setPyramidButtonsBusy(busy, label) {
+    const draft = $('#fp-pyramid-draft');
+    const reset = $('#fp-pyramid-reset');
+    if (draft) {
+      draft.disabled = busy;
+      if (busy) { draft.dataset.origText = draft.textContent; draft.textContent = label || 'Working…'; }
+      else if (draft.dataset.origText) { draft.textContent = draft.dataset.origText; delete draft.dataset.origText; }
+    }
+    if (reset) reset.disabled = busy;
+  }
+  async function runPyramidDraft() {
+    // Pull the same inputs the whole-framing draft uses (Problem scope
+    // section at the top of the page). Any of them is enough.
+    const scope = $('#fp-scope-input').value.trim();
+    const desc  = $('#fp-bot-desc').value.trim();
+    const url   = $('#fp-bot-url').value.trim();
+    const file  = $('#fp-bot-file').files && $('#fp-bot-file').files[0];
+    const size  = $('#fp-bot-size').value || 'medium';
+    if (!scope && !desc && !url && !file) {
+      alert('Fill in a decision-maker scope, description, URL, or file in the Problem scope section above first — the AI needs something to work from.');
+      return;
+    }
+    setPyramidButtonsBusy(true, 'Working…');
+    try {
+      const form = new FormData();
+      if (scope) form.append('scope', scope);
+      if (desc)  form.append('description', desc);
+      if (url)   form.append('url', url);
+      if (file)  form.append('file', file, file.name);
+      form.append('size', size);
+      // Optional context — align generated metrics with existing content.
+      if (Array.isArray(state.decisions) && state.decisions.length) {
+        form.append('existingDecisions', JSON.stringify(state.decisions));
+      }
+      if (Array.isArray(state.uncertainties) && state.uncertainties.length) {
+        form.append('existingUncertainties', JSON.stringify(state.uncertainties));
+      }
+      const resp = await fetch(PYRAMID_ENDPOINT, { method: 'POST', body: form });
+      const data = await resp.json().catch(() => ({ error: 'Bad response from server.' }));
+      if (!resp.ok) throw new Error(data.error || ('Request failed (' + resp.status + ')'));
+      if (!Array.isArray(data.metrics) || data.metrics.length === 0) {
+        throw new Error('Server returned no metrics.');
+      }
+      // Apply metrics + assignments. Any existing matrix cells whose row
+      // was scored against a metric that got renamed are cleaned by the
+      // syncMetricsFromTextarea path — but here we're overwriting the
+      // whole metric list, so run that pipeline via the textarea to keep
+      // downstream state consistent (drops matrix cells that reference
+      // metrics that no longer exist).
+      $('#fp-metrics-input').value = data.metrics.join('\n');
+      syncMetricsFromTextarea();
+      // Now overlay tier assignments on top of the freshly-parsed metrics.
+      const assign = (data.assignments && typeof data.assignments === 'object') ? data.assignments : {};
+      state.assignments = {};
+      for (const m of state.metrics) {
+        const t = Number(assign[m]);
+        if (Number.isFinite(t) && t >= 1 && t <= 4) state.assignments[m] = Math.round(t);
+      }
+      render();                    // re-render pyramid drop zones
+      renderAllMatrices();         // matrix column headers may have changed
+      showPyramidAiNote();
+      autoSave();
+    } catch (err) {
+      console.error('Pyramid draft failed:', err);
+      alert('Sorry — pyramid draft failed:\n\n' +
+        ((err && err.message) ? err.message : String(err)) +
+        '\n\n(First request after idle can take ~30 s while the server wakes up. Try again in a moment.)');
+    } finally {
+      setPyramidButtonsBusy(false);
+    }
+  }
+  function resetPyramid() {
+    if (!state.metrics || state.metrics.length === 0) return;
+    if (!confirm('Clear every metric and empty the pyramid? Decisions, uncertainties, and both matrices are not touched (but matrix column headers will disappear until you add metrics again).')) return;
+    state.metrics = [];
+    state.assignments = {};
+    state.chipColors = {};
+    $('#fp-metrics-input').value = '';
+    // Matrix cells referencing gone-metrics get pruned by syncMetricsFromTextarea's
+    // downstream logic — but easier to just clear the metric columns here
+    // and let renderAllMatrices show the empty-columns state.
+    render();
+    renderAllMatrices();
+    hidePyramidAiNote();
     autoSave();
   }
 
@@ -4576,12 +4690,14 @@ date: 2026-08-11
     document.addEventListener('click', (e) => {
       const draft = e.target.closest('.fp-matrix-draft');
       if (draft) {
+        if (draft.id === 'fp-pyramid-draft') { runPyramidDraft(); return; }
         const k = draft.dataset.kind;
         if (k === 'decision' || k === 'uncertainty') runMatrixDraft(k);
         return;
       }
       const reset = e.target.closest('.fp-matrix-reset');
       if (reset) {
+        if (reset.id === 'fp-pyramid-reset') { resetPyramid(); return; }
         const k = reset.dataset.kind;
         if (k === 'decision' || k === 'uncertainty') resetMatrix(k);
       }

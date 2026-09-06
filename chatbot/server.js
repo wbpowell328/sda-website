@@ -649,6 +649,154 @@ app.post('/framing/matrix', framingLimiter, express.json({ limit: '256kb' }), as
   }
 });
 
+// Metrics-pyramid only: given a scope/description (or URL/file) and
+// optionally the user's current decisions + uncertainties, generate a
+// list of metrics with 4-tier pyramid assignments. Doesn't touch
+// decisions, uncertainties, or matrices. Cheaper than /framing since
+// the model only produces two small fields.
+const PYRAMID_TOOL = {
+  name: 'record_pyramid',
+  description: 'Record a metrics pyramid: an ordered list of metric names and each metric\'s tier (1 = most important, 4 = least). Exactly one metric on Tier 1.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      metrics: {
+        type: 'array',
+        items: { type: 'string' },
+        description: 'Short metric names (2–4 words each), ordered by pyramid tier (Tier 1 first). Length should match the requested size: small=4, medium=6, large=10, max=20.',
+      },
+      assignments: {
+        type: 'object',
+        additionalProperties: { type: 'integer', minimum: 1, maximum: 4 },
+        description: 'Every metric name → its pyramid tier (1–4). Every metric must appear as a key; exactly one metric maps to 1.',
+      },
+    },
+    required: ['metrics', 'assignments'],
+  },
+};
+
+app.post('/framing/pyramid', framingLimiter, (req, res) => {
+  framingUpload.single('file')(req, res, async (uploadErr) => {
+    if (uploadErr) return res.status(400).json({ error: uploadErr.message });
+    try {
+      const description = String(req.body?.description || '').trim().slice(0, FRAMING_MAX_CHARS);
+      const url         = String(req.body?.url || '').trim();
+      const scope       = String(req.body?.scope || '').trim().slice(0, 2000);
+      const { size, metrics: nM } = sizeInstructions(req.body?.size);
+      // Optional: existing decisions and uncertainties as context so the
+      // generated metrics fit what the user already has on-screen.
+      // Sent as JSON strings in a multipart form because everything else is.
+      let existingDecisions = [];
+      let existingUncertainties = [];
+      try {
+        const d = req.body?.existingDecisions;
+        if (typeof d === 'string' && d) existingDecisions = JSON.parse(d);
+        const u = req.body?.existingUncertainties;
+        if (typeof u === 'string' && u) existingUncertainties = JSON.parse(u);
+      } catch (_) { /* ignore malformed */ }
+      if (!Array.isArray(existingDecisions))    existingDecisions    = [];
+      if (!Array.isArray(existingUncertainties)) existingUncertainties = [];
+      existingDecisions    = existingDecisions.filter(Boolean).map(String).slice(0, 40);
+      existingUncertainties = existingUncertainties.filter(Boolean).map(String).slice(0, 40);
+
+      const userContent = [];
+      if (scope) {
+        userContent.push({
+          type: 'text',
+          text:
+            `SCOPE — who (or what) is making these decisions:\n${scope}\n\n` +
+            `Every metric you propose must be one this decision-maker is judged on.`,
+        });
+      }
+      if (req.file) {
+        userContent.push(await fileToContentBlock(
+          req.file.buffer, req.file.mimetype, req.file.originalname,
+        ));
+      }
+      if (url) {
+        if (!/^https?:\/\//i.test(url)) {
+          return res.status(400).json({ error: 'URL must start with http:// or https://.' });
+        }
+        userContent.push(await urlToContentBlock(url));
+      }
+      if (description) {
+        userContent.push({ type: 'text', text: `Problem description:\n${description}` });
+      }
+      if (existingDecisions.length || existingUncertainties.length) {
+        const parts = ['\nUser already has these on-screen — align your metrics with them:'];
+        if (existingDecisions.length) {
+          parts.push('Decisions (levers the decision-maker controls):');
+          existingDecisions.forEach((d, i) => parts.push(`  ${i + 1}. ${d}`));
+        }
+        if (existingUncertainties.length) {
+          parts.push('Uncertainties (external factors):');
+          existingUncertainties.forEach((u, i) => parts.push(`  ${i + 1}. ${u}`));
+        }
+        userContent.push({ type: 'text', text: parts.join('\n') });
+      }
+      // Need SOMETHING to work from. If nothing but scope, that's often
+      // enough to generate a plausible pyramid — allow it.
+      if (userContent.length === 0) {
+        return res.status(400).json({
+          error: 'Add a scope, description, URL, or file first (any of these is enough).',
+        });
+      }
+
+      userContent.push({
+        type: 'text',
+        text:
+          `Produce a **${size}** metrics pyramid: exactly ${nM} metrics, each assigned to a tier 1–4 ` +
+          `(exactly one metric on Tier 1). Return via the record_pyramid tool.\n\n` +
+          `Do not invent decisions or uncertainties — this call is for the metrics pyramid ONLY.`,
+      });
+
+      const response = await client.messages.create({
+        model: FRAMING_MODEL,
+        max_tokens: 2048,
+        system: framingPrompt || 'You are Professor Warren Powell\'s decision-framing assistant.',
+        tools: [PYRAMID_TOOL],
+        tool_choice: { type: 'tool', name: PYRAMID_TOOL.name },
+        messages: [{ role: 'user', content: userContent }],
+      });
+
+      const toolBlock = (response.content || []).find(
+        (b) => b.type === 'tool_use' && b.name === PYRAMID_TOOL.name,
+      );
+      if (!toolBlock) {
+        return res.status(502).json({ error: 'Model did not produce a pyramid. Try again.' });
+      }
+
+      // Coerce: keep only string metrics; assignments must be 1–4 and
+      // reference known metric names. If Tier 1 is missing, promote the
+      // first metric so the pyramid at least has a top tier.
+      const outMetrics = Array.isArray(toolBlock.input.metrics)
+        ? toolBlock.input.metrics.filter(Boolean).map(String)
+        : [];
+      const rawAssign = (toolBlock.input.assignments && typeof toolBlock.input.assignments === 'object')
+        ? toolBlock.input.assignments : {};
+      const assignments = {};
+      outMetrics.forEach((m) => {
+        const t = Number(rawAssign[m]);
+        if (Number.isFinite(t) && t >= 1 && t <= 4) assignments[m] = Math.round(t);
+      });
+      if (!Object.values(assignments).includes(1) && outMetrics.length) {
+        assignments[outMetrics[0]] = 1;
+      }
+
+      return res.json({
+        metrics: outMetrics,
+        assignments,
+        size,
+        model: FRAMING_MODEL,
+        usage: response.usage,
+      });
+    } catch (err) {
+      console.error('Framing/pyramid error:', err);
+      return res.status(500).json({ error: (err && err.message) || 'Unknown error' });
+    }
+  });
+});
+
 app.post('/framing', framingLimiter, (req, res) => {
   framingUpload.single('file')(req, res, async (uploadErr) => {
     if (uploadErr) return res.status(400).json({ error: uploadErr.message });
