@@ -58,9 +58,11 @@ date: 2026-08-11
       <h3 id="fp-modal-title">Open framing</h3>
       <button type="button" class="fp-modal-close" id="fp-modal-close" aria-label="Close">×</button>
     </div>
-    <h4 class="fp-modal-subheader">Legacy local saves</h4>
-    <p class="fp-muted" style="margin: 0 0 6px 0;">Framings saved to this browser before the switch to server libraries. Click one to load it, then use <b>File → Save to my library…</b> to move it into your server library. This section will be removed once it's empty.</p>
-    <div id="fp-file-list" class="fp-file-list"></div>
+    <div id="fp-legacy-section" hidden>
+      <h4 class="fp-modal-subheader">Legacy local saves</h4>
+      <p class="fp-muted" style="margin: 0 0 6px 0;">Framings saved to this browser before the switch to server libraries. Click one to load it, then use <b>File → Save to my library…</b> to move it into your server library. This section will disappear once it's empty.</p>
+      <div id="fp-file-list" class="fp-file-list"></div>
+    </div>
 
     <h4 class="fp-modal-subheader" style="margin-top: 16px;">My server libraries</h4>
     <p class="fp-muted" style="margin: 0 0 6px 0;">Server-backed libraries you've visited on this browser. Includes your own personal library and any public / shared library you've opened. Click to reopen.</p>
@@ -1707,6 +1709,12 @@ date: 2026-08-11
     if (!list) return;
     list.innerHTML = '';
     const entries = listFiles();
+    // Hide the whole "Legacy local saves" section (header + blurb +
+    // list) once the user has cleared it. Reappears if somehow a
+    // localStorage entry shows up again (e.g. imported .json under
+    // an old flow — shouldn't happen, but robust either way).
+    const section = $('#fp-legacy-section');
+    if (section) section.hidden = entries.length === 0;
     for (const { name, savedAt, description } of entries) {
       const row = document.createElement('div');
       row.className = 'fp-file-row';
