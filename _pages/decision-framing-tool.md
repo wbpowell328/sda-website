@@ -144,6 +144,8 @@ date: 2026-08-11
   <button type="button" id="fp-library-new-sublib" class="fp-library-browse" title="Create a new sub-library inside this library (for a class, team, or project)" hidden>+ New sub-library</button>
   <button type="button" id="fp-library-share" class="fp-library-browse" title="Show the View and Edit URLs for this library so you can copy or share them">Share URLs</button>
   <button type="button" id="fp-library-rename" class="fp-library-browse" title="Rename this library" hidden>Rename ✎</button>
+  <button type="button" id="fp-library-regenerate" class="fp-library-browse" title="Mint fresh View and Edit URLs. Anyone with the OLD URLs (including you) loses access immediately." hidden>Regenerate URLs</button>
+  <button type="button" id="fp-library-delete" class="fp-library-browse fp-library-danger" title="Delete this library and everything inside it. Cannot be undone." hidden>Delete library</button>
   <button type="button" id="fp-library-browse" class="fp-library-browse">Browse ▾</button>
 </div>
 
@@ -560,6 +562,24 @@ date: 2026-08-11
   }
   .fp-add-lib-row button:hover { background: #f2e6c9; }
   .fp-add-lib-row button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Small per-row action buttons (rename ✎ / delete ×) inside the
+     Browse modal's sub-library and framing lists. */
+  .fp-row-action {
+    padding: 2px 8px;
+    background: #fff;
+    border: 1px solid #d6c4a3;
+    color: #5a3e1f;
+    border-radius: 4px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.9rem;
+    line-height: 1.2;
+    margin-left: 4px;
+  }
+  .fp-row-action:hover { background: #f2e6c9; }
+  .fp-row-danger { color: #9a1c1c; border-color: #d6a3a3; }
+  .fp-row-danger:hover { background: #fee2e2; color: #7a1c1c; }
   .fp-library-crumb {
     color: #5a3e1f;
     font-weight: 600;
@@ -600,6 +620,12 @@ date: 2026-08-11
     color: #fff;
     cursor: not-allowed;
   }
+  .fp-library-danger {
+    background: #fff;
+    color: #9a1c1c;
+    border-color: #d6a3a3;
+  }
+  .fp-library-danger:hover { background: #fee2e2; color: #7a1c1c; }
   .fp-file-list {
     flex: 1 1 auto;
     min-height: 60px; max-height: 50vh;
@@ -3594,6 +3620,109 @@ date: 2026-08-11
     // write token in the URL, which is the common case.
     const newSubBtn = $('#fp-library-new-sublib');
     if (newSubBtn) newSubBtn.hidden = !loadedNode.writeToken;
+    const regenBtn = $('#fp-library-regenerate');
+    if (regenBtn) regenBtn.hidden = !loadedNode.writeToken;
+    const delBtn = $('#fp-library-delete');
+    // Never expose Delete on the root node — server rejects it, and the
+    // client should never even offer it.
+    const isRootByName = loadedNode.name && /^Root/i.test(loadedNode.name);
+    if (delBtn) delBtn.hidden = !loadedNode.writeToken || isRootByName;
+  }
+
+  async function regenerateLoadedLibraryUrls() {
+    if (!loadedNode || !loadedNode.writeToken) return;
+    if (!confirm(
+      'Regenerate the URLs for "' + (loadedNode.name || 'this library') + '"?\n\n' +
+      'The current View and Edit URLs stop working immediately. Anyone with the OLD URLs — including your own bookmarks and any URL you have shared — loses access. You will need to update your bookmarks with the new URL shown next.\n\n' +
+      'This cannot be undone.'
+    )) return;
+    try {
+      const resp = await apiFetch(
+        NODES_BASE + '/nodes/' + encodeURIComponent(loadedNode.readId) + '/regenerate' +
+          '?w=' + encodeURIComponent(loadedNode.writeToken),
+        { method: 'POST' }
+      );
+      const oldReadId = loadedNode.readId;
+      // Update in-memory tokens so the current session keeps working.
+      loadedNode.readId     = resp.node.read_id;
+      loadedNode.writeToken = resp.node.write_token;
+      // Persist the swap wherever the old ID was cached.
+      forgetVisitedLibrary(oldReadId);
+      rememberVisitedLibrary(resp.node.read_id, resp.node.write_token, resp.node.name, loadedNode.ancestry);
+      const myLib = readMyLibrary();
+      if (myLib && myLib.readId === oldReadId) {
+        writeMyLibrary(resp.node.read_id, resp.node.write_token, resp.node.name);
+      }
+      // Update the browser's URL bar so a reload lands on the fresh
+      // URL instead of the dead one — no navigation, no lost state.
+      try {
+        const newUrl = makeNodeUrl(resp.node.read_id, resp.node.write_token);
+        history.replaceState(null, '', newUrl);
+      } catch (_) { /* older browsers — ignore */ }
+      // Fresh URLs — user MUST save these, so use the gated modal.
+      showUrlsModal({
+        title: 'URLs regenerated — ' + (loadedNode.name || 'this library'),
+        lede: 'The <b>old</b> URLs no longer work. Copy the <b>new</b> URLs below and update your bookmarks. Any shared links (email, chat, docs) must be resent — the old links now return "Node not found".',
+        readUrl:  makeNodeUrl(resp.node.read_id),
+        writeUrl: makeNodeUrl(resp.node.read_id, resp.node.write_token),
+        emailSubject: 'Framing library URLs updated — ' + (loadedNode.name || ''),
+        emailIntro: 'The URLs for this library have been regenerated. The old URLs no longer work; use these instead.',
+      });
+      flashStatus('URLs regenerated.');
+    } catch (err) {
+      console.error('Regenerate URLs failed:', err);
+      alert('Regenerate failed:\n\n' + ((err && err.message) ? err.message : String(err)));
+    }
+  }
+
+  async function deleteLoadedLibrary() {
+    if (!loadedNode || !loadedNode.writeToken) return;
+    if (loadedNode.name && /^Root/i.test(loadedNode.name)) {
+      // Server also rejects delete on the root node; guard on the client
+      // for a nicer message.
+      alert('You cannot delete the root library.');
+      return;
+    }
+    const childCount   = (loadedNode.children || []).length;
+    const framingCount = (loadedNode.framings || []).length;
+    const parts = [];
+    if (childCount) {
+      parts.push(childCount + ' direct sub-librar' + (childCount === 1 ? 'y' : 'ies') +
+        ' (and everything inside them recursively)');
+    }
+    if (framingCount) {
+      parts.push(framingCount + ' framing' + (framingCount === 1 ? '' : 's') + ' in it');
+    }
+    const detail = parts.length ? '\n\nAlso deleted: ' + parts.join(' and ') + '.' : ' (currently empty).';
+    if (!confirm(
+      'DELETE the library "' + (loadedNode.name || 'this library') + '"?' + detail +
+      '\n\nCannot be undone. All URLs (yours and anyone else\'s) stop working immediately.'
+    )) return;
+    try {
+      const resp = await apiFetch(
+        NODES_BASE + '/nodes/' + encodeURIComponent(loadedNode.readId) +
+          '?w=' + encodeURIComponent(loadedNode.writeToken),
+        { method: 'DELETE' }
+      );
+      // Clean up localStorage.
+      forgetVisitedLibrary(loadedNode.readId);
+      const myLib = readMyLibrary();
+      if (myLib && myLib.readId === loadedNode.readId) {
+        localStorage.removeItem(MY_LIBRARY_KEY);
+        refreshMyLibraryMenuItem();
+      }
+      const dn = resp.descendant_nodes || 0;
+      const fr = resp.framings || 0;
+      // Navigate to the bare tool page — the current URL is now dead.
+      const bare = window.location.origin + window.location.pathname;
+      alert('Deleted "' + (loadedNode.name || 'library') + '"' +
+        (dn || fr ? ' (' + dn + ' sub-nodes, ' + fr + ' framings)' : '') +
+        '.\n\nRedirecting to the tool home page.');
+      window.location.href = bare;
+    } catch (err) {
+      console.error('Delete library failed:', err);
+      alert('Delete failed:\n\n' + ((err && err.message) ? err.message : String(err)));
+    }
   }
 
   async function createSubLibrary() {
@@ -3815,15 +3944,33 @@ date: 2026-08-11
     }
   }
 
+  function makeRowActionBtn(label, title, cls, handler) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = label;
+    b.title = title;
+    b.className = 'fp-row-action ' + (cls || '');
+    b.addEventListener('click', (e) => {
+      e.stopPropagation();
+      handler();
+    });
+    return b;
+  }
+
   function openLibraryModal() {
     if (!loadedNode) return;
     $('#fp-library-modal-name').textContent = loadedNode.name;
     $('#fp-library-modal-crumb').textContent =
       (loadedNode.ancestry || []).join(' › ');
+    const canEdit = !!loadedNode.writeToken;
 
     // Sub-libraries section — direct children (child nodes). Clicking a
     // row navigates to that child's read URL (view mode). To open a
     // child in edit mode, the user needs that child's own write URL.
+    // Rename ✎ / delete × per row when the CURRENT node is in edit
+    // mode — the server accepts the parent's write token for structural
+    // admin on children (flow-down), so no need for the child's own
+    // write token to manage its metadata.
     const subs = $('#fp-library-sublib-list');
     subs.innerHTML = '';
     const children = loadedNode.children || [];
@@ -3870,6 +4017,12 @@ date: 2026-08-11
           meta.textContent = 'updated ' + new Date(c.updated_at).toLocaleDateString();
         } catch (_) { meta.textContent = ''; }
         row.appendChild(meta);
+        if (canEdit) {
+          row.appendChild(makeRowActionBtn('✎', 'Rename this sub-library', '',
+            () => renameChildNode(c)));
+          row.appendChild(makeRowActionBtn('×', 'Delete this sub-library and everything in it', 'fp-row-danger',
+            () => deleteChildNode(c)));
+        }
         row.addEventListener('click', () => {
           $('#fp-library-modal').hidden = true;
           const url = new URL(window.location.origin + window.location.pathname);
@@ -3919,6 +4072,12 @@ date: 2026-08-11
           badge.style.fontSize = '0.85rem';
           row.appendChild(badge);
         }
+        if (canEdit) {
+          row.appendChild(makeRowActionBtn('✎', 'Rename this framing', '',
+            () => renameFramingRow(f)));
+          row.appendChild(makeRowActionBtn('×', 'Delete this framing', 'fp-row-danger',
+            () => deleteFramingRow(f)));
+        }
         row.addEventListener('click', () => {
           $('#fp-library-modal').hidden = true;
           openFramingFromLoadedNode(f.id);
@@ -3927,6 +4086,122 @@ date: 2026-08-11
       }
     }
     $('#fp-library-modal').hidden = false;
+  }
+
+  async function renameFramingRow(f) {
+    if (!loadedNode || !loadedNode.writeToken) return;
+    const raw = window.prompt('Rename framing:', f.title || '');
+    if (raw == null) return;
+    const newTitle = raw.trim();
+    if (!newTitle || newTitle === f.title) return;
+    try {
+      const resp = await apiFetch(
+        NODES_BASE + '/framings/' + encodeURIComponent(f.id) +
+          '?w=' + encodeURIComponent(loadedNode.writeToken),
+        { method: 'PUT', body: { title: newTitle } }
+      );
+      updateFramingInCache(resp.framing);
+      if (loadedNode.currentFramingId === f.id) setDocTitle(resp.framing.title);
+      openLibraryModal();
+      flashStatus('Framing renamed.');
+    } catch (err) {
+      console.error('Rename framing failed:', err);
+      alert('Rename failed:\n\n' + ((err && err.message) ? err.message : String(err)));
+    }
+  }
+
+  async function deleteFramingRow(f) {
+    if (!loadedNode || !loadedNode.writeToken) return;
+    if (!confirm('Delete framing "' + (f.title || 'Untitled') + '"?\n\nThis cannot be undone.')) return;
+    try {
+      await apiFetch(
+        NODES_BASE + '/framings/' + encodeURIComponent(f.id) +
+          '?w=' + encodeURIComponent(loadedNode.writeToken),
+        { method: 'DELETE' }
+      );
+      loadedNode.framings = (loadedNode.framings || []).filter(x => x.id !== f.id);
+      if (loadedNode.currentFramingId === f.id) {
+        loadedNode.currentFramingId = null;
+        // Blank the workspace since the framing on-screen no longer exists.
+        state = {
+          title: '', scope: '', description: '',
+          metrics: [], assignments: {}, chipColors: {},
+          decisions: [], matrix: {}, subframes: {},
+          uncertainties: [], uMatrix: {},
+        };
+        currentPath = [];
+        setDocTitle(null);
+        $('#fp-scope-input').value         = '';
+        $('#fp-metrics-input').value       = '';
+        $('#fp-decisions-input').value     = '';
+        $('#fp-uncertainties-input').value = '';
+        render();
+        renderAllMatrices();
+      }
+      openLibraryModal();
+      flashStatus('Framing deleted.');
+    } catch (err) {
+      console.error('Delete framing failed:', err);
+      alert('Delete failed:\n\n' + ((err && err.message) ? err.message : String(err)));
+    }
+  }
+
+  async function renameChildNode(child) {
+    if (!loadedNode || !loadedNode.writeToken) return;
+    const raw = window.prompt('Rename sub-library:', child.name || '');
+    if (raw == null) return;
+    const newName = raw.trim();
+    if (!newName || newName === child.name) return;
+    try {
+      const resp = await apiFetch(
+        NODES_BASE + '/nodes/' + encodeURIComponent(child.read_id) +
+          '?w=' + encodeURIComponent(loadedNode.writeToken),
+        { method: 'PATCH', body: { name: newName } }
+      );
+      child.name = resp.node.name;
+      // If it's in the visited-libraries list, refresh its ancestry cache too.
+      const map = readVisitedLibraries();
+      if (map[child.read_id]) {
+        const ancestry = (loadedNode.ancestry || []).slice();
+        ancestry.push(resp.node.name);
+        map[child.read_id].name = resp.node.name;
+        map[child.read_id].ancestryLabel = ancestry.join(' › ');
+        writeVisitedLibraries(map);
+      }
+      openLibraryModal();
+      flashStatus('Sub-library renamed.');
+    } catch (err) {
+      console.error('Rename sub-library failed:', err);
+      alert('Rename failed:\n\n' + ((err && err.message) ? err.message : String(err)));
+    }
+  }
+
+  async function deleteChildNode(child) {
+    if (!loadedNode || !loadedNode.writeToken) return;
+    if (!confirm('DELETE the sub-library "' + (child.name || 'Untitled') + '" and every framing / sub-library inside it?\n\nThis cannot be undone. Anyone with URLs to this sub-library (or anything inside it) loses access.')) return;
+    try {
+      const resp = await apiFetch(
+        NODES_BASE + '/nodes/' + encodeURIComponent(child.read_id) +
+          '?w=' + encodeURIComponent(loadedNode.writeToken),
+        { method: 'DELETE' }
+      );
+      loadedNode.children = (loadedNode.children || []).filter(c => c.read_id !== child.read_id);
+      // Clean up any localStorage reference to this sub-library.
+      forgetVisitedLibrary(child.read_id);
+      const myLib = readMyLibrary();
+      if (myLib && myLib.readId === child.read_id) {
+        localStorage.removeItem(MY_LIBRARY_KEY);
+        refreshMyLibraryMenuItem();
+      }
+      openLibraryModal();
+      const dn = resp.descendant_nodes || 0;
+      const fr = resp.framings || 0;
+      flashStatus('Deleted "' + (child.name || 'Untitled') + '"' +
+        (dn || fr ? ' (' + dn + ' sub-nodes, ' + fr + ' framings)' : '') + '.');
+    } catch (err) {
+      console.error('Delete sub-library failed:', err);
+      alert('Delete failed:\n\n' + ((err && err.message) ? err.message : String(err)));
+    }
   }
 
   async function publishToLibrary() {
@@ -4152,6 +4427,10 @@ date: 2026-08-11
       if (newBtn)  newBtn.addEventListener('click', addNewFramingToLoadedLibrary);
       const newSubBtn = $('#fp-library-new-sublib');
       if (newSubBtn) newSubBtn.addEventListener('click', createSubLibrary);
+      const regenBtn = $('#fp-library-regenerate');
+      if (regenBtn) regenBtn.addEventListener('click', regenerateLoadedLibraryUrls);
+      const delBtn = $('#fp-library-delete');
+      if (delBtn) delBtn.addEventListener('click', deleteLoadedLibrary);
     })();
     // URL modal wiring — Done/close are locked until the user
     // confirms they've saved both URLs, so an accidental Enter can't
