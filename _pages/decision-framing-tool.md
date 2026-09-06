@@ -306,6 +306,10 @@ date: 2026-08-11
         title="Clear every H/M/L/N in this matrix. The decisions and metrics are not touched.">
         Reset scores
       </button>
+      <button type="button" id="fp-decision-up-level" class="fp-matrix-up"
+        title="Go back to the parent decision list" hidden>
+        ↑ Up one level
+      </button>
       <span class="fp-matrix-ai-note" data-kind="decision" hidden>AI-generated — be sure to review carefully.</span>
     </div>
     <p class="fp-muted">Columns follow the pyramid order. Rows can be dragged by their <span class="fp-grip-inline">☰</span> handle.</p>
@@ -1273,6 +1277,13 @@ date: 2026-08-11
     cursor: pointer; color: #5a4a35;
   }
   .fp-matrix-controls button:hover:not(:disabled) { background: #faf5e6; }
+  .fp-matrix-controls button.fp-matrix-up {
+    background: #f2e6c9;
+    border-color: #c9a76a;
+    color: #5a3e1f;
+    font-weight: 600;
+  }
+  .fp-matrix-controls button.fp-matrix-up:hover:not(:disabled) { background: #e6d4a5; }
   .fp-matrix-controls button:disabled { opacity: 0.55; cursor: not-allowed; }
   .fp-matrix-controls button.fp-matrix-draft {
     background: #f5e5b5; border-color: #c9621e; color: #5a4a35;
@@ -1542,6 +1553,11 @@ date: 2026-08-11
   }
   function renderBreadcrumb() {
     const wrap = $('#fp-decision-breadcrumb');
+    // The compact "↑ Up one level" button lives in the matrix controls
+    // strip so it's within reach when scoring — visible whenever we're
+    // drilled below the top level.
+    const upBtn = $('#fp-decision-up-level');
+    if (upBtn) upBtn.hidden = atTopLevel();
     if (!wrap) return;
     wrap.innerHTML = '';
     if (atTopLevel()) { wrap.hidden = true; return; }
@@ -4314,6 +4330,8 @@ date: 2026-08-11
     $('#fp-metrics-input').addEventListener('input',       syncMetricsFromTextarea);
     $('#fp-decisions-input').addEventListener('input',     () => syncListFromTextarea('decision'));
     $('#fp-uncertainties-input').addEventListener('input', () => syncListFromTextarea('uncertainty'));
+    const upLevelBtn = $('#fp-decision-up-level');
+    if (upLevelBtn) upLevelBtn.addEventListener('click', goUpOneLevel);
     // Per-level scope — only meaningful when drilled into a sub-decision;
     // wrapper is hidden at top level via renderSubScopeField.
     const subScopeInput = $('#fp-decision-subscope-input');
