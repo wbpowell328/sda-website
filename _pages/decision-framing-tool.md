@@ -6,12 +6,13 @@ date: 2026-08-11
 ---
 
 {% raw %}
-<p>The decision framing tool has four parts:</p>
+<p>The decision framing tool has five parts:</p>
 <ol>
   <li><a href="#problem-scope"><strong>Problem scope</strong></a> — describe the decision maker and (optionally) the problem itself. The AI can produce a rough first draft of the framing from your description, a URL, or an uploaded case file.</li>
   <li><a href="#metrics-pyramid-tool"><strong>Metrics pyramid tool</strong></a> — prioritize your performance metrics into a four-level pyramid.</li>
   <li><a href="#decision-prioritization-tool"><strong>Decision prioritization tool</strong></a> — score each decision's impact on each pyramid-ordered metric (H / M / L / N), then reorder the decisions by their impact on the most important metrics. Decisions may be nested so that higher level decisions (choose supplier) can be broken into lower level decisions (list individual suppliers). Lower level decisions can be further divided into subclasses.</li>
   <li><a href="#uncertainty-prioritization-tool"><strong>Uncertainty prioritization tool</strong></a> — same idea, applied to the uncertainties that affect performance.</li>
+  <li><a href="#ask-professor-powell"><strong>Ask Professor Powell</strong></a> — a chatbot for follow-up questions about your framing or anything else in Professor Powell's materials.</li>
 </ol>
 <p>When framing a problem, be sure to follow the guidelines given on <a href="/framingproblems/#the-framing-process">The Framing Process</a>.</p>
 <p>All the information you provide remains private. The <em>File</em> menu below lets you save framings to your personal server library (accessible from any browser via a URL you keep), each containing the scope, the pyramid, and both matrices. If you would like to share a single framing as a snapshot, hit <em>Copy URL</em> and paste it in an email — anyone with the link can view that framing.</p>
@@ -346,6 +347,12 @@ date: 2026-08-11
     </div>
   </div>
 </div>
+
+<h2 id="ask-professor-powell" class="fp-section-h2">Ask Professor Powell</h2>
+<p>Follow-up questions about your framing, or general questions about problem framing, sequential decision analytics, or anything else in Professor Powell's materials. The chatbot has been trained on Professor Powell's books, 1,000+ pages of LinkedIn posts on decision analytics, and the contents of this website.</p>
+<p class="fp-muted" style="font-size: 0.9rem;"><em>Conversations are logged so Professor Powell can review feedback and improve the assistant. Don't share anything you want kept private. Verify any material before you use it in your work or a publication (do not cite this chatbot as a source).</em></p>
+
+<div id="castle-chat-inline" style="margin-top: 12px;"></div>
 
 <style>
   .fp-toolbar {
