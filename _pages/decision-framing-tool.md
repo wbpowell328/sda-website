@@ -595,8 +595,9 @@ date: 2026-08-11
     font-size: 0.85rem;
     font-weight: 600;
   }
-  .fp-library-mode.edit { background: #dcfce7; color: #14532d; }
-  .fp-library-mode.view { background: #dbeafe; color: #1e3a8a; }
+  .fp-library-mode.edit  { background: #dcfce7; color: #14532d; }
+  .fp-library-mode.admin { background: #fef3c7; color: #78350f; }
+  .fp-library-mode.view  { background: #dbeafe; color: #1e3a8a; }
   .fp-library-browse {
     padding: 5px 12px;
     background: #fff;
@@ -3528,16 +3529,78 @@ date: 2026-08-11
   function isReadIdString(s)     { return typeof s === 'string' && /^[A-Za-z0-9]{10}$/.test(s); }
   function isWriteTokenString(s) { return typeof s === 'string' && /^[A-Za-z0-9]{16}$/.test(s); }
 
+  // Admin credentials — map of readId → writeToken belonging to any
+  // ancestor whose write URL the user has proven access to. The backend
+  // accepts an ancestor's write token for structural-admin ops (rename,
+  // delete, regenerate, create sub-node) on any descendant, so we
+  // stash tokens here and use them as a fallback when the current
+  // node's own write token isn't available. NEVER sent in the visible
+  // browser URL — passed only in API requests.
+  const ADMIN_CREDS_KEY = 'framing_admin_creds_v1';
+  function readAdminCreds() {
+    try {
+      const raw = localStorage.getItem(ADMIN_CREDS_KEY);
+      const obj = raw ? JSON.parse(raw) : {};
+      return (obj && typeof obj === 'object') ? obj : {};
+    } catch (_) { return {}; }
+  }
+  function rememberAdminCred(readId, token) {
+    if (!readId || !token) return;
+    const map = readAdminCreds();
+    if (map[readId] === token) return;
+    map[readId] = token;
+    try { localStorage.setItem(ADMIN_CREDS_KEY, JSON.stringify(map)); }
+    catch (_) { /* ignore */ }
+  }
+  function forgetAdminCred(readId) {
+    const map = readAdminCreds();
+    if (!map[readId]) return;
+    delete map[readId];
+    try { localStorage.setItem(ADMIN_CREDS_KEY, JSON.stringify(map)); }
+    catch (_) { /* ignore */ }
+  }
+  // Effective admin token for the currently-loaded node — content
+  // write token wins if we have it (it's a strict superset of admin),
+  // otherwise fall back to the inherited admin credential.
+  function nodeAdminToken() {
+    if (!loadedNode) return null;
+    return loadedNode.writeToken || loadedNode.adminToken || null;
+  }
+  // Effective content-write token — write token ONLY. Admin credentials
+  // do NOT grant content-write.
+  function nodeContentWriteToken() {
+    return (loadedNode && loadedNode.writeToken) || null;
+  }
+
   async function initFromNodeUrl() {
     const params = new URLSearchParams(window.location.search);
     const readId     = params.get('node');
     const writeToken = params.get('w');
+    const adminInUrl = params.get('admin');
     if (!isReadIdString(readId)) return;
+    // If an ancestor's admin token was forwarded via the URL (from
+    // a Browse-modal navigation in a parent's edit mode), stash it
+    // in localStorage and rewrite the URL bar to hide it — a user
+    // copying the address bar shouldn't inadvertently share admin.
+    if (isWriteTokenString(adminInUrl)) {
+      rememberAdminCred(readId, adminInUrl);
+      try {
+        const cleanUrl = makeNodeUrl(readId, isWriteTokenString(writeToken) ? writeToken : null);
+        history.replaceState(null, '', cleanUrl);
+      } catch (_) { /* ignore */ }
+    }
     try {
       const resp = await apiFetch(NODES_BASE + '/nodes/' + encodeURIComponent(readId));
+      const validWriteToken = isWriteTokenString(writeToken) ? writeToken : null;
+      // Own write token is a strict superset of admin — remember it as
+      // an admin credential too, so a page reload without ?w= still
+      // has admin access (from an earlier visit in edit mode).
+      if (validWriteToken) rememberAdminCred(readId, validWriteToken);
+      const adminCred = readAdminCreds()[readId] || null;
       loadedNode = {
         readId,
-        writeToken: isWriteTokenString(writeToken) ? writeToken : null,
+        writeToken: validWriteToken,
+        adminToken: (adminCred && adminCred !== validWriteToken) ? adminCred : null,
         name:       resp.node.name,
         ancestry:   Array.isArray(resp.ancestry) ? resp.ancestry : [],
         children:   Array.isArray(resp.children) ? resp.children : [],
@@ -3594,7 +3657,14 @@ date: 2026-08-11
     if (!bar) return;
     if (!loadedNode) { bar.hidden = true; return; }
     bar.hidden = false;
-    const mode = loadedNode.writeToken ? 'edit' : 'view';
+    // Three modes, in decreasing power:
+    //   edit  — user has this node's own write token (content + admin)
+    //   admin — user only has an ancestor's write token (structural admin only,
+    //           no content-write on framings here)
+    //   view  — read only
+    const hasContent = !!loadedNode.writeToken;
+    const hasAdmin   = !!(loadedNode.writeToken || loadedNode.adminToken);
+    const mode = hasContent ? 'edit' : (hasAdmin ? 'admin' : 'view');
     // Ancestry breadcrumb — root → … → current node — labels only per
     // the locked design (users can see where they are but never click
     // upward past their access).
@@ -3602,35 +3672,40 @@ date: 2026-08-11
     $('#fp-library-crumb').textContent = '📁 ' + crumb;
     $('#fp-library-crumb').title = crumb;
     const modeEl = $('#fp-library-mode');
-    modeEl.textContent = mode === 'edit' ? 'Edit mode' : 'View only';
+    modeEl.textContent =
+      mode === 'edit' ? 'Edit mode' :
+      mode === 'admin' ? 'Admin mode' :
+                         'View only';
     modeEl.className = 'fp-library-mode ' + mode;
-    // Rename is a structural-admin action; content-write on this node
-    // is sufficient, and a parent-owner also has structural admin
-    // (server enforces flow-down). Show it whenever we have a write
-    // token — server will reject if it's actually not authorized.
+    modeEl.title = mode === 'admin'
+      ? 'You have structural admin (rename, delete, regenerate URLs, new sub-library) via an ancestor\'s Edit URL. To edit framings inside this library, use its OWN Edit URL.'
+      : '';
+
+    // Structural-admin buttons — visible whenever the user has admin
+    // (own write token OR an ancestor's).
     const renameBtn = $('#fp-library-rename');
-    if (renameBtn) renameBtn.hidden = !loadedNode.writeToken;
-    // Save changes / New framing — content-write on this node only.
-    const saveBtn = $('#fp-library-save-framing');
-    if (saveBtn) saveBtn.hidden = !loadedNode.writeToken;
-    const newBtn = $('#fp-library-new-framing');
-    if (newBtn) newBtn.hidden = !loadedNode.writeToken;
-    // + New sub-library — structural admin. Server also accepts ancestor
-    // write tokens; we show the button whenever the current node has a
-    // write token in the URL, which is the common case.
+    if (renameBtn) renameBtn.hidden = !hasAdmin;
     const newSubBtn = $('#fp-library-new-sublib');
-    if (newSubBtn) newSubBtn.hidden = !loadedNode.writeToken;
+    if (newSubBtn) newSubBtn.hidden = !hasAdmin;
     const regenBtn = $('#fp-library-regenerate');
-    if (regenBtn) regenBtn.hidden = !loadedNode.writeToken;
+    if (regenBtn) regenBtn.hidden = !hasAdmin;
     const delBtn = $('#fp-library-delete');
     // Never expose Delete on the root node — server rejects it, and the
     // client should never even offer it.
     const isRootByName = loadedNode.name && /^Root/i.test(loadedNode.name);
-    if (delBtn) delBtn.hidden = !loadedNode.writeToken || isRootByName;
+    if (delBtn) delBtn.hidden = !hasAdmin || isRootByName;
+
+    // Content-write buttons — visible ONLY when we have this node's
+    // own write token. Admin credentials do not grant content-write.
+    const saveBtn = $('#fp-library-save-framing');
+    if (saveBtn) saveBtn.hidden = !hasContent;
+    const newBtn = $('#fp-library-new-framing');
+    if (newBtn) newBtn.hidden = !hasContent;
   }
 
   async function regenerateLoadedLibraryUrls() {
-    if (!loadedNode || !loadedNode.writeToken) return;
+    const adminTok = nodeAdminToken();
+    if (!loadedNode || !adminTok) return;
     if (!confirm(
       'Regenerate the URLs for "' + (loadedNode.name || 'this library') + '"?\n\n' +
       'The current View and Edit URLs stop working immediately. Anyone with the OLD URLs — including your own bookmarks and any URL you have shared — loses access. You will need to update your bookmarks with the new URL shown next.\n\n' +
@@ -3639,16 +3714,19 @@ date: 2026-08-11
     try {
       const resp = await apiFetch(
         NODES_BASE + '/nodes/' + encodeURIComponent(loadedNode.readId) + '/regenerate' +
-          '?w=' + encodeURIComponent(loadedNode.writeToken),
+          '?w=' + encodeURIComponent(adminTok),
         { method: 'POST' }
       );
       const oldReadId = loadedNode.readId;
       // Update in-memory tokens so the current session keeps working.
       loadedNode.readId     = resp.node.read_id;
       loadedNode.writeToken = resp.node.write_token;
+      loadedNode.adminToken = null;   // own token is now a strict superset
       // Persist the swap wherever the old ID was cached.
       forgetVisitedLibrary(oldReadId);
+      forgetAdminCred(oldReadId);
       rememberVisitedLibrary(resp.node.read_id, resp.node.write_token, resp.node.name, loadedNode.ancestry);
+      rememberAdminCred(resp.node.read_id, resp.node.write_token);
       const myLib = readMyLibrary();
       if (myLib && myLib.readId === oldReadId) {
         writeMyLibrary(resp.node.read_id, resp.node.write_token, resp.node.name);
@@ -3676,7 +3754,8 @@ date: 2026-08-11
   }
 
   async function deleteLoadedLibrary() {
-    if (!loadedNode || !loadedNode.writeToken) return;
+    const adminTok = nodeAdminToken();
+    if (!loadedNode || !adminTok) return;
     if (loadedNode.name && /^Root/i.test(loadedNode.name)) {
       // Server also rejects delete on the root node; guard on the client
       // for a nicer message.
@@ -3701,11 +3780,12 @@ date: 2026-08-11
     try {
       const resp = await apiFetch(
         NODES_BASE + '/nodes/' + encodeURIComponent(loadedNode.readId) +
-          '?w=' + encodeURIComponent(loadedNode.writeToken),
+          '?w=' + encodeURIComponent(adminTok),
         { method: 'DELETE' }
       );
       // Clean up localStorage.
       forgetVisitedLibrary(loadedNode.readId);
+      forgetAdminCred(loadedNode.readId);
       const myLib = readMyLibrary();
       if (myLib && myLib.readId === loadedNode.readId) {
         localStorage.removeItem(MY_LIBRARY_KEY);
@@ -3726,7 +3806,8 @@ date: 2026-08-11
   }
 
   async function createSubLibrary() {
-    if (!loadedNode || !loadedNode.writeToken) return;
+    const adminTok = nodeAdminToken();
+    if (!loadedNode || !adminTok) return;
     const raw = window.prompt(
       'Name for the new sub-library:\n\n' +
       '(For example: "ORF 411 Fall 2026", "Alice Chen", "Team Zeta", or "Q3 planning drafts".)',
@@ -3741,7 +3822,7 @@ date: 2026-08-11
     try {
       const resp = await apiFetch(
         NODES_BASE + '/nodes/' + encodeURIComponent(loadedNode.readId) + '/children' +
-          '?w=' + encodeURIComponent(loadedNode.writeToken),
+          '?w=' + encodeURIComponent(adminTok),
         { method: 'POST', body: { name: name.slice(0, 200) } }
       );
       // Local cache — child appears immediately in Browse ▾.
@@ -3907,7 +3988,8 @@ date: 2026-08-11
   }
 
   async function renameLoadedLibrary() {
-    if (!loadedNode || !loadedNode.writeToken) return;
+    const adminTok = nodeAdminToken();
+    if (!loadedNode || !adminTok) return;
     const current = loadedNode.name || '';
     const raw = window.prompt(
       'Rename this library:\n\n(This changes the display label only — your URLs stay the same.)',
@@ -3920,7 +4002,7 @@ date: 2026-08-11
     try {
       const resp = await apiFetch(
         NODES_BASE + '/nodes/' + encodeURIComponent(loadedNode.readId) +
-          '?w=' + encodeURIComponent(loadedNode.writeToken),
+          '?w=' + encodeURIComponent(adminTok),
         { method: 'PATCH', body: { name: trimmed } }
       );
       loadedNode.name = resp.node.name;
@@ -3962,7 +4044,10 @@ date: 2026-08-11
     $('#fp-library-modal-name').textContent = loadedNode.name;
     $('#fp-library-modal-crumb').textContent =
       (loadedNode.ancestry || []).join(' › ');
-    const canEdit = !!loadedNode.writeToken;
+    // canEdit is used for framing content-write actions (need own write token).
+    // canAdmin covers structural ops on children (own OR ancestor token).
+    const canEdit  = !!loadedNode.writeToken;
+    const canAdmin = !!(loadedNode.writeToken || loadedNode.adminToken);
 
     // Sub-libraries section — direct children (child nodes). Clicking a
     // row navigates to that child's read URL (view mode). To open a
@@ -4017,7 +4102,7 @@ date: 2026-08-11
           meta.textContent = 'updated ' + new Date(c.updated_at).toLocaleDateString();
         } catch (_) { meta.textContent = ''; }
         row.appendChild(meta);
-        if (canEdit) {
+        if (canAdmin) {
           row.appendChild(makeRowActionBtn('✎', 'Rename this sub-library', '',
             () => renameChildNode(c)));
           row.appendChild(makeRowActionBtn('×', 'Delete this sub-library and everything in it', 'fp-row-danger',
@@ -4027,9 +4112,12 @@ date: 2026-08-11
           $('#fp-library-modal').hidden = true;
           const url = new URL(window.location.origin + window.location.pathname);
           url.searchParams.set('node', c.read_id);
-          // Do NOT auto-forward the current write token — content-write
-          // is per-node, not inherited. The child opens in view mode
-          // unless the user has that specific library's Edit URL.
+          // Do NOT auto-forward the current write token as ?w= — content
+          // write is per-node, not inherited. But DO forward it as ?admin
+          // so structural admin (rename, delete, regenerate, new sub-lib)
+          // still works on the child without needing its own Edit URL.
+          const parentAdmin = loadedNode.writeToken || loadedNode.adminToken;
+          if (parentAdmin) url.searchParams.set('admin', parentAdmin);
           window.location.href = url.toString();
         });
         subs.appendChild(row);
@@ -4147,7 +4235,8 @@ date: 2026-08-11
   }
 
   async function renameChildNode(child) {
-    if (!loadedNode || !loadedNode.writeToken) return;
+    const adminTok = nodeAdminToken();
+    if (!loadedNode || !adminTok) return;
     const raw = window.prompt('Rename sub-library:', child.name || '');
     if (raw == null) return;
     const newName = raw.trim();
@@ -4155,7 +4244,7 @@ date: 2026-08-11
     try {
       const resp = await apiFetch(
         NODES_BASE + '/nodes/' + encodeURIComponent(child.read_id) +
-          '?w=' + encodeURIComponent(loadedNode.writeToken),
+          '?w=' + encodeURIComponent(adminTok),
         { method: 'PATCH', body: { name: newName } }
       );
       child.name = resp.node.name;
@@ -4177,17 +4266,19 @@ date: 2026-08-11
   }
 
   async function deleteChildNode(child) {
-    if (!loadedNode || !loadedNode.writeToken) return;
+    const adminTok = nodeAdminToken();
+    if (!loadedNode || !adminTok) return;
     if (!confirm('DELETE the sub-library "' + (child.name || 'Untitled') + '" and every framing / sub-library inside it?\n\nThis cannot be undone. Anyone with URLs to this sub-library (or anything inside it) loses access.')) return;
     try {
       const resp = await apiFetch(
         NODES_BASE + '/nodes/' + encodeURIComponent(child.read_id) +
-          '?w=' + encodeURIComponent(loadedNode.writeToken),
+          '?w=' + encodeURIComponent(adminTok),
         { method: 'DELETE' }
       );
       loadedNode.children = (loadedNode.children || []).filter(c => c.read_id !== child.read_id);
       // Clean up any localStorage reference to this sub-library.
       forgetVisitedLibrary(child.read_id);
+      forgetAdminCred(child.read_id);
       const myLib = readMyLibrary();
       if (myLib && myLib.readId === child.read_id) {
         localStorage.removeItem(MY_LIBRARY_KEY);
