@@ -4289,6 +4289,52 @@ date: 2026-08-11
   }
 
   // ── Init ────────────────────────────────────────────────────
+  // Expose the current framing to the inline Ask Professor Powell chat
+  // widget. widget.js calls this before each user message and includes
+  // whatever we return as `context` in the /chat request. Server-side
+  // handler (formatPageContextForPrompt) formats it into a compact
+  // system-prompt block so the assistant can answer "this framing"
+  // questions with concrete references. Returns null if there's nothing
+  // meaningful on-screen (blank state or nothing loaded), so the chat
+  // stays a general-purpose assistant when there's no framing context.
+  window.CASTLE_CHAT_CONTEXT_PROVIDER = function () {
+    try {
+      const hasContent =
+        (Array.isArray(state.metrics)      && state.metrics.length      > 0) ||
+        (Array.isArray(state.decisions)    && state.decisions.length    > 0) ||
+        (Array.isArray(state.uncertainties) && state.uncertainties.length > 0) ||
+        (typeof state.scope === 'string' && state.scope.trim().length > 0);
+      if (!hasContent) return null;
+      const payload = {
+        kind: 'framing',
+        framing: {
+          title:         state.title || '',
+          scope:         state.scope || '',
+          description:   state.description || '',
+          metrics:       state.metrics || [],
+          assignments:   state.assignments || {},
+          decisions:     state.decisions || [],
+          matrix:        state.matrix || {},
+          uncertainties: state.uncertainties || [],
+          uMatrix:       state.uMatrix || {},
+          subframes:     state.subframes || {},
+        },
+      };
+      if (loadedNode) {
+        payload.library = {
+          name:     loadedNode.name || '',
+          ancestry: loadedNode.ancestry || [],
+        };
+        // If a specific framing from the loaded library is open, name it.
+        if (loadedNode.currentFramingId && Array.isArray(loadedNode.framings)) {
+          const f = loadedNode.framings.find(x => x.id === loadedNode.currentFramingId);
+          if (f && f.title) payload.framingTitle = f.title;
+        }
+      }
+      return payload;
+    } catch (_) { return null; }
+  };
+
   document.addEventListener('DOMContentLoaded', () => {
     load();
     // Pre-set the tree-open body class if the URL will trigger a tree

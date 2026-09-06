@@ -752,8 +752,126 @@ app.post('/framing', framingLimiter, (req, res) => {
 
 // Stream a chat completion back as Server-Sent Events.
 // Request: { messages: [{ role: "user"|"assistant", content: "..." }, ...], sessionId?: "..." }
+// Format a page-context object (currently: a framing from the
+// decision-framing-tool page) into a compact text block for the
+// system prompt. Returns null if the context isn't recognizable.
+// Kept small on purpose — this ships on every user message.
+function formatPageContextForPrompt(ctx) {
+  if (!ctx || typeof ctx !== 'object') return null;
+  // Only shape we understand right now: a framing tool payload with
+  // { kind: 'framing', framing: { scope, metrics, assignments, decisions,
+  //   matrix, uncertainties, uMatrix, ... }, library?, framingTitle? }.
+  if (ctx.kind !== 'framing' || !ctx.framing || typeof ctx.framing !== 'object') {
+    return null;
+  }
+  const f = ctx.framing;
+  const lines = [];
+  lines.push('# Current framing (page context)');
+  lines.push(
+    'The user is viewing the decision framing tool with the following ' +
+    'framing currently on-screen. When they ask about "this framing", ' +
+    '"this problem", "this scope", "these metrics", or similar, they mean ' +
+    'the framing below. Answer with concrete reference to their actual ' +
+    'metrics/decisions/uncertainties by name.'
+  );
+  lines.push('');
+  if (ctx.library && typeof ctx.library === 'object') {
+    if (ctx.library.ancestry && ctx.library.ancestry.length) {
+      lines.push('Library: ' + ctx.library.ancestry.join(' > '));
+    } else if (ctx.library.name) {
+      lines.push('Library: ' + ctx.library.name);
+    }
+  }
+  if (ctx.framingTitle) lines.push('Framing title: ' + ctx.framingTitle);
+  if (typeof f.scope === 'string' && f.scope.trim()) {
+    lines.push('Decision-maker scope: ' + f.scope.trim());
+  }
+  if (typeof f.description === 'string' && f.description.trim()) {
+    lines.push('Description: ' + f.description.trim());
+  }
+  const metrics = Array.isArray(f.metrics) ? f.metrics.filter(Boolean) : [];
+  const assignments = (f.assignments && typeof f.assignments === 'object') ? f.assignments : {};
+  if (metrics.length) {
+    lines.push('');
+    lines.push('Metrics (with pyramid tier, 1 = most important):');
+    // Sort by tier ascending, then by original order.
+    const sorted = metrics
+      .map((m, i) => ({ m, tier: Number(assignments[m]) || 0, i }))
+      .sort((a, b) => {
+        const at = a.tier || 5, bt = b.tier || 5;
+        if (at !== bt) return at - bt;
+        return a.i - b.i;
+      });
+    for (const { m, tier } of sorted) {
+      lines.push('  - [tier ' + (tier || 'unassigned') + '] ' + m);
+    }
+  }
+  const decisions = Array.isArray(f.decisions) ? f.decisions.filter(Boolean) : [];
+  if (decisions.length) {
+    lines.push('');
+    lines.push('Decisions (ordered by user\'s priority, most-impactful first):');
+    for (const d of decisions) lines.push('  - ' + d);
+  }
+  const uncertainties = Array.isArray(f.uncertainties) ? f.uncertainties.filter(Boolean) : [];
+  if (uncertainties.length) {
+    lines.push('');
+    lines.push('Uncertainties (ordered by impact, most-impactful first):');
+    for (const u of uncertainties) lines.push('  - ' + u);
+  }
+  // Impact matrices in a compact grid. Only include if the user has
+  // actually scored some cells — a blank matrix isn't useful signal
+  // and just wastes tokens.
+  const matrixHas = (mat) =>
+    mat && typeof mat === 'object' && Object.keys(mat).some(k =>
+      mat[k] && typeof mat[k] === 'object' && Object.keys(mat[k]).length);
+  if (metrics.length && decisions.length && matrixHas(f.matrix)) {
+    lines.push('');
+    lines.push('Decision × metric impact matrix (H=high, M=medium, L=low, N=none):');
+    const header = ['decision \\ metric', ...metrics];
+    lines.push('  ' + header.join(' | '));
+    for (const d of decisions) {
+      const row = [d];
+      for (const m of metrics) {
+        const v = (f.matrix[d] && f.matrix[d][m]) || '·';
+        row.push(v);
+      }
+      lines.push('  ' + row.join(' | '));
+    }
+  }
+  if (metrics.length && uncertainties.length && matrixHas(f.uMatrix)) {
+    lines.push('');
+    lines.push('Uncertainty × metric impact matrix (H/M/L/N):');
+    const header = ['uncertainty \\ metric', ...metrics];
+    lines.push('  ' + header.join(' | '));
+    for (const u of uncertainties) {
+      const row = [u];
+      for (const m of metrics) {
+        const v = (f.uMatrix[u] && f.uMatrix[u][m]) || '·';
+        row.push(v);
+      }
+      lines.push('  ' + row.join(' | '));
+    }
+  }
+  // Optionally, sub-decisions (one level deep — as sent by the client).
+  if (f.subframes && typeof f.subframes === 'object') {
+    const subKeys = Object.keys(f.subframes);
+    if (subKeys.length) {
+      lines.push('');
+      lines.push('Sub-decisions (one level down; not shown recursively):');
+      for (const parent of subKeys) {
+        const sub = f.subframes[parent];
+        const kids = (sub && Array.isArray(sub.decisions)) ? sub.decisions.filter(Boolean) : [];
+        if (kids.length) {
+          lines.push('  - ' + parent + ': ' + kids.join(', '));
+        }
+      }
+    }
+  }
+  return lines.join('\n');
+}
+
 app.post('/chat', chatLimiter, async (req, res) => {
-  const { messages, sessionId: clientSessionId } = req.body || {};
+  const { messages, sessionId: clientSessionId, context: pageContext } = req.body || {};
   if (!Array.isArray(messages) || messages.length === 0) {
     return res.status(400).json({ error: 'messages must be a non-empty array' });
   }
@@ -835,6 +953,16 @@ app.post('/chat', chatLimiter, async (req, res) => {
     // Append tool-use instructions AFTER any RAG block so the main persona
     // prompt keeps its cache prefix intact.
     systemBlocks.push({ type: 'text', text: ASKPP_TOOL_INSTRUCTIONS });
+
+    // Page-supplied context — if the widget's host page sent a
+    // `context` object (currently: the framing tool sends the
+    // currently-loaded framing), format it as a system-prompt
+    // addendum so the assistant can answer questions about "this
+    // framing" directly. Failure to format is silent.
+    const contextText = formatPageContextForPrompt(pageContext);
+    if (contextText) {
+      systemBlocks.push({ type: 'text', text: contextText });
+    }
 
     // --- Call Claude ------------------------------------------------------
     // Strip any non-API fields the widget attached for its own bookkeeping

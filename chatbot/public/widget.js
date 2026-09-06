@@ -893,11 +893,31 @@
     let assistantText = '';
     let lastCitations = null;
 
+    // Page-supplied context — if the host page has defined a global
+    // `window.CASTLE_CHAT_CONTEXT_PROVIDER` function, call it to get
+    // an object describing the user's current on-page state (e.g. the
+    // framing tool sends the currently-loaded framing). The chat
+    // server injects it as an addendum to the system prompt so the
+    // assistant can answer questions about "this" instead of asking
+    // the user to describe it. Silently ignored if the provider
+    // throws or returns nothing.
+    let pageContext = null;
+    try {
+      if (typeof window.CASTLE_CHAT_CONTEXT_PROVIDER === 'function') {
+        const ctx = window.CASTLE_CHAT_CONTEXT_PROVIDER();
+        if (ctx && typeof ctx === 'object') pageContext = ctx;
+      }
+    } catch (_) { /* ignore provider errors */ }
+
     try {
       const res = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages, sessionId: getSessionId() }),
+        body: JSON.stringify({
+          messages,
+          sessionId: getSessionId(),
+          ...(pageContext ? { context: pageContext } : {}),
+        }),
       });
 
       if (!res.ok || !res.body) {
