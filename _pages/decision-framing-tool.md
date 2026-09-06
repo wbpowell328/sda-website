@@ -8,18 +8,13 @@ date: 2026-08-11
 {% raw %}
 <p>The decision framing tool has four parts:</p>
 <ol>
-  <li><a href="#scope-of-the-decision-frame"><strong>Scope of the decision frame</strong></a> — identify the perspective of who is making the decision.</li>
+  <li><a href="#problem-scope"><strong>Problem scope</strong></a> — describe the decision maker and (optionally) the problem itself. The AI can produce a rough first draft of the framing from your description, a URL, or an uploaded case file.</li>
   <li><a href="#metrics-pyramid-tool"><strong>Metrics pyramid tool</strong></a> — prioritize your performance metrics into a four-level pyramid.</li>
   <li><a href="#decision-prioritization-tool"><strong>Decision prioritization tool</strong></a> — score each decision's impact on each pyramid-ordered metric (H / M / L / N), then reorder the decisions by their impact on the most important metrics. Decisions may be nested so that higher level decisions (choose supplier) can be broken into lower level decisions (list individual suppliers). Lower level decisions can be further divided into subclasses.</li>
   <li><a href="#uncertainty-prioritization-tool"><strong>Uncertainty prioritization tool</strong></a> — same idea, applied to the uncertainties that affect performance.</li>
 </ol>
 <p>When framing a problem, be sure to follow the guidelines given on <a href="/framingproblems/#the-framing-process">The Framing Process</a>.</p>
 <p>All the information you provide remains private. The <em>File</em> menu below lets you save framings to your personal server library (accessible from any browser via a URL you keep), each containing the scope, the pyramid, and both matrices. If you would like to share a single framing as a snapshot, hit <em>Copy URL</em> and paste it in an email — anyone with the link can view that framing.</p>
-
-<p style="background:#faf5e6; border-left: 4px solid #c9621e; padding: 10px 16px; border-radius: 3px;">
-  <strong>New — <a href="#ask-professor-powell">Ask Professor Powell</a> to draft your framing.</strong>
-  Skip to the bottom to describe your problem in a sentence or two (or drop in a case file, or a URL) and get all four parts filled in — you edit and refine from there.
-</p>
 
 <div class="fp-toolbar">
   <details class="fp-menu" id="fp-file-menu">
@@ -190,10 +185,52 @@ date: 2026-08-11
   <p id="fp-doc-description" class="fp-doc-description" hidden></p>
 </div>
 
-<h2 id="scope-of-the-decision-frame" class="fp-section-h2">Scope of the decision frame</h2>
-<p>A decision frame has to reflect the perspective of a decision maker, which can be a person, a team, a division of a company, or a piece of software. This perspective should help define (and limit) the set of decisions to those that are under control of the decision maker. Identify this perspective in the box below, which can be a name, a title, the name of a group, or the name of a software package. Or, simply provide a short summary that communicates the decision-maker's perspective.</p>
-<input type="text" id="fp-scope-input" class="fp-scope-input" spellcheck="true"
-  placeholder="e.g. Regional dispatch manager  ·  VP of operations, weekly planning cycle  ·  Autonomous routing engine" />
+<h2 id="problem-scope" class="fp-section-h2">Problem scope</h2>
+<p>A decision frame reflects the perspective of a decision maker — a person, team, division, or a piece of software. Identify that perspective below, then (optionally) describe the problem itself. From your description, a URL to a case, or an uploaded file, the AI can produce a rough first draft of the framing that you edit and refine below. Treat the draft as an illustration or a starting point, not a finished framing.</p>
+
+<div class="fp-bot-card">
+  <div class="fp-bot-row">
+    <label for="fp-scope-input" class="fp-bot-label">Decision maker <span class="fp-muted">(role + altitude in the org + planning horizon)</span></label>
+    <textarea id="fp-scope-input" class="fp-scope-input" rows="2" spellcheck="true"
+      placeholder="e.g. A regional dispatch manager at a mid-sized trucking company with a weekly planning horizon.  Or: The head of operations, quarterly cycle.  Or: An autonomous dispatch system routing trucks in real time."></textarea>
+  </div>
+  <div class="fp-bot-row">
+    <label for="fp-bot-desc" class="fp-bot-label">Describe your problem <span class="fp-muted">(only needed if you want an AI first draft)</span></label>
+    <textarea id="fp-bot-desc" rows="4" spellcheck="true"
+      placeholder="e.g. A regional pharmacy chain has to decide, each week, how much of a slow-moving cold-and-flu medication to keep in each of 40 stores given uncertain seasonal demand, expiring inventory, and a shared central warehouse..."></textarea>
+  </div>
+
+  <div class="fp-bot-row-inline">
+    <div class="fp-bot-inline">
+      <label for="fp-bot-url" class="fp-bot-label">…or a URL to a case / description</label>
+      <input type="url" id="fp-bot-url" placeholder="https://warrenpowell.org/assets/cases/Northstar_Living_Inventory_Case.docx" />
+    </div>
+    <div class="fp-bot-inline">
+      <label for="fp-bot-file" class="fp-bot-label">…or upload a file (PDF, DOCX, TXT, MD)</label>
+      <input type="file" id="fp-bot-file" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown" />
+    </div>
+  </div>
+
+  <div class="fp-bot-controls">
+    <label class="fp-bot-size">
+      <span>First-draft size:</span>
+      <select id="fp-bot-size">
+        <option value="small">Small — 4 metrics, 3 decisions, 3 uncertainties</option>
+        <option value="medium" selected>Medium — 6 metrics, 5 decisions, 5 uncertainties</option>
+        <option value="large">Large — 10 metrics, 8 decisions, 8 uncertainties</option>
+        <option value="max">Max — 20 metrics, 20 decisions, 20 uncertainties</option>
+      </select>
+    </label>
+    <div class="fp-bot-actions">
+      <button type="button" id="fp-bot-generate">Generate first draft (AI)</button>
+      <button type="button" id="fp-bot-clear" title="Clear the description, URL, and file inputs (keeps the decision-maker scope)">Clear inputs</button>
+    </div>
+  </div>
+
+  <p class="fp-bot-caveat"><strong>The AI first draft replaces your current workspace.</strong> If you want to keep what's on screen, save it first with <em>File → Save to my library…</em>.</p>
+
+  <div id="fp-bot-status" class="fp-bot-status" role="status" aria-live="polite"></div>
+</div>
 
 <h2 id="metrics-pyramid-tool" class="fp-section-h2">Metrics pyramid tool</h2>
 <p>Metrics quantify what you want to achieve. They come in three flavors: metrics to be maximized or minimized, along with targets you want to hit, and limits where you specify a minimum or maximum for a metric. The top metric should be in the first category.</p>
@@ -304,53 +341,6 @@ date: 2026-08-11
       <div id="fp-umatrix"></div>
     </div>
   </div>
-</div>
-
-<h2 id="ask-professor-powell" class="fp-section-h2">Ask Professor Powell</h2>
-<p>Describe your problem. This may be the only description, or it may supplement materials you provide from the other sources below.</p>
-
-<div class="fp-bot-card">
-  <div class="fp-bot-row">
-    <label for="fp-bot-scope" class="fp-bot-label">Start by describing the decision maker so we know the scope of the problem:</label>
-    <textarea id="fp-bot-scope" rows="2" spellcheck="true"
-      placeholder="e.g. A regional dispatch manager at a mid-sized trucking company with a weekly planning horizon. Or: The head of operations, quarterly cycle. Or: An autonomous dispatch system routing trucks in real time."></textarea>
-  </div>
-  <div class="fp-bot-row">
-    <label for="fp-bot-desc" class="fp-bot-label">Describe your problem</label>
-    <textarea id="fp-bot-desc" rows="4" spellcheck="true"
-      placeholder="e.g. A regional pharmacy chain has to decide, each week, how much of a slow-moving cold-and-flu medication to keep in each of 40 stores given uncertain seasonal demand, expiring inventory, and a shared central warehouse..."></textarea>
-  </div>
-
-  <div class="fp-bot-row-inline">
-    <div class="fp-bot-inline">
-      <label for="fp-bot-url" class="fp-bot-label">…or a URL to a case / description</label>
-      <input type="url" id="fp-bot-url" placeholder="https://warrenpowell.org/assets/cases/Northstar_Living_Inventory_Case.docx" />
-    </div>
-    <div class="fp-bot-inline">
-      <label for="fp-bot-file" class="fp-bot-label">…or upload a file (PDF, DOCX, TXT, MD)</label>
-      <input type="file" id="fp-bot-file" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown" />
-    </div>
-  </div>
-
-  <div class="fp-bot-controls">
-    <label class="fp-bot-size">
-      <span>Framing size:</span>
-      <select id="fp-bot-size">
-        <option value="small">Small — 4 metrics, 3 decisions, 3 uncertainties</option>
-        <option value="medium" selected>Medium — 6 metrics, 5 decisions, 5 uncertainties</option>
-        <option value="large">Large — 10 metrics, 8 decisions, 8 uncertainties</option>
-        <option value="max">Max — 20 metrics, 20 decisions, 20 uncertainties</option>
-      </select>
-    </label>
-    <div class="fp-bot-actions">
-      <button type="button" id="fp-bot-generate">Ask Professor Powell</button>
-      <button type="button" id="fp-bot-clear" title="Clear the description, URL, and file inputs">Clear inputs</button>
-    </div>
-  </div>
-
-  <p class="fp-bot-caveat"><strong>Anything the bot produces will replace your current workspace.</strong> If you want to keep what's on screen now, use <em>File → Save as…</em> first.</p>
-
-  <div id="fp-bot-status" class="fp-bot-status" role="status" aria-live="polite"></div>
 </div>
 
 <style>
@@ -1183,16 +1173,16 @@ date: 2026-08-11
   .fp-chip:not([data-color]):hover { background: #faf5e6; }
   .fp-chip.fp-dragging { opacity: 0.4; cursor: grabbing; }
 
-  /* Scope-of-the-decision-frame input — sits at the top of the tool,
-     one-line text field that spans the content width. Long entries scroll
-     horizontally inside the input (native input[type=text] behavior). */
+  /* Decision-maker scope — now a 2-row textarea inside the Problem
+     scope card. Same visual language as the other bot-row textareas. */
   .fp-scope-input {
     width: 100%; box-sizing: border-box;
     padding: 8px 12px;
     font-family: inherit; font-size: 0.95rem;
     border: 1px solid #c9b891; border-radius: 4px;
     background: #fff; color: #333;
-    margin: 8px 0 24px 0;
+    resize: vertical;
+    min-height: 60px;
   }
   .fp-scope-input:focus {
     outline: none; border-color: #c9621e;
@@ -2762,7 +2752,9 @@ date: 2026-08-11
   async function runFramingRequest() {
     const desc  = $('#fp-bot-desc').value.trim();
     const url   = $('#fp-bot-url').value.trim();
-    const scope = $('#fp-bot-scope').value.trim();
+    // Scope is now the top-of-section decision-maker field; the old
+    // separate fp-bot-scope textarea was merged into fp-scope-input.
+    const scope = $('#fp-scope-input').value.trim();
     const file = $('#fp-bot-file').files && $('#fp-bot-file').files[0];
     const size = $('#fp-bot-size').value || 'medium';
     if (!desc && !url && !file) {
@@ -2801,7 +2793,9 @@ date: 2026-08-11
     }
   }
   function clearBotInputs() {
-    $('#fp-bot-scope').value = '';
+    // Don't clear fp-scope-input — the decision-maker scope is the
+    // user's own identifying context, valuable to keep across
+    // multiple first-draft attempts.
     $('#fp-bot-desc').value  = '';
     $('#fp-bot-url').value   = '';
     $('#fp-bot-file').value = '';
