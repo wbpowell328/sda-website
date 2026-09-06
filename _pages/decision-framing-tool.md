@@ -3963,19 +3963,23 @@ date: 2026-08-11
       const childAncestry = (loadedNode.ancestry || []).slice();
       childAncestry.push(resp.node.name);
       rememberVisitedLibrary(resp.node.read_id, resp.node.write_token, resp.node.name, childAncestry);
-      // Show URLs so the user can save them before doing anything else.
+      // Show URLs without the "must save" gate — as the parent-owner
+      // you have structural admin over this child forever (via your
+      // own Edit URL), so you can regenerate its URLs anytime. Copy
+      // the URLs if you need to hand them to someone (a student, a
+      // teammate); otherwise just close the modal and keep working.
       showUrlsModal({
         title: 'Sub-library created — ' + resp.node.name,
         lede: '<b>' + escapeHtmlForModal(resp.node.name) + '</b> is now a sub-library of <b>' +
               escapeHtmlForModal(loadedNode.name) + '</b>. ' +
-              'To hand it to someone else (a student, a teammate), send them the Edit URL. ' +
-              'You still have structural admin over the sub-library via your parent Edit URL, ' +
-              'but you do NOT have content-write on it unless you keep the Edit URL below.',
+              'Send the <b>Edit URL</b> to whoever should own this library (a student, a teammate). ' +
+              'You keep structural admin (rename, delete, regenerate URLs) via your parent Edit URL — no need to save the URLs for yourself.',
         readUrl:  makeNodeUrl(resp.node.read_id),
         writeUrl: makeNodeUrl(resp.node.read_id, resp.node.write_token),
         emailSubject: 'Framing library — ' + resp.node.name,
         emailIntro: 'A framing library has been created for you. ' +
                     'Keep the Edit URL private — anyone with it can edit or delete framings in this library.',
+        alreadySaved: true,
       });
       flashStatus('Sub-library "' + resp.node.name + '" created.');
     } catch (err) {
