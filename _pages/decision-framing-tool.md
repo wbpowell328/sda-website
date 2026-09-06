@@ -136,12 +136,13 @@ date: 2026-08-11
   <button type="button" id="fp-library-new-framing" class="fp-library-browse" title="Add a new empty framing to this library" hidden>+ New framing</button>
   <button type="button" id="fp-library-share" class="fp-library-browse" title="Show the View and Edit URLs for this library so you can copy or share them">Share URLs</button>
   <button type="button" id="fp-library-rename" class="fp-library-browse" title="Rename this library" hidden>Rename ✎</button>
-  <button type="button" id="fp-library-browse" class="fp-library-browse">Browse framings ▾</button>
+  <button type="button" id="fp-library-browse" class="fp-library-browse">Browse ▾</button>
 </div>
 
-<!-- Library browse modal — lists framings in the currently-loaded
-     library node so the user can jump between them. Populated at
-     open time from loadedNode.framings. -->
+<!-- Library browse modal — lists sub-libraries + framings in the
+     currently-loaded library node so the user can navigate the tree
+     downward and jump between framings. Populated at open time from
+     loadedNode.children and loadedNode.framings. -->
 <div id="fp-library-modal" class="fp-modal" hidden>
   <div class="fp-modal-card">
     <div class="fp-modal-header">
@@ -151,7 +152,11 @@ date: 2026-08-11
     <p class="fp-muted" style="margin: 0 0 6px 0;">
       <span id="fp-library-modal-crumb"></span>
     </p>
-    <h4 class="fp-modal-subheader">Framings in this library</h4>
+    <h4 class="fp-modal-subheader">Sub-libraries</h4>
+    <p class="fp-muted" style="margin: 0 0 6px 0;">Click one to navigate into it (view-only unless you have that library's Edit URL).</p>
+    <div id="fp-library-sublib-list" class="fp-file-list"></div>
+
+    <h4 class="fp-modal-subheader" style="margin-top: 16px;">Framings in this library</h4>
     <div id="fp-library-framing-list" class="fp-file-list"></div>
     <div class="fp-modal-actions">
       <button type="button" id="fp-library-modal-cancel">Close</button>
@@ -3732,6 +3737,70 @@ date: 2026-08-11
     $('#fp-library-modal-name').textContent = loadedNode.name;
     $('#fp-library-modal-crumb').textContent =
       (loadedNode.ancestry || []).join(' › ');
+
+    // Sub-libraries section — direct children (child nodes). Clicking a
+    // row navigates to that child's read URL (view mode). To open a
+    // child in edit mode, the user needs that child's own write URL.
+    const subs = $('#fp-library-sublib-list');
+    subs.innerHTML = '';
+    const children = loadedNode.children || [];
+    if (!children.length) {
+      const empty = document.createElement('div');
+      empty.style.padding = '16px';
+      empty.style.textAlign = 'center';
+      empty.style.color = '#7a6a55';
+      empty.style.fontStyle = 'italic';
+      empty.textContent = 'No sub-libraries in this library.';
+      subs.appendChild(empty);
+    } else {
+      for (const c of children) {
+        const row = document.createElement('div');
+        row.className = 'fp-file-row';
+        row.style.cursor = 'pointer';
+        const nameEl = document.createElement('span');
+        nameEl.style.flex = '1';
+        nameEl.style.minWidth = '0';
+        nameEl.style.overflow = 'hidden';
+        nameEl.style.textOverflow = 'ellipsis';
+        nameEl.style.whiteSpace = 'nowrap';
+        // Prefix an arrow so it visually reads as a folder to descend into.
+        nameEl.textContent = '📂 ' + (c.name || 'Untitled library');
+        nameEl.title = c.name || '';
+        row.appendChild(nameEl);
+        if (c.first_write_at == null) {
+          const badge = document.createElement('span');
+          badge.textContent = 'unclaimed';
+          badge.style.padding = '2px 8px';
+          badge.style.borderRadius = '999px';
+          badge.style.background = '#fef3c7';
+          badge.style.color = '#78350f';
+          badge.style.fontSize = '0.75rem';
+          badge.style.fontWeight = '600';
+          badge.style.marginRight = '6px';
+          badge.title = 'Nobody has opened this library\'s Edit URL yet';
+          row.appendChild(badge);
+        }
+        const meta = document.createElement('span');
+        meta.className = 'fp-muted';
+        meta.style.fontSize = '0.85rem';
+        try {
+          meta.textContent = 'updated ' + new Date(c.updated_at).toLocaleDateString();
+        } catch (_) { meta.textContent = ''; }
+        row.appendChild(meta);
+        row.addEventListener('click', () => {
+          $('#fp-library-modal').hidden = true;
+          const url = new URL(window.location.origin + window.location.pathname);
+          url.searchParams.set('node', c.read_id);
+          // Do NOT auto-forward the current write token — content-write
+          // is per-node, not inherited. The child opens in view mode
+          // unless the user has that specific library's Edit URL.
+          window.location.href = url.toString();
+        });
+        subs.appendChild(row);
+      }
+    }
+
+    // Framings section — documents in THIS node.
     const list = $('#fp-library-framing-list');
     list.innerHTML = '';
     if (!loadedNode.framings.length) {
@@ -3740,7 +3809,7 @@ date: 2026-08-11
       empty.style.textAlign = 'center';
       empty.style.color = '#7a6a55';
       empty.style.fontStyle = 'italic';
-      empty.textContent = 'No framings in this library yet.';
+      empty.textContent = 'No framings in this library.';
       list.appendChild(empty);
     } else {
       for (const f of loadedNode.framings) {
