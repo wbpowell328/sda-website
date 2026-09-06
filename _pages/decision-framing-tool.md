@@ -21,11 +21,6 @@ date: 2026-08-11
   Skip to the bottom to describe your problem in a sentence or two (or drop in a case file, or a URL) and get all four parts filled in — you edit and refine from there.
 </p>
 
-<p style="background:#f2e6c9; border-left: 4px solid #5a3e1f; padding: 10px 16px; border-radius: 3px;">
-  <strong><a href="/decision-framing-tool/?node=AJx6Ke2S3d" id="fp-public-examples-link">Browse public examples&nbsp;→</a></strong>
-  A collection of framings to illustrate the tool; copy it into your own library for editing.
-</p>
-
 <div class="fp-toolbar">
   <details class="fp-menu" id="fp-file-menu">
     <summary>File ▾</summary>
@@ -53,14 +48,20 @@ date: 2026-08-11
       <h3 id="fp-modal-title">Open framing</h3>
       <button type="button" class="fp-modal-close" id="fp-modal-close" aria-label="Close">×</button>
     </div>
+    <h4 class="fp-modal-subheader">Public examples</h4>
+    <p class="fp-muted" style="margin: 0 0 6px 0;">A curated collection of framings that illustrate the tool. Open one to browse or copy it into your own library for editing.</p>
+    <div class="fp-file-list">
+      <div id="fp-public-examples-row" class="fp-file-row" role="button" tabindex="0" style="cursor: pointer;"></div>
+    </div>
+
     <div id="fp-legacy-section" hidden>
-      <h4 class="fp-modal-subheader">Legacy local saves</h4>
+      <h4 class="fp-modal-subheader" style="margin-top: 16px;">Legacy local saves</h4>
       <p class="fp-muted" style="margin: 0 0 6px 0;">Framings saved to this browser before the switch to server libraries. Click one to load it, then use <b>File → Save to my library…</b> to move it into your server library. This section will disappear once it's empty.</p>
       <div id="fp-file-list" class="fp-file-list"></div>
     </div>
 
     <h4 class="fp-modal-subheader" style="margin-top: 16px;">My server libraries</h4>
-    <p class="fp-muted" style="margin: 0 0 6px 0;">Server-backed libraries you've visited on this browser. Includes your own personal library and any public / shared library you've opened. Click to reopen.</p>
+    <p class="fp-muted" style="margin: 0 0 6px 0;">Server-backed libraries you've visited on this browser. Includes your own personal library and any shared library you've opened. Click to reopen.</p>
     <div class="fp-add-lib-row">
       <input type="url" id="fp-add-lib-input"
         placeholder="Paste a library View or Edit URL to add it to this list…"
@@ -1918,10 +1919,42 @@ date: 2026-08-11
     }
   }
   function openOpenModal() {
+    renderPublicExamplesRow();
     renderFileList();
     renderServerLibraryList();
     const m = $('#fp-open-modal');
     if (m) m.hidden = false;
+  }
+  // Dedicated top-of-modal entry for the curated Public examples
+  // library. Always visible in the Open modal regardless of the user's
+  // localStorage state, so casual first-time visitors can discover it
+  // even before they've opened it.
+  function renderPublicExamplesRow() {
+    const row = $('#fp-public-examples-row');
+    if (!row || !PUBLIC_EXAMPLES_READ_ID) return;
+    row.innerHTML = '';
+    const nameEl = document.createElement('span');
+    nameEl.style.flex = '1';
+    nameEl.style.fontWeight = '600';
+    nameEl.textContent = '📂 ' + PUBLIC_EXAMPLES_NAME;
+    row.appendChild(nameEl);
+    const badge = document.createElement('span');
+    badge.textContent = 'View';
+    badge.style.padding = '2px 8px';
+    badge.style.borderRadius = '999px';
+    badge.style.fontSize = '0.75rem';
+    badge.style.fontWeight = '600';
+    badge.style.background = '#dbeafe';
+    badge.style.color = '#1e3a8a';
+    row.appendChild(badge);
+    row.onclick = () => {
+      const url = new URL(window.location.origin + window.location.pathname);
+      url.searchParams.set('node', PUBLIC_EXAMPLES_READ_ID);
+      window.location.href = url.toString();
+    };
+    row.onkeydown = (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); row.click(); }
+    };
   }
 
   // ── Import from JSON ────────────────────────────────────────
@@ -4240,22 +4273,6 @@ date: 2026-08-11
     // is present, initFromNodeUrl overwrites state when the fetch
     // returns.
     initFromNodeUrl();
-    // First-visit courtesy: auto-add the Public examples library to
-    // every visitor's "My server libraries" list so File → Open shows
-    // it. Guarded by presence — never overwrites an existing entry
-    // (which would clobber the user's write token if they later
-    // upgraded to Edit access).
-    (function autoAddPublicExamples() {
-      if (!PUBLIC_EXAMPLES_READ_ID) return;
-      const existing = readVisitedLibraries()[PUBLIC_EXAMPLES_READ_ID];
-      if (existing) return;
-      rememberVisitedLibrary(
-        PUBLIC_EXAMPLES_READ_ID,
-        null,   // read-only for casual users
-        PUBLIC_EXAMPLES_NAME,
-        ['Root (Warren)', PUBLIC_EXAMPLES_NAME]
-      );
-    })();
     // If the URL came from the Ask Professor Powell chatbot (via the
     // create_framing_link tool), stamp the banner so users see this is
     // an AI draft — same treatment as drafts from the on-page bot.
