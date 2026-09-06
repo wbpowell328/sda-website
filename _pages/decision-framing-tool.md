@@ -136,6 +136,20 @@ date: 2026-08-11
 <!-- Library bar — only visible when the user loaded the page with a
      ?node= URL. Shows the ancestry breadcrumb + edit/view mode + a
      Browse button that opens the library modal. -->
+<!-- Persistent tree side pane — visible on wide screens whenever a
+     library is loaded. Same content as the Browse modal, but always
+     on-screen: no click-through required to switch framings or sub-
+     libraries. Below ~1100px the pane hides; the Browse ▾ modal is
+     the fallback. -->
+<aside id="fp-tree-pane" class="fp-tree-pane" hidden>
+  <div class="fp-tree-header">
+    <span class="fp-tree-name" id="fp-tree-name" title=""></span>
+    <button type="button" id="fp-tree-refresh" class="fp-tree-refresh" title="Reload the tree from the server">↻</button>
+  </div>
+  <div class="fp-tree-crumb" id="fp-tree-crumb"></div>
+  <div class="fp-tree-content" id="fp-tree-content"></div>
+</aside>
+
 <div id="fp-library-bar" class="fp-library-bar" hidden>
   <span id="fp-library-crumb" class="fp-library-crumb"></span>
   <span id="fp-library-mode" class="fp-library-mode"></span>
@@ -533,6 +547,115 @@ date: 2026-08-11
     font-size: 0.95rem;
   }
   .fp-library-bar[hidden] { display: none; }
+
+  /* Persistent tree side pane — right side, fixed position. Only
+     renders on wide screens; the Browse modal is the fallback below
+     ~1100px viewport. */
+  .fp-tree-pane {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    bottom: 20px;
+    width: 280px;
+    background: #fdf9ec;
+    border: 1px solid #d6c4a3;
+    border-radius: 6px;
+    padding: 12px;
+    box-shadow: -2px 2px 8px rgba(0,0,0,0.08);
+    overflow-y: auto;
+    z-index: 100;
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .fp-tree-pane[hidden] { display: none; }
+  @media (max-width: 1099px) {
+    .fp-tree-pane { display: none !important; }
+  }
+  .fp-tree-header {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e6d8bf;
+  }
+  .fp-tree-name {
+    font-weight: 700;
+    color: #5a3e1f;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .fp-tree-refresh {
+    background: transparent;
+    border: none;
+    color: #7a6a55;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0 4px;
+    line-height: 1;
+  }
+  .fp-tree-refresh:hover { color: #c9621e; }
+  .fp-tree-crumb {
+    font-size: 0.8rem;
+    color: #7a6a55;
+    line-height: 1.4;
+    padding-bottom: 4px;
+    border-bottom: 1px dashed #e6d8bf;
+  }
+  .fp-tree-section {
+    font-weight: 700;
+    color: #5a3e1f;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    padding: 8px 0 2px;
+  }
+  .fp-tree-item {
+    padding: 5px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #5a3e1f;
+    line-height: 1.25;
+  }
+  .fp-tree-item:hover { background: #f2e6c9; }
+  .fp-tree-item.fp-tree-current {
+    background: #f2e6c9;
+    font-weight: 700;
+    color: #8a3a1a;
+  }
+  .fp-tree-item-icon {
+    flex-shrink: 0;
+    font-size: 0.95rem;
+  }
+  .fp-tree-item-label {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .fp-tree-empty {
+    font-style: italic;
+    color: #7a6a55;
+    padding: 4px 6px;
+    font-size: 0.85rem;
+  }
+  /* When the tree pane is on-screen, shift the main content left so
+     it doesn't hide behind the pane. Applied via a body class from JS. */
+  @media (min-width: 1100px) {
+    body.fp-tree-open .page-container,
+    body.fp-tree-open .content,
+    body.fp-tree-open main {
+      padding-right: 320px;
+    }
+  }
 
   /* Add-library-by-URL row inside File → Open modal */
   .fp-add-lib-row {
@@ -3609,14 +3732,15 @@ date: 2026-08-11
       };
       rememberVisitedLibrary(loadedNode.readId, loadedNode.writeToken, loadedNode.name, loadedNode.ancestry);
       renderLibraryBar();
-      // Pop the Browse modal on library load so the user sees the list
-      // of sub-libraries + framings first — pick one explicitly rather
-      // than getting one auto-loaded (which is confusing without a
-      // persistent side pane). When the Phase 4 tree browser lands as
-      // a side pane, we can go back to auto-opening the most-recent
-      // framing without hiding what else is there.
-      openLibraryModal();
-      if (!loadedNode.framings.length && !(loadedNode.children || []).length) {
+      renderTreePane();
+      // The side pane always shows the sub-libraries + framings list,
+      // so auto-open the most-recent framing (element 0, since the
+      // server sorts DESC by updated_at). On narrow screens the pane
+      // is hidden — the Browse ▾ button and modal are the fallback.
+      if (loadedNode.framings.length > 0) {
+        await openFramingFromLoadedNode(loadedNode.framings[0].id);
+        renderTreePane();   // highlight the now-open framing
+      } else if (!(loadedNode.children || []).length) {
         flashStatus('Library is empty — use "+ New framing" to add one (edit mode required).');
       }
     } catch (err) {
@@ -3646,6 +3770,7 @@ date: 2026-08-11
       render();
       renderAllMatrices();
       autoSave();
+      renderTreePane();   // update the highlighted-current-framing row
     } catch (err) {
       console.error('Failed to open framing:', err);
       alert('Could not open framing:\n\n' + ((err && err.message) ? err.message : String(err)));
@@ -3825,7 +3950,7 @@ date: 2026-08-11
           '?w=' + encodeURIComponent(adminTok),
         { method: 'POST', body: { name: name.slice(0, 200) } }
       );
-      // Local cache — child appears immediately in Browse ▾.
+      // Local cache — child appears immediately in Browse ▾ and tree pane.
       loadedNode.children.unshift({
         read_id:        resp.node.read_id,
         name:           resp.node.name,
@@ -3833,6 +3958,7 @@ date: 2026-08-11
         updated_at:     resp.node.updated_at,
         first_write_at: resp.node.first_write_at,
       });
+      renderTreePane();
       // Remember it in "My server libraries" so File → Open shows it too.
       const childAncestry = (loadedNode.ancestry || []).slice();
       childAncestry.push(resp.node.name);
@@ -3963,6 +4089,7 @@ date: 2026-08-11
       });
       loadedNode.currentFramingId = resp.framing.id;
       setDocTitle(resp.framing.title);
+      renderTreePane();
       flashStatus('Added to library.');
     } catch (err) {
       console.error('Add framing failed:', err);
@@ -3984,6 +4111,7 @@ date: 2026-08-11
       loadedNode.framings.sort(
         (a, b) => (b.updated_at || '').localeCompare(a.updated_at || '')
       );
+      renderTreePane();   // reflect renamed / re-sorted framing
     }
   }
 
@@ -4013,6 +4141,7 @@ date: 2026-08-11
         loadedNode.ancestry[loadedNode.ancestry.length - 1] = resp.node.name;
       }
       renderLibraryBar();
+      renderTreePane();
       // If this was the user's personal library, update localStorage
       // so the tooltip on "Open my library" stays fresh.
       const myLib = readMyLibrary();
@@ -4037,6 +4166,105 @@ date: 2026-08-11
       handler();
     });
     return b;
+  }
+
+  // ── Persistent tree side pane ────────────────────────────────
+  // Shown on wide screens whenever a library is loaded. Same content
+  // as the Browse modal (sub-libraries + framings) but always visible
+  // so switching framings is one click, not two.
+  function renderTreePane() {
+    const pane = $('#fp-tree-pane');
+    if (!pane) return;
+    if (!loadedNode) {
+      pane.hidden = true;
+      document.body.classList.remove('fp-tree-open');
+      return;
+    }
+    pane.hidden = false;
+    document.body.classList.add('fp-tree-open');
+
+    $('#fp-tree-name').textContent = loadedNode.name || 'Library';
+    $('#fp-tree-name').title       = loadedNode.name || '';
+    $('#fp-tree-crumb').textContent = (loadedNode.ancestry || []).join(' › ');
+
+    const content = $('#fp-tree-content');
+    content.innerHTML = '';
+
+    // Sub-libraries section
+    if ((loadedNode.children || []).length) {
+      const h = document.createElement('div');
+      h.className = 'fp-tree-section';
+      h.textContent = 'Sub-libraries';
+      content.appendChild(h);
+      for (const c of loadedNode.children) {
+        const row = document.createElement('div');
+        row.className = 'fp-tree-item';
+        row.title = c.name || '';
+        const icon = document.createElement('span');
+        icon.className = 'fp-tree-item-icon';
+        icon.textContent = '📂';
+        const label = document.createElement('span');
+        label.className = 'fp-tree-item-label';
+        label.textContent = c.name || 'Untitled library';
+        row.appendChild(icon);
+        row.appendChild(label);
+        row.addEventListener('click', () => {
+          const url = new URL(window.location.origin + window.location.pathname);
+          url.searchParams.set('node', c.read_id);
+          const parentAdmin = loadedNode.writeToken || loadedNode.adminToken;
+          if (parentAdmin) url.searchParams.set('admin', parentAdmin);
+          window.location.href = url.toString();
+        });
+        content.appendChild(row);
+      }
+    }
+
+    // Framings section
+    const h2 = document.createElement('div');
+    h2.className = 'fp-tree-section';
+    h2.textContent = 'Framings';
+    content.appendChild(h2);
+    if (!(loadedNode.framings || []).length) {
+      const empty = document.createElement('div');
+      empty.className = 'fp-tree-empty';
+      empty.textContent = '(none)';
+      content.appendChild(empty);
+    } else {
+      for (const f of loadedNode.framings) {
+        const row = document.createElement('div');
+        row.className = 'fp-tree-item';
+        if (loadedNode.currentFramingId === f.id) row.classList.add('fp-tree-current');
+        row.title = f.title || '';
+        const icon = document.createElement('span');
+        icon.className = 'fp-tree-item-icon';
+        icon.textContent = '📄';
+        const label = document.createElement('span');
+        label.className = 'fp-tree-item-label';
+        label.textContent = f.title || 'Untitled framing';
+        row.appendChild(icon);
+        row.appendChild(label);
+        row.addEventListener('click', () => openFramingFromLoadedNode(f.id));
+        content.appendChild(row);
+      }
+    }
+  }
+
+  // Re-fetch this node from the server and re-render the tree pane.
+  // Used by the refresh button and after any create/rename/delete
+  // that changes the local cache.
+  async function reloadCurrentNodeTree() {
+    if (!loadedNode) return;
+    try {
+      const resp = await apiFetch(NODES_BASE + '/nodes/' + encodeURIComponent(loadedNode.readId));
+      loadedNode.name     = resp.node.name;
+      loadedNode.ancestry = Array.isArray(resp.ancestry) ? resp.ancestry : [];
+      loadedNode.children = Array.isArray(resp.children) ? resp.children : [];
+      loadedNode.framings = Array.isArray(resp.framings) ? resp.framings : [];
+      renderTreePane();
+      renderLibraryBar();
+    } catch (err) {
+      console.error('Tree refresh failed:', err);
+    }
   }
 
   function openLibraryModal() {
@@ -4227,6 +4455,7 @@ date: 2026-08-11
         renderAllMatrices();
       }
       openLibraryModal();
+      renderTreePane();
       flashStatus('Framing deleted.');
     } catch (err) {
       console.error('Delete framing failed:', err);
@@ -4258,6 +4487,7 @@ date: 2026-08-11
         writeVisitedLibraries(map);
       }
       openLibraryModal();
+      renderTreePane();
       flashStatus('Sub-library renamed.');
     } catch (err) {
       console.error('Rename sub-library failed:', err);
@@ -4285,6 +4515,7 @@ date: 2026-08-11
         refreshMyLibraryMenuItem();
       }
       openLibraryModal();
+      renderTreePane();
       const dn = resp.descendant_nodes || 0;
       const fr = resp.framings || 0;
       flashStatus('Deleted "' + (child.name || 'Untitled') + '"' +
@@ -4522,6 +4753,8 @@ date: 2026-08-11
       if (regenBtn) regenBtn.addEventListener('click', regenerateLoadedLibraryUrls);
       const delBtn = $('#fp-library-delete');
       if (delBtn) delBtn.addEventListener('click', deleteLoadedLibrary);
+      const treeRefreshBtn = $('#fp-tree-refresh');
+      if (treeRefreshBtn) treeRefreshBtn.addEventListener('click', reloadCurrentNodeTree);
     })();
     // URL modal wiring — Done/close are locked until the user
     // confirms they've saved both URLs, so an accidental Enter can't
