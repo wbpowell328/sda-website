@@ -21,6 +21,11 @@ date: 2026-08-11
   Skip to the bottom to describe your problem in a sentence or two (or drop in a case file, or a URL) and get all four parts filled in — you edit and refine from there.
 </p>
 
+<p style="background:#f2e6c9; border-left: 4px solid #5a3e1f; padding: 10px 16px; border-radius: 3px;">
+  <strong><a href="/decision-framing-tool/?node=AJx6Ke2S3d" id="fp-public-examples-link">Browse public examples&nbsp;→</a></strong>
+  A growing collection of curated framings (Aurora Motors, Northstar Inventory, and more). Open any to see how a fully-worked framing looks; copy it into your own library as a starting point.
+</p>
+
 <!-- Admin bar — hidden unless the URL contains ?admin=1. Gives library-owner
      controls (publish / rename / delete public examples). See admin JS below. -->
 <div id="fp-admin-bar" class="fp-admin-bar" hidden>
@@ -3154,6 +3159,14 @@ date: 2026-08-11
   // service). Every endpoint accepts a read_id in the URL and, for writes,
   // a write_token in ?w=.
   const NODES_BASE = 'https://castle-chatbot.onrender.com/api/framing-nodes';
+  // The public examples library — a server-side node curated by Warren
+  // and readable by anyone. Auto-added to every visitor's "My server
+  // libraries" list on first visit so casual users can discover it.
+  // Rename via the library bar's Rename button; if you REGENERATE its
+  // URLs, update this constant and the /decision-framing-tool/?node=…
+  // link at the top of the page to match.
+  const PUBLIC_EXAMPLES_READ_ID = 'AJx6Ke2S3d';
+  const PUBLIC_EXAMPLES_NAME    = 'Public examples';
   // LocalStorage map: read_id → { writeToken, framingId, name, publishedAt }.
   // Lets us hint "already published" in the UI later and skip re-creating a
   // node when the user hits Publish again after already publishing.
@@ -4002,6 +4015,22 @@ date: 2026-08-11
     // is present, initFromNodeUrl overwrites state when the fetch
     // returns.
     initFromNodeUrl();
+    // First-visit courtesy: auto-add the Public examples library to
+    // every visitor's "My server libraries" list so File → Open shows
+    // it. Guarded by presence — never overwrites an existing entry
+    // (which would clobber the user's write token if they later
+    // upgraded to Edit access).
+    (function autoAddPublicExamples() {
+      if (!PUBLIC_EXAMPLES_READ_ID) return;
+      const existing = readVisitedLibraries()[PUBLIC_EXAMPLES_READ_ID];
+      if (existing) return;
+      rememberVisitedLibrary(
+        PUBLIC_EXAMPLES_READ_ID,
+        null,   // read-only for casual users
+        PUBLIC_EXAMPLES_NAME,
+        ['Root (Warren)', PUBLIC_EXAMPLES_NAME]
+      );
+    })();
     // If the URL came from the Ask Professor Powell chatbot (via the
     // create_framing_link tool), stamp the banner so users see this is
     // an AI draft — same treatment as drafts from the on-page bot.
