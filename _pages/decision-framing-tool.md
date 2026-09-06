@@ -3498,14 +3498,15 @@ date: 2026-08-11
       };
       rememberVisitedLibrary(loadedNode.readId, loadedNode.writeToken, loadedNode.name, loadedNode.ancestry);
       renderLibraryBar();
-      // Auto-open the most-recently-edited framing (the framings list
-      // comes back sorted DESC by updated_at, so element 0 is newest).
-      if (loadedNode.framings.length > 0) {
-        await openFramingFromLoadedNode(loadedNode.framings[0].id);
-      } else {
-        // Empty library — no framing to auto-open. Leave the tool in
-        // its current state (whatever localStorage restored).
-        flashStatus('Library is empty — use File → Save to my library, or the "+ New framing" button (edit mode) to add one.');
+      // Pop the Browse modal on library load so the user sees the list
+      // of sub-libraries + framings first — pick one explicitly rather
+      // than getting one auto-loaded (which is confusing without a
+      // persistent side pane). When the Phase 4 tree browser lands as
+      // a side pane, we can go back to auto-opening the most-recent
+      // framing without hiding what else is there.
+      openLibraryModal();
+      if (!loadedNode.framings.length && !(loadedNode.children || []).length) {
+        flashStatus('Library is empty — use "+ New framing" to add one (edit mode required).');
       }
     } catch (err) {
       console.error('Failed to load node:', err);
