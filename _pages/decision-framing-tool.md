@@ -150,6 +150,16 @@ date: 2026-08-11
   <div class="fp-tree-content" id="fp-tree-content"></div>
 </aside>
 
+<!-- Lease banner — shown in Edit mode when someone ELSE is currently
+     holding the 5-min soft-lock on this library. Sits above the library
+     bar to draw the eye. Take-over button is prominent; write actions
+     in the library bar are disabled until the user takes over. -->
+<div id="fp-lease-banner" class="fp-lease-banner" hidden>
+  <span class="fp-lease-icon">🔒</span>
+  <span class="fp-lease-msg" id="fp-lease-msg"></span>
+  <button type="button" id="fp-lease-take-over" class="fp-lease-take-over">Take over</button>
+</div>
+
 <div id="fp-library-bar" class="fp-library-bar" hidden>
   <span id="fp-library-crumb" class="fp-library-crumb"></span>
   <span id="fp-library-mode" class="fp-library-mode"></span>
@@ -547,6 +557,41 @@ date: 2026-08-11
     font-size: 0.95rem;
   }
   .fp-library-bar[hidden] { display: none; }
+
+  /* Soft-lock banner — shown when someone else holds the write lease. */
+  .fp-lease-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    margin-bottom: 8px;
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-left: 4px solid #d97706;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    color: #78350f;
+  }
+  .fp-lease-banner[hidden] { display: none; }
+  .fp-lease-icon { font-size: 1.15rem; flex-shrink: 0; }
+  .fp-lease-msg  { flex: 1; }
+  .fp-lease-take-over {
+    padding: 6px 14px;
+    background: #d97706;
+    color: #fff;
+    border: 1px solid #b45309;
+    border-radius: 4px;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .fp-lease-take-over:hover { background: #b45309; }
+  .fp-lease-take-over:disabled {
+    background: #d6c4a3;
+    border-color: #d6c4a3;
+    cursor: not-allowed;
+  }
 
   /* Persistent tree side pane — right side, fixed position. Only
      renders on wide screens; the Browse modal is the fallback below
@@ -3733,6 +3778,9 @@ date: 2026-08-11
       rememberVisitedLibrary(loadedNode.readId, loadedNode.writeToken, loadedNode.name, loadedNode.ancestry);
       renderLibraryBar();
       renderTreePane();
+      // Claim the write lease when we open a library in edit mode.
+      // If someone else holds it, the lease banner surfaces the conflict.
+      if (loadedNode.writeToken) claimOrRefreshLease(false);
       // The side pane always shows the sub-libraries + framings list,
       // so auto-open the most-recent framing (element 0, since the
       // server sorts DESC by updated_at). On narrow screens the pane
@@ -4020,6 +4068,7 @@ date: 2026-08-11
       // Update the local framings-list cache so Browse framings shows
       // the fresh updated_at + title without a full re-fetch.
       updateFramingInCache(resp.framing);
+      claimOrRefreshLease(false);   // extend lease
       if (btn) { btn.textContent = 'Saved ✓'; setTimeout(() => { btn.textContent = prevText; btn.disabled = false; }, 1200); }
       else flashStatus('Saved to library.');
     } catch (err) {
@@ -4170,6 +4219,156 @@ date: 2026-08-11
       handler();
     });
     return b;
+  }
+
+  // ── Write lease (soft-lock) ─────────────────────────────────
+  // Browser-scoped holder id. Same for every tab on this browser so
+  // multiple tabs don't fight each other. Persisted in localStorage.
+  const HOLDER_ID_KEY = 'framing_holder_id_v1';
+  function getHolderId() {
+    try {
+      let id = localStorage.getItem(HOLDER_ID_KEY);
+      if (id) return id;
+      id = (crypto.randomUUID ? crypto.randomUUID() :
+        (Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10)));
+      localStorage.setItem(HOLDER_ID_KEY, id);
+      return id;
+    } catch (_) {
+      // Private-mode / storage disabled — fall back to a per-tab id.
+      return 'ephemeral-' + Math.random().toString(36).slice(2);
+    }
+  }
+
+  // Lease state for the currently-loaded node.
+  let leaseState = null;   // null | { holdsIt: bool, holderId?, holderLabel?, refreshedAt?, expiresAt? }
+  let leasePollTimer = null;
+
+  async function claimOrRefreshLease(takeOver) {
+    if (!loadedNode || !loadedNode.writeToken) return;
+    const holderId = getHolderId();
+    try {
+      const resp = await apiFetch(
+        NODES_BASE + '/nodes/' + encodeURIComponent(loadedNode.readId) + '/lease' +
+          '?w=' + encodeURIComponent(loadedNode.writeToken),
+        {
+          method: 'POST',
+          body: { holder_id: holderId, take_over: !!takeOver },
+        }
+      );
+      leaseState = {
+        holdsIt: true,
+        holderId: resp.lease.holder_id,
+        holderLabel: resp.lease.holder_label,
+        refreshedAt: resp.lease.refreshed_at,
+        expiresAt: resp.lease.expires_at,
+      };
+    } catch (err) {
+      if (err && err.status === 409 && err.message === 'Lease held by another editor') {
+        // Server sends lease info in the body; extract via a re-poll.
+        await pollLease();
+      } else {
+        console.warn('Lease claim failed:', err && err.message);
+      }
+    }
+    renderLeaseBanner();
+    startLeasePoll();
+  }
+
+  async function pollLease() {
+    if (!loadedNode || !loadedNode.writeToken) { stopLeasePoll(); return; }
+    try {
+      const resp = await apiFetch(
+        NODES_BASE + '/nodes/' + encodeURIComponent(loadedNode.readId) + '/lease'
+      );
+      const holderId = getHolderId();
+      const lease = resp.lease;
+      const prevHeldByUs = !!(leaseState && leaseState.holdsIt);
+      if (!lease) {
+        // No active lease — we may have expired. Try to re-claim.
+        if (prevHeldByUs) {
+          // Was ours; expired quietly. Re-claim silently.
+          await claimOrRefreshLease(false);
+          return;
+        }
+        leaseState = null;
+      } else if (lease.holder_id === holderId) {
+        leaseState = {
+          holdsIt: true,
+          holderId: lease.holder_id,
+          holderLabel: lease.holder_label,
+          refreshedAt: lease.refreshed_at,
+          expiresAt: lease.expires_at,
+        };
+      } else {
+        // Someone else holds it. If we thought WE had it, they took over.
+        if (prevHeldByUs) {
+          alert('Another editor has taken over this library. Your unsaved changes remain in the browser but new saves will fail until you take control back.');
+        }
+        leaseState = {
+          holdsIt: false,
+          holderId: lease.holder_id,
+          holderLabel: lease.holder_label,
+          refreshedAt: lease.refreshed_at,
+          expiresAt: lease.expires_at,
+        };
+      }
+    } catch (err) {
+      console.warn('Lease poll failed:', err && err.message);
+    }
+    renderLeaseBanner();
+  }
+
+  function startLeasePoll() {
+    stopLeasePoll();
+    // Poll every 60 seconds — cheap, and matches lease refresh cadence.
+    leasePollTimer = setInterval(pollLease, 60_000);
+  }
+  function stopLeasePoll() {
+    if (leasePollTimer) { clearInterval(leasePollTimer); leasePollTimer = null; }
+  }
+
+  function releaseLeaseOnUnload() {
+    if (!loadedNode || !loadedNode.writeToken || !leaseState || !leaseState.holdsIt) return;
+    // sendBeacon is best-effort and doesn't block the unload. If it
+    // fails, the lease expires on its own in ≤5 min.
+    try {
+      const url = NODES_BASE + '/nodes/' + encodeURIComponent(loadedNode.readId) + '/lease' +
+        '?w=' + encodeURIComponent(loadedNode.writeToken) +
+        '&holder_id=' + encodeURIComponent(getHolderId()) +
+        '&_method=DELETE';
+      // sendBeacon only supports POST — fake DELETE via _method param, but
+      // our server doesn't handle that. Use fetch with keepalive instead.
+      fetch(
+        NODES_BASE + '/nodes/' + encodeURIComponent(loadedNode.readId) + '/lease' +
+          '?w=' + encodeURIComponent(loadedNode.writeToken) +
+          '&holder_id=' + encodeURIComponent(getHolderId()),
+        { method: 'DELETE', keepalive: true }
+      );
+    } catch (_) { /* best-effort */ }
+  }
+
+  function renderLeaseBanner() {
+    const banner = $('#fp-lease-banner');
+    if (!banner) return;
+    const showBanner = leaseState && !leaseState.holdsIt;
+    banner.hidden = !showBanner;
+    if (showBanner) {
+      const when = leaseState.refreshedAt
+        ? new Date(leaseState.refreshedAt).toLocaleTimeString()
+        : 'just now';
+      $('#fp-lease-msg').textContent =
+        'Another editor is working on this library (last active ' + when + '). ' +
+        'Your write buttons are disabled to prevent conflicting saves.';
+    }
+    // Disable write buttons when someone else holds the lease.
+    const lockWrites = !!(leaseState && !leaseState.holdsIt);
+    const writeBtnIds = ['fp-library-save-framing', 'fp-library-new-framing',
+      'fp-library-new-sublib', 'fp-library-rename', 'fp-library-regenerate',
+      'fp-library-delete'];
+    for (const id of writeBtnIds) {
+      const btn = document.getElementById(id);
+      if (btn) btn.disabled = lockWrites;
+    }
   }
 
   // ── Persistent tree side pane ────────────────────────────────
@@ -4759,7 +4958,14 @@ date: 2026-08-11
       if (delBtn) delBtn.addEventListener('click', deleteLoadedLibrary);
       const treeRefreshBtn = $('#fp-tree-refresh');
       if (treeRefreshBtn) treeRefreshBtn.addEventListener('click', reloadCurrentNodeTree);
+      const takeOverBtn = $('#fp-lease-take-over');
+      if (takeOverBtn) takeOverBtn.addEventListener('click', () => {
+        if (!confirm('Take control of this library from the current editor?\n\nTheir next save will fail; they can take control back if they need to.')) return;
+        claimOrRefreshLease(true);
+      });
     })();
+    // Best-effort lease release on tab close / navigation away.
+    window.addEventListener('pagehide', releaseLeaseOnUnload);
     // URL modal wiring — Done/close are locked until the user
     // confirms they've saved both URLs, so an accidental Enter can't
     // dismiss the only view of the write token.

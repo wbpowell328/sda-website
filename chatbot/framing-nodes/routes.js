@@ -569,6 +569,106 @@ router.delete('/nodes/:readId', dbRoute(async (req, res) => {
   res.json({ deleted: true, ...counts });
 }));
 
+// ---- write leases (soft-lock) --------------------------------------------
+// Coordination layer for multi-writer scenarios. The URL model doesn't
+// prevent two people from having the same Edit URL and hitting Save at
+// the same moment — this soft-lock keeps them from silently overwriting
+// each other's work. NOT hard security: someone can force-take at any
+// time via ?take_over=true, and the server doesn't reject framing writes
+// based on the lease (the client should check first). Lease lives for
+// LEASE_MINUTES from the last refresh; expires automatically.
+
+const LEASE_MINUTES = 5;
+
+function shapeLease(row) {
+  if (!row) return null;
+  return {
+    holder_id:    row.holder_id,
+    holder_label: row.holder_label || null,
+    claimed_at:   row.claimed_at,
+    refreshed_at: row.refreshed_at,
+    expires_at:   row.expires_at,
+  };
+}
+
+// POST /nodes/:readId/lease  — claim or refresh. Body { holder_id,
+// holder_label?, take_over? }. Returns { lease } on success; 409 with
+// { lease } if held by another editor and take_over wasn't set.
+router.post('/nodes/:readId/lease', dbRoute(async (req, res) => {
+  const node = await getNodeByReadId(req.params.readId);
+  if (!node) return res.status(404).json({ error: 'Node not found' });
+  const writeToken = String(req.query.w || '');
+  if (!isWriteToken(writeToken) || writeToken !== node.write_token) {
+    return res.status(403).json({
+      error: 'Write token required (must match THIS node — leases are per-node content-write).',
+    });
+  }
+  const holderId    = String(req.body?.holder_id || '').slice(0, 64);
+  const holderLabel = String(req.body?.holder_label || '').slice(0, 64);
+  const takeOver    = !!req.body?.take_over;
+  if (!holderId) return res.status(400).json({ error: 'holder_id required' });
+
+  const now = new Date();
+  const expiresAt = new Date(now.getTime() + LEASE_MINUTES * 60 * 1000);
+  const existing = (await query(
+    'SELECT * FROM write_leases WHERE node_id = $1', [node.id]
+  )).rows[0];
+  if (existing && existing.expires_at > now && existing.holder_id !== holderId && !takeOver) {
+    return res.status(409).json({
+      error: 'Lease held by another editor',
+      lease: shapeLease(existing),
+    });
+  }
+  // On take-over we reset claimed_at; on same-holder refresh we keep it.
+  const preserveClaimedAt =
+    existing && existing.holder_id === holderId ? existing.claimed_at : now;
+  const row = (await query(
+    `INSERT INTO write_leases (node_id, holder_id, holder_label, claimed_at, refreshed_at, expires_at)
+     VALUES ($1, $2, $3, $4, $5, $6)
+     ON CONFLICT (node_id) DO UPDATE
+       SET holder_id    = EXCLUDED.holder_id,
+           holder_label = EXCLUDED.holder_label,
+           claimed_at   = EXCLUDED.claimed_at,
+           refreshed_at = EXCLUDED.refreshed_at,
+           expires_at   = EXCLUDED.expires_at
+     RETURNING *`,
+    [node.id, holderId, holderLabel || null, preserveClaimedAt, now, expiresAt]
+  )).rows[0];
+  res.json({ lease: shapeLease(row) });
+}));
+
+// GET /nodes/:readId/lease  — poll status. Requires read access (readId
+// is sufficient — no write token needed to check who's editing).
+router.get('/nodes/:readId/lease', dbRoute(async (req, res) => {
+  const node = await getNodeByReadId(req.params.readId);
+  if (!node) return res.status(404).json({ error: 'Node not found' });
+  const row = (await query(
+    'SELECT * FROM write_leases WHERE node_id = $1', [node.id]
+  )).rows[0];
+  if (!row || row.expires_at <= new Date()) {
+    return res.json({ lease: null });
+  }
+  res.json({ lease: shapeLease(row) });
+}));
+
+// DELETE /nodes/:readId/lease?w=…&holder_id=…  — release the lease.
+// Only the current holder can release (identified by holder_id). If the
+// lease is already held by someone else, this is a no-op.
+router.delete('/nodes/:readId/lease', dbRoute(async (req, res) => {
+  const node = await getNodeByReadId(req.params.readId);
+  if (!node) return res.status(404).json({ error: 'Node not found' });
+  const writeToken = String(req.query.w || '');
+  if (!isWriteToken(writeToken) || writeToken !== node.write_token) {
+    return res.status(403).json({ error: 'Write token required' });
+  }
+  const holderId = String(req.query.holder_id || '').slice(0, 64);
+  await query(
+    'DELETE FROM write_leases WHERE node_id = $1 AND holder_id = $2',
+    [node.id, holderId]
+  );
+  res.json({ released: true });
+}));
+
 // ---- framing routes ------------------------------------------------------
 
 async function getFramingById(id) {
