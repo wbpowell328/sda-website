@@ -588,7 +588,7 @@ date: 2026-08-11
     top: 20px;
     right: 20px;
     bottom: 20px;
-    width: 280px;
+    width: 320px;
     background: #fdf9ec;
     border: 1px solid #d6c4a3;
     border-radius: 6px;
@@ -685,7 +685,7 @@ date: 2026-08-11
     body.fp-tree-open .page-container,
     body.fp-tree-open .content,
     body.fp-tree-open main {
-      padding-right: 320px;
+      padding-right: 360px;
     }
   }
 
