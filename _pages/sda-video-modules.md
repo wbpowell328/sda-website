@@ -65,7 +65,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> None<br />
       <strong>Technical level:</strong> Non-technical<br />
-      <strong>Time:</strong> 9:50 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026
+      <strong>Time:</strong> 9:50 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides1">.pptx</a>
     </p>
   </div>
 </div>
@@ -79,7 +79,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> None<br />
       <strong>Technical level:</strong> None<br />
-      <strong>Time:</strong> 21:12 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026
+      <strong>Time:</strong> 21:12 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides2">.pptx</a>
     </p>
   </div>
 </div>
@@ -93,7 +93,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> None<br />
       <strong>Technical level:</strong> None<br />
-      <strong>Time:</strong> 7:19 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026
+      <strong>Time:</strong> 7:19 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides3">.pptx</a>
     </p>
   </div>
 </div>
@@ -109,7 +109,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> None<br />
       <strong>Technical level:</strong> None<br />
-      <strong>Time:</strong> 25:20 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026
+      <strong>Time:</strong> 25:20 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides4">.pptx</a>
     </p>
   </div>
 </div>
@@ -123,7 +123,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> Framing decision problems<br />
       <strong>Technical level:</strong> Basic modeling notation<br />
-      <strong>Time:</strong> 11:18 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026
+      <strong>Time:</strong> 11:18 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides5">.pptx</a>
     </p>
   </div>
 </div>
@@ -137,7 +137,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> Universal modeling framework<br />
       <strong>Technical level:</strong> Basic mathematics of probability and statistics<br />
-      <strong>Time:</strong> 20:11 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026
+      <strong>Time:</strong> 20:11 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides6">.pptx</a>
     </p>
   </div>
 </div>
@@ -151,7 +151,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> The universal modeling framework (high level)<br />
       <strong>Technical level:</strong> Expectations of simulations of policies<br />
-      <strong>Time:</strong> 31:57 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026
+      <strong>Time:</strong> 31:57 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides7">.pptx</a>
     </p>
   </div>
 </div>
@@ -165,7 +165,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> Universal modeling framework (detailed)<br />
       <strong>Technical level:</strong> Some modest mathematics<br />
-      <strong>Time:</strong> 28:19 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026
+      <strong>Time:</strong> 28:19 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides8">.pptx</a>
     </p>
   </div>
 </div>
@@ -179,7 +179,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> Universal modeling framework (detailed); State variables<br />
       <strong>Technical level:</strong> Some modest mathematics at the end<br />
-      <strong>Time:</strong> 23:27 &nbsp;·&nbsp; <strong>Posted:</strong> September 2, 2026
+      <strong>Time:</strong> 23:27 &nbsp;·&nbsp; <strong>Posted:</strong> September 2, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides27">.pptx</a>
     </p>
   </div>
 </div>
@@ -195,7 +195,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> The universal modeling framework (high level)<br />
       <strong>Technical level:</strong> Low<br />
-      <strong>Time:</strong> 15:29 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026
+      <strong>Time:</strong> 15:29 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides9">.pptx</a>
     </p>
   </div>
 </div>
@@ -209,7 +209,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> Designing policies<br />
       <strong>Technical level:</strong> Moderate<br />
-      <strong>Time:</strong> 9:58 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026
+      <strong>Time:</strong> 9:58 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides10">.pptx</a>
     </p>
   </div>
 </div>
@@ -223,7 +223,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> Designing policies, Choosing policies<br />
       <strong>Technical level:</strong> Modest<br />
-      <strong>Time:</strong> 9:43 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026
+      <strong>Time:</strong> 9:43 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides11">.pptx</a>
     </p>
   </div>
 </div>
@@ -237,7 +237,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> Policy function approximations; The universal modeling framework<br />
       <strong>Technical level:</strong> Uses deterministic optimization, tuned to work well in a simulated environment<br />
-      <strong>Time:</strong> 10:08 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026
+      <strong>Time:</strong> 10:08 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides12">.pptx</a>
     </p>
   </div>
 </div>
@@ -251,7 +251,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> The universal modeling framework; State variables<br />
       <strong>Technical level:</strong> Moderate-advanced<br />
-      <strong>Time:</strong> 13:19 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026
+      <strong>Time:</strong> 13:19 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides13">.pptx</a>
     </p>
   </div>
 </div>
@@ -265,7 +265,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> VFA I; State variables<br />
       <strong>Technical level:</strong> Moderate-advanced — illustrates mathematics with visuals<br />
-      <strong>Time:</strong> 20:59 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026
+      <strong>Time:</strong> 20:59 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides14">.pptx</a>
     </p>
   </div>
 </div>
@@ -279,7 +279,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> VFA II<br />
       <strong>Technical level:</strong> Moderate — math at the level of Sutton and Barto<br />
-      <strong>Time:</strong> 17:51 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026
+      <strong>Time:</strong> 17:51 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides15">.pptx</a>
     </p>
   </div>
 </div>
@@ -293,7 +293,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> VFA I–III<br />
       <strong>Technical level:</strong> Advanced<br />
-      <strong>Time:</strong> 17:43 &nbsp;·&nbsp; <strong>Posted:</strong> September 2, 2026
+      <strong>Time:</strong> 17:43 &nbsp;·&nbsp; <strong>Posted:</strong> September 2, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides16">.pptx</a>
     </p>
   </div>
 </div>
@@ -307,7 +307,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> TBD<br />
       <strong>Technical level:</strong> Low<br />
-      <strong>Time:</strong> 17:01 &nbsp;·&nbsp; <strong>Posted:</strong> September 2, 2026
+      <strong>Time:</strong> 17:01 &nbsp;·&nbsp; <strong>Posted:</strong> September 2, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides17">.pptx</a>
     </p>
   </div>
 </div>
@@ -321,7 +321,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> The universal modeling framework<br />
       <strong>Technical level:</strong> Advanced<br />
-      <strong>Time:</strong> 8:25 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026
+      <strong>Time:</strong> 8:25 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides18">.pptx</a>
     </p>
   </div>
 </div>
@@ -335,7 +335,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> DLA I; Cost function approximations<br />
       <strong>Technical level:</strong> Understanding of deterministic optimization<br />
-      <strong>Time:</strong> 6:25 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026
+      <strong>Time:</strong> 6:25 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides19">.pptx</a>
     </p>
   </div>
 </div>
@@ -349,7 +349,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> Policy function approximations; Cost function approximations; Value function approximations<br />
       <strong>Technical level:</strong> Advanced<br />
-      <strong>Time:</strong> 15:03 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026
+      <strong>Time:</strong> 15:03 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides20">.pptx</a>
     </p>
   </div>
 </div>
@@ -363,7 +363,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> DLA I<br />
       <strong>Technical level:</strong> Moderate<br />
-      <strong>Time:</strong> 16:37 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026
+      <strong>Time:</strong> 16:37 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides21">.pptx</a>
     </p>
   </div>
 </div>
@@ -377,7 +377,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> DLA I, DLA IV<br />
       <strong>Technical level:</strong> Advanced<br />
-      <strong>Time:</strong> 9:46 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026
+      <strong>Time:</strong> 9:46 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides22">.pptx</a>
     </p>
   </div>
 </div>
@@ -391,7 +391,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> Universal modeling framework; Policy function approximations; Cost function approximations; DLA II<br />
       <strong>Technical level:</strong> Moderately advanced<br />
-      <strong>Time:</strong> 15:10 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026
+      <strong>Time:</strong> 15:10 &nbsp;·&nbsp; <strong>Posted:</strong> August 22, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides23">.pptx</a>
     </p>
   </div>
 </div>
@@ -407,7 +407,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> Universal modeling framework<br />
       <strong>Technical level:</strong> Moderate to advanced<br />
-      <strong>Time:</strong> 14:35 &nbsp;·&nbsp; <strong>Posted:</strong> September 3, 2026
+      <strong>Time:</strong> 14:35 &nbsp;·&nbsp; <strong>Posted:</strong> September 3, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides24">.pptx</a>
     </p>
   </div>
 </div>
@@ -421,7 +421,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> Universal modeling framework<br />
       <strong>Technical level:</strong> Requires knowledge of deterministic optimization<br />
-      <strong>Time:</strong> 9:39 &nbsp;·&nbsp; <strong>Posted:</strong> September 3, 2026
+      <strong>Time:</strong> 9:39 &nbsp;·&nbsp; <strong>Posted:</strong> September 3, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides25">.pptx</a>
     </p>
   </div>
 </div>
@@ -435,7 +435,7 @@ date: 2026-08-22
     <p class="video-module-meta">
       <strong>Predecessor modules:</strong> DLA I<br />
       <strong>Technical level:</strong> Modest<br />
-      <strong>Time:</strong> 5:04 &nbsp;·&nbsp; <strong>Posted:</strong> September 3, 2026
+      <strong>Time:</strong> 5:04 &nbsp;·&nbsp; <strong>Posted:</strong> September 3, 2026 &nbsp;&middot;&nbsp; <strong>Slides:</strong> <a href="https://tinyurl.com/SDAslides26">.pptx</a>
     </p>
   </div>
 </div>
