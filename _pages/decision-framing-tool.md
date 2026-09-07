@@ -24,6 +24,7 @@ date: 2026-08-11
       <button type="button" id="fp-menu-new">New framing</button>
       <button type="button" id="fp-menu-open">Open…</button>
       <button type="button" id="fp-menu-open-my-lib" title="Jump to your personal server library (framings you have saved)" disabled>Open my library</button>
+      <button type="button" id="fp-menu-save" title="Save changes to the currently-open framing (in-place update). If nothing has been saved yet, falls through to Save as…">Save</button>
       <button type="button" id="fp-menu-publish" title="Save the current framing as a new entry in your online library. Creates your personal library on the first save; adds a new framing to it on subsequent uses.">Save as…</button>
       <button type="button" id="fp-menu-export" title="Download the current framing as a JSON file (useful for sharing or archiving)">Export as JSON…</button>
       <button type="button" id="fp-menu-import" title="Load a decision from a .json file someone sent you (or one you exported earlier)">Import from JSON…</button>
@@ -5025,7 +5026,24 @@ date: 2026-08-11
       closeFileMenu();
       openImportPicker();
     });
-    $('#fp-menu-publish').addEventListener('click', publishToLibrary);
+    // File → Save: mirrors the library-bar green Save button. If the
+    // current framing is already server-backed, saves in place; if
+    // nothing exists on the server yet (blank workspace, AI draft,
+    // imported JSON) falls through to Save as… — matching the standard
+    // Word convention where hitting Save on a never-saved doc opens
+    // the Save-as dialog.
+    $('#fp-menu-save').addEventListener('click', () => {
+      closeFileMenu();
+      if (loadedNode && loadedNode.writeToken && loadedNode.currentFramingId) {
+        saveCurrentFramingToServer();
+      } else {
+        publishToLibrary();
+      }
+    });
+    $('#fp-menu-publish').addEventListener('click', () => {
+      closeFileMenu();
+      publishToLibrary();
+    });
     $('#fp-menu-export').addEventListener('click', () => {
       closeFileMenu();
       exportCurrentDocument();
