@@ -12,6 +12,8 @@ date: 2026-08-11
 
 <p>After specifying the metrics, you can enter the types of decisions that affect performance. These can be quite broad, such as "Assign drivers to loads" to "Purchase parts from supplier X". You can ask the AI agent to suggest decisions which it considers to have a medium or high impact on at least one performance metric.</p>
 
+<p>If you have any questions, just <button type="button" class="fp-section-help" title="Open the Ask Professor Powell chat panel">? Ask</button></p>
+
 <p>The framing process is divided into four components, each with its own AI-assists.</p>
 
 <ol>
