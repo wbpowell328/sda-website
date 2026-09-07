@@ -600,7 +600,11 @@ app.post('/framing/matrix', framingLimiter, express.json({ limit: '256kb' }), as
       `- A matrix full of Hs is useless; discriminate.\n\n` +
       `Return via the record_matrix tool. Keys must match the input strings character-for-character (capitalization + punctuation).`;
 
+    const priorNotes = String(req.body?.priorNotes || '').trim().slice(0, 20000);
     const userText =
+      (priorNotes
+        ? 'PROBLEM-SETTING NOTES — the user has previously asked the AI to read their material and distill it. Use these notes to inform your H/M/L/N scoring:\n\n' + priorNotes + '\n\n'
+        : '') +
       `Metrics (pyramid-ordered, Tier 1 first):\n` +
       metrics.map((m, i) => `  ${i + 1}. ${m}`).join('\n') +
       `\n\n${rowLabel[0].toUpperCase() + rowLabel.slice(1)} (rows):\n` +
@@ -721,6 +725,13 @@ app.post('/framing/pyramid', framingLimiter, (req, res) => {
       }
       if (description) {
         userContent.push({ type: 'text', text: `Problem description:\n${description}` });
+      }
+      const priorNotes = String(req.body?.priorNotes || '').trim().slice(0, 20000);
+      if (priorNotes) {
+        userContent.push({
+          type: 'text',
+          text: 'PROBLEM-SETTING NOTES — the user has previously asked the AI to read their material and distill it. Treat these notes as authoritative background about the setting; use them to inform the metrics you propose:\n\n' + priorNotes,
+        });
       }
       if (existingDecisions.length || existingUncertainties.length) {
         const parts = ['\nUser already has these on-screen — align your metrics with them:'];
@@ -887,6 +898,14 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
       }
       if (description) {
         userContent.push({ type: 'text', text: `Problem description:\n${description}` });
+      }
+      const priorNotes = String(req.body?.priorNotes || '').trim().slice(0, 20000);
+      if (priorNotes) {
+        const nounPlural = kind === 'uncertainty' ? 'uncertainties' : 'decisions';
+        userContent.push({
+          type: 'text',
+          text: 'PROBLEM-SETTING NOTES — the user has previously asked the AI to read their material and distill it. Treat these notes as authoritative background about the setting; use them to inform the ' + nounPlural + ' you propose:\n\n' + priorNotes,
+        });
       }
       // Metrics come first and are framed as the DRIVER of idea generation —
       // decisions are levers that move metrics; uncertainties are what makes
@@ -1083,6 +1102,110 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
   });
 });
 
+// Ingest: read a URL / file / description ONCE, distill into neutral
+// problem-setting notes the user can consult while building the framing
+// themselves. Separates "read the material" from "generate a framing".
+// After the user clicks "Read introductory materials" on the page, the
+// returned notes are stored client-side in state.problemNotes and sent
+// as `priorNotes` to every downstream AI call (pyramid, ideas, matrix,
+// framing), so uploads become durable across page reloads (the file
+// input itself is one-shot) and the raw URL/file don't have to be
+// re-fetched or re-parsed on every request.
+const INGEST_TOOL = {
+  name: 'record_problem_notes',
+  description: 'Record distilled problem-setting notes for the user to consult later. NOT a framing — just neutral background about the setting.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      notes: {
+        type: 'string',
+        description: 'Distilled notes about the problem setting, 300–800 words. Organize into headed sections: **Setting**, **Decision-maker context**, **Constraints / environment**, **What could go wrong**, **Key numbers and facts** (skip any section that has nothing to say). Neutral tone, no editorializing. Do NOT propose metrics, decisions, or uncertainties — that is the user\'s job.',
+      },
+      sourceLabel: {
+        type: 'string',
+        description: 'Very short label naming the source (e.g. "Northstar Living case study", "Excerpt from Aurora Motors 10-K"). 3–8 words.',
+      },
+    },
+    required: ['notes'],
+  },
+};
+
+app.post('/framing/ingest', framingLimiter, (req, res) => {
+  framingUpload.single('file')(req, res, async (uploadErr) => {
+    if (uploadErr) return res.status(400).json({ error: uploadErr.message });
+    try {
+      const description = String(req.body?.description || '').trim().slice(0, FRAMING_MAX_CHARS);
+      const url         = String(req.body?.url || '').trim();
+      const scope       = String(req.body?.scope || '').trim().slice(0, 2000);
+
+      const userContent = [];
+      if (scope) {
+        userContent.push({
+          type: 'text',
+          text: `SCOPE — who (or what) is making these decisions:\n${scope}`,
+        });
+      }
+      if (req.file) {
+        userContent.push(await fileToContentBlock(
+          req.file.buffer, req.file.mimetype, req.file.originalname,
+        ));
+      }
+      if (url) {
+        if (!/^https?:\/\//i.test(url)) {
+          return res.status(400).json({ error: 'URL must start with http:// or https://.' });
+        }
+        userContent.push(await urlToContentBlock(url));
+      }
+      if (description) {
+        userContent.push({ type: 'text', text: `User description:\n${description}` });
+      }
+      if (userContent.length === 0) {
+        return res.status(400).json({
+          error: 'Add a scope, description, URL, or file first (any of these is enough).',
+        });
+      }
+
+      userContent.push({
+        type: 'text',
+        text:
+          'Distill everything above into neutral problem-setting notes (300–800 words). ' +
+          'Sections: **Setting**, **Decision-maker context**, **Constraints / environment**, ' +
+          '**What could go wrong**, **Key numbers and facts** (skip any section that has ' +
+          'nothing to say). Include specific names, numbers, dates, org units, and ' +
+          'constraints that appear in the material — do not paraphrase them away. ' +
+          'Do NOT propose metrics, decisions, or uncertainties — leave those for the user. ' +
+          'Return via the record_problem_notes tool.',
+      });
+
+      const response = await client.messages.create({
+        model: FRAMING_MODEL,
+        max_tokens: 3072,
+        system: framingPrompt || 'You are Professor Warren Powell\'s decision-framing assistant.',
+        tools: [INGEST_TOOL],
+        tool_choice: { type: 'tool', name: INGEST_TOOL.name },
+        messages: [{ role: 'user', content: userContent }],
+      });
+
+      const toolBlock = (response.content || []).find(
+        (b) => b.type === 'tool_use' && b.name === INGEST_TOOL.name,
+      );
+      if (!toolBlock) {
+        return res.status(502).json({ error: 'Model did not return notes. Try again.' });
+      }
+
+      return res.json({
+        notes:       String(toolBlock.input.notes || '').trim(),
+        sourceLabel: String(toolBlock.input.sourceLabel || '').trim(),
+        model: FRAMING_MODEL,
+        usage: response.usage,
+      });
+    } catch (err) {
+      console.error('Framing/ingest error:', err);
+      return res.status(500).json({ error: (err && err.message) || 'Unknown error' });
+    }
+  });
+});
+
 app.post('/framing', framingLimiter, (req, res) => {
   framingUpload.single('file')(req, res, async (uploadErr) => {
     if (uploadErr) return res.status(400).json({ error: uploadErr.message });
@@ -1126,6 +1249,13 @@ app.post('/framing', framingLimiter, (req, res) => {
       }
       if (description) {
         userContent.push({ type: 'text', text: `User description:\n${description}` });
+      }
+      const priorNotes = String(req.body?.priorNotes || '').trim().slice(0, 20000);
+      if (priorNotes) {
+        userContent.push({
+          type: 'text',
+          text: 'PROBLEM-SETTING NOTES — the user has previously asked the AI to read their material and distill it. Treat these notes as authoritative background about the setting; use them to inform every part of the framing you generate (metrics, decisions, uncertainties):\n\n' + priorNotes,
+        });
       }
       if (userContent.length === 0 || (userContent.length === 1 && scope)) {
         return res.status(400).json({ error: 'Provide a description, a URL, or an uploaded document (scope alone is not enough).' });
@@ -1336,7 +1466,7 @@ const FRAMING_TOOL_HELP = [
   '- **Toolbar** — File menu, Clear pyramid, Reset all, Copy URL, Print, ? Help.',
   '- **Library bar** (only when a server library is loaded) — breadcrumb of the library ancestry, Save (green primary, in-place update), + New framing, + New sub-library, Share URLs, Rename ✎, Regenerate URLs, Delete library, Browse ▾.',
   '- **Tree side pane** (right side, when a library is loaded) — sub-libraries + framings in the current library; click any row to open.',
-  '- **Problem scope** — decision-maker scope textarea + Describe your problem + URL / file inputs + Generate framing (AI first-draft) button.',
+  '- **Problem scope** — decision-maker scope textarea + Describe your problem + URL / file inputs + two action buttons: "Read introductory materials" (ingests the material once so future AI calls can use it as background without generating a framing) and "Generate first draft (AI)" (produces a whole framing on the spot). After ingestion, a green "📄 Notes loaded" chip appears with a "View notes" button so the user can see the distilled notes; a small × clears them.',
   '- **Metrics pyramid tool** — metric chips (list on left), drop zones for tiers 1-4, "First draft (AI)" button.',
   '- **Decision prioritization tool** — decisions textarea + "Generate ideas" button + impact matrix.',
   '- **Uncertainty prioritization tool** — same layout for uncertainties.',

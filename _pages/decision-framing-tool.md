@@ -223,7 +223,7 @@ date: 2026-08-11
 </div>
 
 <h2 id="problem-scope" class="fp-section-h2">Problem scope</h2>
-<p>A decision frame reflects the perspective of a decision maker — a person, team, division, or a piece of software. Identify that perspective below, then (optionally) describe the problem itself. From your description, a URL to a case, or an uploaded file, the AI can produce a rough first draft of the framing that you edit and refine below. Treat the draft as an illustration or a starting point, not a finished framing.</p>
+<p>A decision frame reflects the perspective of a decision maker — a person, team, division, or a piece of software. Identify that perspective below, then (optionally) describe the problem itself. From your description, a URL to a case, or an uploaded file, the AI can either <strong>read the material</strong> so it can inform later steps (metrics, decisions, uncertainties) without generating anything on its own, or <strong>produce a rough first draft</strong> of the whole framing that you edit and refine below. Treat any draft as an illustration or a starting point, not a finished framing.</p>
 
 <div class="fp-bot-card">
   <div class="fp-bot-row">
@@ -259,14 +259,37 @@ date: 2026-08-11
       </select>
     </label>
     <div class="fp-bot-actions">
+      <button type="button" id="fp-bot-ingest" title="Have the AI read your URL / file / description ONCE and remember them. Doesn't fill in the framing — you enter metrics, decisions, and uncertainties yourself, and later 'Generate ideas' / 'First draft (AI)' calls will use the remembered material as context.">Read introductory materials</button>
       <button type="button" id="fp-bot-generate">Generate first draft (AI)</button>
-      <button type="button" id="fp-bot-clear" title="Clear the description, URL, and file inputs (keeps the decision-maker scope)">Clear inputs</button>
+      <button type="button" id="fp-bot-clear" title="Clear the description, URL, and file inputs (keeps the decision-maker scope). Also clears any ingested notes.">Clear inputs</button>
     </div>
   </div>
 
-  <p class="fp-bot-caveat"><strong>The AI first draft replaces your current workspace.</strong> If you want to keep what's on screen, save it first with <em>File → Save as…</em>.</p>
+  <div id="fp-notes-chip-wrap" class="fp-notes-chip-wrap" hidden>
+    <span class="fp-notes-chip" id="fp-notes-chip"></span>
+    <button type="button" class="fp-notes-chip-clear" id="fp-notes-clear" title="Forget the ingested notes (the URL / file / description in the boxes above are kept — click 'Read introductory materials' again to re-ingest)">×</button>
+    <button type="button" class="fp-notes-chip-view" id="fp-notes-view" title="Show the distilled notes the AI is using">View notes</button>
+  </div>
+
+  <p class="fp-bot-caveat"><strong>The AI first draft replaces your current workspace.</strong> If you want to keep what's on screen, save it first with <em>File → Save as…</em>. <em>Read introductory materials</em> does NOT replace anything — it just gives the AI background it can use later.</p>
 
   <div id="fp-bot-status" class="fp-bot-status" role="status" aria-live="polite"></div>
+</div>
+
+<!-- View-notes modal — reveals the distilled notes the AI is using as
+     background context. Read-only preview. -->
+<div id="fp-notes-modal" class="fp-modal" hidden>
+  <div class="fp-modal-card">
+    <div class="fp-modal-header">
+      <h3>Distilled problem-setting notes</h3>
+      <button type="button" class="fp-modal-close" id="fp-notes-modal-close" aria-label="Close">×</button>
+    </div>
+    <p class="fp-muted" style="margin: 0 0 6px 0;">These notes were produced by the AI from the URL / file / description you provided. They are sent as background context to every downstream AI call (metrics pyramid, generate ideas, impact matrix). Re-click <em>Read introductory materials</em> to refresh them.</p>
+    <div id="fp-notes-body" class="fp-notes-body"></div>
+    <div class="fp-modal-actions" style="justify-content: flex-end;">
+      <button type="button" id="fp-notes-modal-ok">Close</button>
+    </div>
+  </div>
 </div>
 
 <h2 id="metrics-pyramid-tool" class="fp-section-h2">Metrics pyramid tool</h2>
@@ -1529,6 +1552,45 @@ date: 2026-08-11
     background: #fff; color: #5a4a35; border-color: #c9b891; font-weight: 500;
   }
   .fp-bot-actions button#fp-bot-clear:hover:not(:disabled) { background: #f0e5c8; }
+  .fp-bot-actions button#fp-bot-ingest {
+    background: #eaf1e6; color: #345c48; border-color: #b8d6c4; font-weight: 500;
+  }
+  .fp-bot-actions button#fp-bot-ingest:hover:not(:disabled) { background: #d8e8d1; }
+  /* Ingested-notes chip: shows up under the action row when the AI has
+     "read" the introductory materials once. Persists across reloads
+     via state.problemNotes. Green to distinguish from the amber
+     framing-related UI. */
+  .fp-notes-chip-wrap {
+    display: flex; align-items: center; gap: 6px; margin-top: 8px; flex-wrap: wrap;
+  }
+  .fp-notes-chip {
+    display: inline-block;
+    padding: 3px 10px;
+    font-size: 0.85rem;
+    border: 1px solid #b8d6c4;
+    border-radius: 12px;
+    background: #eaf5ee;
+    color: #345c48;
+    white-space: nowrap;
+  }
+  .fp-notes-chip-clear, .fp-notes-chip-view {
+    font-size: 0.8rem; padding: 2px 8px;
+    border: 1px solid #d6c4a3; background: #faf5e6; color: #5a3e1f;
+    border-radius: 4px; cursor: pointer;
+  }
+  .fp-notes-chip-clear:hover, .fp-notes-chip-view:hover { background: #f2e6c9; }
+  .fp-notes-body {
+    max-height: 60vh; overflow: auto;
+    padding: 10px 14px;
+    background: #fdfaf1;
+    border: 1px solid #eae0c8;
+    border-radius: 4px;
+    white-space: pre-wrap;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    color: #3a3020;
+  }
   .fp-bot-caveat {
     margin: 6px 0 0 0; font-size: 0.85rem; color: #7a6a55;
   }
@@ -1561,7 +1623,7 @@ date: 2026-08-11
   //   matrix       : { decision: { metric: 'H'|'M'|'L'|'N' } } —
   //                  missing = blank (not yet scored).
   let state = {
-    title: '', scope: '', description: '', problemDescription: '', problemUrl: '',
+    title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '',
     metrics: [], assignments: {}, chipColors: {},
     decisions: [], matrix: {}, subframes: {},
     uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
@@ -1612,6 +1674,8 @@ date: 2026-08-11
       description:   (s && typeof s.description === 'string') ? s.description  : '',
       problemDescription: (s && typeof s.problemDescription === 'string') ? s.problemDescription : '',
       problemUrl:         (s && typeof s.problemUrl === 'string')         ? s.problemUrl         : '',
+      problemNotes:       (s && typeof s.problemNotes === 'string')       ? s.problemNotes       : '',
+      problemNotesSource: (s && typeof s.problemNotesSource === 'string') ? s.problemNotesSource : '',
       metrics:       Array.isArray(s && s.metrics)            ? s.metrics      : [],
       assignments:   (s && s.assignments)                ? s.assignments   : {},
       chipColors:    (s && s.chipColors)                 ? s.chipColors    : {},
@@ -1900,6 +1964,8 @@ date: 2026-08-11
       description: state.description,
       problemDescription: state.problemDescription,
       problemUrl: state.problemUrl,
+      problemNotes: state.problemNotes,
+      problemNotesSource: state.problemNotesSource,
       metrics: state.metrics,
       assignments: state.assignments,
       chipColors: state.chipColors,
@@ -2031,6 +2097,7 @@ date: 2026-08-11
     $('#fp-scope-input').value         = state.scope || '';
     $('#fp-bot-desc').value            = state.problemDescription || '';
     $('#fp-bot-url').value             = state.problemUrl || '';
+    renderNotesChip();
     $('#fp-metrics-input').value       = state.metrics.join('\n');
     $('#fp-decisions-input').value     = state.decisions.join('\n');
     $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -2196,6 +2263,7 @@ date: 2026-08-11
         $('#fp-scope-input').value         = state.scope || '';
         $('#fp-bot-desc').value            = state.problemDescription || '';
         $('#fp-bot-url').value             = state.problemUrl || '';
+        renderNotesChip();
         $('#fp-metrics-input').value       = state.metrics.join('\n');
         $('#fp-decisions-input').value     = state.decisions.join('\n');
         $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -2722,6 +2790,7 @@ date: 2026-08-11
   const MATRIX_ENDPOINT = 'https://castle-chatbot.onrender.com/framing/matrix';
   const PYRAMID_ENDPOINT = 'https://castle-chatbot.onrender.com/framing/pyramid';
   const IDEAS_ENDPOINT   = 'https://castle-chatbot.onrender.com/framing/ideas';
+  const INGEST_ENDPOINT  = 'https://castle-chatbot.onrender.com/framing/ingest';
   function showAiNote(kind) {
     const el = document.querySelector('.fp-matrix-ai-note[data-kind="' + kind + '"]');
     if (el) el.hidden = false;
@@ -2756,10 +2825,13 @@ date: 2026-08-11
     }
     setMatrixButtonsBusy(kind, true, 'Scoring…');
     try {
+      const body = { kind, metrics, rows };
+      const notes = (state.problemNotes || '').trim();
+      if (notes) body.priorNotes = notes;
       const resp = await fetch(MATRIX_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ kind, metrics, rows }),
+        body: JSON.stringify(body),
       });
       const data = await resp.json().catch(() => ({ error: 'Bad response from server.' }));
       if (!resp.ok) throw new Error(data.error || ('Request failed (' + resp.status + ')'));
@@ -2839,8 +2911,9 @@ date: 2026-08-11
     const url   = $('#fp-bot-url').value.trim();
     const file  = $('#fp-bot-file').files && $('#fp-bot-file').files[0];
     const size  = $('#fp-bot-size').value || 'medium';
-    if (!scope && !desc && !url && !file) {
-      alert('Fill in a decision-maker scope, description, URL, or file in the Problem scope section above first — the AI needs something to work from.');
+    const notes = (state.problemNotes || '').trim();
+    if (!scope && !desc && !url && !file && !notes) {
+      alert('Fill in a decision-maker scope, description, URL, or file in the Problem scope section above first — the AI needs something to work from. (Or click "Read introductory materials" to ingest them once.)');
       return;
     }
     setPyramidButtonsBusy(true, 'Working…');
@@ -2848,8 +2921,14 @@ date: 2026-08-11
       const form = new FormData();
       if (scope) form.append('scope', scope);
       if (desc)  form.append('description', desc);
-      if (url)   form.append('url', url);
-      if (file)  form.append('file', file, file.name);
+      // Ingested notes take the place of the raw url/file for downstream
+      // calls (server would just re-fetch and re-parse them otherwise).
+      if (notes) {
+        form.append('priorNotes', notes);
+      } else {
+        if (url)  form.append('url', url);
+        if (file) form.append('file', file, file.name);
+      }
       form.append('size', size);
       // Optional context — align generated metrics with existing content.
       if (Array.isArray(state.decisions) && state.decisions.length) {
@@ -2948,9 +3027,10 @@ date: 2026-08-11
     const url   = $('#fp-bot-url').value.trim();
     const file  = $('#fp-bot-file').files && $('#fp-bot-file').files[0];
     const size  = $('#fp-bot-size').value || 'medium';
-    if (!scope && !desc && !url && !file) {
+    const notes = (state.problemNotes || '').trim();
+    if (!scope && !desc && !url && !file && !notes) {
       $('#fp-ideas-status').textContent =
-        'Fill in a scope, description, URL, or file in the Problem scope section above first — the AI needs something to work from.';
+        'Fill in a scope, description, URL, or file in the Problem scope section above first — the AI needs something to work from. (Or click "Read introductory materials" to ingest them once.)';
       $('#fp-ideas-status').style.color = '#7a1c1c';
       return;
     }
@@ -2973,8 +3053,13 @@ date: 2026-08-11
       form.append('kind', ideasCurrentKind);
       if (scope) form.append('scope', scope);
       if (desc)  form.append('description', desc);
-      if (url)   form.append('url', url);
-      if (file)  form.append('file', file, file.name);
+      // Ingested notes replace the raw url/file for downstream calls.
+      if (notes) {
+        form.append('priorNotes', notes);
+      } else {
+        if (url)  form.append('url', url);
+        if (file) form.append('file', file, file.name);
+      }
       form.append('size', size);
       // Drill-in ancestry — both kinds narrow to the current sub-decision
       // context when drilled in. Decisions land in the leaf sub-frame's
@@ -3287,6 +3372,8 @@ date: 2026-08-11
       description: (typeof f.description === 'string') ? f.description : '',
       problemDescription: (typeof f.problemDescription === 'string') ? f.problemDescription : '',
       problemUrl:         (typeof f.problemUrl === 'string')         ? f.problemUrl         : '',
+      problemNotes:       (typeof f.problemNotes === 'string')       ? f.problemNotes       : '',
+      problemNotesSource: (typeof f.problemNotesSource === 'string') ? f.problemNotesSource : '',
       metrics,
       assignments,
       chipColors:  (f.chipColors && typeof f.chipColors === 'object') ? f.chipColors : {},
@@ -3321,6 +3408,7 @@ date: 2026-08-11
     $('#fp-scope-input').value         = state.scope || '';
     $('#fp-bot-desc').value            = state.problemDescription || '';
     $('#fp-bot-url').value             = state.problemUrl || '';
+    renderNotesChip();
     $('#fp-metrics-input').value       = state.metrics.join('\n');
     $('#fp-decisions-input').value     = state.decisions.join('\n');
     $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -3339,8 +3427,9 @@ date: 2026-08-11
     const scope = $('#fp-scope-input').value.trim();
     const file = $('#fp-bot-file').files && $('#fp-bot-file').files[0];
     const size = $('#fp-bot-size').value || 'medium';
-    if (!desc && !url && !file) {
-      setBotStatus('Add a description, a URL, or a file first.', 'error');
+    const notes = (state.problemNotes || '').trim();
+    if (!desc && !url && !file && !notes) {
+      setBotStatus('Add a description, a URL, or a file first — or click "Read introductory materials" to ingest them once.', 'error');
       return;
     }
     const btn = $('#fp-bot-generate');
@@ -3352,8 +3441,14 @@ date: 2026-08-11
       const form = new FormData();
       if (scope) form.append('scope', scope);
       if (desc)  form.append('description', desc);
-      if (url)   form.append('url', url);
-      if (file) form.append('file', file, file.name);
+      // When we already have distilled notes, skip re-sending the URL/file
+      // (the server would just re-fetch and re-parse them — wasteful).
+      if (notes) {
+        form.append('priorNotes', notes);
+      } else {
+        if (url)  form.append('url', url);
+        if (file) form.append('file', file, file.name);
+      }
       form.append('size', size);
 
       const resp = await fetch(FRAMING_URL, { method: 'POST', body: form });
@@ -3361,9 +3456,10 @@ date: 2026-08-11
       if (!resp.ok) throw new Error(data.error || ('Request failed (' + resp.status + ')'));
       if (!data.framing) throw new Error('Server returned no framing.');
 
-      const sourceLabel = file ? file.name
+      const sourceLabel = state.problemNotesSource
+                       || (file ? file.name
                               : url ? url
-                              : (desc.length > 60 ? desc.slice(0, 57) + '…' : desc);
+                              : (desc.length > 60 ? desc.slice(0, 57) + '…' : desc));
       applyFraming(data.framing, sourceLabel, scope, desc, url);
       setBotStatus('Draft ready — scroll up to review and edit. Use File → Save as… to keep it.', '');
     } catch (err) {
@@ -3374,6 +3470,85 @@ date: 2026-08-11
       btn.textContent = originalLabel;
     }
   }
+  // Read the Problem-scope inputs ONCE, ask the server to distill them
+  // into neutral problem-setting notes, and store the notes in state.
+  // Downstream AI calls (pyramid, ideas, matrix, framing) then send
+  // those notes as `priorNotes` instead of re-fetching the URL or
+  // re-parsing the file. Uploads become durable across page reloads
+  // (the file input itself is one-shot).
+  async function runIngest() {
+    const desc  = $('#fp-bot-desc').value.trim();
+    const url   = $('#fp-bot-url').value.trim();
+    const scope = $('#fp-scope-input').value.trim();
+    const file  = $('#fp-bot-file').files && $('#fp-bot-file').files[0];
+    if (!desc && !url && !file) {
+      setBotStatus('Add a description, a URL, or a file above first — the AI needs something to read.', 'error');
+      return;
+    }
+    const btn = $('#fp-bot-ingest');
+    const prev = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = 'Reading…'; }
+    setBotStatus('Reading introductory materials… (first request after idle can take ~30 s while the server wakes up)', 'working');
+    try {
+      const form = new FormData();
+      if (scope) form.append('scope', scope);
+      if (desc)  form.append('description', desc);
+      if (url)   form.append('url', url);
+      if (file)  form.append('file', file, file.name);
+      const resp = await fetch(INGEST_ENDPOINT, { method: 'POST', body: form });
+      const data = await resp.json().catch(() => ({ error: 'Bad response from server.' }));
+      if (!resp.ok) throw new Error(data.error || ('Request failed (' + resp.status + ')'));
+      const notes = String(data.notes || '').trim();
+      if (!notes) throw new Error('Server returned no notes.');
+      state.problemNotes = notes;
+      state.problemNotesSource = String(data.sourceLabel || '').trim();
+      renderNotesChip();
+      autoSave();
+      const chars = notes.length;
+      const src = state.problemNotesSource ? '"' + state.problemNotesSource + '"' : 'your material';
+      setBotStatus('Ingested ' + src + ' (' + chars.toLocaleString() + ' chars of notes). Future AI calls will use this as background — enter your metrics, decisions, and uncertainties as usual.', '');
+    } catch (err) {
+      console.error('Ingest failed:', err);
+      setBotStatus('Sorry — ' + (err && err.message ? err.message : 'request failed') + '. Try again in a moment.', 'error');
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = prev; }
+    }
+  }
+  function renderNotesChip() {
+    const wrap = $('#fp-notes-chip-wrap');
+    const chip = $('#fp-notes-chip');
+    if (!wrap || !chip) return;
+    const notes = (state.problemNotes || '').trim();
+    if (!notes) {
+      wrap.hidden = true;
+      return;
+    }
+    const src = (state.problemNotesSource || '').trim();
+    const chars = notes.length.toLocaleString();
+    chip.textContent = '📄 Notes loaded' + (src ? ' — ' + src : '') + ' (' + chars + ' chars)';
+    wrap.hidden = false;
+  }
+  function clearIngestedNotes() {
+    if (!(state.problemNotes || '').trim()) return;
+    if (!confirm('Forget the ingested notes? The URL / file / description in the boxes stay put — click "Read introductory materials" again to re-ingest.')) return;
+    state.problemNotes = '';
+    state.problemNotesSource = '';
+    renderNotesChip();
+    autoSave();
+    setBotStatus('Ingested notes cleared.', '');
+  }
+  function showNotesModal() {
+    const body = $('#fp-notes-body');
+    const notes = (state.problemNotes || '').trim();
+    if (!notes) return;
+    if (body) body.textContent = notes;
+    const m = $('#fp-notes-modal');
+    if (m) m.hidden = false;
+  }
+  function hideNotesModal() {
+    const m = $('#fp-notes-modal');
+    if (m) m.hidden = true;
+  }
   function clearBotInputs() {
     // Don't clear fp-scope-input — the decision-maker scope is the
     // user's own identifying context, valuable to keep across
@@ -3383,6 +3558,9 @@ date: 2026-08-11
     $('#fp-bot-file').value = '';
     state.problemDescription = '';
     state.problemUrl = '';
+    state.problemNotes = '';
+    state.problemNotesSource = '';
+    renderNotesChip();
     autoSave();
     setBotStatus('');
   }
@@ -3852,6 +4030,7 @@ date: 2026-08-11
       $('#fp-scope-input').value         = state.scope || '';
       $('#fp-bot-desc').value            = state.problemDescription || '';
       $('#fp-bot-url').value             = state.problemUrl || '';
+      renderNotesChip();
       $('#fp-metrics-input').value       = state.metrics.join('\n');
       $('#fp-decisions-input').value     = state.decisions.join('\n');
       $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -4141,7 +4320,7 @@ date: 2026-08-11
       if (raw == null) return;
       const finalTitle = raw.trim() || 'New framing';
       state = {
-        title: '', scope: '', description: '', problemDescription: '', problemUrl: '',
+        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '',
         metrics: [], assignments: {}, chipColors: {},
         decisions: [], matrix: {}, subframes: {},
         uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
@@ -4711,7 +4890,7 @@ date: 2026-08-11
         loadedNode.currentFramingId = null;
         // Blank the workspace since the framing on-screen no longer exists.
         state = {
-          title: '', scope: '', description: '', problemDescription: '', problemUrl: '',
+          title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '',
           metrics: [], assignments: {}, chipColors: {},
           decisions: [], matrix: {}, subframes: {},
           uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
@@ -4906,6 +5085,8 @@ date: 2026-08-11
         description:   state.description || '',
         problemDescription: state.problemDescription || '',
         problemUrl:         state.problemUrl || '',
+        problemNotes:       state.problemNotes || '',
+        problemNotesSource: state.problemNotesSource || '',
         metrics:       state.metrics || [],
         assignments:   state.assignments || {},
         decisions:     state.decisions || [],
@@ -4968,6 +5149,7 @@ date: 2026-08-11
     $('#fp-scope-input').value         = state.scope || '';
     $('#fp-bot-desc').value            = state.problemDescription || '';
     $('#fp-bot-url').value             = state.problemUrl || '';
+    renderNotesChip();
     $('#fp-metrics-input').value       = state.metrics.join('\n');
     $('#fp-decisions-input').value     = state.decisions.join('\n');
     $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -5009,7 +5191,7 @@ date: 2026-08-11
       closeFileMenu();
       if (!confirm('Start a new framing? Anything on screen is discarded (Save to your library first if you want to keep it).')) return;
       state = {
-        title: '', scope: '', description: '', problemDescription: '', problemUrl: '',
+        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '',
         metrics: [], assignments: {}, chipColors: {},
         decisions: [], matrix: {}, subframes: {},
         uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
@@ -5174,7 +5356,7 @@ date: 2026-08-11
     $('#fp-reset').addEventListener('click', () => {
       if (!confirm('Delete every metric, decision, and uncertainty, clear the pyramid and both matrices, and unload the current framing? (Framings saved to your library are not affected.) Cannot be undone.')) return;
       state = {
-        title: '', scope: '', description: '', problemDescription: '', problemUrl: '',
+        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '',
         metrics: [], assignments: {}, chipColors: {},
         decisions: [], matrix: {}, subframes: {},
         uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
@@ -5260,8 +5442,23 @@ date: 2026-08-11
     // Ask Professor Powell (framing bot)
     const botBtn = $('#fp-bot-generate');
     if (botBtn) botBtn.addEventListener('click', runFramingRequest);
+    const botIngest = $('#fp-bot-ingest');
+    if (botIngest) botIngest.addEventListener('click', runIngest);
     const botClear = $('#fp-bot-clear');
     if (botClear) botClear.addEventListener('click', clearBotInputs);
+    // Ingested-notes chip: clear button + view-notes modal.
+    const notesClearBtn = $('#fp-notes-clear');
+    if (notesClearBtn) notesClearBtn.addEventListener('click', clearIngestedNotes);
+    const notesViewBtn = $('#fp-notes-view');
+    if (notesViewBtn) notesViewBtn.addEventListener('click', showNotesModal);
+    const notesModalClose = $('#fp-notes-modal-close');
+    if (notesModalClose) notesModalClose.addEventListener('click', hideNotesModal);
+    const notesModalOk = $('#fp-notes-modal-ok');
+    if (notesModalOk) notesModalOk.addEventListener('click', hideNotesModal);
+    const notesModal = $('#fp-notes-modal');
+    if (notesModal) notesModal.addEventListener('click', (e) => { if (e.target === notesModal) hideNotesModal(); });
+    // Show the notes chip on initial load if the loaded state has notes.
+    renderNotesChip();
     // Ctrl/Cmd-Enter inside the description box submits.
     const botDesc = $('#fp-bot-desc');
     if (botDesc) botDesc.addEventListener('keydown', (e) => {
