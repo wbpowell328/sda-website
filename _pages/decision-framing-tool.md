@@ -366,7 +366,7 @@ date: 2026-08-11
 </div>
 
 <h2 id="uncertainty-prioritization-tool" class="fp-section-h2">Uncertainty prioritization tool</h2>
-<p>This tool works the same as the decision prioritization tool above. <a href="https://warrenpowell.org/modeling-uncertainty/#categories">See here for help with identifying sources of uncertainty.</a></p>
+<p>The uncertainties tool works similarly to the decisions tool, including the ability to identify sources of uncertainty at different levels of generality. If you drill into a type of uncertainty and ask for ideas, it will generate uncertainties relevant to the higher level. Also, it will generate uncertainties relevant to whatever decision level you have listed above, which might be the highest level, or for some subdecision. (Click <a href="/modeling-uncertainty/#categories">here</a> for a discussion of different categories of uncertainty.)</p>
 
 <div class="fp-grid fp-grid-narrow">
   <div class="fp-panel fp-uncertainties-panel">
