@@ -23,8 +23,8 @@ date: 2026-08-11
     <div class="fp-menu-items">
       <button type="button" id="fp-menu-new">New framing</button>
       <button type="button" id="fp-menu-open">Open…</button>
-      <button type="button" id="fp-menu-open-my-lib" title="Jump to your personal server library (published framings)" disabled>Open my library</button>
-      <button type="button" id="fp-menu-publish" title="Save the current framing to the online library. Creates your personal library on the first save; adds to it on subsequent saves.">Save to my library…</button>
+      <button type="button" id="fp-menu-open-my-lib" title="Jump to your personal server library (framings you have saved)" disabled>Open my library</button>
+      <button type="button" id="fp-menu-publish" title="Save the current framing as a new entry in your online library. Creates your personal library on the first save; adds a new framing to it on subsequent uses.">Save as…</button>
       <button type="button" id="fp-menu-export" title="Download the current framing as a JSON file (useful for sharing or archiving)">Export as JSON…</button>
       <button type="button" id="fp-menu-import" title="Load a decision from a .json file someone sent you (or one you exported earlier)">Import from JSON…</button>
     </div>
@@ -52,7 +52,7 @@ date: 2026-08-11
 
     <div id="fp-legacy-section" hidden>
       <h4 class="fp-modal-subheader" style="margin-top: 16px;">Legacy local saves</h4>
-      <p class="fp-muted" style="margin: 0 0 6px 0;">Framings saved to this browser before the switch to server libraries. Click one to load it, then use <b>File → Save to my library…</b> to move it into your server library. This section will disappear once it's empty.</p>
+      <p class="fp-muted" style="margin: 0 0 6px 0;">Framings saved to this browser before the switch to server libraries. Click one to load it, then use <b>File → Save as…</b> to move it into your server library. This section will disappear once it's empty.</p>
       <div id="fp-file-list" class="fp-file-list"></div>
     </div>
 
@@ -146,7 +146,7 @@ date: 2026-08-11
 <div id="fp-library-bar" class="fp-library-bar" hidden>
   <span id="fp-library-crumb" class="fp-library-crumb"></span>
   <span id="fp-library-mode" class="fp-library-mode"></span>
-  <button type="button" id="fp-library-save-framing" class="fp-library-browse fp-library-primary" title="Save your edits to the currently-open framing" hidden>Save changes</button>
+  <button type="button" id="fp-library-save-framing" class="fp-library-browse fp-library-primary" title="Save your edits to the currently-open framing (in-place update)" hidden>Save</button>
   <button type="button" id="fp-library-new-framing" class="fp-library-browse" title="Add a new empty framing to this library" hidden>+ New framing</button>
   <button type="button" id="fp-library-new-sublib" class="fp-library-browse" title="Create a new sub-library inside this library (for a class, team, or project)" hidden>+ New sub-library</button>
   <button type="button" id="fp-library-share" class="fp-library-browse" title="Show the View and Edit URLs for this library so you can copy or share them">Share URLs</button>
@@ -258,7 +258,7 @@ date: 2026-08-11
     </div>
   </div>
 
-  <p class="fp-bot-caveat"><strong>The AI first draft replaces your current workspace.</strong> If you want to keep what's on screen, save it first with <em>File → Save to my library…</em>.</p>
+  <p class="fp-bot-caveat"><strong>The AI first draft replaces your current workspace.</strong> If you want to keep what's on screen, save it first with <em>File → Save as…</em>.</p>
 
   <div id="fp-bot-status" class="fp-bot-status" role="status" aria-live="polite"></div>
 </div>
@@ -939,7 +939,7 @@ date: 2026-08-11
     background: #fdfaf1;
   }
   .fp-file-list:empty::before {
-    content: 'No saved pyramids yet — use Save as… to create one.';
+    content: 'No saved framings yet — use Save as… to create one.';
     display: block; padding: 16px; font-size: 0.9rem;
     color: #7a6a55; text-align: center; font-style: italic;
   }
@@ -1867,7 +1867,7 @@ date: 2026-08-11
       el.textContent = docTitle;
       el.classList.remove('fp-doc-title-empty');
     } else {
-      el.textContent = 'No document loaded — use File > Open to load one, or File > Save to my library… to save the current work.';
+      el.textContent = 'No document loaded — use File > Open to load one, or File > Save as… to save the current work as a new framing in your library.';
       el.classList.add('fp-doc-title-empty');
     }
     // Description sits just below the title inside the same banner.
@@ -4845,7 +4845,7 @@ date: 2026-08-11
         showUrlsModal({
           title: 'Your personal library is ready',
           lede: 'Your first saved framing — <b>' + escapeHtmlForModal(framingTitle) + '</b> — is on the server. ' +
-                'Every future <em>Save to my library</em> will add to <b>the same library</b> at these URLs. ' +
+                'Every future <em>Save as…</em> will add a new framing to <b>the same library</b> at these URLs. ' +
                 'You can revisit this library from any browser.',
           readUrl:  makeNodeUrl(lib.readId),
           writeUrl: makeNodeUrl(lib.readId, lib.writeToken),
