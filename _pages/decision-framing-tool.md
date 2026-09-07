@@ -1173,6 +1173,31 @@ date: 2026-08-11
     color: #8a6a3a;
     font-size: 0.85em;
   }
+  /* Decision-kind chip: (gen) vs (spec) — appears after the decision
+     name in the matrix row. Click to toggle. Default gen (blue-gray:
+     "still-drillable category"); spec is amber to signal "concrete
+     action ready to implement". Purely informational for now. */
+  .fp-decision-kind-chip {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 6px;
+    font-size: 0.78rem;
+    line-height: 1.3;
+    border-radius: 4px;
+    border: 1px solid;
+    cursor: pointer;
+    vertical-align: 1px;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+  .fp-decision-kind-gen {
+    border-color: #b6c0cf; background: #eef2f7; color: #3a4a63;
+  }
+  .fp-decision-kind-gen:hover { background: #dee5ee; }
+  .fp-decision-kind-spec {
+    border-color: #c9a76a; background: #f9ecd0; color: #5a3e1f; font-weight: 600;
+  }
+  .fp-decision-kind-spec:hover { background: #f2e6c9; }
   /* Uncertainty scope chip — appears after the uncertainty name in the
      matrix row when the uncertainty was generated while drilled into a
      specific sub-decision. Distinguishes "for: X" scope-tagged rows
@@ -1625,7 +1650,7 @@ date: 2026-08-11
   let state = {
     title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '',
     metrics: [], assignments: {}, chipColors: {},
-    decisions: [], matrix: {}, subframes: {},
+    decisions: [], matrix: {}, decisionKinds: {}, subframes: {},
     uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
   };
   let currentName = null;   // which named file, if any, is currently loaded
@@ -1681,6 +1706,7 @@ date: 2026-08-11
       chipColors:    (s && s.chipColors)                 ? s.chipColors    : {},
       decisions:     Array.isArray(s && s.decisions)     ? s.decisions     : [],
       matrix:        (s && s.matrix)                     ? s.matrix        : {},
+      decisionKinds: normalizeDecisionKinds(s && s.decisionKinds),
       subframes:     normalizeSubframes(s && s.subframes),
       uncertainties: Array.isArray(s && s.uncertainties) ? s.uncertainties : [],
       uMatrix:       (s && s.uMatrix)                    ? s.uMatrix       : {},
@@ -1691,6 +1717,22 @@ date: 2026-08-11
   // decision names, root → leaf) at the time the uncertainty was generated.
   // An empty array (or a missing entry) means the uncertainty applies at
   // the root — i.e. to every decision and sub-decision.
+  // Per-decision kind map (per-frame — sub-frames get their own): decision
+  // name → 'gen' (general / broad category) or 'spec' (specific action).
+  // Missing entries mean 'gen' (the default). Purely informational for now
+  // — later phases (e.g. tree collapsing, matrix roll-up) will use this
+  // to distinguish "still-drillable" categories from concrete actions.
+  function normalizeDecisionKinds(dk) {
+    const out = {};
+    if (!dk || typeof dk !== 'object') return out;
+    for (const k of Object.keys(dk)) {
+      if (typeof k !== 'string' || !k) continue;
+      const v = String(dk[k] || '').toLowerCase();
+      if (v === 'spec') out[k] = 'spec';
+      // 'gen' is the default — we only need to record 'spec' explicitly.
+    }
+    return out;
+  }
   function normalizeUncertaintyScopes(sc) {
     const out = {};
     if (!sc || typeof sc !== 'object') return out;
@@ -1717,6 +1759,7 @@ date: 2026-08-11
         scope:     (typeof f.scope === 'string') ? f.scope : '',
         decisions: Array.isArray(f.decisions)    ? f.decisions : [],
         matrix:    (f.matrix && typeof f.matrix === 'object') ? f.matrix : {},
+        decisionKinds: normalizeDecisionKinds(f.decisionKinds),
         subframes: normalizeSubframes(f.subframes),
       };
     }
@@ -1748,7 +1791,7 @@ date: 2026-08-11
     if (!parentFrame.subframes) parentFrame.subframes = {};
     if (!parentFrame.subframes[name]) {
       parentFrame.subframes[name] = {
-        scope: '', decisions: [], matrix: {}, subframes: {},
+        scope: '', decisions: [], matrix: {}, decisionKinds: {}, subframes: {},
       };
     }
     return parentFrame.subframes[name];
@@ -1971,6 +2014,7 @@ date: 2026-08-11
       chipColors: state.chipColors,
       decisions: state.decisions,
       matrix: state.matrix,
+      decisionKinds: state.decisionKinds,
       subframes: state.subframes,
       uncertainties: state.uncertainties,
       uMatrix: state.uMatrix,
@@ -2561,13 +2605,49 @@ date: 2026-08-11
     frame[cfg.matrixKey] = kept;
     // Decision-level renames/deletes propagate to the sub-frames map
     // so a renamed parent decision keeps its sub-tree and a deleted
-    // one drops it.
-    if (kind === 'decision') reconcileSubframes(frame, renames, deletes);
+    // one drops it. Same treatment for the per-frame decisionKinds
+    // (gen/spec label) map — rename migrates the label, delete drops it.
+    if (kind === 'decision') {
+      reconcileSubframes(frame, renames, deletes);
+      reconcileDecisionKinds(frame, renames, deletes);
+    }
     // Uncertainty-level renames/deletes propagate to the scope map so
     // a wording tweak keeps the "[under X]" tag and a delete drops it.
     if (kind === 'uncertainty') reconcileUncertaintyScopes(renames, deletes);
     renderImpactMatrix(kind);
     autoSave();
+  }
+  function toggleDecisionKind(frame, name) {
+    if (!frame) return;
+    if (!frame.decisionKinds || typeof frame.decisionKinds !== 'object') {
+      frame.decisionKinds = {};
+    }
+    const cur = frame.decisionKinds[name] === 'spec' ? 'spec' : 'gen';
+    const next = cur === 'gen' ? 'spec' : 'gen';
+    if (next === 'gen') {
+      delete frame.decisionKinds[name];   // 'gen' is the default; keep the map sparse
+    } else {
+      frame.decisionKinds[name] = next;
+    }
+    renderImpactMatrix('decision');
+    autoSave();
+  }
+  function reconcileDecisionKinds(frame, renames, deletes) {
+    if (!frame || !frame.decisionKinds || typeof frame.decisionKinds !== 'object') return;
+    for (const [from, to] of renames) {
+      if (from === to) continue;
+      if (frame.decisionKinds[from]) {
+        // Do not silently clobber an existing target key (rare — the user
+        // typed a name that already exists at this level).
+        if (!frame.decisionKinds[to]) {
+          frame.decisionKinds[to] = frame.decisionKinds[from];
+        }
+        delete frame.decisionKinds[from];
+      }
+    }
+    for (const gone of deletes) {
+      if (frame.decisionKinds[gone]) delete frame.decisionKinds[gone];
+    }
   }
   function reconcileUncertaintyScopes(renames, deletes) {
     if (!state.uncertaintyScopes) return;
@@ -2699,6 +2779,27 @@ date: 2026-08-11
           nameTd.appendChild(document.createTextNode(' '));
           nameTd.appendChild(chip);
         }
+      }
+      // Decision-kind chip: "(gen)" or "(spec)" — decisions only. Default
+      // is gen (general / broad category). Click to toggle. Purely
+      // informational for now; later phases will use this to distinguish
+      // still-drillable categories from concrete actions.
+      if (kind === 'decision') {
+        const kindMap = frame.decisionKinds || {};
+        const dk = kindMap[name] === 'spec' ? 'spec' : 'gen';
+        const kchip = document.createElement('button');
+        kchip.type = 'button';
+        kchip.className = 'fp-decision-kind-chip fp-decision-kind-' + dk;
+        kchip.textContent = '(' + dk + ')';
+        kchip.title = dk === 'gen'
+          ? 'General — a broad category of decision that can be refined into sub-decisions. Click to switch to (spec).'
+          : 'Specific — a concrete action or choice ready to implement. Click to switch to (gen).';
+        kchip.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleDecisionKind(frame, name);
+        });
+        nameTd.appendChild(document.createTextNode(' '));
+        nameTd.appendChild(kchip);
       }
       // Drill-in affordance — decisions only. Click (or right-click
       // anywhere on the row) descends into this decision's own
@@ -3379,6 +3480,7 @@ date: 2026-08-11
       chipColors:  (f.chipColors && typeof f.chipColors === 'object') ? f.chipColors : {},
       decisions,
       matrix:      norm(f.matrix, decisions),
+      decisionKinds: normalizeDecisionKinds(f.decisionKinds),
       subframes:   outSubframes,
       uncertainties,
       uMatrix:     norm(f.uMatrix, uncertainties),
@@ -4322,7 +4424,7 @@ date: 2026-08-11
       state = {
         title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '',
         metrics: [], assignments: {}, chipColors: {},
-        decisions: [], matrix: {}, subframes: {},
+        decisions: [], matrix: {}, decisionKinds: {}, subframes: {},
         uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
       };
       currentPath = [];
@@ -4892,7 +4994,7 @@ date: 2026-08-11
         state = {
           title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '',
           metrics: [], assignments: {}, chipColors: {},
-          decisions: [], matrix: {}, subframes: {},
+          decisions: [], matrix: {}, decisionKinds: {}, subframes: {},
           uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
         };
         currentPath = [];
@@ -5091,6 +5193,7 @@ date: 2026-08-11
         assignments:   state.assignments || {},
         decisions:     state.decisions || [],
         matrix:        state.matrix || {},
+        decisionKinds: state.decisionKinds || {},
         uncertainties: state.uncertainties || [],
         uMatrix:       state.uMatrix || {},
         uncertaintyScopes: state.uncertaintyScopes || {},
@@ -5193,7 +5296,7 @@ date: 2026-08-11
       state = {
         title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '',
         metrics: [], assignments: {}, chipColors: {},
-        decisions: [], matrix: {}, subframes: {},
+        decisions: [], matrix: {}, decisionKinds: {}, subframes: {},
         uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
       };
       currentPath = [];
@@ -5358,7 +5461,7 @@ date: 2026-08-11
       state = {
         title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '',
         metrics: [], assignments: {}, chipColors: {},
-        decisions: [], matrix: {}, subframes: {},
+        decisions: [], matrix: {}, decisionKinds: {}, subframes: {},
         uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
       };
       currentPath = [];

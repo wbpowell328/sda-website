@@ -1506,6 +1506,12 @@ const FRAMING_TOOL_HELP = [
   '- **Drill out**: click any earlier breadcrumb step, or the ↑ up-level button.',
   '- Uncertainties do NOT nest — they always live at the root.',
   '',
+  '## Decision kind — (gen) vs (spec)',
+  '- Every decision row shows a small clickable chip: "(gen)" for a general/broad category, or "(spec)" for a specific action ready to implement.',
+  '- Default is (gen). Click the chip to toggle.',
+  '- Meaning: (gen) decisions are still-drillable categories ("Choose supplier", "Assign drivers to loads") that usually get broken into sub-decisions. (spec) decisions are concrete actions ("Buy from ContractCo, Q3 2026", "Assign Driver #47 to Route 12") that don\'t need further drilling.',
+  '- Purely informational today — no functional impact — but planned to drive later features (tree collapsing, matrix roll-up, "still-needs-refinement" flagging).',
+  '',
   'When answering how-to questions, refer to the specific button labels above verbatim so users can find them. If a user is confused about which button does what, spell out the exact click path (e.g. "Library bar → Browse ▾ → click ✎ on that row").',
 ].join('\n');
 
