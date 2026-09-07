@@ -952,15 +952,31 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
         type: 'text',
         text: isDrilledIn
           ? `Propose about ${count} NEW sub-decisions of "${leafParent}" — ` +
-            `more specific choices that implement or refine it. Short noun ` +
-            `phrases (3–4 words each). Do NOT repeat anything already on screen. ` +
-            `At this depth, tilt toward specific actions ("Buy from ContractCo, ` +
-            `Q3 2026") over generic categories, since the parent decision ` +
-            `already names the category. Return via the record_ideas tool.`
-          : `Propose about ${count} NEW ${kindNounPlural} — ${kindDescription}. ` +
-            `Short noun phrases (3–4 words each). Do NOT repeat anything already on screen. ` +
-            `Ideas can be a mix of general categories ("Choose supplier") and specific actions ` +
-            `("Buy from ContractCo, Q3 2026"). Return via the record_ideas tool.`,
+            `exactly ONE level of specificity down from the parent, not the ` +
+            `most-specific-possible action. The idea is a decision tree: each ` +
+            `drill step partitions the parent into its natural next split. ` +
+            `Example: if the parent is "Increase equity investments" (a broad ` +
+            `area), the sub-decisions are the next partitioning ("Choose ` +
+            `industry sector", "Choose region weighting", "Choose market cap ` +
+            `tier") — NOT individual tickers. If the parent is already narrow ` +
+            `("Choose tech sector allocation"), sub-decisions can be more ` +
+            `concrete ("Overweight semis", "Underweight software"). Users can ` +
+            `always drill deeper to reach the most specific actions. Short ` +
+            `noun phrases (3–4 words each). Do NOT repeat anything already on ` +
+            `screen. Return via the record_ideas tool.`
+          : `Propose about ${count} NEW HIGH-LEVEL ${kindNounPlural} — ` +
+            `${kindDescription}. At the ROOT level, each idea must be a ` +
+            `categorically DISTINCT strategic area of choice, not a specific ` +
+            `action. Example (mutual fund manager): "Increase equity ` +
+            `investments", "Cash management", "Customer service", ` +
+            `"Advertising", "Hiring / staffing" — five unrelated buckets ` +
+            `spanning what the decision-maker controls. If two candidates ` +
+            `would sit under the same natural parent (e.g. "Buy Apple" and ` +
+            `"Buy Google" both live under "Choose equity investments"), keep ` +
+            `ONLY the parent and drop the variations — the user drills in ` +
+            `later to refine. Aim for breadth across areas, not depth within ` +
+            `one. Short noun phrases (3–4 words each). Do NOT repeat anything ` +
+            `already on screen. Return via the record_ideas tool.`,
       });
 
       const response = await client.messages.create({
