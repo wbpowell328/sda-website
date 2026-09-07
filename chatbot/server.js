@@ -871,12 +871,21 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
       if (description) {
         userContent.push({ type: 'text', text: `Problem description:\n${description}` });
       }
-      if (existingMetrics.length || existingDecisions.length || existingUncertainties.length) {
-        const parts = ['\nUser already has these on-screen — DO NOT propose duplicates of anything below. Propose NEW ideas that complement what\'s already listed:'];
-        if (existingMetrics.length) {
-          parts.push('Metrics:');
-          existingMetrics.forEach((m, i) => parts.push(`  ${i + 1}. ${m}`));
-        }
+      // Metrics come first and are framed as the DRIVER of idea generation —
+      // decisions are levers that move metrics; uncertainties are what makes
+      // metric outcomes uncertain. Existing decisions/uncertainties are only
+      // sent as an anti-duplication list.
+      if (existingMetrics.length) {
+        const mParts = [
+          'PERFORMANCE METRICS the decision-maker is being evaluated on ' +
+          '(these MUST drive your proposals — each idea should visibly ' +
+          'connect to at least one of these metrics):',
+        ];
+        existingMetrics.forEach((m, i) => mParts.push(`  ${i + 1}. ${m}`));
+        userContent.push({ type: 'text', text: mParts.join('\n') });
+      }
+      if (existingDecisions.length || existingUncertainties.length) {
+        const parts = ['\nUser already has these on screen — DO NOT propose duplicates of anything below. Propose NEW items that complement what\'s already listed:'];
         if (existingDecisions.length) {
           parts.push('Decisions already listed:');
           existingDecisions.forEach((d, i) => parts.push(`  ${i + 1}. ${d}`));

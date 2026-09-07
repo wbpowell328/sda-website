@@ -2818,7 +2818,16 @@ date: 2026-08-11
     }
     $('#fp-ideas-list').innerHTML =
       '<div class="fp-ideas-empty">Generating ideas… (first request after idle can take ~30 s while the server wakes up)</div>';
-    $('#fp-ideas-status').textContent = '';
+    // Nudge the user if there are no metrics yet — decisions and uncertainties
+    // are supposed to be evaluated against metrics, so the ideas will be
+    // sharper if metrics are on screen first. Non-blocking.
+    if (!Array.isArray(state.metrics) || state.metrics.length === 0) {
+      $('#fp-ideas-status').textContent =
+        'Tip: no metrics on screen. Ideas are usually sharper if you add metrics (or use "First draft (AI)" on the Priority pyramid) first.';
+      $('#fp-ideas-status').style.color = '#7a5a1c';
+    } else {
+      $('#fp-ideas-status').textContent = '';
+    }
     $('#fp-ideas-add').disabled = true;
     $('#fp-ideas-regenerate').disabled = true;
     try {
