@@ -1516,7 +1516,7 @@ date: 2026-08-11
   //   matrix       : { decision: { metric: 'H'|'M'|'L'|'N' } } —
   //                  missing = blank (not yet scored).
   let state = {
-    title: '', scope: '', description: '',
+    title: '', scope: '', description: '', problemDescription: '',
     metrics: [], assignments: {}, chipColors: {},
     decisions: [], matrix: {}, subframes: {},
     uncertainties: [], uMatrix: {},
@@ -1565,6 +1565,7 @@ date: 2026-08-11
       title:         (s && typeof s.title === 'string')       ? s.title        : '',
       scope:         (s && typeof s.scope === 'string')       ? s.scope        : '',
       description:   (s && typeof s.description === 'string') ? s.description  : '',
+      problemDescription: (s && typeof s.problemDescription === 'string') ? s.problemDescription : '',
       metrics:       Array.isArray(s && s.metrics)            ? s.metrics      : [],
       assignments:   (s && s.assignments)                ? s.assignments   : {},
       chipColors:    (s && s.chipColors)                 ? s.chipColors    : {},
@@ -1826,6 +1827,7 @@ date: 2026-08-11
       title: state.title,
       scope: state.scope,
       description: state.description,
+      problemDescription: state.problemDescription,
       metrics: state.metrics,
       assignments: state.assignments,
       chipColors: state.chipColors,
@@ -1954,6 +1956,7 @@ date: 2026-08-11
     currentPath = [];                                       // fresh doc → top level
     setCurrentName(name);
     $('#fp-scope-input').value         = state.scope || '';
+    $('#fp-bot-desc').value            = state.problemDescription || '';
     $('#fp-metrics-input').value       = state.metrics.join('\n');
     $('#fp-decisions-input').value     = state.decisions.join('\n');
     $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -2117,6 +2120,7 @@ date: 2026-08-11
         const base = (file.name || 'file').replace(/\.json$/i, '');
         setDocTitle('Imported — ' + base);
         $('#fp-scope-input').value         = state.scope || '';
+        $('#fp-bot-desc').value            = state.problemDescription || '';
         $('#fp-metrics-input').value       = state.metrics.join('\n');
         $('#fp-decisions-input').value     = state.decisions.join('\n');
         $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -3140,6 +3144,7 @@ date: 2026-08-11
       title:       (typeof f.title === 'string')       ? f.title       : '',
       scope:       (typeof f.scope === 'string')       ? f.scope       : '',
       description: (typeof f.description === 'string') ? f.description : '',
+      problemDescription: (typeof f.problemDescription === 'string') ? f.problemDescription : '',
       metrics,
       assignments,
       chipColors:  (f.chipColors && typeof f.chipColors === 'object') ? f.chipColors : {},
@@ -3150,13 +3155,17 @@ date: 2026-08-11
       uMatrix:     norm(f.uMatrix, uncertainties),
     };
   }
-  function applyFraming(framing, sourceLabel, scopeText) {
+  function applyFraming(framing, sourceLabel, scopeText, descText) {
     state = normalizeState(coerceFraming(framing));
     currentPath = [];                                        // AI draft → top level
     // The bot's own scope input is the authoritative scope for the
     // generated framing — propagate it into the top-level scope box so
     // the user doesn't have to re-type it above.
     if (scopeText && !state.scope) state.scope = scopeText;
+    // Same for the "Describe your problem" text — carry it into the new
+    // state so a Save + reload leaves the user's description in the box
+    // that generated the draft.
+    if (descText && !state.problemDescription) state.problemDescription = descText;
     setCurrentName(null);                                  // AI drafts have no save-target
     // Prefer the bot's `title` for the banner so Save-as pre-fills with a
     // useful short case name ("Aurora Motors") rather than the whole source
@@ -3166,6 +3175,7 @@ date: 2026-08-11
       : (sourceLabel || 'Ask Professor Powell');
     setDocTitle('AI draft — ' + draftLabel);
     $('#fp-scope-input').value         = state.scope || '';
+    $('#fp-bot-desc').value            = state.problemDescription || '';
     $('#fp-metrics-input').value       = state.metrics.join('\n');
     $('#fp-decisions-input').value     = state.decisions.join('\n');
     $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -3209,7 +3219,7 @@ date: 2026-08-11
       const sourceLabel = file ? file.name
                               : url ? url
                               : (desc.length > 60 ? desc.slice(0, 57) + '…' : desc);
-      applyFraming(data.framing, sourceLabel, scope);
+      applyFraming(data.framing, sourceLabel, scope, desc);
       setBotStatus('Draft ready — scroll up to review and edit. Use File → Save as… to keep it.', '');
     } catch (err) {
       console.error('Framing request failed:', err);
@@ -3226,6 +3236,8 @@ date: 2026-08-11
     $('#fp-bot-desc').value  = '';
     $('#fp-bot-url').value   = '';
     $('#fp-bot-file').value = '';
+    state.problemDescription = '';
+    autoSave();
     setBotStatus('');
   }
 
@@ -3692,6 +3704,7 @@ date: 2026-08-11
       setCurrentName(null);
       setDocTitle(resp.framing.title || 'Untitled framing');
       $('#fp-scope-input').value         = state.scope || '';
+      $('#fp-bot-desc').value            = state.problemDescription || '';
       $('#fp-metrics-input').value       = state.metrics.join('\n');
       $('#fp-decisions-input').value     = state.decisions.join('\n');
       $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -3981,13 +3994,14 @@ date: 2026-08-11
       if (raw == null) return;
       const finalTitle = raw.trim() || 'New framing';
       state = {
-        title: '', scope: '', description: '',
+        title: '', scope: '', description: '', problemDescription: '',
         metrics: [], assignments: {}, chipColors: {},
         decisions: [], matrix: {}, subframes: {},
         uncertainties: [], uMatrix: {},
       };
       currentPath = [];
       $('#fp-scope-input').value         = '';
+      $('#fp-bot-desc').value            = '';
       $('#fp-metrics-input').value       = '';
       $('#fp-decisions-input').value     = '';
       $('#fp-uncertainties-input').value = '';
@@ -4523,7 +4537,7 @@ date: 2026-08-11
         loadedNode.currentFramingId = null;
         // Blank the workspace since the framing on-screen no longer exists.
         state = {
-          title: '', scope: '', description: '',
+          title: '', scope: '', description: '', problemDescription: '',
           metrics: [], assignments: {}, chipColors: {},
           decisions: [], matrix: {}, subframes: {},
           uncertainties: [], uMatrix: {},
@@ -4531,6 +4545,7 @@ date: 2026-08-11
         currentPath = [];
         setDocTitle(null);
         $('#fp-scope-input').value         = '';
+        $('#fp-bot-desc').value            = '';
         $('#fp-metrics-input').value       = '';
         $('#fp-decisions-input').value     = '';
         $('#fp-uncertainties-input').value = '';
@@ -4708,6 +4723,7 @@ date: 2026-08-11
           title:         state.title || '',
           scope:         state.scope || '',
           description:   state.description || '',
+          problemDescription: state.problemDescription || '',
           metrics:       state.metrics || [],
           assignments:   state.assignments || {},
           decisions:     state.decisions || [],
@@ -4768,6 +4784,7 @@ date: 2026-08-11
       }
     } catch (_) { /* ignore malformed URLs */ }
     $('#fp-scope-input').value         = state.scope || '';
+    $('#fp-bot-desc').value             = state.problemDescription || '';
     $('#fp-metrics-input').value       = state.metrics.join('\n');
     $('#fp-decisions-input').value     = state.decisions.join('\n');
     $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -4775,6 +4792,13 @@ date: 2026-08-11
     $$('.fp-drop-zone').forEach(wireDropZone);
     $('#fp-scope-input').addEventListener('input', () => {
       state.scope = $('#fp-scope-input').value;
+      autoSave();
+    });
+    // Persist "Describe your problem" across saves and reloads (same
+    // treatment as the scope box). Without this the box is a one-shot
+    // input that empties on load or File → Open.
+    $('#fp-bot-desc').addEventListener('input', () => {
+      state.problemDescription = $('#fp-bot-desc').value;
       autoSave();
     });
     $('#fp-metrics-input').addEventListener('input',       syncMetricsFromTextarea);
@@ -4797,7 +4821,7 @@ date: 2026-08-11
       closeFileMenu();
       if (!confirm('Start a new framing? Anything on screen is discarded (Save to your library first if you want to keep it).')) return;
       state = {
-        title: '', scope: '', description: '',
+        title: '', scope: '', description: '', problemDescription: '',
         metrics: [], assignments: {}, chipColors: {},
         decisions: [], matrix: {}, subframes: {},
         uncertainties: [], uMatrix: {},
@@ -4806,6 +4830,7 @@ date: 2026-08-11
       setCurrentName(null);
       setDocTitle(null);   // wipe the banner too
       $('#fp-scope-input').value         = '';
+      $('#fp-bot-desc').value            = '';
       $('#fp-metrics-input').value       = '';
       $('#fp-decisions-input').value     = '';
       $('#fp-uncertainties-input').value = '';
@@ -4944,7 +4969,7 @@ date: 2026-08-11
     $('#fp-reset').addEventListener('click', () => {
       if (!confirm('Delete every metric, decision, and uncertainty, clear the pyramid and both matrices, and unload the current framing? (Framings saved to your library are not affected.) Cannot be undone.')) return;
       state = {
-        title: '', scope: '', description: '',
+        title: '', scope: '', description: '', problemDescription: '',
         metrics: [], assignments: {}, chipColors: {},
         decisions: [], matrix: {}, subframes: {},
         uncertainties: [], uMatrix: {},
@@ -4953,6 +4978,7 @@ date: 2026-08-11
       setCurrentName(null);
       setDocTitle(null);   // also wipe the banner
       $('#fp-scope-input').value         = '';
+      $('#fp-bot-desc').value            = '';
       $('#fp-metrics-input').value       = '';
       $('#fp-decisions-input').value     = '';
       $('#fp-uncertainties-input').value = '';
