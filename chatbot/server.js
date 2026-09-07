@@ -878,10 +878,19 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
       if (existingMetrics.length) {
         const mParts = [
           'PERFORMANCE METRICS the decision-maker is being evaluated on ' +
-          '(these MUST drive your proposals — each idea should visibly ' +
-          'connect to at least one of these metrics):',
+          '(these MUST drive your proposals):',
         ];
         existingMetrics.forEach((m, i) => mParts.push(`  ${i + 1}. ${m}`));
+        mParts.push('');
+        mParts.push(
+          'HARD RULE — before proposing any idea, mentally score its impact ' +
+          'on each metric above using H (high) / M (medium) / L (low) / N (none). ' +
+          'DO NOT propose an idea unless it would score H or M on AT LEAST ONE ' +
+          'of the metrics above. Drop any idea that would score only L or N ' +
+          'everywhere — those clutter the matrix without moving the needle. ' +
+          'It is fine to return fewer ideas than the target count if the ' +
+          'good ones run out.'
+        );
         userContent.push({ type: 'text', text: mParts.join('\n') });
       }
       if (existingDecisions.length || existingUncertainties.length) {
