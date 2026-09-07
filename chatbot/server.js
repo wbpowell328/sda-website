@@ -848,6 +848,16 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
       const existingDecisions     = parseList(req.body?.existingDecisions);
       const existingUncertainties = parseList(req.body?.existingUncertainties);
 
+      // Drill-in context. `parentPath` is the ancestry of decisions the user
+      // has drilled into (root → … → leaf). When non-empty and kind is
+      // 'decision', the model is asked for sub-decisions of the LEAF parent
+      // rather than a fresh root-level list. `subScope` is the per-level
+      // scope note attached to that leaf sub-frame (optional).
+      const parentPath = parseList(req.body?.parentPath);
+      const subScope   = String(req.body?.subScope || '').trim().slice(0, 2000);
+      const isDrilledIn = kind === 'decision' && parentPath.length > 0;
+      const leafParent  = isDrilledIn ? parentPath[parentPath.length - 1] : '';
+
       const userContent = [];
       if (scope) {
         userContent.push({
@@ -893,10 +903,31 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
         );
         userContent.push({ type: 'text', text: mParts.join('\n') });
       }
+      if (isDrilledIn) {
+        const trail = parentPath.map((p) => `"${p}"`).join(' → ');
+        const drillParts = [
+          `DRILL-IN CONTEXT — the user has clicked into a decision to break ` +
+          `it into sub-decisions. Ancestry (root → leaf): ${trail}.`,
+          '',
+          `You are proposing NEW sub-decisions of the LEAF parent ` +
+          `("${leafParent}") — more specific choices that, taken together, ` +
+          `implement or refine that parent decision. Each sub-decision must ` +
+          `stay under the leaf parent's umbrella (not siblings of it, not ` +
+          `unrelated root decisions).`,
+        ];
+        if (subScope) {
+          drillParts.push('', `Scope note attached to this sub-level: ${subScope}`);
+        }
+        userContent.push({ type: 'text', text: drillParts.join('\n') });
+      }
       if (existingDecisions.length || existingUncertainties.length) {
-        const parts = ['\nUser already has these on screen — DO NOT propose duplicates of anything below. Propose NEW items that complement what\'s already listed:'];
+        const parts = isDrilledIn
+          ? ['\nUser already has these on screen — DO NOT propose duplicates of anything below.']
+          : ['\nUser already has these on screen — DO NOT propose duplicates of anything below. Propose NEW items that complement what\'s already listed:'];
         if (existingDecisions.length) {
-          parts.push('Decisions already listed:');
+          parts.push(isDrilledIn
+            ? `Sub-decisions of "${leafParent}" already listed:`
+            : 'Decisions already listed:');
           existingDecisions.forEach((d, i) => parts.push(`  ${i + 1}. ${d}`));
         }
         if (existingUncertainties.length) {
@@ -919,11 +950,17 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
 
       userContent.push({
         type: 'text',
-        text:
-          `Propose about ${count} NEW ${kindNounPlural} — ${kindDescription}. ` +
-          `Short noun phrases (3–4 words each). Do NOT repeat anything already on screen. ` +
-          `Ideas can be a mix of general categories ("Choose supplier") and specific actions ` +
-          `("Buy from ContractCo, Q3 2026"). Return via the record_ideas tool.`,
+        text: isDrilledIn
+          ? `Propose about ${count} NEW sub-decisions of "${leafParent}" — ` +
+            `more specific choices that implement or refine it. Short noun ` +
+            `phrases (3–4 words each). Do NOT repeat anything already on screen. ` +
+            `At this depth, tilt toward specific actions ("Buy from ContractCo, ` +
+            `Q3 2026") over generic categories, since the parent decision ` +
+            `already names the category. Return via the record_ideas tool.`
+          : `Propose about ${count} NEW ${kindNounPlural} — ${kindDescription}. ` +
+            `Short noun phrases (3–4 words each). Do NOT repeat anything already on screen. ` +
+            `Ideas can be a mix of general categories ("Choose supplier") and specific actions ` +
+            `("Buy from ContractCo, Q3 2026"). Return via the record_ideas tool.`,
       });
 
       const response = await client.messages.create({

@@ -2791,12 +2791,27 @@ date: 2026-08-11
     if (kind !== 'decision' && kind !== 'uncertainty') return;
     ideasCurrentKind = kind;
     const modal = $('#fp-ideas-modal');
-    $('#fp-ideas-modal-title').textContent = 'Idea box — ' +
-      (kind === 'decision' ? 'decisions' : 'uncertainties');
-    $('#fp-ideas-modal-lede').innerHTML =
-      'AI-proposed ' + (kind === 'decision' ? 'decisions' : 'uncertainties') +
-      ' from your <b>Problem scope</b> above. Check the ones you like, then <b>Add checked</b> ' +
-      'to append them to your existing list. Re-generate for a fresh set.';
+    // Drill-in aware: if the user is inside a sub-decision AND asking for
+    // decision ideas, the modal offers sub-decisions of the leaf parent.
+    // Uncertainties always live at the root — no ancestry to worry about.
+    const drilledIn = kind === 'decision' && currentPath.length > 0;
+    if (drilledIn) {
+      const parent = currentPath[currentPath.length - 1];
+      $('#fp-ideas-modal-title').textContent =
+        'Idea box — sub-decisions of "' + parent + '"';
+      const trail = currentPath.map(p => '"' + p + '"').join(' → ');
+      $('#fp-ideas-modal-lede').innerHTML =
+        'AI-proposed <b>sub-decisions</b> of ' + trail +
+        '. Check the ones you like, then <b>Add checked</b> to append them ' +
+        'to your existing sub-decision list. Re-generate for a fresh set.';
+    } else {
+      $('#fp-ideas-modal-title').textContent = 'Idea box — ' +
+        (kind === 'decision' ? 'decisions' : 'uncertainties');
+      $('#fp-ideas-modal-lede').innerHTML =
+        'AI-proposed ' + (kind === 'decision' ? 'decisions' : 'uncertainties') +
+        ' from your <b>Problem scope</b> above. Check the ones you like, then <b>Add checked</b> ' +
+        'to append them to your existing list. Re-generate for a fresh set.';
+    }
     $('#fp-ideas-list').innerHTML = '';
     $('#fp-ideas-status').textContent = '';
     modal.hidden = false;
@@ -2837,11 +2852,26 @@ date: 2026-08-11
       if (url)   form.append('url', url);
       if (file)  form.append('file', file, file.name);
       form.append('size', size);
+      // Drill-in ancestry (decision kind only). When present, the server
+      // reframes the ask as "propose sub-decisions of the leaf parent" and
+      // uses this level's own sub-decision list for anti-duplication.
+      const drilledIn = ideasCurrentKind === 'decision' && currentPath.length > 0;
+      const leafFrame = drilledIn ? currentFrame() : null;
+      if (drilledIn) {
+        form.append('parentPath', JSON.stringify(currentPath));
+        const subScope = (leafFrame && typeof leafFrame.scope === 'string')
+          ? leafFrame.scope.trim() : '';
+        if (subScope) form.append('subScope', subScope);
+      }
       if (Array.isArray(state.metrics) && state.metrics.length) {
         form.append('existingMetrics', JSON.stringify(state.metrics));
       }
-      if (Array.isArray(state.decisions) && state.decisions.length) {
-        form.append('existingDecisions', JSON.stringify(state.decisions));
+      // For decisions: send THIS level's decision list (root or sub-frame).
+      // For uncertainties: always root.
+      const decisionSourceFrame = ideasCurrentKind === 'decision'
+        ? (leafFrame || state) : state;
+      if (Array.isArray(decisionSourceFrame.decisions) && decisionSourceFrame.decisions.length) {
+        form.append('existingDecisions', JSON.stringify(decisionSourceFrame.decisions));
       }
       if (Array.isArray(state.uncertainties) && state.uncertainties.length) {
         form.append('existingUncertainties', JSON.stringify(state.uncertainties));
