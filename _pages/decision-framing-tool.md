@@ -453,7 +453,9 @@ date: 2026-08-11
     <button type="button" class="fp-chat-panel-close" id="fp-chat-panel-close" aria-label="Close chat" title="Close (chat state is preserved — reopen from the ? button)">×</button>
   </div>
   <div class="fp-chat-panel-body">
-    <div id="castle-chat-inline"></div>
+    <div id="castle-chat-inline"
+         data-title="How can I help?"
+         data-suggestions='[{"label":"File management","prompt":"How do I save, rename, share, or delete my framings and libraries?"},{"label":"Scoping","prompt":"How do I set up the Problem scope section, and what does the Read introductory materials button do?"},{"label":"Metrics","prompt":"How do I build the metrics pyramid, and what does First draft (AI) on the pyramid do?"},{"label":"Decisions","prompt":"How do I add decisions, use Generate ideas, drill into sub-decisions, and what do the (gen) and (spec) chips mean?"},{"label":"Uncertainties","prompt":"How do I add uncertainties, and what does the green for-chip mean when I drill into a decision?"}]'></div>
   </div>
   <p class="fp-chat-panel-footer"><em>Trained on Professor Powell's books, 1,000+ pages of LinkedIn posts, and the contents of this website. Conversations are logged for feedback. Don't share anything private; don't cite the chatbot as a source.</em></p>
 </div>

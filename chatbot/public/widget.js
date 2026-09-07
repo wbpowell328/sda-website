@@ -31,14 +31,47 @@
     }
   }
 
-  const SUGGESTIONS = [
-    "What is a decision?",
-    "What is the universal modeling framework?",
-    "What is reinforcement learning?",
-    "What is a state variable?",
-    "What are the four classes of policies?",
-    "Give a mathematical description of the knowledge gradient",
+  // Header text + starter suggestions. Defaults match the homepage "Ask
+  // Professor Powell" placement. Individual pages can override by setting
+  // data-attributes on the mount div:
+  //   data-title       = header text (plain string)
+  //   data-suggestions = JSON array of either strings ("What is a decision?")
+  //                      OR objects ({label, prompt}) — label is the pill
+  //                      text, prompt is what gets sent when the user
+  //                      clicks it. Objects let a short pill fire a full
+  //                      question ("Metrics" → "How do I build the metrics
+  //                      pyramid?").
+  let TITLE_TEXT = "Ask any questions about sequential decision problems, such as:";
+  let SUGGESTIONS = [
+    { label: "What is a decision?", prompt: "What is a decision?" },
+    { label: "What is the universal modeling framework?", prompt: "What is the universal modeling framework?" },
+    { label: "What is reinforcement learning?", prompt: "What is reinforcement learning?" },
+    { label: "What is a state variable?", prompt: "What is a state variable?" },
+    { label: "What are the four classes of policies?", prompt: "What are the four classes of policies?" },
+    { label: "Give a mathematical description of the knowledge gradient", prompt: "Give a mathematical description of the knowledge gradient" },
   ];
+  try {
+    const t = mount.dataset.title;
+    if (typeof t === 'string' && t.trim()) TITLE_TEXT = t.trim();
+    const rawSug = mount.dataset.suggestions;
+    if (typeof rawSug === 'string' && rawSug.trim()) {
+      const arr = JSON.parse(rawSug);
+      if (Array.isArray(arr)) {
+        const out = [];
+        for (const x of arr) {
+          if (typeof x === 'string' && x.trim()) {
+            out.push({ label: x.trim(), prompt: x.trim() });
+          } else if (x && typeof x === 'object' && typeof x.label === 'string' && x.label.trim()) {
+            out.push({
+              label: x.label.trim(),
+              prompt: (typeof x.prompt === 'string' && x.prompt.trim()) ? x.prompt.trim() : x.label.trim(),
+            });
+          }
+        }
+        if (out.length) SUGGESTIONS = out;
+      }
+    }
+  } catch (_) { /* fall through to defaults */ }
 
   // --- Lazy-load marked --------------------------------------------------
   let markedReady = null;
@@ -397,7 +430,7 @@
     <section class="castle-chat-hero">
       <div class="castle-chat-header">
         <span class="castle-chat-icon">✦</span>
-        <span class="castle-chat-title">Ask any questions about sequential decision problems, such as:</span>
+        <span class="castle-chat-title"></span>
       </div>
       <div class="castle-chat-suggestions"></div>
       <form class="castle-chat-form" novalidate>
@@ -424,6 +457,8 @@
     </section>
   `;
 
+  const titleEl        = mount.querySelector('.castle-chat-title');
+  if (titleEl) titleEl.textContent = TITLE_TEXT;
   const sugWrap        = mount.querySelector('.castle-chat-suggestions');
   const form           = mount.querySelector('.castle-chat-form');
   const input          = mount.querySelector('.castle-chat-input');
@@ -444,14 +479,16 @@
     input.placeholder = messages.length > 0 ? FOLLOWUP_PLACEHOLDER : INITIAL_PLACEHOLDER;
   }
 
-  // Render suggestion pills
+  // Render suggestion pills. Label is what shows on the pill; prompt is
+  // what actually gets sent (they can differ so a short pill like
+  // "Metrics" can fire a full question).
   for (const s of SUGGESTIONS) {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'castle-pill';
-    btn.textContent = s;
+    btn.textContent = s.label;
     btn.addEventListener('click', () => {
-      input.value = s;
+      input.value = s.prompt;
       send();
     });
     sugWrap.appendChild(btn);
