@@ -366,7 +366,7 @@ date: 2026-08-11
 </div>
 
 <h2 id="uncertainty-prioritization-tool" class="fp-section-h2">Uncertainty prioritization tool</h2>
-<p>The uncertainties tool works similarly to the decisions tool, except that uncertainties are not nested — all uncertainties live at the top of the framing. Generate ideas is still context-aware: at the top level it suggests categorically distinct sources of uncertainty, and if you have drilled into a subdecision on the decisions side, it suggests uncertainties whose outcomes matter most for that subdecision (added to the same top-level list). (Click <a href="/modeling-uncertainty/#categories">here</a> for a discussion of different categories of uncertainty.)</p>
+<p>The uncertainties tool works similarly to the decisions tool, except that uncertainties are not nested — all uncertainties live at the top of the framing. Generate ideas is still context-aware: at the top level it suggests categorically distinct sources of uncertainty, and if you have drilled into a subdecision on the decisions side, it suggests uncertainties whose outcomes matter most for that subdecision. Each generated-while-drilled uncertainty is tagged with a green <span class="fp-u-scope-chip" style="margin:0">for: <em>subdecision</em></span> chip in the matrix row below, so you can tell at a glance which uncertainties apply to the whole framing (untagged) versus which were suggested for a specific sub-decision context (tagged). All uncertainties still score against the same metrics in the single matrix. (Click <a href="/modeling-uncertainty/#categories">here</a> for a discussion of different categories of uncertainty.)</p>
 
 <div class="fp-grid fp-grid-narrow">
   <div class="fp-panel fp-uncertainties-panel">
@@ -1122,6 +1122,23 @@ date: 2026-08-11
     color: #8a6a3a;
     font-size: 0.85em;
   }
+  /* Uncertainty scope chip — appears after the uncertainty name in the
+     matrix row when the uncertainty was generated while drilled into a
+     specific sub-decision. Distinguishes "for: X" scope-tagged rows
+     from unscoped, everything-applies rows. */
+  .fp-u-scope-chip {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 6px;
+    font-size: 0.78rem;
+    line-height: 1.3;
+    border: 1px solid #b8d6c4;
+    border-radius: 4px;
+    background: #eaf5ee;
+    color: #345c48;
+    vertical-align: 1px;
+    white-space: nowrap;
+  }
   .fp-drill-hint { margin-top: -0.4rem; }
 
   /* Breadcrumb strip — visible only when drilled below the top level. */
@@ -1519,7 +1536,7 @@ date: 2026-08-11
     title: '', scope: '', description: '', problemDescription: '', problemUrl: '',
     metrics: [], assignments: {}, chipColors: {},
     decisions: [], matrix: {}, subframes: {},
-    uncertainties: [], uMatrix: {},
+    uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
   };
   let currentName = null;   // which named file, if any, is currently loaded
   // Current position in the decision tree. Empty array = top level.
@@ -1575,7 +1592,25 @@ date: 2026-08-11
       subframes:     normalizeSubframes(s && s.subframes),
       uncertainties: Array.isArray(s && s.uncertainties) ? s.uncertainties : [],
       uMatrix:       (s && s.uMatrix)                    ? s.uMatrix       : {},
+      uncertaintyScopes: normalizeUncertaintyScopes(s && s.uncertaintyScopes),
     };
+  }
+  // Per-uncertainty scope map: uncertainty name → parentPath (array of
+  // decision names, root → leaf) at the time the uncertainty was generated.
+  // An empty array (or a missing entry) means the uncertainty applies at
+  // the root — i.e. to every decision and sub-decision.
+  function normalizeUncertaintyScopes(sc) {
+    const out = {};
+    if (!sc || typeof sc !== 'object') return out;
+    for (const k of Object.keys(sc)) {
+      if (typeof k !== 'string' || !k) continue;
+      const v = sc[k];
+      if (Array.isArray(v)) {
+        const path = v.filter(x => typeof x === 'string' && x).map(String);
+        if (path.length) out[k] = path;
+      }
+    }
+    return out;
   }
   // A sub-frame tree — each key is a decision name at its parent
   // level, each value is another frame with its own decisions, matrix,
@@ -1838,6 +1873,7 @@ date: 2026-08-11
       subframes: state.subframes,
       uncertainties: state.uncertainties,
       uMatrix: state.uMatrix,
+      uncertaintyScopes: state.uncertaintyScopes,
       savedAt: new Date().toISOString(),
     };
   }
@@ -2424,8 +2460,23 @@ date: 2026-08-11
     // so a renamed parent decision keeps its sub-tree and a deleted
     // one drops it.
     if (kind === 'decision') reconcileSubframes(frame, renames, deletes);
+    // Uncertainty-level renames/deletes propagate to the scope map so
+    // a wording tweak keeps the "[under X]" tag and a delete drops it.
+    if (kind === 'uncertainty') reconcileUncertaintyScopes(renames, deletes);
     renderImpactMatrix(kind);
     autoSave();
+  }
+  function reconcileUncertaintyScopes(renames, deletes) {
+    if (!state.uncertaintyScopes) return;
+    for (const [from, to] of renames) {
+      if (state.uncertaintyScopes[from]) {
+        state.uncertaintyScopes[to] = state.uncertaintyScopes[from];
+        delete state.uncertaintyScopes[from];
+      }
+    }
+    for (const gone of deletes) {
+      if (state.uncertaintyScopes[gone]) delete state.uncertaintyScopes[gone];
+    }
   }
 
   // ── Matrix: columns come from the pyramid ───────────────────
@@ -2529,6 +2580,23 @@ date: 2026-08-11
       const nameTd = document.createElement('td');
       nameTd.className = 'fp-matrix-decision';
       appendTextWithSlashBreaks(nameTd, name);
+      // Uncertainty scope chip: if this uncertainty was generated while
+      // the user was drilled into a sub-decision, show a small badge with
+      // the leaf-parent name so users can see the row is context-tagged
+      // (rather than a root-level uncertainty applying to everything).
+      if (kind === 'uncertainty') {
+        const scopePath = (state.uncertaintyScopes && state.uncertaintyScopes[name]) || null;
+        if (Array.isArray(scopePath) && scopePath.length) {
+          const chip = document.createElement('span');
+          chip.className = 'fp-u-scope-chip';
+          const leaf = scopePath[scopePath.length - 1];
+          chip.textContent = 'for: ' + leaf;
+          chip.title = 'Generated while drilled into: ' + scopePath.join(' → ') +
+            '. This uncertainty is in the root list but was suggested for that sub-decision context.';
+          nameTd.appendChild(document.createTextNode(' '));
+          nameTd.appendChild(chip);
+        }
+      }
       // Drill-in affordance — decisions only. Click (or right-click
       // anywhere on the row) descends into this decision's own
       // sub-decisions. The badge shows how many sub-decisions already
@@ -2975,8 +3043,18 @@ date: 2026-08-11
     // Union with the existing list to avoid duplicates (case-insensitive).
     const existing = (frame[cfg.listKey] || []).slice();
     const existingSet = new Set(existing.map(s => s.trim().toLowerCase()));
+    const newlyAdded = [];
     for (const p of picked) {
-      if (!existingSet.has(p.toLowerCase())) existing.push(p);
+      if (!existingSet.has(p.toLowerCase())) { existing.push(p); newlyAdded.push(p); }
+    }
+    // Uncertainties are flat at the root, but each carries a scope tag
+    // recording the drill path at generation time so users can see
+    // whether a given uncertainty was proposed for the whole framing or
+    // for a specific sub-decision. Root-generated ones stay unscoped.
+    if (ideasCurrentKind === 'uncertainty' && currentPath.length > 0 && newlyAdded.length) {
+      if (!state.uncertaintyScopes) state.uncertaintyScopes = {};
+      const scopePath = currentPath.slice();
+      for (const name of newlyAdded) state.uncertaintyScopes[name] = scopePath;
     }
     // Route through the textarea so the standard sync logic (rename
     // detection, matrix pruning) fires the same as if the user typed
@@ -3182,6 +3260,7 @@ date: 2026-08-11
       subframes:   outSubframes,
       uncertainties,
       uMatrix:     norm(f.uMatrix, uncertainties),
+      uncertaintyScopes: normalizeUncertaintyScopes(f.uncertaintyScopes),
     };
   }
   function applyFraming(framing, sourceLabel, scopeText, descText, urlText) {
@@ -4030,7 +4109,7 @@ date: 2026-08-11
         title: '', scope: '', description: '', problemDescription: '', problemUrl: '',
         metrics: [], assignments: {}, chipColors: {},
         decisions: [], matrix: {}, subframes: {},
-        uncertainties: [], uMatrix: {},
+        uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
       };
       currentPath = [];
       $('#fp-scope-input').value         = '';
@@ -4573,7 +4652,7 @@ date: 2026-08-11
           title: '', scope: '', description: '', problemDescription: '', problemUrl: '',
           metrics: [], assignments: {}, chipColors: {},
           decisions: [], matrix: {}, subframes: {},
-          uncertainties: [], uMatrix: {},
+          uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
         };
         currentPath = [];
         setDocTitle(null);
@@ -4764,6 +4843,7 @@ date: 2026-08-11
           matrix:        state.matrix || {},
           uncertainties: state.uncertainties || [],
           uMatrix:       state.uMatrix || {},
+          uncertaintyScopes: state.uncertaintyScopes || {},
           subframes:     state.subframes || {},
         },
       };
@@ -4864,7 +4944,7 @@ date: 2026-08-11
         title: '', scope: '', description: '', problemDescription: '', problemUrl: '',
         metrics: [], assignments: {}, chipColors: {},
         decisions: [], matrix: {}, subframes: {},
-        uncertainties: [], uMatrix: {},
+        uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
       };
       currentPath = [];
       setCurrentName(null);
@@ -5012,7 +5092,7 @@ date: 2026-08-11
         title: '', scope: '', description: '', problemDescription: '', problemUrl: '',
         metrics: [], assignments: {}, chipColors: {},
         decisions: [], matrix: {}, subframes: {},
-        uncertainties: [], uMatrix: {},
+        uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
       };
       currentPath = [];
       setCurrentName(null);
