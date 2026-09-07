@@ -797,6 +797,166 @@ app.post('/framing/pyramid', framingLimiter, (req, res) => {
   });
 });
 
+// Ideas-only: given a scope + description (or URL/file) and the user's
+// existing metrics/decisions/uncertainties, propose a list of fresh
+// decisions (or uncertainties) that could be added. Returns names
+// only — no matrix scoring, no pyramid. Used by the "Generate ideas"
+// button next to the Decisions/Uncertainties headers. Existing items
+// are sent as context so the model doesn't propose duplicates.
+const IDEAS_TOOL = {
+  name: 'record_ideas',
+  description: 'Record a list of proposed decisions or uncertainties (names only, no matrix scoring).',
+  input_schema: {
+    type: 'object',
+    properties: {
+      ideas: {
+        type: 'array',
+        items: { type: 'string' },
+        description: 'Short 3–4 word noun phrases. Do not repeat any name in the "existing" list the user already has on screen.',
+      },
+    },
+    required: ['ideas'],
+  },
+};
+
+app.post('/framing/ideas', framingLimiter, (req, res) => {
+  framingUpload.single('file')(req, res, async (uploadErr) => {
+    if (uploadErr) return res.status(400).json({ error: uploadErr.message });
+    try {
+      const kindRaw = String(req.body?.kind || '').toLowerCase();
+      const kind = kindRaw === 'uncertainty' ? 'uncertainty'
+                 : (kindRaw === 'decision' ? 'decision' : null);
+      if (!kind) return res.status(400).json({ error: 'kind must be "decision" or "uncertainty".' });
+
+      const description = String(req.body?.description || '').trim().slice(0, FRAMING_MAX_CHARS);
+      const url         = String(req.body?.url || '').trim();
+      const scope       = String(req.body?.scope || '').trim().slice(0, 2000);
+      // Reuse the sizing table — count of ideas mirrors count of decisions/
+      // uncertainties in a framing of that size.
+      const { size, decisions: nD } = sizeInstructions(req.body?.size);
+      const count = nD;
+
+      // Existing on-screen content — sent so ideas don't duplicate.
+      const parseList = (raw) => {
+        try {
+          if (typeof raw !== 'string' || !raw) return [];
+          const arr = JSON.parse(raw);
+          return Array.isArray(arr) ? arr.filter(Boolean).map(String).slice(0, 60) : [];
+        } catch (_) { return []; }
+      };
+      const existingMetrics       = parseList(req.body?.existingMetrics);
+      const existingDecisions     = parseList(req.body?.existingDecisions);
+      const existingUncertainties = parseList(req.body?.existingUncertainties);
+
+      const userContent = [];
+      if (scope) {
+        userContent.push({
+          type: 'text',
+          text:
+            `SCOPE — who (or what) is making these decisions:\n${scope}\n\n` +
+            `Every idea you propose must belong to THIS decision-maker's altitude and planning horizon.`,
+        });
+      }
+      if (req.file) {
+        userContent.push(await fileToContentBlock(
+          req.file.buffer, req.file.mimetype, req.file.originalname,
+        ));
+      }
+      if (url) {
+        if (!/^https?:\/\//i.test(url)) {
+          return res.status(400).json({ error: 'URL must start with http:// or https://.' });
+        }
+        userContent.push(await urlToContentBlock(url));
+      }
+      if (description) {
+        userContent.push({ type: 'text', text: `Problem description:\n${description}` });
+      }
+      if (existingMetrics.length || existingDecisions.length || existingUncertainties.length) {
+        const parts = ['\nUser already has these on-screen — DO NOT propose duplicates of anything below. Propose NEW ideas that complement what\'s already listed:'];
+        if (existingMetrics.length) {
+          parts.push('Metrics:');
+          existingMetrics.forEach((m, i) => parts.push(`  ${i + 1}. ${m}`));
+        }
+        if (existingDecisions.length) {
+          parts.push('Decisions already listed:');
+          existingDecisions.forEach((d, i) => parts.push(`  ${i + 1}. ${d}`));
+        }
+        if (existingUncertainties.length) {
+          parts.push('Uncertainties already listed:');
+          existingUncertainties.forEach((u, i) => parts.push(`  ${i + 1}. ${u}`));
+        }
+        userContent.push({ type: 'text', text: parts.join('\n') });
+      }
+      if (userContent.length === 0) {
+        return res.status(400).json({
+          error: 'Add a scope, description, URL, or file first (any of these is enough).',
+        });
+      }
+
+      const kindNounSingular = kind;
+      const kindNounPlural   = kind === 'uncertainty' ? 'uncertainties' : 'decisions';
+      const kindDescription  = kind === 'uncertainty'
+        ? 'external uncertain factors the decision-maker must react to (things they do NOT control)'
+        : 'levers the decision-maker actually controls — things they DO';
+
+      userContent.push({
+        type: 'text',
+        text:
+          `Propose about ${count} NEW ${kindNounPlural} — ${kindDescription}. ` +
+          `Short noun phrases (3–4 words each). Do NOT repeat anything already on screen. ` +
+          `Ideas can be a mix of general categories ("Choose supplier") and specific actions ` +
+          `("Buy from ContractCo, Q3 2026"). Return via the record_ideas tool.`,
+      });
+
+      const response = await client.messages.create({
+        model: FRAMING_MODEL,
+        max_tokens: 2048,
+        system: framingPrompt || 'You are Professor Warren Powell\'s decision-framing assistant.',
+        tools: [IDEAS_TOOL],
+        tool_choice: { type: 'tool', name: IDEAS_TOOL.name },
+        messages: [{ role: 'user', content: userContent }],
+      });
+
+      const toolBlock = (response.content || []).find(
+        (b) => b.type === 'tool_use' && b.name === IDEAS_TOOL.name,
+      );
+      if (!toolBlock) {
+        return res.status(502).json({ error: 'Model did not produce ideas. Try again.' });
+      }
+
+      // Coerce + dedupe against existing lists.
+      const rawIdeas = Array.isArray(toolBlock.input.ideas)
+        ? toolBlock.input.ideas.filter(Boolean).map(String)
+        : [];
+      const dupSet = new Set(
+        (kind === 'uncertainty' ? existingUncertainties : existingDecisions)
+          .map((s) => s.trim().toLowerCase())
+      );
+      const ideas = [];
+      const seen = new Set();
+      for (const raw of rawIdeas) {
+        const trimmed = raw.trim();
+        if (!trimmed) continue;
+        const key = trimmed.toLowerCase();
+        if (dupSet.has(key) || seen.has(key)) continue;
+        seen.add(key);
+        ideas.push(trimmed);
+      }
+
+      return res.json({
+        ideas,
+        kind,
+        size,
+        model: FRAMING_MODEL,
+        usage: response.usage,
+      });
+    } catch (err) {
+      console.error('Framing/ideas error:', err);
+      return res.status(500).json({ error: (err && err.message) || 'Unknown error' });
+    }
+  });
+});
+
 app.post('/framing', framingLimiter, (req, res) => {
   framingUpload.single('file')(req, res, async (uploadErr) => {
     if (uploadErr) return res.status(400).json({ error: uploadErr.message });

@@ -181,6 +181,33 @@ date: 2026-08-11
   </div>
 </div>
 
+<!-- Idea box — modal spawned by the "Generate ideas" buttons on the
+     Decisions and Uncertainties panels. Shows the AI's proposed list
+     as checkboxes; user picks which ones to append to the underlying
+     textarea. -->
+<div id="fp-ideas-modal" class="fp-modal" hidden>
+  <div class="fp-modal-card">
+    <div class="fp-modal-header">
+      <h3 id="fp-ideas-modal-title">Idea box</h3>
+      <button type="button" class="fp-modal-close" id="fp-ideas-modal-close" aria-label="Close">×</button>
+    </div>
+    <p id="fp-ideas-modal-lede" class="fp-muted" style="margin: 0 0 6px 0;"></p>
+    <div id="fp-ideas-list" class="fp-ideas-list"></div>
+    <div id="fp-ideas-status" class="fp-bot-status" role="status" aria-live="polite"></div>
+    <div class="fp-modal-actions" style="justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+      <div style="display: flex; gap: 6px;">
+        <button type="button" id="fp-ideas-select-all" class="fp-modal-mini">Select all</button>
+        <button type="button" id="fp-ideas-select-none" class="fp-modal-mini">None</button>
+        <button type="button" id="fp-ideas-regenerate" class="fp-modal-mini" title="Ask the AI for a fresh set of ideas">Regenerate</button>
+      </div>
+      <div style="display: flex; gap: 6px;">
+        <button type="button" id="fp-ideas-cancel">Cancel</button>
+        <button type="button" id="fp-ideas-add" class="fp-modal-primary">Add checked</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="fp-doc-banner" class="fp-doc-banner">
   <h2 id="fp-doc-title" class="fp-doc-title" aria-live="polite"></h2>
   <p id="fp-doc-description" class="fp-doc-description" hidden></p>
@@ -306,7 +333,13 @@ date: 2026-08-11
 
 <div class="fp-grid fp-grid-narrow">
   <div class="fp-panel fp-decisions-panel">
-    <h3>Decisions</h3>
+    <div class="fp-list-header">
+      <h3>Decisions</h3>
+      <button type="button" class="fp-ideas-btn" data-kind="decision"
+        title="Use the AI to generate ideas for decisions from your scope/description/URL/file above. Pick which ones to add.">
+        Generate ideas
+      </button>
+    </div>
     <textarea id="fp-decisions-input" spellcheck="true" placeholder="Set the price&#10;Choose a supplier&#10;Approve the design&#10;Schedule production"></textarea>
   </div>
   <div class="fp-panel fp-matrix-panel">
@@ -338,7 +371,13 @@ date: 2026-08-11
 
 <div class="fp-grid fp-grid-narrow">
   <div class="fp-panel fp-uncertainties-panel">
-    <h3>Uncertainties</h3>
+    <div class="fp-list-header">
+      <h3>Uncertainties</h3>
+      <button type="button" class="fp-ideas-btn" data-kind="uncertainty"
+        title="Use the AI to generate ideas for uncertainties from your scope/description/URL/file above. Pick which ones to add.">
+        Generate ideas
+      </button>
+    </div>
     <textarea id="fp-uncertainties-input" spellcheck="true" placeholder="Demand volatility&#10;Supplier reliability&#10;Currency fluctuation&#10;Regulatory change"></textarea>
   </div>
   <div class="fp-panel fp-matrix-panel">
@@ -476,6 +515,74 @@ date: 2026-08-11
   }
   .fp-modal-close:hover { color: #c9621e; }
   .fp-modal-close:disabled { color: #d6c4a3; cursor: not-allowed; }
+
+  /* Decisions / Uncertainties header rows — headline + 'Generate ideas' button */
+  .fp-list-header {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px; margin-bottom: 6px;
+  }
+  .fp-list-header h3 { margin: 0; }
+  .fp-ideas-btn {
+    padding: 4px 12px;
+    font-size: 0.85rem;
+    background: #fff;
+    border: 1px solid #c9a76a;
+    color: #5a3e1f;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .fp-ideas-btn:hover:not(:disabled) { background: #f2e6c9; }
+  .fp-ideas-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+  /* Idea box modal */
+  .fp-ideas-list {
+    max-height: 40vh; overflow-y: auto;
+    border: 1px solid #eae0c8; border-radius: 4px;
+    background: #fdfaf1;
+    margin: 8px 0;
+  }
+  .fp-ideas-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px;
+    border-bottom: 1px solid #eae0c8;
+    cursor: pointer;
+  }
+  .fp-ideas-row:last-child { border-bottom: none; }
+  .fp-ideas-row:hover { background: #faf5e6; }
+  .fp-ideas-row input[type="checkbox"] { flex-shrink: 0; }
+  .fp-ideas-row label {
+    flex: 1; cursor: pointer; color: #5a3e1f;
+  }
+  .fp-ideas-empty {
+    padding: 16px; text-align: center; color: #7a6a55; font-style: italic;
+    font-size: 0.9rem;
+  }
+  .fp-modal-mini {
+    padding: 4px 10px;
+    font-size: 0.85rem;
+    background: #fff;
+    border: 1px solid #d6c4a3;
+    color: #5a3e1f;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .fp-modal-mini:hover:not(:disabled) { background: #f2e6c9; }
+  .fp-modal-mini:disabled { opacity: 0.55; cursor: not-allowed; }
+  .fp-modal-primary {
+    padding: 6px 16px;
+    font-size: 0.9rem;
+    background: #8a3a1a; color: #fff;
+    border: 1px solid #6a2a10;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .fp-modal-primary:hover:not(:disabled) { background: #6a2a10; }
+  .fp-modal-primary:disabled {
+    background: #d6c4a3; border-color: #d6c4a3; color: #fff;
+    cursor: not-allowed;
+  }
 
   /* URL-display modal (first publish, sub-node creation, regenerate) */
   .fp-urls-lede { margin: 0 0 12px 0; color: #5a4a35; font-size: 0.95rem; }
@@ -2504,6 +2611,7 @@ date: 2026-08-11
   // It's a "you just clicked First draft" reminder, not a permanent tag.
   const MATRIX_ENDPOINT = 'https://castle-chatbot.onrender.com/framing/matrix';
   const PYRAMID_ENDPOINT = 'https://castle-chatbot.onrender.com/framing/pyramid';
+  const IDEAS_ENDPOINT   = 'https://castle-chatbot.onrender.com/framing/ideas';
   function showAiNote(kind) {
     const el = document.querySelector('.fp-matrix-ai-note[data-kind="' + kind + '"]');
     if (el) el.hidden = false;
@@ -2674,6 +2782,141 @@ date: 2026-08-11
       setPyramidButtonsBusy(false);
     }
   }
+  // ── Idea box (Generate ideas) ─────────────────────────────
+  // Modal that fetches AI-proposed decisions or uncertainties, lets
+  // the user check the ones they like, and appends them to the
+  // underlying textarea. State kept module-scope so the Regenerate
+  // button knows which kind was requested.
+  let ideasCurrentKind = null;
+  async function openIdeaBox(kind) {
+    if (kind !== 'decision' && kind !== 'uncertainty') return;
+    ideasCurrentKind = kind;
+    const modal = $('#fp-ideas-modal');
+    $('#fp-ideas-modal-title').textContent = 'Idea box — ' +
+      (kind === 'decision' ? 'decisions' : 'uncertainties');
+    $('#fp-ideas-modal-lede').innerHTML =
+      'AI-proposed ' + (kind === 'decision' ? 'decisions' : 'uncertainties') +
+      ' from your <b>Problem scope</b> above. Check the ones you like, then <b>Add checked</b> ' +
+      'to append them to your existing list. Re-generate for a fresh set.';
+    $('#fp-ideas-list').innerHTML = '';
+    $('#fp-ideas-status').textContent = '';
+    modal.hidden = false;
+    await runIdeasFetch();
+  }
+  async function runIdeasFetch() {
+    if (!ideasCurrentKind) return;
+    const scope = $('#fp-scope-input').value.trim();
+    const desc  = $('#fp-bot-desc').value.trim();
+    const url   = $('#fp-bot-url').value.trim();
+    const file  = $('#fp-bot-file').files && $('#fp-bot-file').files[0];
+    const size  = $('#fp-bot-size').value || 'medium';
+    if (!scope && !desc && !url && !file) {
+      $('#fp-ideas-status').textContent =
+        'Fill in a scope, description, URL, or file in the Problem scope section above first — the AI needs something to work from.';
+      $('#fp-ideas-status').style.color = '#7a1c1c';
+      return;
+    }
+    $('#fp-ideas-list').innerHTML =
+      '<div class="fp-ideas-empty">Generating ideas… (first request after idle can take ~30 s while the server wakes up)</div>';
+    $('#fp-ideas-status').textContent = '';
+    $('#fp-ideas-add').disabled = true;
+    $('#fp-ideas-regenerate').disabled = true;
+    try {
+      const form = new FormData();
+      form.append('kind', ideasCurrentKind);
+      if (scope) form.append('scope', scope);
+      if (desc)  form.append('description', desc);
+      if (url)   form.append('url', url);
+      if (file)  form.append('file', file, file.name);
+      form.append('size', size);
+      if (Array.isArray(state.metrics) && state.metrics.length) {
+        form.append('existingMetrics', JSON.stringify(state.metrics));
+      }
+      if (Array.isArray(state.decisions) && state.decisions.length) {
+        form.append('existingDecisions', JSON.stringify(state.decisions));
+      }
+      if (Array.isArray(state.uncertainties) && state.uncertainties.length) {
+        form.append('existingUncertainties', JSON.stringify(state.uncertainties));
+      }
+      const resp = await fetch(IDEAS_ENDPOINT, { method: 'POST', body: form });
+      const data = await resp.json().catch(() => ({ error: 'Bad response from server.' }));
+      if (!resp.ok) throw new Error(data.error || ('Request failed (' + resp.status + ')'));
+      if (!Array.isArray(data.ideas)) throw new Error('Server returned no ideas.');
+      renderIdeasList(data.ideas);
+    } catch (err) {
+      console.error('Ideas fetch failed:', err);
+      $('#fp-ideas-list').innerHTML = '';
+      $('#fp-ideas-status').textContent = 'Sorry — ' +
+        ((err && err.message) ? err.message : 'request failed') + '. Try Regenerate.';
+      $('#fp-ideas-status').style.color = '#7a1c1c';
+    } finally {
+      $('#fp-ideas-regenerate').disabled = false;
+    }
+  }
+  function renderIdeasList(ideas) {
+    const list = $('#fp-ideas-list');
+    list.innerHTML = '';
+    if (!ideas.length) {
+      list.innerHTML = '<div class="fp-ideas-empty">No new ideas came back. Try Regenerate.</div>';
+      $('#fp-ideas-add').disabled = true;
+      return;
+    }
+    ideas.forEach((idea, i) => {
+      const row = document.createElement('div');
+      row.className = 'fp-ideas-row';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.id = 'fp-idea-cb-' + i;
+      cb.checked = true;
+      cb.value = idea;
+      const label = document.createElement('label');
+      label.htmlFor = cb.id;
+      label.textContent = idea;
+      row.appendChild(cb);
+      row.appendChild(label);
+      // Clicking the row (not just the checkbox) toggles the checkbox.
+      row.addEventListener('click', (e) => {
+        if (e.target === cb || e.target === label) return;
+        cb.checked = !cb.checked;
+      });
+      list.appendChild(row);
+    });
+    $('#fp-ideas-add').disabled = false;
+  }
+  function ideasSelectAll(on) {
+    const list = $('#fp-ideas-list');
+    list.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = on; });
+  }
+  function ideasApply() {
+    if (!ideasCurrentKind) return;
+    const list = $('#fp-ideas-list');
+    const picked = [];
+    list.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+      const v = String(cb.value || '').trim();
+      if (v) picked.push(v);
+    });
+    if (!picked.length) {
+      $('#fp-ideas-status').textContent = 'Nothing checked — pick at least one, or Cancel.';
+      $('#fp-ideas-status').style.color = '#7a1c1c';
+      return;
+    }
+    const cfg = MATRIX[ideasCurrentKind];
+    const frame = frameFor(ideasCurrentKind);
+    // Union with the existing list to avoid duplicates (case-insensitive).
+    const existing = (frame[cfg.listKey] || []).slice();
+    const existingSet = new Set(existing.map(s => s.trim().toLowerCase()));
+    for (const p of picked) {
+      if (!existingSet.has(p.toLowerCase())) existing.push(p);
+    }
+    // Route through the textarea so the standard sync logic (rename
+    // detection, matrix pruning) fires the same as if the user typed
+    // the new lines themselves.
+    $(cfg.textareaSel).value = existing.join('\n');
+    syncListFromTextarea(ideasCurrentKind);
+    $('#fp-ideas-modal').hidden = true;
+    flashStatus('Added ' + picked.length + ' idea' + (picked.length === 1 ? '' : 's') + '.');
+  }
+
   function resetPyramid() {
     if (!state.metrics || state.metrics.length === 0) return;
     if (!confirm('Clear every metric and empty the pyramid? Decisions, uncertainties, and both matrices are not touched (but matrix column headers will disappear until you add metrics again).')) return;
@@ -4701,8 +4944,27 @@ date: 2026-08-11
         if (reset.id === 'fp-pyramid-reset') { resetPyramid(); return; }
         const k = reset.dataset.kind;
         if (k === 'decision' || k === 'uncertainty') resetMatrix(k);
+        return;
+      }
+      const ideas = e.target.closest('.fp-ideas-btn');
+      if (ideas) {
+        const k = ideas.dataset.kind;
+        if (k === 'decision' || k === 'uncertainty') openIdeaBox(k);
       }
     });
+    // Idea-box modal wiring.
+    (function wireIdeaBox() {
+      const modal = $('#fp-ideas-modal');
+      if (!modal) return;
+      const dismiss = () => { modal.hidden = true; };
+      $('#fp-ideas-modal-close').addEventListener('click', dismiss);
+      $('#fp-ideas-cancel').addEventListener('click', dismiss);
+      modal.addEventListener('click', (e) => { if (e.target === modal) dismiss(); });
+      $('#fp-ideas-select-all').addEventListener('click', () => ideasSelectAll(true));
+      $('#fp-ideas-select-none').addEventListener('click', () => ideasSelectAll(false));
+      $('#fp-ideas-regenerate').addEventListener('click', runIdeasFetch);
+      $('#fp-ideas-add').addEventListener('click', ideasApply);
+    })();
     // Ask Professor Powell (framing bot)
     const botBtn = $('#fp-bot-generate');
     if (botBtn) botBtn.addEventListener('click', runFramingRequest);
