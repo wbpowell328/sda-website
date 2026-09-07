@@ -847,15 +847,22 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
       const existingMetrics       = parseList(req.body?.existingMetrics);
       const existingDecisions     = parseList(req.body?.existingDecisions);
       const existingUncertainties = parseList(req.body?.existingUncertainties);
+      // Sub-frame decisions — only sent when kind='uncertainty' AND drilled
+      // in. They concretely describe what's inside the leaf parent's context
+      // (e.g. the specific marketing decisions) so proposed uncertainties
+      // can be tightly linked to those.
+      const subDecisions = parseList(req.body?.subDecisions);
 
       // Drill-in context. `parentPath` is the ancestry of decisions the user
-      // has drilled into (root → … → leaf). When non-empty and kind is
-      // 'decision', the model is asked for sub-decisions of the LEAF parent
-      // rather than a fresh root-level list. `subScope` is the per-level
-      // scope note attached to that leaf sub-frame (optional).
+      // has drilled into (root → … → leaf). When non-empty the model is
+      // asked to narrow to that context:
+      //   - kind='decision': propose sub-decisions of the leaf parent
+      //   - kind='uncertainty': propose uncertainties whose outcomes matter
+      //     for the leaf parent's context (still added to the ROOT list)
+      // `subScope` is the per-level scope note attached to the leaf sub-frame.
       const parentPath = parseList(req.body?.parentPath);
       const subScope   = String(req.body?.subScope || '').trim().slice(0, 2000);
-      const isDrilledIn = kind === 'decision' && parentPath.length > 0;
+      const isDrilledIn = parentPath.length > 0;
       const leafParent  = isDrilledIn ? parentPath[parentPath.length - 1] : '';
 
       const userContent = [];
@@ -906,32 +913,59 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
       if (isDrilledIn) {
         const trail = parentPath.map((p) => `"${p}"`).join(' → ');
         const drillParts = [
-          `DRILL-IN CONTEXT — the user has clicked into a decision to break ` +
-          `it into sub-decisions. Ancestry (root → leaf): ${trail}.`,
+          `DRILL-IN CONTEXT — the user has clicked into a decision to narrow ` +
+          `the focus. Ancestry (root → leaf): ${trail}.`,
           '',
-          `You are proposing NEW sub-decisions of the LEAF parent ` +
-          `("${leafParent}") — more specific choices that, taken together, ` +
-          `implement or refine that parent decision. Each sub-decision must ` +
-          `stay under the leaf parent's umbrella (not siblings of it, not ` +
-          `unrelated root decisions).`,
         ];
+        if (kind === 'decision') {
+          drillParts.push(
+            `You are proposing NEW sub-decisions of the LEAF parent ` +
+            `("${leafParent}") — more specific choices that, taken together, ` +
+            `implement or refine that parent decision. Each sub-decision must ` +
+            `stay under the leaf parent's umbrella (not siblings of it, not ` +
+            `unrelated root decisions).`
+          );
+        } else {
+          drillParts.push(
+            `You are proposing NEW uncertainties whose outcomes materially ` +
+            `change what a decision-maker inside "${leafParent}" should do. ` +
+            `Bias every proposal to this context — the resolution of the ` +
+            `uncertainty should visibly matter for the sub-decisions inside ` +
+            `"${leafParent}", not for the enterprise as a whole. ` +
+            `IMPORTANT: uncertainties live once at the root of the framing ` +
+            `(not per-sub-decision), so what you return will be appended to ` +
+            `the ROOT uncertainty list. That means your proposals must still ` +
+            `be phrased as top-level uncertainties the whole framing can ` +
+            `carry — just chosen because they matter most for this drill-in ` +
+            `area.`
+          );
+        }
         if (subScope) {
           drillParts.push('', `Scope note attached to this sub-level: ${subScope}`);
+        }
+        if (kind === 'uncertainty' && subDecisions.length) {
+          drillParts.push('', `Specific decisions the user has listed inside "${leafParent}" (context for what "leaf parent" concretely means):`);
+          subDecisions.forEach((d, i) => drillParts.push(`  ${i + 1}. ${d}`));
         }
         userContent.push({ type: 'text', text: drillParts.join('\n') });
       }
       if (existingDecisions.length || existingUncertainties.length) {
+        // Anti-dup wording differs by (kind, drill state).
         const parts = isDrilledIn
           ? ['\nUser already has these on screen — DO NOT propose duplicates of anything below.']
           : ['\nUser already has these on screen — DO NOT propose duplicates of anything below. Propose NEW items that complement what\'s already listed:'];
         if (existingDecisions.length) {
-          parts.push(isDrilledIn
-            ? `Sub-decisions of "${leafParent}" already listed:`
-            : 'Decisions already listed:');
+          if (isDrilledIn && kind === 'decision') {
+            parts.push(`Sub-decisions of "${leafParent}" already listed:`);
+          } else if (isDrilledIn && kind === 'uncertainty') {
+            parts.push('Root decisions (context — you are NOT proposing decisions):');
+          } else {
+            parts.push('Decisions already listed:');
+          }
           existingDecisions.forEach((d, i) => parts.push(`  ${i + 1}. ${d}`));
         }
         if (existingUncertainties.length) {
-          parts.push('Uncertainties already listed:');
+          parts.push('Root uncertainties already listed:');
           existingUncertainties.forEach((u, i) => parts.push(`  ${i + 1}. ${u}`));
         }
         userContent.push({ type: 'text', text: parts.join('\n') });
@@ -948,36 +982,57 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
         ? 'external uncertain factors the decision-maker must react to (things they do NOT control)'
         : 'levers the decision-maker actually controls — things they DO';
 
-      userContent.push({
-        type: 'text',
-        text: isDrilledIn
-          ? `Propose about ${count} NEW sub-decisions of "${leafParent}" — ` +
-            `exactly ONE level of specificity down from the parent, not the ` +
-            `most-specific-possible action. The idea is a decision tree: each ` +
-            `drill step partitions the parent into its natural next split. ` +
-            `Example: if the parent is "Increase equity investments" (a broad ` +
-            `area), the sub-decisions are the next partitioning ("Choose ` +
-            `industry sector", "Choose region weighting", "Choose market cap ` +
-            `tier") — NOT individual tickers. If the parent is already narrow ` +
-            `("Choose tech sector allocation"), sub-decisions can be more ` +
-            `concrete ("Overweight semis", "Underweight software"). Users can ` +
-            `always drill deeper to reach the most specific actions. Short ` +
-            `noun phrases (3–4 words each). Do NOT repeat anything already on ` +
-            `screen. Return via the record_ideas tool.`
-          : `Propose about ${count} NEW HIGH-LEVEL ${kindNounPlural} — ` +
-            `${kindDescription}. At the ROOT level, each idea must be a ` +
-            `categorically DISTINCT strategic area of choice, not a specific ` +
-            `action. Example (mutual fund manager): "Increase equity ` +
-            `investments", "Cash management", "Customer service", ` +
-            `"Advertising", "Hiring / staffing" — five unrelated buckets ` +
-            `spanning what the decision-maker controls. If two candidates ` +
-            `would sit under the same natural parent (e.g. "Buy Apple" and ` +
-            `"Buy Google" both live under "Choose equity investments"), keep ` +
-            `ONLY the parent and drop the variations — the user drills in ` +
-            `later to refine. Aim for breadth across areas, not depth within ` +
-            `one. Short noun phrases (3–4 words each). Do NOT repeat anything ` +
-            `already on screen. Return via the record_ideas tool.`,
-      });
+      let closingText;
+      if (isDrilledIn && kind === 'decision') {
+        closingText =
+          `Propose about ${count} NEW sub-decisions of "${leafParent}" — ` +
+          `exactly ONE level of specificity down from the parent, not the ` +
+          `most-specific-possible action. The idea is a decision tree: each ` +
+          `drill step partitions the parent into its natural next split. ` +
+          `Example: if the parent is "Increase equity investments" (a broad ` +
+          `area), the sub-decisions are the next partitioning ("Choose ` +
+          `industry sector", "Choose region weighting", "Choose market cap ` +
+          `tier") — NOT individual tickers. If the parent is already narrow ` +
+          `("Choose tech sector allocation"), sub-decisions can be more ` +
+          `concrete ("Overweight semis", "Underweight software"). Users can ` +
+          `always drill deeper to reach the most specific actions. Short ` +
+          `noun phrases (3–4 words each). Do NOT repeat anything already on ` +
+          `screen. Return via the record_ideas tool.`;
+      } else if (isDrilledIn && kind === 'uncertainty') {
+        closingText =
+          `Propose about ${count} NEW uncertainties that most affect ` +
+          `decisions inside "${leafParent}". Each should be a top-level ` +
+          `uncertainty (they will be appended to the ROOT uncertainty list, ` +
+          `not per-sub-frame) — but chosen because its resolution meaningfully ` +
+          `changes what the decision-maker inside "${leafParent}" should do. ` +
+          `Example (mutual fund, drilled into "Marketing decisions"): ` +
+          `"Ad-channel response rates", "Competitor advertising spend", ` +
+          `"Investor-search-term trends" — all top-level uncertainties, but ` +
+          `each tightly linked to marketing choices. Short noun phrases ` +
+          `(3–4 words each). Do NOT repeat anything already in the root ` +
+          `uncertainty list. Return via the record_ideas tool.`;
+      } else {
+        closingText =
+          `Propose about ${count} NEW HIGH-LEVEL ${kindNounPlural} — ` +
+          `${kindDescription}. At the ROOT level, each idea must be a ` +
+          `categorically DISTINCT strategic area${kind === 'uncertainty' ? ' of uncertainty' : ' of choice'}, not a specific ` +
+          `${kind === 'uncertainty' ? 'event or number' : 'action'}. ` +
+          (kind === 'uncertainty'
+            ? `Example (mutual fund manager): "Market volatility", ` +
+              `"Interest rate moves", "Customer churn", "Regulatory changes", ` +
+              `"Talent availability" — five unrelated categories of exogenous ` +
+              `factors the decision-maker must react to. `
+            : `Example (mutual fund manager): "Increase equity ` +
+              `investments", "Cash management", "Customer service", ` +
+              `"Advertising", "Hiring / staffing" — five unrelated buckets ` +
+              `spanning what the decision-maker controls. `) +
+          `If two candidates would sit under the same natural parent, keep ` +
+          `ONLY the parent and drop the variations. Aim for breadth across ` +
+          `areas, not depth within one. Short noun phrases (3–4 words each). ` +
+          `Do NOT repeat anything already on screen. Return via the ` +
+          `record_ideas tool.`;
+      }
+      userContent.push({ type: 'text', text: closingText });
 
       const response = await client.messages.create({
         model: FRAMING_MODEL,

@@ -2799,19 +2799,32 @@ date: 2026-08-11
     if (kind !== 'decision' && kind !== 'uncertainty') return;
     ideasCurrentKind = kind;
     const modal = $('#fp-ideas-modal');
-    // Drill-in aware: if the user is inside a sub-decision AND asking for
-    // decision ideas, the modal offers sub-decisions of the leaf parent.
-    // Uncertainties always live at the root — no ancestry to worry about.
-    const drilledIn = kind === 'decision' && currentPath.length > 0;
-    if (drilledIn) {
+    // Drill-in aware: when the user is inside a sub-decision, both kinds
+    // narrow their scope to that context.
+    //   - Decisions: propose sub-decisions of the leaf parent (they land in
+    //     the leaf sub-frame's decision list).
+    //   - Uncertainties: propose uncertainties whose outcomes matter for
+    //     the leaf parent's context — but they still land in the ROOT
+    //     uncertainty list (uncertainties live once at the top).
+    const drilledIn = currentPath.length > 0;
+    if (drilledIn && kind === 'decision') {
       const parent = currentPath[currentPath.length - 1];
+      const trail = currentPath.map(p => '"' + p + '"').join(' → ');
       $('#fp-ideas-modal-title').textContent =
         'Idea box — sub-decisions of "' + parent + '"';
-      const trail = currentPath.map(p => '"' + p + '"').join(' → ');
       $('#fp-ideas-modal-lede').innerHTML =
         'AI-proposed <b>sub-decisions</b> of ' + trail +
         '. Check the ones you like, then <b>Add checked</b> to append them ' +
         'to your existing sub-decision list. Re-generate for a fresh set.';
+    } else if (drilledIn && kind === 'uncertainty') {
+      const parent = currentPath[currentPath.length - 1];
+      const trail = currentPath.map(p => '"' + p + '"').join(' → ');
+      $('#fp-ideas-modal-title').textContent =
+        'Idea box — uncertainties affecting "' + parent + '"';
+      $('#fp-ideas-modal-lede').innerHTML =
+        'AI-proposed <b>uncertainties</b> whose outcomes matter for ' + trail +
+        '. Uncertainties live once at the root — checked items are appended ' +
+        'to your <b>root</b> uncertainty list. Re-generate for a fresh set.';
     } else {
       $('#fp-ideas-modal-title').textContent = 'Idea box — ' +
         (kind === 'decision' ? 'decisions' : 'uncertainties');
@@ -2860,10 +2873,11 @@ date: 2026-08-11
       if (url)   form.append('url', url);
       if (file)  form.append('file', file, file.name);
       form.append('size', size);
-      // Drill-in ancestry (decision kind only). When present, the server
-      // reframes the ask as "propose sub-decisions of the leaf parent" and
-      // uses this level's own sub-decision list for anti-duplication.
-      const drilledIn = ideasCurrentKind === 'decision' && currentPath.length > 0;
+      // Drill-in ancestry — both kinds narrow to the current sub-decision
+      // context when drilled in. Decisions land in the leaf sub-frame's
+      // list; uncertainties land in the ROOT list but are biased toward
+      // the leaf parent's context.
+      const drilledIn = currentPath.length > 0;
       const leafFrame = drilledIn ? currentFrame() : null;
       if (drilledIn) {
         form.append('parentPath', JSON.stringify(currentPath));
@@ -2874,12 +2888,22 @@ date: 2026-08-11
       if (Array.isArray(state.metrics) && state.metrics.length) {
         form.append('existingMetrics', JSON.stringify(state.metrics));
       }
-      // For decisions: send THIS level's decision list (root or sub-frame).
-      // For uncertainties: always root.
-      const decisionSourceFrame = ideasCurrentKind === 'decision'
-        ? (leafFrame || state) : state;
-      if (Array.isArray(decisionSourceFrame.decisions) && decisionSourceFrame.decisions.length) {
-        form.append('existingDecisions', JSON.stringify(decisionSourceFrame.decisions));
+      // For decisions: send THIS level's decision list (root or sub-frame)
+      // as anti-dup. For uncertainties: always send ROOT decisions for
+      // context, and if drilled in also send the sub-frame's decisions as
+      // extra context (they concretely describe what "leaf parent" contains).
+      if (ideasCurrentKind === 'decision') {
+        const decisionSourceFrame = leafFrame || state;
+        if (Array.isArray(decisionSourceFrame.decisions) && decisionSourceFrame.decisions.length) {
+          form.append('existingDecisions', JSON.stringify(decisionSourceFrame.decisions));
+        }
+      } else {
+        if (Array.isArray(state.decisions) && state.decisions.length) {
+          form.append('existingDecisions', JSON.stringify(state.decisions));
+        }
+        if (drilledIn && leafFrame && Array.isArray(leafFrame.decisions) && leafFrame.decisions.length) {
+          form.append('subDecisions', JSON.stringify(leafFrame.decisions));
+        }
       }
       if (Array.isArray(state.uncertainties) && state.uncertainties.length) {
         form.append('existingUncertainties', JSON.stringify(state.uncertainties));
