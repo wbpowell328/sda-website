@@ -39,7 +39,7 @@ date: 2026-08-11
   <button type="button" id="fp-reset">Reset all</button>
   <button type="button" id="fp-share" title="Copy a URL that opens this framing as a fresh snapshot in someone else's browser (their edits don't affect your copy). NOT a library link — use Share URLs in the library bar for that.">Copy URL</button>
   <button type="button" id="fp-print">Print</button>
-  <button type="button" id="fp-help" title="Scroll to the chat and ask Professor Powell a question about the tool (save, share, rename, sub-libraries, ideas, etc.)">? Help</button>
+  <button type="button" id="fp-help" class="fp-section-help" title="Open the Ask Professor Powell chat panel (save, share, rename, sub-libraries, ideas, etc.). Same panel every other ? Ask button opens.">? Ask</button>
   <span id="fp-status" class="fp-status" role="status"></span>
 </div>
 
@@ -565,6 +565,19 @@ date: 2026-08-11
     font-family: inherit;
   }
   .fp-section-help:hover { background: #d8e8d1; }
+  /* The toolbar's Ask button is the same visual as a section Ask button;
+     ID selector (specificity 1,0,0) wins over the .fp-toolbar button
+     defaults (0,1,1) so the green pill styling comes through. */
+  #fp-help {
+    background: #eaf1e6;
+    color: #345c48;
+    border: 1px solid #b8d6c4;
+    border-radius: 12px;
+    font-weight: 500;
+    padding: 2px 10px;
+    font-size: 0.72rem;
+  }
+  #fp-help:hover { background: #d8e8d1; }
 
   .fp-toolbar {
     display: flex; gap: 8px; margin: 16px 0; align-items: center; flex-wrap: wrap;
