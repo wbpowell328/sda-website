@@ -600,11 +600,21 @@ app.post('/framing/matrix', framingLimiter, express.json({ limit: '256kb' }), as
       `- A matrix full of Hs is useless; discriminate.\n\n` +
       `Return via the record_matrix tool. Keys must match the input strings character-for-character (capitalization + punctuation).`;
 
-    const priorNotes = String(req.body?.priorNotes || '').trim().slice(0, 20000);
+    const priorNotes  = String(req.body?.priorNotes  || '').trim().slice(0, 20000);
+    const scope       = String(req.body?.scope       || '').trim().slice(0, 2000);
+    const description = String(req.body?.description || '').trim().slice(0, FRAMING_MAX_CHARS);
+    const preamble = [];
+    if (scope) {
+      preamble.push('DECISION-MAKER SCOPE — the user has identified who is making these decisions. Score for THIS decision-maker\'s altitude, not the CEO view:\n' + scope);
+    }
+    if (description) {
+      preamble.push('PROBLEM DESCRIPTION (short user-typed context):\n' + description);
+    }
+    if (priorNotes) {
+      preamble.push('PROBLEM-SETTING NOTES — the user has previously asked the AI to read their material and distill it. Use these notes to inform your H/M/L/N scoring:\n\n' + priorNotes);
+    }
     const userText =
-      (priorNotes
-        ? 'PROBLEM-SETTING NOTES — the user has previously asked the AI to read their material and distill it. Use these notes to inform your H/M/L/N scoring:\n\n' + priorNotes + '\n\n'
-        : '') +
+      (preamble.length ? preamble.join('\n\n') + '\n\n' : '') +
       `Metrics (pyramid-ordered, Tier 1 first):\n` +
       metrics.map((m, i) => `  ${i + 1}. ${m}`).join('\n') +
       `\n\n${rowLabel[0].toUpperCase() + rowLabel.slice(1)} (rows):\n` +

@@ -3072,6 +3072,13 @@ date: 2026-08-11
       const body = { kind, metrics, rows };
       const notes = (state.problemNotes || '').trim();
       if (notes) body.priorNotes = notes;
+      // Also send lightweight text context (scope + description) so the
+      // matrix scoring can reflect them even when the user hasn't
+      // ingested. Matches the auto-context behavior of Generate ideas.
+      const mScope = $('#fp-scope-input').value.trim();
+      const mDesc  = $('#fp-bot-desc').value.trim();
+      if (mScope) body.scope = mScope;
+      if (mDesc)  body.description = mDesc;
       const resp = await fetch(MATRIX_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
