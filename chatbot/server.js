@@ -1470,7 +1470,7 @@ const FRAMING_TOOL_HELP = [
   '- **Metrics pyramid tool** — metric chips (list on left), drop zones for tiers 1-4, "First draft (AI)" button.',
   '- **Decision prioritization tool** — decisions textarea + "Generate ideas" button + impact matrix.',
   '- **Uncertainty prioritization tool** — same layout for uncertainties.',
-  '- **Ask Professor Powell** (this chat) — inline at the bottom.',
+  '- **Ask Professor Powell** (this chat) — opens in a floating panel at the bottom-right of the viewport so the page does NOT scroll away. Three entry points: (1) the always-visible round "?" bubble at the bottom-right, (2) the "? Help" button in the top toolbar, (3) a small "? Ask" button next to every section heading (Problem scope, Metrics pyramid tool, Decision prioritization tool, Uncertainty prioritization tool). Any of the three opens the same panel; the × in the panel header closes it (chat history is preserved).',
   '',
   '## Saving',
   '- **Save vs Save as**: **File → Save** (or the library bar\'s green **Save** button) updates the current framing in place. **File → Save as…** creates a NEW framing entry in your library (prompts for title + description). Same convention as Word: Save = update current, Save as = new entry.',

@@ -222,7 +222,7 @@ date: 2026-08-11
   <p id="fp-doc-description" class="fp-doc-description" hidden></p>
 </div>
 
-<h2 id="problem-scope" class="fp-section-h2">Problem scope</h2>
+<h2 id="problem-scope" class="fp-section-h2">Problem scope<button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
 <p>A decision frame reflects the perspective of a decision maker — a person, team, division, or a piece of software. Identify that perspective below, then (optionally) describe the problem itself. From your description, a URL to a case, or an uploaded file, the AI can either <strong>read the material</strong> so it can inform later steps (metrics, decisions, uncertainties) without generating anything on its own, or <strong>produce a rough first draft</strong> of the whole framing that you edit and refine below. Treat any draft as an illustration or a starting point, not a finished framing.</p>
 
 <div class="fp-bot-card">
@@ -292,7 +292,7 @@ date: 2026-08-11
   </div>
 </div>
 
-<h2 id="metrics-pyramid-tool" class="fp-section-h2">Metrics pyramid tool</h2>
+<h2 id="metrics-pyramid-tool" class="fp-section-h2">Metrics pyramid tool<button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
 <p>Metrics quantify what you want to achieve. They come in three flavors: metrics to be maximized or minimized, along with targets you want to hit, and limits where you specify a minimum or maximum for a metric. The top metric should be in the first category.</p>
 <p>Type performance metrics on the left (one per line), then drag each chip into a tier — most important at the top, least important at the bottom. Drag between tiers to re-order, or back to <em>Unassigned</em> to remove.</p>
 
@@ -350,7 +350,7 @@ date: 2026-08-11
   </div>
 </div>
 
-<h2 id="decision-prioritization-tool" class="fp-section-h2">Decision prioritization tool</h2>
+<h2 id="decision-prioritization-tool" class="fp-section-h2">Decision prioritization tool<button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
 <p>Decisions, which go by <a href="/decisionsdecisions/#different-words">many names</a> (including "idea"), represent the ways to impact or influence your metrics. They may be obvious, but they often are not.</p>
 <p>List the decisions you'd consider (one per line). The matrix below has one column per <em>tier-assigned</em> metric from the pyramid above, ordered top-to-bottom by tier (left-to-right within the same tier by the order the metrics appear in the metrics list). Click any cell to cycle through <b>H</b> (high impact) → <b>M</b> → <b>L</b> → <b>N</b> (none) → blank. When you're done scoring, drag any row up or down via the <span class="fp-grip-inline">☰</span> handle to prioritize decisions by their impact on the most important metrics.</p>
 <p>Decisions can be general descriptions ("Assigning machines to jobs", "Optimizing warehouses") or specific actions ("Assign machine X to job Y", "Put warehouse in city X"). Use higher levels for general descriptions and lower levels for specific actions. To break a decision down into sub-decisions, click the <span class="fp-drill-inline">▸</span> button next to that decision (or right-click its row). You can nest sub-decisions to any depth; the metrics pyramid stays fixed.</p>
@@ -397,7 +397,7 @@ date: 2026-08-11
   </div>
 </div>
 
-<h2 id="uncertainty-prioritization-tool" class="fp-section-h2">Uncertainty prioritization tool</h2>
+<h2 id="uncertainty-prioritization-tool" class="fp-section-h2">Uncertainty prioritization tool<button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
 <p>The uncertainties tool works similarly to the decisions tool, except that uncertainties are not nested — all uncertainties live at the top of the framing. Generate ideas is still context-aware: at the top level it suggests categorically distinct sources of uncertainty, and if you have drilled into a subdecision on the decisions side, it suggests uncertainties whose outcomes matter most for that subdecision. Each generated-while-drilled uncertainty is tagged with a green <span class="fp-u-scope-chip" style="margin:0">for: <em>subdecision</em></span> chip in the matrix row below, so you can tell at a glance which uncertainties apply to the whole framing (untagged) versus which were suggested for a specific sub-decision context (tagged). All uncertainties still score against the same metrics in the single matrix. (Click <a href="/modeling-uncertainty/#categories">here</a> for a discussion of different categories of uncertainty.)</p>
 
 <div class="fp-grid fp-grid-narrow">
@@ -431,13 +431,139 @@ date: 2026-08-11
   </div>
 </div>
 
-<h2 id="ask-professor-powell" class="fp-section-h2">Ask Professor Powell</h2>
-<p>Follow-up questions about your framing, or general questions about problem framing, sequential decision analytics, or anything else in Professor Powell's materials. The chatbot has been trained on Professor Powell's books, 1,000+ pages of LinkedIn posts on decision analytics, and the contents of this website.</p>
-<p class="fp-muted" style="font-size: 0.9rem;"><em>Conversations are logged so Professor Powell can review feedback and improve the assistant. Don't share anything you want kept private. Verify any material before you use it in your work or a publication (do not cite this chatbot as a source).</em></p>
+<!-- Floating "?" launcher — always visible at bottom-right when the
+     chat panel is closed. One click opens the panel without scrolling
+     the page, so users can keep the section they're reading in view
+     while asking. Backup entry points: toolbar "? Help" button and a
+     per-section "? Ask" button on every h2. -->
+<button type="button" id="fp-chat-launcher" class="fp-chat-launcher"
+        title="Ask Professor Powell — questions about the tool, framing, or Warren's materials"
+        aria-label="Open Ask Professor Powell chat">
+  <span class="fp-chat-launcher-icon">?</span>
+  <span class="fp-chat-launcher-text">Ask</span>
+</button>
 
-<div id="castle-chat-inline" style="margin-top: 12px;"></div>
+<!-- Floating chat panel — fixed position (bottom-right on desktop,
+     full-screen on mobile). The Ask Professor Powell widget mounts
+     into #castle-chat-inline inside the body; state persists across
+     open/close because the mount stays in the DOM. -->
+<div id="fp-chat-panel" class="fp-chat-panel" hidden aria-labelledby="fp-chat-panel-title">
+  <div class="fp-chat-panel-header">
+    <span class="fp-chat-panel-title" id="fp-chat-panel-title">Ask Professor Powell</span>
+    <button type="button" class="fp-chat-panel-close" id="fp-chat-panel-close" aria-label="Close chat" title="Close (chat state is preserved — reopen from the ? button)">×</button>
+  </div>
+  <div class="fp-chat-panel-body">
+    <div id="castle-chat-inline"></div>
+  </div>
+  <p class="fp-chat-panel-footer"><em>Trained on Professor Powell's books, 1,000+ pages of LinkedIn posts, and the contents of this website. Conversations are logged for feedback. Don't share anything private; don't cite the chatbot as a source.</em></p>
+</div>
 
 <style>
+  /* Floating chat launcher — a small round "?" bubble fixed at the
+     bottom-right corner of the viewport. Always visible unless the
+     chat panel itself is open. Opens the chat without scrolling the
+     page. */
+  .fp-chat-launcher {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 9998;
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: #c9621e;
+    color: #fff;
+    border: 2px solid #fff;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.28);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    font-family: inherit;
+    transition: transform 120ms ease, background 120ms ease;
+  }
+  .fp-chat-launcher:hover { background: #a24e15; transform: scale(1.06); }
+  .fp-chat-launcher[hidden] { display: none; }
+  .fp-chat-launcher-icon { font-size: 1.4rem; font-weight: 700; line-height: 1; }
+  .fp-chat-launcher-text { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.05em; margin-top: 2px; }
+
+  /* Floating chat panel — fixed at bottom-right so the page stays put
+     when the chat is open. Full-screen on mobile so the widget is
+     usable on small viewports. */
+  .fp-chat-panel {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 9999;
+    width: 420px;
+    height: 620px;
+    max-width: calc(100vw - 20px);
+    max-height: calc(100vh - 20px);
+    background: #fff;
+    border: 1px solid #c9b891;
+    border-radius: 8px;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.28);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .fp-chat-panel[hidden] { display: none; }
+  .fp-chat-panel-header {
+    padding: 8px 12px;
+    background: #c9621e;
+    color: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .fp-chat-panel-title { font-size: 0.95rem; }
+  .fp-chat-panel-close {
+    background: transparent; border: none; color: #fff;
+    font-size: 1.4rem; line-height: 1;
+    cursor: pointer; padding: 0 8px;
+    border-radius: 3px;
+  }
+  .fp-chat-panel-close:hover { background: rgba(255,255,255,0.2); }
+  .fp-chat-panel-body {
+    flex: 1 1 auto; overflow: auto; min-height: 0;
+    padding: 6px;
+  }
+  .fp-chat-panel-body #castle-chat-inline {
+    height: 100%; display: flex; flex-direction: column;
+  }
+  .fp-chat-panel-footer {
+    padding: 6px 12px;
+    font-size: 0.72rem; color: #7a6a55;
+    border-top: 1px solid #eae0c8;
+    margin: 0;
+    flex-shrink: 0;
+    background: #faf5e6;
+  }
+  @media (max-width: 640px) {
+    .fp-chat-panel {
+      right: 0; bottom: 0; top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      max-width: 100vw; max-height: 100vh;
+      border-radius: 0; border: none;
+    }
+    .fp-chat-launcher { right: 12px; bottom: 12px; width: 52px; height: 52px; }
+  }
+  /* Per-section "? Ask" button — small green pill inline with each
+     fp-section-h2 heading. Opens the same floating chat panel. */
+  .fp-section-help {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 2px 10px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    vertical-align: middle;
+    background: #eaf1e6;
+    color: #345c48;
+    border: 1px solid #b8d6c4;
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .fp-section-help:hover { background: #d8e8d1; }
+
   .fp-toolbar {
     display: flex; gap: 8px; margin: 16px 0; align-items: center; flex-wrap: wrap;
   }
@@ -5484,25 +5610,45 @@ date: 2026-08-11
       }
     });
     $('#fp-print').addEventListener('click', () => window.print());
-    // Help — scroll to the inline Ask Professor Powell chat and focus its
-    // input so the user can type a question about the tool. The chat sends
-    // the current framing + page context to the server, and the server
-    // injects a tool-usage reference into the system prompt, so the bot
-    // answers file-management / how-to questions grounded in this tool.
-    $('#fp-help').addEventListener('click', () => {
-      const anchor = document.getElementById('ask-professor-powell');
-      if (anchor && anchor.scrollIntoView) {
-        anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-      // Give the smooth-scroll a moment to settle, then try to focus the
-      // chat's input. The widget uses either a textarea or a plain input,
-      // so try both selectors.
+    // Help — open the floating Ask Professor Powell panel WITHOUT
+    // scrolling the page. Multiple entry points (toolbar "? Help",
+    // per-section "? Ask" buttons, always-visible "?" launcher bubble)
+    // all funnel through openChatPanel so users can invoke help from
+    // wherever they are on the page.
+    function openChatPanel() {
+      const p = document.getElementById('fp-chat-panel');
+      const l = document.getElementById('fp-chat-launcher');
+      if (p) p.hidden = false;
+      if (l) l.hidden = true;
+      // Prod the widget to re-measure now that its container is visible
+      // (chat widgets typically measure dimensions on mount and don't
+      // re-check when a display:none ancestor becomes visible).
+      try { window.dispatchEvent(new Event('resize')); } catch (_) {}
+      // Focus the chat input after a brief settle so the widget has
+      // rendered its input (it may render lazily inside a hidden div).
       setTimeout(() => {
         const chatEl = document.querySelector(
           '#castle-chat-inline textarea, #castle-chat-inline input[type="text"]'
         );
         if (chatEl && typeof chatEl.focus === 'function') chatEl.focus();
-      }, 450);
+      }, 250);
+    }
+    function closeChatPanel() {
+      const p = document.getElementById('fp-chat-panel');
+      const l = document.getElementById('fp-chat-launcher');
+      if (p) p.hidden = true;
+      if (l) l.hidden = false;
+    }
+    $('#fp-help').addEventListener('click', openChatPanel);
+    const chatLauncher = $('#fp-chat-launcher');
+    if (chatLauncher) chatLauncher.addEventListener('click', openChatPanel);
+    const chatClose = $('#fp-chat-panel-close');
+    if (chatClose) chatClose.addEventListener('click', closeChatPanel);
+    // Delegated: every per-section "? Ask" button opens the same panel.
+    document.addEventListener('click', (e) => {
+      if (e.target && e.target.matches && e.target.matches('.fp-section-help')) {
+        openChatPanel();
+      }
     });
     // Per-matrix First-draft / Reset buttons (delegated: covers both matrices).
     document.addEventListener('click', (e) => {
