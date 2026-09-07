@@ -209,7 +209,10 @@ date: 2026-08-11
 </div>
 
 <div id="fp-doc-banner" class="fp-doc-banner">
-  <h2 id="fp-doc-title" class="fp-doc-title" aria-live="polite"></h2>
+  <div class="fp-doc-banner-head">
+    <h2 id="fp-doc-title" class="fp-doc-title" aria-live="polite"></h2>
+    <button type="button" id="fp-doc-rename-btn" class="fp-doc-rename-btn" title="Rename this framing" hidden>✎ Rename</button>
+  </div>
   <p id="fp-doc-description" class="fp-doc-description" hidden></p>
 </div>
 
@@ -432,12 +435,31 @@ date: 2026-08-11
     border-left: 4px solid #c9621e;
     border-radius: 3px;
   }
+  .fp-doc-banner-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
   .fp-doc-title {
     margin: 0;
     font-size: 1.15rem;
     font-weight: 700;
     color: #5a4a35;
   }
+  .fp-doc-rename-btn {
+    font-size: 0.85rem;
+    padding: 3px 10px;
+    border: 1px solid #c9a76a;
+    background: #f9ecd0;
+    color: #5a3e1f;
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .fp-doc-rename-btn:hover { background: #f2e6c9; }
   .fp-doc-title.fp-doc-title-empty {
     color: #a79974;
     font-weight: 500;
@@ -1856,6 +1878,13 @@ date: 2026-08-11
       const showDesc = !!docTitle && !!state.description;
       dEl.textContent = showDesc ? state.description : '';
       dEl.hidden = !showDesc;
+    }
+    // Inline rename button — only meaningful for a server-backed framing
+    // the user can edit. Hidden for empty banner, local imports, AI drafts.
+    const renameBtn = $('#fp-doc-rename-btn');
+    if (renameBtn) {
+      const canRename = !!(docTitle && loadedNode && loadedNode.writeToken && loadedNode.currentFramingId);
+      renameBtn.hidden = !canRename;
     }
   }
   function snapshotForSave() {
@@ -4613,6 +4642,33 @@ date: 2026-08-11
     $('#fp-library-modal').hidden = false;
   }
 
+  // Inline rename for the currently-loaded framing. Same server call as
+  // renameFramingRow, but sourced from the banner button on the workspace
+  // so the user doesn't have to open Browse to rename what they're editing.
+  // Does NOT save or overwrite the framing's content — title only.
+  async function renameCurrentFraming() {
+    if (!loadedNode || !loadedNode.writeToken || !loadedNode.currentFramingId) return;
+    const currentTitle = docTitle || '';
+    const raw = window.prompt('Rename this framing:', currentTitle);
+    if (raw == null) return;
+    const newTitle = raw.trim();
+    if (!newTitle || newTitle === currentTitle) return;
+    try {
+      const resp = await apiFetch(
+        NODES_BASE + '/framings/' + encodeURIComponent(loadedNode.currentFramingId) +
+          '?w=' + encodeURIComponent(loadedNode.writeToken),
+        { method: 'PUT', body: { title: newTitle } }
+      );
+      updateFramingInCache(resp.framing);
+      setDocTitle(resp.framing.title);
+      renderTreePane();     // pick up the new title in the side pane
+      flashStatus('Framing renamed.');
+    } catch (err) {
+      console.error('Rename current framing failed:', err);
+      alert('Rename failed:\n\n' + ((err && err.message) ? err.message : String(err)));
+    }
+  }
+
   async function renameFramingRow(f) {
     if (!loadedNode || !loadedNode.writeToken) return;
     const raw = window.prompt('Rename framing:', f.title || '');
@@ -5149,6 +5205,9 @@ date: 2026-08-11
       $('#fp-ideas-regenerate').addEventListener('click', runIdeasFetch);
       $('#fp-ideas-add').addEventListener('click', ideasApply);
     })();
+    // Inline rename for the current framing (banner button).
+    const renameBtn = $('#fp-doc-rename-btn');
+    if (renameBtn) renameBtn.addEventListener('click', renameCurrentFraming);
     // Ask Professor Powell (framing bot)
     const botBtn = $('#fp-bot-generate');
     if (botBtn) botBtn.addEventListener('click', runFramingRequest);
