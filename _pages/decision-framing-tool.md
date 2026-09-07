@@ -39,6 +39,7 @@ date: 2026-08-11
   <button type="button" id="fp-reset">Reset all</button>
   <button type="button" id="fp-share" title="Copy a URL that opens this framing as a fresh snapshot in someone else's browser (their edits don't affect your copy). NOT a library link — use Share URLs in the library bar for that.">Copy URL</button>
   <button type="button" id="fp-print">Print</button>
+  <button type="button" id="fp-help" title="Scroll to the chat and ask Professor Powell a question about the tool (save, share, rename, sub-libraries, ideas, etc.)">? Help</button>
   <span id="fp-status" class="fp-status" role="status"></span>
 </div>
 
@@ -4884,29 +4885,35 @@ date: 2026-08-11
   // stays a general-purpose assistant when there's no framing context.
   window.CASTLE_CHAT_CONTEXT_PROVIDER = function () {
     try {
+      // Always send a page hint so the server can inject a tool-usage
+      // reference into the system prompt (users can ask "how do I save?"
+      // even on a blank framing). Framing content is added on top when
+      // present so the bot can also answer "how do I score X against Y"
+      // style questions with concrete references.
       const hasContent =
         (Array.isArray(state.metrics)      && state.metrics.length      > 0) ||
         (Array.isArray(state.decisions)    && state.decisions.length    > 0) ||
         (Array.isArray(state.uncertainties) && state.uncertainties.length > 0) ||
         (typeof state.scope === 'string' && state.scope.trim().length > 0);
-      if (!hasContent) return null;
       const payload = {
         kind: 'framing',
-        framing: {
-          title:         state.title || '',
-          scope:         state.scope || '',
-          description:   state.description || '',
-          problemDescription: state.problemDescription || '',
-          problemUrl:         state.problemUrl || '',
-          metrics:       state.metrics || [],
-          assignments:   state.assignments || {},
-          decisions:     state.decisions || [],
-          matrix:        state.matrix || {},
-          uncertainties: state.uncertainties || [],
-          uMatrix:       state.uMatrix || {},
-          uncertaintyScopes: state.uncertaintyScopes || {},
-          subframes:     state.subframes || {},
-        },
+        page: 'framing-tool',
+      };
+      if (!hasContent) return payload;
+      payload.framing = {
+        title:         state.title || '',
+        scope:         state.scope || '',
+        description:   state.description || '',
+        problemDescription: state.problemDescription || '',
+        problemUrl:         state.problemUrl || '',
+        metrics:       state.metrics || [],
+        assignments:   state.assignments || {},
+        decisions:     state.decisions || [],
+        matrix:        state.matrix || {},
+        uncertainties: state.uncertainties || [],
+        uMatrix:       state.uMatrix || {},
+        uncertaintyScopes: state.uncertaintyScopes || {},
+        subframes:     state.subframes || {},
       };
       if (loadedNode) {
         payload.library = {
@@ -5192,6 +5199,26 @@ date: 2026-08-11
       }
     });
     $('#fp-print').addEventListener('click', () => window.print());
+    // Help — scroll to the inline Ask Professor Powell chat and focus its
+    // input so the user can type a question about the tool. The chat sends
+    // the current framing + page context to the server, and the server
+    // injects a tool-usage reference into the system prompt, so the bot
+    // answers file-management / how-to questions grounded in this tool.
+    $('#fp-help').addEventListener('click', () => {
+      const anchor = document.getElementById('ask-professor-powell');
+      if (anchor && anchor.scrollIntoView) {
+        anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      // Give the smooth-scroll a moment to settle, then try to focus the
+      // chat's input. The widget uses either a textarea or a plain input,
+      // so try both selectors.
+      setTimeout(() => {
+        const chatEl = document.querySelector(
+          '#castle-chat-inline textarea, #castle-chat-inline input[type="text"]'
+        );
+        if (chatEl && typeof chatEl.focus === 'function') chatEl.focus();
+      }, 450);
+    });
     // Per-matrix First-draft / Reset buttons (delegated: covers both matrices).
     document.addEventListener('click', (e) => {
       const draft = e.target.closest('.fp-matrix-draft');

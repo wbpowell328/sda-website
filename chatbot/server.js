@@ -1192,23 +1192,34 @@ app.post('/framing', framingLimiter, (req, res) => {
 // Kept small on purpose — this ships on every user message.
 function formatPageContextForPrompt(ctx) {
   if (!ctx || typeof ctx !== 'object') return null;
-  // Only shape we understand right now: a framing tool payload with
-  // { kind: 'framing', framing: { scope, metrics, assignments, decisions,
-  //   matrix, uncertainties, uMatrix, ... }, library?, framingTitle? }.
-  if (ctx.kind !== 'framing' || !ctx.framing || typeof ctx.framing !== 'object') {
-    return null;
-  }
-  const f = ctx.framing;
+  // Understood shapes:
+  //   { kind: 'framing', page: 'framing-tool', framing?: {...}, library?, framingTitle? }
+  // - page: 'framing-tool' triggers the tool-usage reference block below,
+  //   even when framing is empty (so a user on a blank page can still ask
+  //   "how do I save?" and get a grounded answer).
+  // - framing: { scope, metrics, assignments, decisions, matrix,
+  //   uncertainties, uMatrix, subframes, ... } triggers the on-screen-
+  //   framing block so the bot can reference the user's actual content.
+  if (ctx.kind !== 'framing') return null;
+  const onFramingTool = ctx.page === 'framing-tool';
+  const f = (ctx.framing && typeof ctx.framing === 'object') ? ctx.framing : null;
+  if (!f && !onFramingTool) return null;
   const lines = [];
-  lines.push('# Current framing (page context)');
-  lines.push(
-    'The user is viewing the decision framing tool with the following ' +
-    'framing currently on-screen. When they ask about "this framing", ' +
-    '"this problem", "this scope", "these metrics", or similar, they mean ' +
-    'the framing below. Answer with concrete reference to their actual ' +
-    'metrics/decisions/uncertainties by name.'
-  );
-  lines.push('');
+  if (f) {
+    lines.push('# Current framing (page context)');
+    lines.push(
+      'The user is viewing the decision framing tool with the following ' +
+      'framing currently on-screen. When they ask about "this framing", ' +
+      '"this problem", "this scope", "these metrics", or similar, they mean ' +
+      'the framing below. Answer with concrete reference to their actual ' +
+      'metrics/decisions/uncertainties by name.'
+    );
+    lines.push('');
+  } else {
+    lines.push('# Page context');
+    lines.push('The user is on the decision framing tool page. Their workspace is currently empty (no scope, metrics, decisions, or uncertainties yet).');
+    lines.push('');
+  }
   if (ctx.library && typeof ctx.library === 'object') {
     if (ctx.library.ancestry && ctx.library.ancestry.length) {
       lines.push('Library: ' + ctx.library.ancestry.join(' > '));
@@ -1217,6 +1228,7 @@ function formatPageContextForPrompt(ctx) {
     }
   }
   if (ctx.framingTitle) lines.push('Framing title: ' + ctx.framingTitle);
+  if (f) {
   if (typeof f.scope === 'string' && f.scope.trim()) {
     lines.push('Decision-maker scope: ' + f.scope.trim());
   }
@@ -1301,8 +1313,71 @@ function formatPageContextForPrompt(ctx) {
       }
     }
   }
+  } // end if (f)
+  // Tool-usage reference — injected whenever the user is on the framing
+  // tool page (regardless of whether they've filled anything in yet), so
+  // "how do I save?" / "how do I share?" / "how do I rename?" questions
+  // get grounded answers instead of generic ones.
+  if (onFramingTool) {
+    lines.push('');
+    lines.push(FRAMING_TOOL_HELP);
+  }
   return lines.join('\n');
 }
+
+// Concise quick-reference for the decision framing tool's UI, injected
+// into the /chat system prompt whenever a request comes from that page.
+// Keep this in sync with the actual UI when labels or flows change.
+const FRAMING_TOOL_HELP = [
+  '# Framing tool — quick reference (for answering "how do I…" questions)',
+  '',
+  'The tool has this layout, top to bottom:',
+  '- **Doc banner** (amber strip near top) — shows the currently-loaded framing name and an "✎ Rename" button (only visible when a server-backed framing is loaded in edit mode).',
+  '- **Toolbar** — File menu, Clear pyramid, Reset all, Copy URL, Print, ? Help.',
+  '- **Library bar** (only when a server library is loaded) — breadcrumb of the library ancestry, Save (green primary, in-place update), + New framing, + New sub-library, Share URLs, Rename ✎, Regenerate URLs, Delete library, Browse ▾.',
+  '- **Tree side pane** (right side, when a library is loaded) — sub-libraries + framings in the current library; click any row to open.',
+  '- **Problem scope** — decision-maker scope textarea + Describe your problem + URL / file inputs + Generate framing (AI first-draft) button.',
+  '- **Metrics pyramid tool** — metric chips (list on left), drop zones for tiers 1-4, "First draft (AI)" button.',
+  '- **Decision prioritization tool** — decisions textarea + "Generate ideas" button + impact matrix.',
+  '- **Uncertainty prioritization tool** — same layout for uncertainties.',
+  '- **Ask Professor Powell** (this chat) — inline at the bottom.',
+  '',
+  '## Saving',
+  '- **Save vs Save as**: **File → Save** (or the library bar\'s green **Save** button) updates the current framing in place. **File → Save as…** creates a NEW framing entry in your library (prompts for title + description). Same convention as Word: Save = update current, Save as = new entry.',
+  '- **First save** of a fresh workspace goes through Save as… (creates your personal library on the first ever save, then adds new framings to the same library on subsequent uses).',
+  '- **Autosave**: everything is autosaved to your browser\'s localStorage on every keystroke — this is crash-protection only, it does NOT push to the server or share with anyone.',
+  '',
+  '## Renaming and deleting',
+  '- **Rename the CURRENT framing**: click the "✎ Rename" button in the amber doc banner near the top. Title-only, does NOT touch your on-screen edits.',
+  '- **Rename another framing** (not the one you\'re editing): library bar → Browse ▾ → find the framing row → click the ✎ icon.',
+  '- **Delete a framing**: Browse ▾ → find the row → click × (irreversible).',
+  '- **Rename a library**: library bar → Rename ✎ button (only visible in admin mode).',
+  '- **Delete a library**: library bar → Delete library (only in admin mode; irreversible; wipes everything under it).',
+  '',
+  '## Sharing and access',
+  '- **Copy URL** (toolbar): copies a URL that opens the current framing as a fresh SNAPSHOT in someone else\'s browser — their edits do NOT affect the original. Good for pasting into an email.',
+  '- **Share URLs** (library bar): shows the View URL and Edit URL for the currently-loaded library. Anyone with the View URL gets read-only access; anyone with the Edit URL gets edit access. NOT a snapshot — it\'s the live library.',
+  '- **Access model**: there are NO accounts or passwords. The URL IS the credential. Anyone with a URL has whatever access it encodes. To revoke: Regenerate URLs (invalidates the old ones for everyone, including you).',
+  '- **Cross-device access**: your libraries are remembered in this browser\'s localStorage. To access them from a different browser or device, bookmark or email yourself the Edit URL of your root personal library — every sub-library you create hangs off it in the tree pane. Nothing else to remember.',
+  '',
+  '## Libraries and sub-libraries',
+  '- Libraries form a tree: your personal library is the root; sub-libraries hang off it as children.',
+  '- **Create a sub-library**: from within a library in admin mode, library bar → + New sub-library. The new sub-library appears in the tree pane immediately and is remembered in your browser\'s "My server libraries" list.',
+  '- **Open a sub-library**: click its row in the tree pane, or in Browse ▾, or in File → Open → My server libraries.',
+  '- **Add someone else\'s library**: File → Open → paste the URL they sent you into the "Add library by URL" input.',
+  '',
+  '## Generating ideas',
+  '- **Generate ideas** button (next to Decisions or Uncertainties header): opens an idea box with AI-proposed items scored to have H or M impact on at least one metric. Check the ones you want, click "Add checked" to append.',
+  '- **Drilled-in context** (decisions): if you\'ve drilled into a sub-decision, Generate ideas proposes sub-decisions of that leaf parent.',
+  '- **Drilled-in context** (uncertainties): if drilled into a decision, uncertainty ideas are biased toward uncertainties that matter for that decision context. They still land in the root uncertainty list (uncertainties are flat) but each gets a small green "for: <parent>" chip.',
+  '',
+  '## Sub-decisions',
+  '- **Drill in**: click the small ▸ button on a decision\'s row (or right-click the row) to descend into that decision\'s sub-decisions. The breadcrumb shows the path.',
+  '- **Drill out**: click any earlier breadcrumb step, or the ↑ up-level button.',
+  '- Uncertainties do NOT nest — they always live at the root.',
+  '',
+  'When answering how-to questions, refer to the specific button labels above verbatim so users can find them. If a user is confused about which button does what, spell out the exact click path (e.g. "Library bar → Browse ▾ → click ✎ on that row").',
+].join('\n');
 
 app.post('/chat', chatLimiter, async (req, res) => {
   const { messages, sessionId: clientSessionId, context: pageContext } = req.body || {};
