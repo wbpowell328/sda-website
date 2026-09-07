@@ -6,16 +6,18 @@ date: 2026-08-11
 ---
 
 {% raw %}
-<p>The decision framing tool has five parts:</p>
+<p>The decision framing tool is designed to help people making decisions that improve performance. At this stage it is primarily an "ideating" tool. The process starts by asking you to identify who is making decisions, and then provides several ways to provide background information, from a sentence or two to complete documents in various forms.</p>
+
+<p>The tool helps you frame a decision problem, which consists of identifying performance metrics, types of decisions, and sources of uncertainty that might affect performance. A specially trained AI agent is available to help throughout. You can ask it to provide a rough draft of an entire frame, but we recommend providing as much input as you can. The most important input from you is providing the context and the performance metrics that are most important to you.</p>
+
+<p>After specifying the metrics, you can enter the types of decisions that affect performance. These can be quite broad, such as "Assign drivers to loads" to "Purchase parts from supplier X". You can ask the AI agent to suggest decisions which it considers to have a medium or high impact on at least one performance metric.</p>
+
 <ol>
-  <li><a href="#problem-scope"><strong>Problem scope</strong></a> — describe the decision maker and (optionally) the problem itself. The AI can produce a rough first draft of the framing from your description, a URL, or an uploaded case file.</li>
-  <li><a href="#metrics-pyramid-tool"><strong>Metrics pyramid tool</strong></a> — prioritize your performance metrics into a four-level pyramid.</li>
-  <li><a href="#decision-prioritization-tool"><strong>Decision prioritization tool</strong></a> — score each decision's impact on each pyramid-ordered metric (H / M / L / N), then reorder the decisions by their impact on the most important metrics. Decisions may be nested so that higher level decisions (choose supplier) can be broken into lower level decisions (list individual suppliers). Lower level decisions can be further divided into subclasses.</li>
-  <li><a href="#uncertainty-prioritization-tool"><strong>Uncertainty prioritization tool</strong></a> — same idea, applied to the uncertainties that affect performance.</li>
-  <li><a href="#ask-professor-powell"><strong>Ask Professor Powell</strong></a> — a chatbot for follow-up questions about your framing or anything else in Professor Powell's materials.</li>
+  <li><a href="#problem-scope"><strong>Problem scope</strong></a></li>
+  <li><a href="#metrics-pyramid-tool"><strong>Metrics pyramid tool</strong></a></li>
+  <li><a href="#decision-prioritization-tool"><strong>Decision prioritization tool</strong></a></li>
+  <li><a href="#uncertainty-prioritization-tool"><strong>Uncertainty prioritization tool</strong></a></li>
 </ol>
-<p>When framing a problem, be sure to follow the guidelines given on <a href="/framingproblems/">The Framing Process</a>.</p>
-<p>All the information you provide remains private. The <em>File</em> menu below lets you save framings to your personal server library (accessible from any browser via a URL you keep), each containing the scope, the pyramid, and both matrices. If you would like to share a single framing as a snapshot, hit <em>Copy URL</em> and paste it in an email — anyone with the link can view that framing.</p>
 
 <div class="fp-toolbar">
   <details class="fp-menu" id="fp-file-menu">
