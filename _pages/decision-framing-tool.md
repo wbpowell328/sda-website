@@ -216,12 +216,12 @@ date: 2026-08-11
       <label><input type="checkbox" value="2"> <b>2.</b> Complex / strategic decisions</label>
       <label><input type="checkbox" value="3"> <b>3.</b> Information acquisition / observation</label>
       <label><input type="checkbox" value="4"> <b>4.</b> Information sharing / communication</label>
-      <label><input type="checkbox" value="5"> <b>5.</b> Performance metrics / objectives</label>
+      <label class="is-disabled"><input type="checkbox" value="5" disabled> <b>5.</b> Performance metrics / objectives <span class="fp-type-inactive">— set separately via the metrics pyramid</span></label>
       <label><input type="checkbox" value="6"> <b>6.</b> Choosing functions</label>
       <label><input type="checkbox" value="7"> <b>7.</b> Setting parameters</label>
       <label><input type="checkbox" value="8"> <b>8.</b> Labeling / identification / estimation</label>
       <label><input type="checkbox" value="9"> <b>9.</b> Features and behaviors</label>
-      <label><input type="checkbox" value="10"> <b>10.</b> Deciding what to decide</label>
+      <label class="is-disabled"><input type="checkbox" value="10" disabled> <b>10.</b> Deciding what to decide <span class="fp-type-inactive">— that's what this whole tool is for</span></label>
     </div>
     <div id="fp-decision-types-status" class="fp-bot-status" role="status" aria-live="polite" style="min-height: 1.2em;"></div>
     <div class="fp-modal-actions" style="justify-content: space-between; gap: 8px; flex-wrap: wrap;">
@@ -858,6 +858,20 @@ date: 2026-08-11
   .fp-decision-types-list label:hover { background: #f2ead4; }
   .fp-decision-types-list input[type="checkbox"] {
     flex-shrink: 0; margin: 0;
+  }
+  /* Inactive types (5 and 10) — surface them so users see the full
+     taxonomy, but grey them out and disable the checkbox: Type 5
+     (metrics) is set via the metrics pyramid; Type 10 (deciding
+     what to decide) is what this whole tool is for. */
+  .fp-decision-types-list label.is-disabled {
+    color: #a8a08c; cursor: not-allowed;
+  }
+  .fp-decision-types-list label.is-disabled:hover { background: transparent; }
+  .fp-decision-types-list label.is-disabled input[type="checkbox"] {
+    cursor: not-allowed;
+  }
+  .fp-decision-types-list .fp-type-inactive {
+    font-size: 0.85em; font-style: italic; color: #a8a08c;
   }
 
   /* Idea box modal */
@@ -3412,6 +3426,11 @@ date: 2026-08-11
     const modal = document.getElementById('fp-decision-types-modal');
     if (modal) modal.hidden = true;
   }
+  // Types 5 (metrics) and 10 (deciding what to decide) are inactive —
+  // metrics live in the pyramid tool, and 10 is what this whole framing
+  // tool is about. They're shown in the modal for taxonomy completeness
+  // but disabled, and stripped anywhere they might sneak in.
+  const INACTIVE_DECISION_TYPES = new Set([5, 10]);
   function commitDecisionTypesModal() {
     // Read checkboxes into state, close, refresh button label.
     decisionTypesFilter.clear();
@@ -3419,7 +3438,9 @@ date: 2026-08-11
     if (modal) {
       modal.querySelectorAll('.fp-decision-types-list input[type="checkbox"]:checked').forEach(cb => {
         const n = Number(cb.value);
-        if (Number.isInteger(n) && n >= 1 && n <= 10) decisionTypesFilter.add(n);
+        if (Number.isInteger(n) && n >= 1 && n <= 10 && !INACTIVE_DECISION_TYPES.has(n)) {
+          decisionTypesFilter.add(n);
+        }
       });
     }
     updateDecisionTypesBtn();
@@ -3465,11 +3486,15 @@ date: 2026-08-11
       const resp = await fetch(SUGGEST_TYPES_ENDPOINT, { method: 'POST', body: form });
       const data = await resp.json().catch(() => ({ error: 'Bad response from server.' }));
       if (!resp.ok) throw new Error(data.error || ('Request failed (' + resp.status + ')'));
-      const types = Array.isArray(data.types) ? data.types : [];
-      // Tick the boxes in the modal to match the recommendation.
+      const types = (Array.isArray(data.types) ? data.types : [])
+        .map(Number)
+        .filter(n => Number.isInteger(n) && n >= 1 && n <= 10 && !INACTIVE_DECISION_TYPES.has(n));
+      // Tick the boxes in the modal to match the recommendation. Disabled
+      // rows (5, 10) can't be checked programmatically anyway, but skip
+      // them explicitly for clarity.
       const modal = document.getElementById('fp-decision-types-modal');
       if (modal) {
-        modal.querySelectorAll('.fp-decision-types-list input[type="checkbox"]').forEach(cb => {
+        modal.querySelectorAll('.fp-decision-types-list input[type="checkbox"]:not([disabled])').forEach(cb => {
           cb.checked = types.includes(Number(cb.value));
         });
       }
@@ -3493,7 +3518,9 @@ date: 2026-08-11
   function decisionTypesSetAll(on) {
     const modal = document.getElementById('fp-decision-types-modal');
     if (!modal) return;
-    modal.querySelectorAll('.fp-decision-types-list input[type="checkbox"]').forEach(cb => {
+    // Skip disabled types (5 and 10) so "All" doesn't accidentally
+    // include them.
+    modal.querySelectorAll('.fp-decision-types-list input[type="checkbox"]:not([disabled])').forEach(cb => {
       cb.checked = on;
     });
   }

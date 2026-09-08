@@ -937,17 +937,26 @@ app.post('/framing/decision-types', framingLimiter, (req, res) => {
         return res.status(400).json({ error: 'Add a scope, description, URL, or file first — the AI needs something to reason about.' });
       }
 
-      const taxonomyText = Object.entries(DECISION_TYPES)
-        .map(([n, t]) => `Type ${n} — ${t.brief}:\n${t.full}`)
+      // Types 5 (performance metrics) and 10 (deciding what to decide)
+      // are inactive in the picker — metrics are set via the pyramid tool
+      // and 10 is what the whole framing tool is about. Hide them from
+      // the recommender entirely so it can't suggest an option the user
+      // can't tick anyway.
+      const RECOMMENDABLE = ['1', '2', '3', '4', '6', '7', '8', '9'];
+      const taxonomyText = RECOMMENDABLE
+        .map((n) => `Type ${n} — ${DECISION_TYPES[n].brief}:\n${DECISION_TYPES[n].full}`)
         .join('\n\n');
 
       userContent.push({
         type: 'text',
         text:
-          'Warren\'s 10 decision types (from decisionsdecisions/#types-of-decision-settings):\n\n' +
+          'Warren\'s decision types (from decisionsdecisions/#types-of-decision-settings). ' +
+          'Types 5 (performance metrics) and 10 (deciding what to decide) are OMITTED here — ' +
+          'metrics are set via the pyramid tool, and 10 is what this whole tool addresses. ' +
+          'You must NOT recommend types 5 or 10.\n\n' +
           taxonomyText +
-          '\n\nGiven the setting above, which of these 10 types are MOST relevant? ' +
-          'Recommend 2–5 (occasionally 6–7 for very rich settings). Skip types ' +
+          '\n\nGiven the setting above, which of these types are MOST relevant? ' +
+          'Recommend 2–5 (occasionally 6 for very rich settings). Skip types ' +
           'that clearly do not apply. Do not pad — better to return 3 sharp ' +
           'types than 8 loose ones. Return via the recommend_decision_types tool.',
       });
@@ -968,9 +977,10 @@ app.post('/framing/decision-types', framingLimiter, (req, res) => {
         return res.status(502).json({ error: 'Model did not produce a recommendation. Try again.' });
       }
       const rawTypes = Array.isArray(toolBlock.input.types) ? toolBlock.input.types : [];
+      const INACTIVE = new Set([5, 10]);
       const types = rawTypes
         .map(Number)
-        .filter((n) => Number.isInteger(n) && n >= 1 && n <= 10)
+        .filter((n) => Number.isInteger(n) && n >= 1 && n <= 10 && !INACTIVE.has(n))
         .filter((n, i, a) => a.indexOf(n) === i)
         .sort((a, b) => a - b);
       const reasoning = String(toolBlock.input.reasoning || '').trim();
@@ -1068,9 +1078,13 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
         if (typeof raw === 'string' && raw) {
           const arr = JSON.parse(raw);
           if (Array.isArray(arr)) {
+            // Types 5 (metrics) and 10 (deciding what to decide) are
+            // disabled in the client picker — never accept them here
+            // either, no matter how the request was constructed.
+            const INACTIVE = new Set([5, 10]);
             decisionTypes = arr
               .map(Number)
-              .filter(n => Number.isInteger(n) && n >= 1 && n <= 10)
+              .filter(n => Number.isInteger(n) && n >= 1 && n <= 10 && !INACTIVE.has(n))
               .filter((n, i, a) => a.indexOf(n) === i)   // dedupe
               .sort((a, b) => a - b);
           }
