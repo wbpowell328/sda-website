@@ -873,6 +873,116 @@ const DECISION_TYPES = {
   },
 };
 
+// Suggest which of the 10 decision types are most relevant to the user's
+// current framing context. Powers the "✦ Suggest" button in the Types…
+// modal so users don't have to eyeball the 10-item list themselves.
+const SUGGEST_TYPES_TOOL = {
+  name: 'recommend_decision_types',
+  description: 'Recommend which of Warren\'s 10 decision types are most relevant to the user\'s current framing.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      types: {
+        type: 'array',
+        items: { type: 'integer', minimum: 1, maximum: 10 },
+        description: 'The type NUMBERS (1..10, from the taxonomy provided) most relevant to this setting. Typically 2–5 types. Skip types that clearly do not apply. Do not pad — better to return 3 sharp types than 8 loose ones.',
+      },
+      reasoning: {
+        type: 'string',
+        description: 'ONE short sentence (≤ 25 words) naming why these types fit — e.g. "Setting is R&D pipeline: types 1 (resource allocation), 3 (information collection via trials), 7 (parameter tuning)."',
+      },
+    },
+    required: ['types'],
+  },
+};
+
+app.post('/framing/decision-types', framingLimiter, (req, res) => {
+  framingUpload.single('file')(req, res, async (uploadErr) => {
+    if (uploadErr) return res.status(400).json({ error: uploadErr.message });
+    try {
+      const scope       = String(req.body?.scope || '').trim().slice(0, 2000);
+      const description = String(req.body?.description || '').trim().slice(0, FRAMING_MAX_CHARS);
+      const url         = String(req.body?.url || '').trim();
+      const priorNotes  = String(req.body?.priorNotes || '').trim().slice(0, 20000);
+      const parseList = (raw) => {
+        try {
+          if (typeof raw !== 'string' || !raw) return [];
+          const arr = JSON.parse(raw);
+          return Array.isArray(arr) ? arr.filter(Boolean).map(String).slice(0, 60) : [];
+        } catch (_) { return []; }
+      };
+      const existingMetrics   = parseList(req.body?.existingMetrics);
+      const existingDecisions = parseList(req.body?.existingDecisions);
+
+      const userContent = [];
+      if (scope) userContent.push({ type: 'text', text: 'DECISION-MAKER SCOPE:\n' + scope });
+      if (req.file) {
+        userContent.push(await fileToContentBlock(req.file.buffer, req.file.mimetype, req.file.originalname));
+      }
+      if (url) {
+        if (!/^https?:\/\//i.test(url)) {
+          return res.status(400).json({ error: 'URL must start with http:// or https://.' });
+        }
+        userContent.push(await urlToContentBlock(url));
+      }
+      if (description) userContent.push({ type: 'text', text: 'PROBLEM DESCRIPTION:\n' + description });
+      if (priorNotes) userContent.push({ type: 'text', text: 'INGESTED PROBLEM NOTES:\n' + priorNotes });
+      if (existingMetrics.length) {
+        userContent.push({ type: 'text', text: 'PERFORMANCE METRICS on screen:\n' + existingMetrics.map(m => '  - ' + m).join('\n') });
+      }
+      if (existingDecisions.length) {
+        userContent.push({ type: 'text', text: 'DECISIONS already listed:\n' + existingDecisions.map(d => '  - ' + d).join('\n') });
+      }
+      if (userContent.length === 0) {
+        return res.status(400).json({ error: 'Add a scope, description, URL, or file first — the AI needs something to reason about.' });
+      }
+
+      const taxonomyText = Object.entries(DECISION_TYPES)
+        .map(([n, t]) => `Type ${n} — ${t.brief}:\n${t.full}`)
+        .join('\n\n');
+
+      userContent.push({
+        type: 'text',
+        text:
+          'Warren\'s 10 decision types (from decisionsdecisions/#types-of-decision-settings):\n\n' +
+          taxonomyText +
+          '\n\nGiven the setting above, which of these 10 types are MOST relevant? ' +
+          'Recommend 2–5 (occasionally 6–7 for very rich settings). Skip types ' +
+          'that clearly do not apply. Do not pad — better to return 3 sharp ' +
+          'types than 8 loose ones. Return via the recommend_decision_types tool.',
+      });
+
+      const response = await client.messages.create({
+        model: FRAMING_MODEL,
+        max_tokens: 512,
+        system: framingPrompt || 'You are Professor Warren Powell\'s decision-framing assistant.',
+        tools: [SUGGEST_TYPES_TOOL],
+        tool_choice: { type: 'tool', name: SUGGEST_TYPES_TOOL.name },
+        messages: [{ role: 'user', content: userContent }],
+      });
+
+      const toolBlock = (response.content || []).find(
+        (b) => b.type === 'tool_use' && b.name === SUGGEST_TYPES_TOOL.name,
+      );
+      if (!toolBlock) {
+        return res.status(502).json({ error: 'Model did not produce a recommendation. Try again.' });
+      }
+      const rawTypes = Array.isArray(toolBlock.input.types) ? toolBlock.input.types : [];
+      const types = rawTypes
+        .map(Number)
+        .filter((n) => Number.isInteger(n) && n >= 1 && n <= 10)
+        .filter((n, i, a) => a.indexOf(n) === i)
+        .sort((a, b) => a - b);
+      const reasoning = String(toolBlock.input.reasoning || '').trim();
+
+      return res.json({ types, reasoning, model: FRAMING_MODEL, usage: response.usage });
+    } catch (err) {
+      console.error('Framing/decision-types error:', err);
+      return res.status(500).json({ error: (err && err.message) || 'Unknown error' });
+    }
+  });
+});
+
 const IDEAS_TOOL = {
   name: 'record_ideas',
   description: 'Record a list of proposed decisions or uncertainties. For decisions, also classify each idea as general / specific / numeric.',
@@ -1723,6 +1833,7 @@ const FRAMING_TOOL_HELP = [
   '- **Generate ideas** button (next to Decisions or Uncertainties header): opens an idea box with AI-proposed items scored to have H or M impact on at least one metric. Check the ones you want, click "Add checked" to append.',
   '- **count input** (small numeric box after the mode toggle): override how many ideas the AI returns. Blank = auto (uses the First-draft size setting: small=3, medium=5, large=8, max=20). Type any number 1-200 — handy for long (spec) lists like "50 potential suppliers" or "100 candidate SKUs".',
   '- **Types… button** (Decisions header only): opens a modal with the 10 decision types from Warren\'s taxonomy (Physical/financial, Complex/strategic, Information acquisition, Information sharing, Performance metrics, Choosing functions, Setting parameters, Labeling/identification/estimation, Features/behaviors, Deciding what to decide — see /decisionsdecisions/#types-of-decision-settings). Check any subset to constrain Generate ideas to those types; leave all unchecked to let the AI decide (default). When any are checked, the button shows the count ("Types… (3)") and the AI receives the FULL definitions of the chosen types alongside the usual scope/description context.',
+  '- **✦ Suggest** button inside the Types… modal: asks the AI to read your current scope / description / notes / metrics / existing decisions and check the boxes for the types most relevant to your setting. Typically returns 2-5 types with a one-sentence rationale. User is free to adjust the ticks before clicking Done.',
   '- **(gen)/(spec) mode toggle** next to Generate ideas: pick which mode fires on the next click. Default is (gen).',
   '  - **(gen)** — the AI proposes broad still-drillable categories ("Choose supplier", "Target markets"). Good for structuring the decision tree.',
   '  - **(spec)** — the AI enumerates concrete members OR numeric parameters, skipping the categorical layer. Drilled into "Target markets" in (spec) mode returns industry names ("Agriculture", "Healthcare", "Transportation", "Retail", "Energy"), NOT sub-processes like "Evaluate incumbent competition". Each item comes back tagged (disc) or (num).',

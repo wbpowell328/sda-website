@@ -223,10 +223,13 @@ date: 2026-08-11
       <label><input type="checkbox" value="9"> <b>9.</b> Features and behaviors</label>
       <label><input type="checkbox" value="10"> <b>10.</b> Deciding what to decide</label>
     </div>
+    <div id="fp-decision-types-status" class="fp-bot-status" role="status" aria-live="polite" style="min-height: 1.2em;"></div>
     <div class="fp-modal-actions" style="justify-content: space-between; gap: 8px; flex-wrap: wrap;">
       <div style="display: flex; gap: 6px;">
         <button type="button" id="fp-decision-types-all" class="fp-modal-mini">All</button>
         <button type="button" id="fp-decision-types-none" class="fp-modal-mini">None</button>
+        <button type="button" id="fp-decision-types-suggest" class="fp-modal-mini"
+                title="Ask the AI to read your scope / description / notes / metrics / existing decisions and check the types most relevant to your setting.">✦ Suggest</button>
       </div>
       <div>
         <button type="button" id="fp-decision-types-ok" class="fp-modal-primary">Done</button>
@@ -3183,6 +3186,7 @@ date: 2026-08-11
   const PYRAMID_ENDPOINT = 'https://castle-chatbot.onrender.com/framing/pyramid';
   const IDEAS_ENDPOINT   = 'https://castle-chatbot.onrender.com/framing/ideas';
   const INGEST_ENDPOINT  = 'https://castle-chatbot.onrender.com/framing/ingest';
+  const SUGGEST_TYPES_ENDPOINT = 'https://castle-chatbot.onrender.com/framing/decision-types';
   function showAiNote(kind) {
     const el = document.querySelector('.fp-matrix-ai-note[data-kind="' + kind + '"]');
     if (el) el.hidden = false;
@@ -3400,6 +3404,8 @@ date: 2026-08-11
     modal.querySelectorAll('.fp-decision-types-list input[type="checkbox"]').forEach(cb => {
       cb.checked = decisionTypesFilter.has(Number(cb.value));
     });
+    const status = document.getElementById('fp-decision-types-status');
+    if (status) { status.textContent = ''; status.style.color = ''; }
     modal.hidden = false;
   }
   function closeDecisionTypesModal() {
@@ -3418,6 +3424,71 @@ date: 2026-08-11
     }
     updateDecisionTypesBtn();
     closeDecisionTypesModal();
+  }
+  async function suggestDecisionTypes() {
+    const btn = document.getElementById('fp-decision-types-suggest');
+    const status = document.getElementById('fp-decision-types-status');
+    const scope = $('#fp-scope-input').value.trim();
+    const desc  = $('#fp-bot-desc').value.trim();
+    const url   = $('#fp-bot-url').value.trim();
+    const file  = $('#fp-bot-file').files && $('#fp-bot-file').files[0];
+    const notes = (state.problemNotes || '').trim();
+    if (!scope && !desc && !url && !file && !notes) {
+      if (status) {
+        status.textContent = 'Fill in a scope, description, URL, or file in the Problem scope section above first — the AI needs something to reason about.';
+        status.style.color = '#7a1c1c';
+      }
+      return;
+    }
+    const prev = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = 'Thinking…'; }
+    if (status) {
+      status.textContent = 'Asking Professor Powell to review your context…';
+      status.style.color = '#c9621e';
+    }
+    try {
+      const form = new FormData();
+      if (scope) form.append('scope', scope);
+      if (desc)  form.append('description', desc);
+      if (notes) {
+        form.append('priorNotes', notes);
+      } else {
+        if (url)  form.append('url', url);
+        if (file) form.append('file', file, file.name);
+      }
+      if (Array.isArray(state.metrics) && state.metrics.length) {
+        form.append('existingMetrics', JSON.stringify(state.metrics));
+      }
+      if (Array.isArray(state.decisions) && state.decisions.length) {
+        form.append('existingDecisions', JSON.stringify(state.decisions));
+      }
+      const resp = await fetch(SUGGEST_TYPES_ENDPOINT, { method: 'POST', body: form });
+      const data = await resp.json().catch(() => ({ error: 'Bad response from server.' }));
+      if (!resp.ok) throw new Error(data.error || ('Request failed (' + resp.status + ')'));
+      const types = Array.isArray(data.types) ? data.types : [];
+      // Tick the boxes in the modal to match the recommendation.
+      const modal = document.getElementById('fp-decision-types-modal');
+      if (modal) {
+        modal.querySelectorAll('.fp-decision-types-list input[type="checkbox"]').forEach(cb => {
+          cb.checked = types.includes(Number(cb.value));
+        });
+      }
+      if (status) {
+        const reasoning = String(data.reasoning || '').trim();
+        status.textContent = reasoning
+          ? 'AI: ' + reasoning + ' — review and adjust if needed.'
+          : 'Types checked based on your context — review and adjust if needed.';
+        status.style.color = '#345c48';
+      }
+    } catch (err) {
+      console.error('Suggest types failed:', err);
+      if (status) {
+        status.textContent = 'Sorry — ' + (err && err.message ? err.message : 'request failed') + '. (First request after idle can take ~30 s while the server wakes up.)';
+        status.style.color = '#7a1c1c';
+      }
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = prev; }
+    }
   }
   function decisionTypesSetAll(on) {
     const modal = document.getElementById('fp-decision-types-modal');
@@ -5986,6 +6057,8 @@ date: 2026-08-11
       if (allBtn) allBtn.addEventListener('click', () => decisionTypesSetAll(true));
       const noneBtn = $('#fp-decision-types-none');
       if (noneBtn) noneBtn.addEventListener('click', () => decisionTypesSetAll(false));
+      const suggestBtn = $('#fp-decision-types-suggest');
+      if (suggestBtn) suggestBtn.addEventListener('click', suggestDecisionTypes);
       const modal = $('#fp-decision-types-modal');
       if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) commitDecisionTypesModal(); });
       updateDecisionTypesBtn();
