@@ -770,7 +770,7 @@ date: 2026-08-11
      to override, useful for long (spec) lists (e.g. 50 suppliers). */
   .fp-ideas-count {
     margin-left: 6px;
-    width: 4.5em;
+    width: 6em;
     padding: 2px 6px;
     font-size: 0.72rem;
     border: 1px solid #c9b891; border-radius: 4px;
