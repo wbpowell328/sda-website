@@ -862,6 +862,12 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
       const kind = kindRaw === 'uncertainty' ? 'uncertainty'
                  : (kindRaw === 'decision' ? 'decision' : null);
       if (!kind) return res.status(400).json({ error: 'kind must be "decision" or "uncertainty".' });
+      // Generation mode: 'gen' (broad categories, default) or 'spec'
+      // (enumerate concrete members / numeric parameters, skip the
+      // categorical layer). Client is a (gen)/(spec) toggle next to the
+      // Generate ideas button.
+      const modeRaw = String(req.body?.mode || 'gen').toLowerCase();
+      const mode = modeRaw === 'spec' ? 'spec' : 'gen';
 
       const description = String(req.body?.description || '').trim().slice(0, FRAMING_MAX_CHARS);
       const url         = String(req.body?.url || '').trim();
@@ -1025,8 +1031,32 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
         ? 'external uncertain factors the decision-maker must react to (things they do NOT control)'
         : 'levers the decision-maker actually controls — things they DO';
 
+      // Closing prompt selection: 4 cases from cross of (drilled?, kind),
+      // each with a (gen)/(spec) mode variant. (spec) mode jumps straight
+      // to concrete members (discrete names or numeric parameters), skipping
+      // the categorical layer — this is what a user picks when the parent
+      // is already named ("Target markets" -> industry names, "Choose drug"
+      // -> actual drug names, not "Pick drug class").
       let closingText;
-      if (isDrilledIn && kind === 'decision') {
+      if (isDrilledIn && kind === 'decision' && mode === 'spec') {
+        closingText =
+          `Propose about ${count} NEW SPECIFIC members of "${leafParent}" — ` +
+          `ENUMERATE concrete named entities (actual industry names, brand ` +
+          `names, product SKUs, drug names, ticker symbols, cities, ` +
+          `technology names, etc.) OR numeric parameters that ARE the ` +
+          `decision (a value or a range). SKIP the categorical layer — do ` +
+          `NOT propose sub-processes like "Select target industry", ` +
+          `"Evaluate competition", "Assess readiness". If the parent is ` +
+          `"Target markets", return "Agriculture", "Healthcare", ` +
+          `"Transportation", "Retail", "Energy", "Defense", "Manufacturing" ` +
+          `— named industries the software could be deployed in. If the ` +
+          `parent is "Set safety stock", return numeric bands like ` +
+          `"[0, 100 units]" or "150 units", "300 units", "500 units" — ` +
+          `actual candidate values or a range. Each idea should be (disc) ` +
+          `or (num), NOT (gen). Do NOT repeat anything already on screen. ` +
+          `Return via the record_ideas tool.`;
+      } else if (isDrilledIn && kind === 'decision') {
+        // (gen) mode, drilled in — one level deeper, categorical.
         closingText =
           `Propose about ${count} NEW sub-decisions of "${leafParent}" — ` +
           `exactly ONE level of specificity down from the parent, not the ` +
@@ -1041,6 +1071,18 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
           `always drill deeper to reach the most specific actions. Short ` +
           `noun phrases (3–4 words each). Do NOT repeat anything already on ` +
           `screen. Return via the record_ideas tool.`;
+      } else if (isDrilledIn && kind === 'uncertainty' && mode === 'spec') {
+        closingText =
+          `Propose about ${count} NEW SPECIFIC uncertainty factors linked to ` +
+          `"${leafParent}" — concrete measurable events, quantifiable ` +
+          `realizations, or numeric parameters. NOT broad uncertainty ` +
+          `categories. Example (drilled into "Marketing decisions"): ` +
+          `"Google Ads CPC in Q3", "Facebook conversion rate for cold ads", ` +
+          `"Podcast sponsorship response by demographic", "Instagram ` +
+          `algorithm change frequency" — each a specific measurable factor, ` +
+          `not "Advertising uncertainty". These append to the ROOT uncertainty ` +
+          `list. Short noun phrases (3–5 words each). Do NOT repeat anything ` +
+          `already in the root uncertainty list. Return via the record_ideas tool.`;
       } else if (isDrilledIn && kind === 'uncertainty') {
         closingText =
           `Propose about ${count} NEW uncertainties that most affect ` +
@@ -1054,7 +1096,31 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
           `each tightly linked to marketing choices. Short noun phrases ` +
           `(3–4 words each). Do NOT repeat anything already in the root ` +
           `uncertainty list. Return via the record_ideas tool.`;
+      } else if (mode === 'spec') {
+        // Root-level, (spec) mode. Skip the categorical layer entirely.
+        closingText = kind === 'decision'
+          ? `Propose about ${count} NEW SPECIFIC ${kindNounPlural} — ` +
+            `concrete choices ready to implement OR numeric parameters. ` +
+            `Skip the categorical layer ("Choose supplier", "Set price"): ` +
+            `go directly to specific named suppliers or specific numeric ` +
+            `values / ranges. Example: instead of "Choose supplier" propose ` +
+            `named suppliers ("Buy from ContractCo", "Buy from Alpha Inc") ` +
+            `AND/OR numeric parameters ("Set order quantity to 500 units", ` +
+            `"Discount rate 5%"). Each idea should be (disc) or (num), ` +
+            `NOT (gen). Short noun phrases (3–5 words each). Do NOT repeat ` +
+            `anything already on screen. Return via the record_ideas tool.`
+          : `Propose about ${count} NEW SPECIFIC uncertainty factors — ` +
+            `concrete measurable events, quantifiable realizations, or ` +
+            `numeric parameters. NOT broad uncertainty categories. Example ` +
+            `(mutual fund manager): "Fed rate move Q3 2026", "Nvidia ` +
+            `earnings surprise", "China GDP growth this quarter", "Oil ` +
+            `price above $95", "Regional bank stress index" — each a ` +
+            `specific measurable factor, not "Market volatility" or ` +
+            `"Interest rates" as broad categories. Short noun phrases ` +
+            `(3–5 words each). Do NOT repeat anything already on screen. ` +
+            `Return via the record_ideas tool.`;
       } else {
+        // Root-level, (gen) mode. Existing behavior — high-level categorical.
         closingText =
           `Propose about ${count} NEW HIGH-LEVEL ${kindNounPlural} — ` +
           `${kindDescription}. At the ROOT level, each idea must be a ` +
@@ -1557,7 +1623,11 @@ const FRAMING_TOOL_HELP = [
   '',
   '## Generating ideas',
   '- **Generate ideas** button (next to Decisions or Uncertainties header): opens an idea box with AI-proposed items scored to have H or M impact on at least one metric. Check the ones you want, click "Add checked" to append.',
-  '- **Drilled-in context** (decisions): if you\'ve drilled into a sub-decision, Generate ideas proposes sub-decisions of that leaf parent.',
+  '- **(gen)/(spec) mode toggle** next to Generate ideas: pick which mode fires on the next click. Default is (gen).',
+  '  - **(gen)** — the AI proposes broad still-drillable categories ("Choose supplier", "Target markets"). Good for structuring the decision tree.',
+  '  - **(spec)** — the AI enumerates concrete members OR numeric parameters, skipping the categorical layer. Drilled into "Target markets" in (spec) mode returns industry names ("Agriculture", "Healthcare", "Transportation", "Retail", "Energy"), NOT sub-processes like "Evaluate incumbent competition". Each item comes back tagged (disc) or (num).',
+  '  - Which to use: start with (gen) at the top level to lay out the tree; flip to (spec) when you\'ve drilled into a decision whose name already names the intent ("Target markets", "Choose drug", "Set safety stock").',
+  '- **Drilled-in context** (decisions): if you\'ve drilled into a sub-decision, Generate ideas proposes sub-decisions of that leaf parent — categorical in (gen) mode, enumerated members in (spec) mode.',
   '- **Drilled-in context** (uncertainties): if drilled into a decision, uncertainty ideas are biased toward uncertainties that matter for that decision context. They still land in the root uncertainty list (uncertainties are flat) but each gets a small green "for: <parent>" chip.',
   '',
   '## Sub-decisions',

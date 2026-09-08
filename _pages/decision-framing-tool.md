@@ -372,6 +372,12 @@ date: 2026-08-11
         title="Use the AI to generate ideas for decisions from your scope/description/URL/file above. Pick which ones to add.">
         Generate ideas
       </button>
+      <span class="fp-ideas-mode" role="group" aria-label="Generation mode for decisions">
+        <button type="button" class="fp-ideas-mode-btn is-active" data-kind="decision" data-mode="gen"
+                title="General mode — propose broad, still-drillable categories of decisions.">(gen)</button>
+        <button type="button" class="fp-ideas-mode-btn" data-kind="decision" data-mode="spec"
+                title="Specific mode — enumerate concrete members (industry names, brand names, drug names, cities) or numeric parameters, not sub-processes. Skips the categorical layer.">(spec)</button>
+      </span>
     </div>
     <textarea id="fp-decisions-input" spellcheck="true" placeholder="Set the price&#10;Choose a supplier&#10;Approve the design&#10;Schedule production"></textarea>
   </div>
@@ -410,6 +416,12 @@ date: 2026-08-11
         title="Use the AI to generate ideas for uncertainties from your scope/description/URL/file above. Pick which ones to add.">
         Generate ideas
       </button>
+      <span class="fp-ideas-mode" role="group" aria-label="Generation mode for uncertainties">
+        <button type="button" class="fp-ideas-mode-btn is-active" data-kind="uncertainty" data-mode="gen"
+                title="General mode — propose broad categories of uncertainty.">(gen)</button>
+        <button type="button" class="fp-ideas-mode-btn" data-kind="uncertainty" data-mode="spec"
+                title="Specific mode — propose concrete measurable uncertainty factors or realizations, not broad categories.">(spec)</button>
+      </span>
     </div>
     <textarea id="fp-uncertainties-input" spellcheck="true" placeholder="Demand volatility&#10;Supplier reliability&#10;Currency fluctuation&#10;Regulatory change"></textarea>
   </div>
@@ -727,6 +739,26 @@ date: 2026-08-11
   }
   .fp-ideas-btn:hover:not(:disabled) { background: #f2e6c9; }
   .fp-ideas-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+  /* Generation-mode toggle — small (gen)/(spec) chip pair next to the
+     Generate ideas button. Pressed state = which mode fires on next click.
+     (gen) proposes broad categories; (spec) enumerates concrete members
+     (discrete choices or numeric parameters) and skips the categorical
+     layer. */
+  .fp-ideas-mode {
+    display: inline-flex; align-items: center; margin-left: 6px;
+  }
+  .fp-ideas-mode-btn {
+    font-size: 0.72rem; padding: 2px 8px; line-height: 1.4;
+    background: #fff; color: #7a6a55;
+    border: 1px solid #c9b891;
+    cursor: pointer; font-family: inherit;
+  }
+  .fp-ideas-mode-btn:first-child { border-radius: 12px 0 0 12px; }
+  .fp-ideas-mode-btn:last-child  { border-radius: 0 12px 12px 0; border-left: none; }
+  .fp-ideas-mode-btn:hover:not(.is-active) { background: #f0e5c8; }
+  .fp-ideas-mode-btn.is-active {
+    background: #c9621e; color: #fff; border-color: #c9621e; font-weight: 600;
+  }
 
   /* Idea box modal */
   .fp-ideas-list {
@@ -3247,6 +3279,11 @@ date: 2026-08-11
   // underlying textarea. State kept module-scope so the Regenerate
   // button knows which kind was requested.
   let ideasCurrentKind = null;
+  // Which generation MODE fires on the next Generate-ideas click, per kind.
+  // 'gen' = broad categories (current default). 'spec' = enumerate concrete
+  // members (industry names, brand names, etc.) or numeric parameters,
+  // skipping the categorical layer. Reset per page load.
+  const ideasMode = { decision: 'gen', uncertainty: 'gen' };
   async function openIdeaBox(kind) {
     if (kind !== 'decision' && kind !== 'uncertainty') return;
     ideasCurrentKind = kind;
@@ -3259,31 +3296,39 @@ date: 2026-08-11
     //     the leaf parent's context — but they still land in the ROOT
     //     uncertainty list (uncertainties live once at the top).
     const drilledIn = currentPath.length > 0;
+    const mode = ideasMode[kind] || 'gen';
+    const modeLabel = mode === 'spec'
+      ? '<b>SPECIFIC</b> (concrete members — discrete choices or numeric parameters)'
+      : '<b>general</b> (broad categories)';
     if (drilledIn && kind === 'decision') {
       const parent = currentPath[currentPath.length - 1];
       const trail = currentPath.map(p => '"' + p + '"').join(' → ');
       $('#fp-ideas-modal-title').textContent =
-        'Idea box — sub-decisions of "' + parent + '"';
+        'Idea box — sub-decisions of "' + parent + '"' + (mode === 'spec' ? '  (specific)' : '');
       $('#fp-ideas-modal-lede').innerHTML =
         'AI-proposed <b>sub-decisions</b> of ' + trail +
-        '. Check the ones you like, then <b>Add checked</b> to append them ' +
-        'to your existing sub-decision list. Re-generate for a fresh set.';
+        ', in ' + modeLabel + ' mode. Check the ones you like, then ' +
+        '<b>Add checked</b> to append them to your existing sub-decision list. ' +
+        'Re-generate for a fresh set.';
     } else if (drilledIn && kind === 'uncertainty') {
       const parent = currentPath[currentPath.length - 1];
       const trail = currentPath.map(p => '"' + p + '"').join(' → ');
       $('#fp-ideas-modal-title').textContent =
-        'Idea box — uncertainties affecting "' + parent + '"';
+        'Idea box — uncertainties affecting "' + parent + '"' + (mode === 'spec' ? '  (specific)' : '');
       $('#fp-ideas-modal-lede').innerHTML =
         'AI-proposed <b>uncertainties</b> whose outcomes matter for ' + trail +
-        '. Uncertainties live once at the root — checked items are appended ' +
-        'to your <b>root</b> uncertainty list. Re-generate for a fresh set.';
+        ', in ' + modeLabel + ' mode. Uncertainties live once at the root — ' +
+        'checked items are appended to your <b>root</b> uncertainty list. ' +
+        'Re-generate for a fresh set.';
     } else {
       $('#fp-ideas-modal-title').textContent = 'Idea box — ' +
-        (kind === 'decision' ? 'decisions' : 'uncertainties');
+        (kind === 'decision' ? 'decisions' : 'uncertainties') +
+        (mode === 'spec' ? '  (specific)' : '');
       $('#fp-ideas-modal-lede').innerHTML =
         'AI-proposed ' + (kind === 'decision' ? 'decisions' : 'uncertainties') +
-        ' from your <b>Problem scope</b> above. Check the ones you like, then <b>Add checked</b> ' +
-        'to append them to your existing list. Re-generate for a fresh set.';
+        ' from your <b>Problem scope</b> above, in ' + modeLabel + ' mode. ' +
+        'Check the ones you like, then <b>Add checked</b> to append them to ' +
+        'your existing list. Re-generate for a fresh set.';
     }
     $('#fp-ideas-list').innerHTML = '';
     $('#fp-ideas-status').textContent = '';
@@ -3321,6 +3366,10 @@ date: 2026-08-11
     try {
       const form = new FormData();
       form.append('kind', ideasCurrentKind);
+      // Generation mode: 'gen' (broad categories, default) or 'spec'
+      // (enumerate concrete members / numeric parameters, skip the
+      // categorical layer). Server branches the closing prompt on this.
+      form.append('mode', ideasMode[ideasCurrentKind] || 'gen');
       if (scope) form.append('scope', scope);
       if (desc)  form.append('description', desc);
       // Ingested notes replace the raw url/file for downstream calls.
@@ -5764,6 +5813,23 @@ date: 2026-08-11
       if (ideas) {
         const k = ideas.dataset.kind;
         if (k === 'decision' || k === 'uncertainty') openIdeaBox(k);
+        return;
+      }
+      // (gen)/(spec) mode toggle next to Generate ideas — flips which
+      // mode the next click fires, and updates the pair's active state.
+      const modeBtn = e.target.closest('.fp-ideas-mode-btn');
+      if (modeBtn) {
+        const k = modeBtn.dataset.kind;
+        const m = modeBtn.dataset.mode;
+        if ((k === 'decision' || k === 'uncertainty') && (m === 'gen' || m === 'spec')) {
+          ideasMode[k] = m;
+          const group = modeBtn.parentElement;
+          if (group) {
+            group.querySelectorAll('.fp-ideas-mode-btn').forEach(b => {
+              b.classList.toggle('is-active', b === modeBtn);
+            });
+          }
+        }
       }
     });
     // Idea-box modal wiring.
