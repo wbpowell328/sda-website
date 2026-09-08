@@ -333,6 +333,52 @@ noindex: true
     <textarea id="fp-scope-input" class="fp-scope-input" rows="2" spellcheck="true"
       placeholder="e.g. A regional dispatch manager at a mid-sized trucking company with a weekly planning horizon.  Or: The head of operations, quarterly cycle.  Or: An autonomous dispatch system routing trucks in real time."></textarea>
   </div>
+
+  <!-- Time step + horizon. Time step is the elementary period of the
+       model; it drives how uncertainties arrive and how dynamic decisions
+       are indexed. Horizon can be given in wall-clock units OR in periods
+       (of the chosen time step). -->
+  <div class="fp-bot-row-inline">
+    <div class="fp-bot-inline">
+      <label class="fp-bot-label">Time step <span class="fp-muted">(one period of the model)</span></label>
+      <div class="fp-time-input-row">
+        <input type="number" id="fp-time-step-value" min="0" step="any"
+               class="fp-time-input-num" placeholder="1" />
+        <select id="fp-time-step-unit" class="fp-time-input-unit">
+          <option value=""></option>
+          <option value="seconds">seconds</option>
+          <option value="minutes">minutes</option>
+          <option value="hours">hours</option>
+          <option value="days">days</option>
+          <option value="weeks">weeks</option>
+          <option value="months">months</option>
+          <option value="quarters">quarters</option>
+          <option value="years">years</option>
+        </select>
+      </div>
+    </div>
+    <div class="fp-bot-inline">
+      <label class="fp-bot-label">Horizon <span class="fp-muted">(planning horizon; "periods" counts time steps)</span></label>
+      <div class="fp-time-input-row">
+        <input type="number" id="fp-horizon-value" min="0" step="any"
+               class="fp-time-input-num" placeholder="1" />
+        <select id="fp-horizon-unit" class="fp-time-input-unit">
+          <option value=""></option>
+          <option value="seconds">seconds</option>
+          <option value="minutes">minutes</option>
+          <option value="hours">hours</option>
+          <option value="days">days</option>
+          <option value="weeks">weeks</option>
+          <option value="months">months</option>
+          <option value="quarters">quarters</option>
+          <option value="years">years</option>
+          <option value="periods">periods (of time step)</option>
+        </select>
+        <span id="fp-horizon-derived" class="fp-muted fp-time-derived"></span>
+      </div>
+    </div>
+  </div>
+
   <div class="fp-bot-row">
     <label for="fp-bot-desc" class="fp-bot-label">Describe your problem <span class="fp-muted">(only needed if you want an AI first draft)</span></label>
     <textarea id="fp-bot-desc" rows="4" spellcheck="true"
@@ -1566,6 +1612,51 @@ noindex: true
     font-family: "Cambria", "Times New Roman", serif;   /* mathy feel */
   }
   .fp-decision-kind-num:hover { background: #cbdcea; }
+  /* Timing chip — (stat) vs (dyn) — applied to decisions and uncertainties.
+     Sits next to the kind chip. Cycle: (stat) ↔ (dyn), toggle on click.
+     Default is (dyn) (implicit; only 'stat' is stored). */
+  .fp-timing-chip {
+    display: inline-block;
+    margin-left: 4px;
+    padding: 1px 6px;
+    font-size: 0.78rem;
+    line-height: 1.3;
+    border-radius: 4px;
+    border: 1px solid;
+    cursor: pointer;
+    vertical-align: 1px;
+    white-space: nowrap;
+    font-family: inherit;
+    font-weight: 600;
+  }
+  .fp-timing-dyn {
+    border-color: #b57ec9; background: #efe4f3; color: #52226a;
+  }
+  .fp-timing-dyn:hover { background: #e2cde9; }
+  .fp-timing-stat {
+    border-color: #a89988; background: #f0ebe1; color: #4a3f30;
+  }
+  .fp-timing-stat:hover { background: #e2dbcd; }
+
+  /* Time step + horizon inputs at the top of the Problem scope card. */
+  .fp-time-input-row {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .fp-time-input-num {
+    width: 5em; padding: 4px 6px;
+    border: 1px solid #c9b891; border-radius: 4px;
+    font-family: inherit; font-size: 0.9rem;
+  }
+  .fp-time-input-num:focus { outline: 1px solid #c9621e; border-color: #c9621e; }
+  .fp-time-input-unit {
+    padding: 4px 6px;
+    border: 1px solid #c9b891; border-radius: 4px;
+    font-family: inherit; font-size: 0.9rem;
+    background: #fff;
+  }
+  .fp-time-derived {
+    font-size: 0.85em; margin-left: 6px;
+  }
   /* Uncertainty scope chip — appears after the uncertainty name in the
      matrix row when the uncertainty was generated while drilled into a
      specific sub-decision. Distinguishes "for: X" scope-tagged rows
@@ -2016,10 +2107,10 @@ noindex: true
   //   matrix       : { decision: { metric: 'H'|'M'|'L'|'N' } } —
   //                  missing = blank (not yet scored).
   let state = {
-    title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '',
+    title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
     metrics: [], assignments: {}, chipColors: {},
-    decisions: [], matrix: {}, decisionKinds: {}, subframes: {},
-    uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
+    decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {},
+    uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
   };
   let currentName = null;   // which named file, if any, is currently loaded
   // Current position in the decision tree. Empty array = top level.
@@ -2069,16 +2160,21 @@ noindex: true
       problemUrl:         (s && typeof s.problemUrl === 'string')         ? s.problemUrl         : '',
       problemNotes:       (s && typeof s.problemNotes === 'string')       ? s.problemNotes       : '',
       problemNotesSource: (s && typeof s.problemNotesSource === 'string') ? s.problemNotesSource : '',
+      timeStep:           normalizeTimeSpec(s && s.timeStep),
+      horizon:            normalizeTimeSpec(s && s.horizon, /* allowPeriods */ true),
       metrics:       Array.isArray(s && s.metrics)            ? s.metrics      : [],
       assignments:   (s && s.assignments)                ? s.assignments   : {},
       chipColors:    (s && s.chipColors)                 ? s.chipColors    : {},
       decisions:     Array.isArray(s && s.decisions)     ? s.decisions     : [],
       matrix:        (s && s.matrix)                     ? s.matrix        : {},
       decisionKinds: normalizeDecisionKinds(s && s.decisionKinds),
+      decisionTimings: normalizeTimings(s && s.decisionTimings),
       subframes:     normalizeSubframes(s && s.subframes),
       uncertainties: Array.isArray(s && s.uncertainties) ? s.uncertainties : [],
       uMatrix:       (s && s.uMatrix)                    ? s.uMatrix       : {},
-      uncertaintyScopes: normalizeUncertaintyScopes(s && s.uncertaintyScopes),
+      uncertaintyScopes:   normalizeUncertaintyScopes(s && s.uncertaintyScopes),
+      uncertaintyKinds:    normalizeDecisionKinds(s && s.uncertaintyKinds),   // reuse gen/disc/num validator
+      uncertaintyTimings:  normalizeTimings(s && s.uncertaintyTimings),
     };
   }
   // Per-uncertainty scope map: uncertainty name → parentPath (array of
@@ -2104,6 +2200,36 @@ noindex: true
       // 'gen' is the default — we only need to record non-default kinds.
     }
     return out;
+  }
+  // Per-item timing map (decision or uncertainty name → 'stat' or 'dyn').
+  // Missing entries mean 'dyn' (the default — most sequential decision
+  // analytics deals with dynamic decisions/uncertainties). Sparse: we
+  // only record 'stat' explicitly.
+  function normalizeTimings(tm) {
+    const out = {};
+    if (!tm || typeof tm !== 'object') return out;
+    for (const k of Object.keys(tm)) {
+      if (typeof k !== 'string' || !k) continue;
+      const v = String(tm[k] || '').toLowerCase();
+      if (v === 'stat') out[k] = 'stat';
+      // 'dyn' is the default — no need to store.
+    }
+    return out;
+  }
+  // Time step / horizon spec: { value: '' | number, unit: '' | wall-clock }.
+  // Wall-clock units: seconds | minutes | hours | days | weeks | months |
+  // quarters | years. Horizon may additionally carry unit = 'periods' to
+  // count against the time-step unit directly. Empty when the user hasn't
+  // filled it in — no default (forces the choice).
+  const WALL_UNITS = ['seconds','minutes','hours','days','weeks','months','quarters','years'];
+  function normalizeTimeSpec(ts, allowPeriods) {
+    if (!ts || typeof ts !== 'object') return { value: '', unit: '' };
+    const rawVal = ts.value;
+    const value = (rawVal === '' || rawVal == null) ? '' : (Number.isFinite(Number(rawVal)) ? String(rawVal) : '');
+    const unitRaw = String(ts.unit || '').toLowerCase();
+    const allowed = allowPeriods ? WALL_UNITS.concat(['periods']) : WALL_UNITS;
+    const unit = allowed.indexOf(unitRaw) >= 0 ? unitRaw : '';
+    return { value, unit };
   }
   function normalizeUncertaintyScopes(sc) {
     const out = {};
@@ -2131,7 +2257,8 @@ noindex: true
         scope:     (typeof f.scope === 'string') ? f.scope : '',
         decisions: Array.isArray(f.decisions)    ? f.decisions : [],
         matrix:    (f.matrix && typeof f.matrix === 'object') ? f.matrix : {},
-        decisionKinds: normalizeDecisionKinds(f.decisionKinds),
+        decisionKinds:   normalizeDecisionKinds(f.decisionKinds),
+        decisionTimings: normalizeTimings(f.decisionTimings),
         subframes: normalizeSubframes(f.subframes),
       };
     }
@@ -2163,7 +2290,7 @@ noindex: true
     if (!parentFrame.subframes) parentFrame.subframes = {};
     if (!parentFrame.subframes[name]) {
       parentFrame.subframes[name] = {
-        scope: '', decisions: [], matrix: {}, decisionKinds: {}, subframes: {},
+        scope: '', decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {},
       };
     }
     return parentFrame.subframes[name];
@@ -2381,16 +2508,21 @@ noindex: true
       problemUrl: state.problemUrl,
       problemNotes: state.problemNotes,
       problemNotesSource: state.problemNotesSource,
+      timeStep: state.timeStep,
+      horizon: state.horizon,
       metrics: state.metrics,
       assignments: state.assignments,
       chipColors: state.chipColors,
       decisions: state.decisions,
       matrix: state.matrix,
       decisionKinds: state.decisionKinds,
+      decisionTimings: state.decisionTimings,
       subframes: state.subframes,
       uncertainties: state.uncertainties,
       uMatrix: state.uMatrix,
       uncertaintyScopes: state.uncertaintyScopes,
+      uncertaintyKinds: state.uncertaintyKinds,
+      uncertaintyTimings: state.uncertaintyTimings,
       savedAt: new Date().toISOString(),
     };
   }
@@ -2513,7 +2645,7 @@ noindex: true
     $('#fp-scope-input').value         = state.scope || '';
     $('#fp-bot-desc').value            = state.problemDescription || '';
     $('#fp-bot-url').value             = state.problemUrl || '';
-    renderNotesChip();
+    renderNotesChip(); syncTimeSpecDom();
     $('#fp-metrics-input').value       = state.metrics.join('\n');
     $('#fp-decisions-input').value     = state.decisions.join('\n');
     $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -2679,7 +2811,7 @@ noindex: true
         $('#fp-scope-input').value         = state.scope || '';
         $('#fp-bot-desc').value            = state.problemDescription || '';
         $('#fp-bot-url').value             = state.problemUrl || '';
-        renderNotesChip();
+        renderNotesChip(); syncTimeSpecDom();
         $('#fp-metrics-input').value       = state.metrics.join('\n');
         $('#fp-decisions-input').value     = state.decisions.join('\n');
         $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -2982,10 +3114,15 @@ noindex: true
     if (kind === 'decision') {
       reconcileSubframes(frame, renames, deletes);
       reconcileDecisionKinds(frame, renames, deletes);
+      reconcileTimings(frame, 'decisionTimings', renames, deletes);
     }
-    // Uncertainty-level renames/deletes propagate to the scope map so
-    // a wording tweak keeps the "[under X]" tag and a delete drops it.
-    if (kind === 'uncertainty') reconcileUncertaintyScopes(renames, deletes);
+    // Uncertainty-level renames/deletes propagate to all three uncertainty
+    // sidecar maps so labels follow the renamed item and drop on delete.
+    if (kind === 'uncertainty') {
+      reconcileUncertaintyScopes(renames, deletes);
+      reconcileUncertaintyKinds(renames, deletes);
+      reconcileTimings(state, 'uncertaintyTimings', renames, deletes);
+    }
     renderImpactMatrix(kind);
     autoSave();
   }
@@ -3007,6 +3144,70 @@ noindex: true
     }
     renderImpactMatrix('decision');
     autoSave();
+  }
+  // Timing toggle — parallels toggleDecisionKind. Applies to any item
+  // (decision on a frame, or uncertainty on the root). Pass the map
+  // that holds the timing entries (frame.decisionTimings or
+  // state.uncertaintyTimings) and the item name.
+  function toggleTiming(mapHolder, mapKey, name) {
+    if (!mapHolder) return;
+    if (!mapHolder[mapKey] || typeof mapHolder[mapKey] !== 'object') mapHolder[mapKey] = {};
+    const cur = mapHolder[mapKey][name] === 'stat' ? 'stat' : 'dyn';
+    const next = cur === 'stat' ? 'dyn' : 'stat';
+    if (next === 'dyn') {
+      delete mapHolder[mapKey][name];      // 'dyn' is the default; keep the map sparse
+    } else {
+      mapHolder[mapKey][name] = next;
+    }
+    autoSave();
+  }
+  // Uncertainty-kind toggle (gen -> disc -> num -> gen). Parallel to
+  // toggleDecisionKind but stored on state.uncertaintyKinds.
+  function toggleUncertaintyKind(name) {
+    if (!state.uncertaintyKinds || typeof state.uncertaintyKinds !== 'object') {
+      state.uncertaintyKinds = {};
+    }
+    const stored = state.uncertaintyKinds[name];
+    const cur = (stored === 'disc' || stored === 'num') ? stored : 'gen';
+    const cycle = { gen: 'disc', disc: 'num', num: 'gen' };
+    const next = cycle[cur];
+    if (next === 'gen') {
+      delete state.uncertaintyKinds[name];
+    } else {
+      state.uncertaintyKinds[name] = next;
+    }
+    renderImpactMatrix('uncertainty');
+    autoSave();
+  }
+  // Reconcile helpers for the new sidecar maps — parallel to
+  // reconcileDecisionKinds. Called from syncListFromTextarea on
+  // rename / delete so labels follow their item.
+  function reconcileTimings(mapHolder, mapKey, renames, deletes) {
+    if (!mapHolder || !mapHolder[mapKey] || typeof mapHolder[mapKey] !== 'object') return;
+    const m = mapHolder[mapKey];
+    for (const [from, to] of renames) {
+      if (from === to) continue;
+      if (m[from]) {
+        if (!m[to]) m[to] = m[from];
+        delete m[from];
+      }
+    }
+    for (const gone of deletes) {
+      if (m[gone]) delete m[gone];
+    }
+  }
+  function reconcileUncertaintyKinds(renames, deletes) {
+    if (!state.uncertaintyKinds) return;
+    for (const [from, to] of renames) {
+      if (from === to) continue;
+      if (state.uncertaintyKinds[from]) {
+        if (!state.uncertaintyKinds[to]) state.uncertaintyKinds[to] = state.uncertaintyKinds[from];
+        delete state.uncertaintyKinds[from];
+      }
+    }
+    for (const gone of deletes) {
+      if (state.uncertaintyKinds[gone]) delete state.uncertaintyKinds[gone];
+    }
   }
   function reconcileDecisionKinds(frame, renames, deletes) {
     if (!frame || !frame.decisionKinds || typeof frame.decisionKinds !== 'object') return;
@@ -3139,11 +3340,47 @@ noindex: true
       const nameTd = document.createElement('td');
       nameTd.className = 'fp-matrix-decision';
       appendTextWithSlashBreaks(nameTd, name);
-      // Uncertainty scope chip: if this uncertainty was generated while
-      // the user was drilled into a sub-decision, show a small badge with
-      // the leaf-parent name so users can see the row is context-tagged
-      // (rather than a root-level uncertainty applying to everything).
+      // Uncertainty chips: (gen)/(disc)/(num) kind + (stat)/(dyn) timing
+      // + optional "for: X" scope chip when generated under a drill-in.
       if (kind === 'uncertainty') {
+        // Kind chip (parallel to decisions).
+        const ukMap = state.uncertaintyKinds || {};
+        const uk = (ukMap[name] === 'disc' || ukMap[name] === 'num') ? ukMap[name] : 'gen';
+        const kchip = document.createElement('button');
+        kchip.type = 'button';
+        kchip.className = 'fp-decision-kind-chip fp-decision-kind-' + uk;
+        kchip.textContent = '(' + uk + ')';
+        const ukTitles = {
+          gen:  'General uncertainty — a broad category ("Weather", "Interest rates"). Click to switch to (disc).',
+          disc: 'Discrete uncertainty — a specific realization from a discrete set ("Recession scenario", "Fed rate = 5.25%"). Click to switch to (num).',
+          num:  'Numeric uncertainty — a random variable with a distribution ("Demand ~ Normal(100, 15)"). Click to switch to (gen).',
+        };
+        kchip.title = ukTitles[uk];
+        kchip.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleUncertaintyKind(name);
+        });
+        nameTd.appendChild(document.createTextNode(' '));
+        nameTd.appendChild(kchip);
+        // Timing chip (stat/dyn).
+        const utMap = state.uncertaintyTimings || {};
+        const ut = utMap[name] === 'stat' ? 'stat' : 'dyn';
+        const tchip = document.createElement('button');
+        tchip.type = 'button';
+        tchip.className = 'fp-timing-chip fp-timing-' + ut;
+        tchip.textContent = '(' + ut + ')';
+        tchip.title = ut === 'stat'
+          ? 'Static — a fixed but uncertain parameter, drawn once at t=0 from a distribution (unknown model parameter, one-time draw). Click to switch to (dyn).'
+          : 'Dynamic — arrives / evolves per period (demand, weather, prices over time). Click to switch to (stat).';
+        tchip.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleTiming(state, 'uncertaintyTimings', name);
+          renderImpactMatrix('uncertainty');
+        });
+        nameTd.appendChild(document.createTextNode(' '));
+        nameTd.appendChild(tchip);
+        // Scope chip (existing behavior — shown only when generated under
+        // a drill-in).
         const scopePath = (state.uncertaintyScopes && state.uncertaintyScopes[name]) || null;
         if (Array.isArray(scopePath) && scopePath.length) {
           const chip = document.createElement('span');
@@ -3182,6 +3419,24 @@ noindex: true
         });
         nameTd.appendChild(document.createTextNode(' '));
         nameTd.appendChild(kchip);
+        // Timing chip — (stat)/(dyn). Sits next to the kind chip.
+        // Default (dyn); click toggles. Stored per-frame.
+        const timingMap = frame.decisionTimings || {};
+        const dt = timingMap[name] === 'stat' ? 'stat' : 'dyn';
+        const tchip = document.createElement('button');
+        tchip.type = 'button';
+        tchip.className = 'fp-timing-chip fp-timing-' + dt;
+        tchip.textContent = '(' + dt + ')';
+        tchip.title = dt === 'stat'
+          ? 'Static — fixed once at t=0 (design/capacity/one-time choice). Click to switch to (dyn).'
+          : 'Dynamic — can change per period starting at t=0. Click to switch to (stat).';
+        tchip.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleTiming(frame, 'decisionTimings', name);
+          renderImpactMatrix('decision');
+        });
+        nameTd.appendChild(document.createTextNode(' '));
+        nameTd.appendChild(tchip);
       }
       // Drill-in affordance — decisions only. Click (or right-click
       // anywhere on the row) descends into this decision's own
@@ -3825,6 +4080,17 @@ noindex: true
         const nums = Array.from(uncertaintyTypesFilter).sort((a, b) => a - b);
         form.append('uncertaintyTypes', JSON.stringify(nums));
       }
+      // Time step + horizon — sent so the AI can classify stat/dyn per idea
+      // in the right temporal frame (weekly time step vs annual horizon
+      // yields different stat/dyn recommendations than daily/lifetime).
+      const ts = state.timeStep || {};
+      const hz = state.horizon  || {};
+      if (ts.value && ts.unit) {
+        form.append('timeStep', ts.value + ' ' + ts.unit);
+      }
+      if (hz.value && hz.unit) {
+        form.append('horizon', hz.value + ' ' + hz.unit);
+      }
       if (scope) form.append('scope', scope);
       if (desc)  form.append('description', desc);
       // Ingested notes replace the raw url/file for downstream calls.
@@ -3889,15 +4155,17 @@ noindex: true
   // a plain string (legacy) or a {name, kind} object. Kind is only set
   // for decision ideas (gen/spec/num); uncertainties come back kindless.
   function normalizeIdea(raw) {
-    if (typeof raw === 'string') return { name: raw.trim(), kind: null };
+    if (typeof raw === 'string') return { name: raw.trim(), kind: null, timing: null };
     if (raw && typeof raw === 'object') {
       const name = String(raw.name || '').trim();
       let k = String(raw.kind || '').toLowerCase();
       if (k === 'spec') k = 'disc';   // legacy alias
       const kind = (k === 'gen' || k === 'disc' || k === 'num') ? k : null;
-      return { name, kind };
+      const t = String(raw.timing || '').toLowerCase();
+      const timing = (t === 'stat' || t === 'dyn') ? t : null;
+      return { name, kind, timing };
     }
-    return { name: '', kind: null };
+    return { name: '', kind: null, timing: null };
   }
   function renderIdeasList(ideas) {
     const list = $('#fp-ideas-list');
@@ -3917,20 +4185,29 @@ noindex: true
       cb.id = 'fp-idea-cb-' + i;
       cb.checked = true;
       cb.value = idea.name;
-      // Stash the kind on the checkbox so ideasApply() can pick it up
-      // without re-parsing.
-      if (idea.kind) cb.dataset.ideaKind = idea.kind;
+      // Stash the AI's classification on the checkbox so ideasApply()
+      // can pick it up without re-parsing. Both decisions AND
+      // uncertainties can carry these now.
+      if (idea.kind)   cb.dataset.ideaKind   = idea.kind;
+      if (idea.timing) cb.dataset.ideaTiming = idea.timing;
       const label = document.createElement('label');
       label.htmlFor = cb.id;
       label.textContent = idea.name;
       row.appendChild(cb);
       row.appendChild(label);
-      // Little chip next to decision-kind ideas so the user sees the
-      // AI's classification before checking. Matches the matrix chip.
+      // Read-only chips next to the row so the user sees the AI's
+      // classification before checking. Matches the matrix chips.
       if (idea.kind) {
         const chip = document.createElement('span');
         chip.className = 'fp-decision-kind-chip fp-decision-kind-' + idea.kind;
         chip.textContent = '(' + idea.kind + ')';
+        chip.style.cursor = 'default';
+        row.appendChild(chip);
+      }
+      if (idea.timing) {
+        const chip = document.createElement('span');
+        chip.className = 'fp-timing-chip fp-timing-' + idea.timing;
+        chip.textContent = '(' + idea.timing + ')';
         chip.style.cursor = 'default';
         row.appendChild(chip);
       }
@@ -3956,7 +4233,8 @@ noindex: true
       const v = String(cb.value || '').trim();
       if (!v) return;
       const k = cb.dataset.ideaKind || null;
-      picked.push({ name: v, kind: k });
+      const t = cb.dataset.ideaTiming || null;
+      picked.push({ name: v, kind: k, timing: t });
     });
     if (!picked.length) {
       $('#fp-ideas-status').textContent = 'Nothing checked — pick at least one, or Cancel.';
@@ -3989,22 +4267,32 @@ noindex: true
     // the new lines themselves.
     $(cfg.textareaSel).value = existing.join('\n');
     syncListFromTextarea(ideasCurrentKind);
-    // Now apply the AI's gen/spec/num classification to the freshly-added
-    // decisions (uncertainties have no kind). Do this AFTER the sync so
-    // the frame's decisionKinds map is in a known state.
-    if (ideasCurrentKind === 'decision' && newlyAdded.length) {
-      if (!frame.decisionKinds || typeof frame.decisionKinds !== 'object') {
-        frame.decisionKinds = {};
-      }
-      for (const p of newlyAdded) {
-        if (p.kind === 'disc' || p.kind === 'num') {
-          frame.decisionKinds[p.name] = p.kind;
-        } else {
-          // 'gen' is the default — leave the map entry absent to keep it sparse.
-          delete frame.decisionKinds[p.name];
+    // Persist the AI's classification (kind + timing) on the freshly-added
+    // items. Do this AFTER the sync so the target maps are in known state.
+    if (newlyAdded.length) {
+      if (ideasCurrentKind === 'decision') {
+        if (!frame.decisionKinds || typeof frame.decisionKinds !== 'object') frame.decisionKinds = {};
+        if (!frame.decisionTimings || typeof frame.decisionTimings !== 'object') frame.decisionTimings = {};
+        for (const p of newlyAdded) {
+          if (p.kind === 'disc' || p.kind === 'num') frame.decisionKinds[p.name] = p.kind;
+          else delete frame.decisionKinds[p.name];    // 'gen' is default, keep sparse
+          if (p.timing === 'stat') frame.decisionTimings[p.name] = 'stat';
+          else delete frame.decisionTimings[p.name];  // 'dyn' is default
         }
+        renderImpactMatrix('decision');
+      } else {
+        // Uncertainty: kind + timing go on state.uncertaintyKinds /
+        // state.uncertaintyTimings (uncertainties are root-only).
+        if (!state.uncertaintyKinds || typeof state.uncertaintyKinds !== 'object') state.uncertaintyKinds = {};
+        if (!state.uncertaintyTimings || typeof state.uncertaintyTimings !== 'object') state.uncertaintyTimings = {};
+        for (const p of newlyAdded) {
+          if (p.kind === 'disc' || p.kind === 'num') state.uncertaintyKinds[p.name] = p.kind;
+          else delete state.uncertaintyKinds[p.name];
+          if (p.timing === 'stat') state.uncertaintyTimings[p.name] = 'stat';
+          else delete state.uncertaintyTimings[p.name];
+        }
+        renderImpactMatrix('uncertainty');
       }
-      renderImpactMatrix('decision');   // re-render to show the fresh chips
     }
     $('#fp-ideas-modal').hidden = true;
     flashStatus('Added ' + picked.length + ' idea' + (picked.length === 1 ? '' : 's') + '.');
@@ -4193,6 +4481,8 @@ noindex: true
       description: (typeof f.description === 'string') ? f.description : '',
       problemDescription: (typeof f.problemDescription === 'string') ? f.problemDescription : '',
       problemUrl:         (typeof f.problemUrl === 'string')         ? f.problemUrl         : '',
+      timeStep:           normalizeTimeSpec(f.timeStep),
+      horizon:            normalizeTimeSpec(f.horizon, true),
       problemNotes:       (typeof f.problemNotes === 'string')       ? f.problemNotes       : '',
       problemNotesSource: (typeof f.problemNotesSource === 'string') ? f.problemNotesSource : '',
       metrics,
@@ -4200,11 +4490,14 @@ noindex: true
       chipColors:  (f.chipColors && typeof f.chipColors === 'object') ? f.chipColors : {},
       decisions,
       matrix:      norm(f.matrix, decisions),
-      decisionKinds: normalizeDecisionKinds(f.decisionKinds),
+      decisionKinds:   normalizeDecisionKinds(f.decisionKinds),
+      decisionTimings: normalizeTimings(f.decisionTimings),
       subframes:   outSubframes,
       uncertainties,
       uMatrix:     norm(f.uMatrix, uncertainties),
-      uncertaintyScopes: normalizeUncertaintyScopes(f.uncertaintyScopes),
+      uncertaintyScopes:  normalizeUncertaintyScopes(f.uncertaintyScopes),
+      uncertaintyKinds:   normalizeDecisionKinds(f.uncertaintyKinds),
+      uncertaintyTimings: normalizeTimings(f.uncertaintyTimings),
     };
   }
   function applyFraming(framing, sourceLabel, scopeText, descText, urlText) {
@@ -4230,7 +4523,7 @@ noindex: true
     $('#fp-scope-input').value         = state.scope || '';
     $('#fp-bot-desc').value            = state.problemDescription || '';
     $('#fp-bot-url').value             = state.problemUrl || '';
-    renderNotesChip();
+    renderNotesChip(); syncTimeSpecDom();
     $('#fp-metrics-input').value       = state.metrics.join('\n');
     $('#fp-decisions-input').value     = state.decisions.join('\n');
     $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -4324,7 +4617,7 @@ noindex: true
       if (!notes) throw new Error('Server returned no notes.');
       state.problemNotes = notes;
       state.problemNotesSource = String(data.sourceLabel || '').trim();
-      renderNotesChip();
+      renderNotesChip(); syncTimeSpecDom();
       autoSave();
       const chars = notes.length;
       const src = state.problemNotesSource ? '"' + state.problemNotesSource + '"' : 'your material';
@@ -4335,6 +4628,43 @@ noindex: true
     } finally {
       if (btn) { btn.disabled = false; btn.textContent = prev; }
     }
+  }
+  // Time-step / horizon: DOM population + derived-period display.
+  // Wall-clock unit → seconds for cross-unit conversion.
+  const UNIT_SECONDS = {
+    seconds: 1, minutes: 60, hours: 3600, days: 86400,
+    weeks: 604800, months: 2629746, quarters: 7889238, years: 31556952,
+  };
+  function updateHorizonDerived() {
+    const el = document.getElementById('fp-horizon-derived');
+    if (!el) return;
+    const ts = state.timeStep || { value: '', unit: '' };
+    const hz = state.horizon  || { value: '', unit: '' };
+    // Only compute when both fully specified and horizon isn't already
+    // expressed in periods.
+    const tsVal = Number(ts.value), hzVal = Number(hz.value);
+    if (!Number.isFinite(tsVal) || tsVal <= 0 || !ts.unit) { el.textContent = ''; return; }
+    if (!Number.isFinite(hzVal) || hzVal <= 0 || !hz.unit) { el.textContent = ''; return; }
+    if (hz.unit === 'periods') { el.textContent = ''; return; }
+    const tsSec = tsVal * (UNIT_SECONDS[ts.unit] || 0);
+    const hzSec = hzVal * (UNIT_SECONDS[hz.unit] || 0);
+    if (tsSec <= 0 || hzSec <= 0) { el.textContent = ''; return; }
+    const nPeriods = hzSec / tsSec;
+    // Show integer if it comes out whole, else 1 decimal.
+    const shown = Math.abs(nPeriods - Math.round(nPeriods)) < 1e-9
+      ? String(Math.round(nPeriods))
+      : nPeriods.toFixed(1);
+    el.textContent = '= ' + shown + ' periods';
+  }
+  function syncTimeSpecDom() {
+    const ts = state.timeStep || { value: '', unit: '' };
+    const hz = state.horizon  || { value: '', unit: '' };
+    const setIf = (id, v) => { const e = document.getElementById(id); if (e) e.value = (v || v === 0) ? v : ''; };
+    setIf('fp-time-step-value', ts.value);
+    setIf('fp-time-step-unit',  ts.unit);
+    setIf('fp-horizon-value',   hz.value);
+    setIf('fp-horizon-unit',    hz.unit);
+    updateHorizonDerived();
   }
   function renderNotesChip() {
     const wrap = $('#fp-notes-chip-wrap');
@@ -4355,7 +4685,7 @@ noindex: true
     if (!confirm('Forget the ingested notes? The URL / file / description in the boxes stay put — click "Read introductory materials" again to re-ingest.')) return;
     state.problemNotes = '';
     state.problemNotesSource = '';
-    renderNotesChip();
+    renderNotesChip(); syncTimeSpecDom();
     autoSave();
     setBotStatus('Ingested notes cleared.', '');
   }
@@ -4382,7 +4712,7 @@ noindex: true
     state.problemUrl = '';
     state.problemNotes = '';
     state.problemNotesSource = '';
-    renderNotesChip();
+    renderNotesChip(); syncTimeSpecDom();
     autoSave();
     setBotStatus('');
   }
@@ -4852,7 +5182,7 @@ noindex: true
       $('#fp-scope-input').value         = state.scope || '';
       $('#fp-bot-desc').value            = state.problemDescription || '';
       $('#fp-bot-url').value             = state.problemUrl || '';
-      renderNotesChip();
+      renderNotesChip(); syncTimeSpecDom();
       $('#fp-metrics-input').value       = state.metrics.join('\n');
       $('#fp-decisions-input').value     = state.decisions.join('\n');
       $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -5142,10 +5472,10 @@ noindex: true
       if (raw == null) return;
       const finalTitle = raw.trim() || 'New framing';
       state = {
-        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '',
+        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
         metrics: [], assignments: {}, chipColors: {},
-        decisions: [], matrix: {}, decisionKinds: {}, subframes: {},
-        uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
+        decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {},
+        uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
       };
       currentPath = [];
       $('#fp-scope-input').value         = '';
@@ -5712,10 +6042,10 @@ noindex: true
         loadedNode.currentFramingId = null;
         // Blank the workspace since the framing on-screen no longer exists.
         state = {
-          title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '',
+          title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
           metrics: [], assignments: {}, chipColors: {},
-          decisions: [], matrix: {}, decisionKinds: {}, subframes: {},
-          uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
+          decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {},
+          uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
         };
         currentPath = [];
         setDocTitle(null);
@@ -5909,14 +6239,19 @@ noindex: true
         problemUrl:         state.problemUrl || '',
         problemNotes:       state.problemNotes || '',
         problemNotesSource: state.problemNotesSource || '',
+        timeStep:      state.timeStep || { value: '', unit: '' },
+        horizon:       state.horizon  || { value: '', unit: '' },
         metrics:       state.metrics || [],
         assignments:   state.assignments || {},
         decisions:     state.decisions || [],
         matrix:        state.matrix || {},
-        decisionKinds: state.decisionKinds || {},
+        decisionKinds:   state.decisionKinds   || {},
+        decisionTimings: state.decisionTimings || {},
         uncertainties: state.uncertainties || [],
         uMatrix:       state.uMatrix || {},
-        uncertaintyScopes: state.uncertaintyScopes || {},
+        uncertaintyScopes:  state.uncertaintyScopes  || {},
+        uncertaintyKinds:   state.uncertaintyKinds   || {},
+        uncertaintyTimings: state.uncertaintyTimings || {},
         subframes:     state.subframes || {},
       };
       if (loadedNode) {
@@ -5972,7 +6307,7 @@ noindex: true
     $('#fp-scope-input').value         = state.scope || '';
     $('#fp-bot-desc').value            = state.problemDescription || '';
     $('#fp-bot-url').value             = state.problemUrl || '';
-    renderNotesChip();
+    renderNotesChip(); syncTimeSpecDom();
     $('#fp-metrics-input').value       = state.metrics.join('\n');
     $('#fp-decisions-input').value     = state.decisions.join('\n');
     $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -5994,6 +6329,20 @@ noindex: true
       state.problemUrl = $('#fp-bot-url').value;
       autoSave();
     });
+    // Time step + horizon inputs — 4 total controls. Any change writes
+    // state, autosaves, and re-runs the derived "= N periods" hint.
+    function pushTimeSpec(kind) {
+      const v = $('#fp-' + kind + '-value').value;
+      const u = $('#fp-' + kind + '-unit').value;
+      const key = kind === 'time-step' ? 'timeStep' : 'horizon';
+      state[key] = { value: v, unit: u };
+      autoSave();
+      updateHorizonDerived();
+    }
+    $('#fp-time-step-value').addEventListener('input', () => pushTimeSpec('time-step'));
+    $('#fp-time-step-unit').addEventListener('change', () => pushTimeSpec('time-step'));
+    $('#fp-horizon-value').addEventListener('input', () => pushTimeSpec('horizon'));
+    $('#fp-horizon-unit').addEventListener('change', () => pushTimeSpec('horizon'));
     $('#fp-metrics-input').addEventListener('input',       syncMetricsFromTextarea);
     $('#fp-decisions-input').addEventListener('input',     () => syncListFromTextarea('decision'));
     $('#fp-uncertainties-input').addEventListener('input', () => syncListFromTextarea('uncertainty'));
@@ -6014,10 +6363,10 @@ noindex: true
       closeFileMenu();
       if (!confirm('Start a new framing? Anything on screen is discarded (Save to your library first if you want to keep it).')) return;
       state = {
-        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '',
+        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
         metrics: [], assignments: {}, chipColors: {},
-        decisions: [], matrix: {}, decisionKinds: {}, subframes: {},
-        uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
+        decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {},
+        uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
       };
       currentPath = [];
       setCurrentName(null);
@@ -6179,10 +6528,10 @@ noindex: true
     $('#fp-reset').addEventListener('click', () => {
       if (!confirm('Delete every metric, decision, and uncertainty, clear the pyramid and both matrices, and unload the current framing? (Framings saved to your library are not affected.) Cannot be undone.')) return;
       state = {
-        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '',
+        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
         metrics: [], assignments: {}, chipColors: {},
-        decisions: [], matrix: {}, decisionKinds: {}, subframes: {},
-        uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
+        decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {},
+        uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
       };
       currentPath = [];
       setCurrentName(null);
@@ -6345,7 +6694,7 @@ noindex: true
     const notesModal = $('#fp-notes-modal');
     if (notesModal) notesModal.addEventListener('click', (e) => { if (e.target === notesModal) hideNotesModal(); });
     // Show the notes chip on initial load if the loaded state has notes.
-    renderNotesChip();
+    renderNotesChip(); syncTimeSpecDom();
     // Ctrl/Cmd-Enter inside the description box submits.
     const botDesc = $('#fp-bot-desc');
     if (botDesc) botDesc.addEventListener('keydown', (e) => {
