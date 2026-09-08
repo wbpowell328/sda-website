@@ -8,8 +8,6 @@ date: 2026-08-22
 {% raw %}
 <p>The video modules on this page represent a natural progression through the material on sequential decision analytics. The modules are organized in a natural progression, but feel free to skip forward to material of greatest interest. Each module contains information about recommended predecessor modules, and an indication of the technical level.</p>
 
-<p>If any faculty would like access to the PowerPoint slides for use in lectures, email me at <a href="mailto:wbpowell328@gmail.com">wbpowell328@gmail.com</a>.</p>
-
 <ul>
   <li><a href="#introductory-material"><strong>Introductory material</strong></a></li>
   <li><a href="#problem-framing-and-modeling"><strong>Problem framing and modeling</strong></a></li>
