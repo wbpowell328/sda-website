@@ -378,6 +378,9 @@ date: 2026-08-11
         <button type="button" class="fp-ideas-mode-btn" data-kind="decision" data-mode="spec"
                 title="Specific mode — enumerate concrete members (industry names, brand names, drug names, cities) or numeric parameters, not sub-processes. Skips the categorical layer.">(spec)</button>
       </span>
+      <input type="number" class="fp-ideas-count" data-kind="decision"
+             min="1" max="200" step="1" placeholder="count"
+             title="How many ideas to generate. Blank = auto (uses the First-draft size setting: small=3, medium=5, large=8, max=20). Type a number 1–200 to override — handy for long (spec) lists like 50 potential suppliers." />
     </div>
     <textarea id="fp-decisions-input" spellcheck="true" placeholder="Set the price&#10;Choose a supplier&#10;Approve the design&#10;Schedule production"></textarea>
   </div>
@@ -422,6 +425,9 @@ date: 2026-08-11
         <button type="button" class="fp-ideas-mode-btn" data-kind="uncertainty" data-mode="spec"
                 title="Specific mode — propose concrete measurable uncertainty factors or realizations, not broad categories.">(spec)</button>
       </span>
+      <input type="number" class="fp-ideas-count" data-kind="uncertainty"
+             min="1" max="200" step="1" placeholder="count"
+             title="How many ideas to generate. Blank = auto (uses the First-draft size setting). Type a number 1–200 to override — handy for long (spec) lists." />
     </div>
     <textarea id="fp-uncertainties-input" spellcheck="true" placeholder="Demand volatility&#10;Supplier reliability&#10;Currency fluctuation&#10;Regulatory change"></textarea>
   </div>
@@ -759,6 +765,20 @@ date: 2026-08-11
   .fp-ideas-mode-btn.is-active {
     background: #c9621e; color: #fff; border-color: #c9621e; font-weight: 600;
   }
+  /* Count override — small numeric input next to the mode toggle.
+     Blank = auto (uses the First-draft size default). Set a number
+     to override, useful for long (spec) lists (e.g. 50 suppliers). */
+  .fp-ideas-count {
+    margin-left: 6px;
+    width: 4.5em;
+    padding: 2px 6px;
+    font-size: 0.72rem;
+    border: 1px solid #c9b891; border-radius: 4px;
+    background: #fff; color: #5a4a35;
+    font-family: inherit;
+  }
+  .fp-ideas-count::placeholder { color: #b8ac93; font-style: italic; }
+  .fp-ideas-count:focus { outline: 1px solid #c9621e; border-color: #c9621e; }
 
   /* Idea box modal */
   .fp-ideas-list {
@@ -3370,6 +3390,14 @@ date: 2026-08-11
       // (enumerate concrete members / numeric parameters, skip the
       // categorical layer). Server branches the closing prompt on this.
       form.append('mode', ideasMode[ideasCurrentKind] || 'gen');
+      // Optional per-header count override — user typed a number in the
+      // small "count" box next to the mode toggle. Blank = server uses
+      // the size-based default. Range 1..200 to keep output tokens sane.
+      const countInput = document.querySelector('.fp-ideas-count[data-kind="' + ideasCurrentKind + '"]');
+      const rawCount = countInput ? parseInt(countInput.value, 10) : NaN;
+      if (Number.isFinite(rawCount) && rawCount >= 1 && rawCount <= 200) {
+        form.append('countOverride', String(rawCount));
+      }
       if (scope) form.append('scope', scope);
       if (desc)  form.append('description', desc);
       // Ingested notes replace the raw url/file for downstream calls.

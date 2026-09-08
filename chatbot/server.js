@@ -873,9 +873,15 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
       const url         = String(req.body?.url || '').trim();
       const scope       = String(req.body?.scope || '').trim().slice(0, 2000);
       // Reuse the sizing table — count of ideas mirrors count of decisions/
-      // uncertainties in a framing of that size.
+      // uncertainties in a framing of that size. Client can override with
+      // countOverride (1..200) via the small "count" input next to the
+      // mode toggle — handy for long (spec) lists like 50 potential
+      // suppliers or 100 candidate SKUs.
       const { size, decisions: nD } = sizeInstructions(req.body?.size);
-      const count = nD;
+      const overrideRaw = parseInt(req.body?.countOverride, 10);
+      const count = (Number.isFinite(overrideRaw) && overrideRaw >= 1 && overrideRaw <= 200)
+        ? overrideRaw
+        : nD;
 
       // Existing on-screen content — sent so ideas don't duplicate.
       const parseList = (raw) => {
@@ -1164,7 +1170,10 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
 
       const response = await client.messages.create({
         model: FRAMING_MODEL,
-        max_tokens: 2048,
+        // Scale with count — each idea is ~30-50 output tokens (name +
+        // kind field + JSON overhead). 2048 is fine for the default ~5
+        // ideas; a request for 200 needs ~10000. Cap at 16k for safety.
+        max_tokens: Math.min(16000, Math.max(2048, count * 60)),
         system: framingPrompt || 'You are Professor Warren Powell\'s decision-framing assistant.',
         tools: [IDEAS_TOOL],
         tool_choice: { type: 'tool', name: IDEAS_TOOL.name },
@@ -1623,6 +1632,7 @@ const FRAMING_TOOL_HELP = [
   '',
   '## Generating ideas',
   '- **Generate ideas** button (next to Decisions or Uncertainties header): opens an idea box with AI-proposed items scored to have H or M impact on at least one metric. Check the ones you want, click "Add checked" to append.',
+  '- **count input** (small numeric box after the mode toggle): override how many ideas the AI returns. Blank = auto (uses the First-draft size setting: small=3, medium=5, large=8, max=20). Type any number 1-200 — handy for long (spec) lists like "50 potential suppliers" or "100 candidate SKUs".',
   '- **(gen)/(spec) mode toggle** next to Generate ideas: pick which mode fires on the next click. Default is (gen).',
   '  - **(gen)** — the AI proposes broad still-drillable categories ("Choose supplier", "Target markets"). Good for structuring the decision tree.',
   '  - **(spec)** — the AI enumerates concrete members OR numeric parameters, skipping the categorical layer. Drilled into "Target markets" in (spec) mode returns industry names ("Agriculture", "Healthcare", "Transportation", "Retail", "Energy"), NOT sub-processes like "Evaluate incumbent competition". Each item comes back tagged (disc) or (num).',
