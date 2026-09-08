@@ -323,6 +323,7 @@ Given that decisions are a universal human activity, it should not be surprising
 - Control (engineering)
 - Design (layouts, product features)
 - Election (making a choice of political candidate)
+- Idea (often a choice we hadn't thought of before)
 - Intervention (medical)
 - Move (games, business strategy)
 - Option (financial options, what options do we have, menu options)
