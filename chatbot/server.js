@@ -1164,7 +1164,7 @@ app.post('/framing/uncertainty-types', framingLimiter, (req, res) => {
 
 const IDEAS_TOOL = {
   name: 'record_ideas',
-  description: 'Record a list of proposed decisions or uncertainties. For decisions, also classify each idea as general / specific / numeric.',
+  description: 'Record a list of proposed decisions or uncertainties. Classify each idea by kind (gen/disc/num) and by timing (stat/dyn).',
   input_schema: {
     type: 'object',
     properties: {
@@ -1180,12 +1180,17 @@ const IDEAS_TOOL = {
             kind: {
               type: 'string',
               enum: ['gen', 'disc', 'num'],
-              description: 'For DECISIONS only, classify the idea: "gen" = a general/broad category that could be drilled into ("Choose supplier"); "disc" = a discrete choice from a specific list ("Buy from ContractCo", "Prescribe metformin"); "num" = a numeric parameter, discrete integer or continuous ("Safety stock level", "Reorder point", "Discount rate"). Omit for uncertainties.',
+              description: 'Classify the idea. For DECISIONS: "gen" = a general/broad category that could be drilled into ("Choose supplier"); "disc" = a discrete choice from a specific list ("Buy from ContractCo", "Prescribe metformin"); "num" = a numeric parameter, discrete integer or continuous ("Safety stock level", "Reorder point", "Discount rate"). For UNCERTAINTIES: "gen" = a broad category ("Weather", "Interest rates", "Customer demand"); "disc" = a specific realization from a discrete set ("Recession scenario", "Fed rate = 5.25%"); "num" = a numeric random variable / parameter with a distribution ("Demand ~ Normal(100, 15)", "Wind speed").',
+            },
+            timing: {
+              type: 'string',
+              enum: ['stat', 'dyn'],
+              description: 'Temporal type. "stat" (static) = fixed once at t=0 and does not change (a design/capacity/one-time choice; a fixed-but-uncertain parameter drawn once from a distribution). "dyn" (dynamic) = varies per period starting at t=0 (routing decisions each week, uncertain demand realized period-by-period, dynamic pricing). Most decisions and uncertainties in sequential decision analytics are dynamic — default to "dyn" unless the setting clearly indicates the item is fixed after t=0.',
             },
           },
           required: ['name'],
         },
-        description: 'The proposed ideas. For decisions each idea gets a kind classification; for uncertainties just names.',
+        description: 'The proposed ideas. Each idea gets a kind classification and a timing classification.',
       },
     },
     required: ['ideas'],
@@ -1570,9 +1575,8 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
           `Do NOT repeat anything already on screen. Return via the ` +
           `record_ideas tool.`;
       }
-      // Decisions get a kind classification (gen/spec/num). Add the
-      // classification rule to every decision-generation prompt so the
-      // model tags each idea correctly. Uncertainties don't use this.
+      // Kind classification (gen/disc/num) applies to BOTH decisions
+      // and uncertainties. The definitions differ slightly per kind.
       if (kind === 'decision') {
         closingText +=
           '\n\nFor EACH decision idea, also classify its "kind":\n' +
@@ -1588,7 +1592,47 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
           'number", classify as num regardless of whether specific candidate ' +
           'numbers are provided.\n' +
           'Set the kind field on each idea object accordingly.';
+      } else {
+        closingText +=
+          '\n\nFor EACH uncertainty idea, also classify its "kind":\n' +
+          '  - "gen" (general) — a broad category of uncertainty ("Weather", ' +
+          '"Interest rates", "Customer demand", "Regulatory environment"). ' +
+          'The vast majority of high-level uncertainties are gen.\n' +
+          '  - "disc" (discrete) — a specific realization from a discrete set ' +
+          '("Recession scenario", "Fed rate = 5.25%", "FDA approval outcome"). ' +
+          'Use when the uncertainty naturally has a small enumerable set of ' +
+          'outcomes.\n' +
+          '  - "num" (numeric) — a numeric random variable / parameter with ' +
+          'a distribution ("Demand ~ Normal(100, 15)", "Wind speed", ' +
+          '"Wait time"). Use when the uncertainty is fundamentally a number.\n' +
+          'Set the kind field on each idea object accordingly.';
       }
+      // Timing classification (stat/dyn) applies to BOTH decisions and
+      // uncertainties in every mode. Include the temporal context so the
+      // classifier is grounded in the user\'s actual time step / horizon.
+      const tsRaw = String(req.body?.timeStep || '').trim();
+      const hzRaw = String(req.body?.horizon || '').trim();
+      const nounSingular = kind === 'uncertainty' ? 'uncertainty' : 'decision';
+      const nounPluralClass = kind === 'uncertainty' ? 'uncertainties' : 'decisions';
+      let timingText = '\n\nAlso classify each ' + nounSingular + ' by "timing":\n' +
+        '  - "stat" (static) — fixed once at t=0 and does NOT change over the horizon. ' +
+        (kind === 'decision'
+          ? 'A design or capacity choice made up front, or a one-time strategic call.'
+          : 'A fixed-but-uncertain parameter drawn once from a distribution — e.g. an unknown model parameter, a one-time draw at t=0.') + '\n' +
+        '  - "dyn" (dynamic) — varies per period starting at t=0. ' +
+        (kind === 'decision'
+          ? 'Ongoing operational choices (routing, pricing, reordering, allocation) made each period.'
+          : 'Uncertainty realized period-by-period (demand, weather, prices, arrivals over time).') + '\n' +
+        'Most ' + nounPluralClass + ' in sequential decision analytics are dyn — default to dyn unless the setting clearly indicates the item is fixed after t=0.';
+      if (tsRaw || hzRaw) {
+        timingText += '\n\nThe user has specified:';
+        if (tsRaw) timingText += '\n  Time step: ' + tsRaw + ' (one period of the model)';
+        if (hzRaw) timingText += '\n  Horizon:   ' + hzRaw;
+        timingText += '\nUse this temporal frame when deciding stat vs dyn ' +
+          '(e.g. a choice made "once at the start of the year" is stat if ' +
+          'the horizon is one year, but dyn if the horizon is decades).';
+      }
+      closingText += timingText;
       userContent.push({ type: 'text', text: closingText });
 
       const response = await client.messages.create({
@@ -1620,15 +1664,17 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
       const ideas = [];
       const seen = new Set();
       for (const raw of rawIdeas) {
-        // Accept both string (legacy shape) and {name, kind} objects.
-        let name, kindTag;
+        // Accept both string (legacy) and {name, kind, timing} objects.
+        let name, kindTag, timingTag;
         if (typeof raw === 'string') {
           name = raw;
         } else if (raw && typeof raw === 'object') {
           name = raw.name;
           let k = String(raw.kind || '').toLowerCase();
-          if (k === 'spec') k = 'disc';   // legacy alias — accept and normalize
+          if (k === 'spec') k = 'disc';   // legacy alias
           if (k === 'gen' || k === 'disc' || k === 'num') kindTag = k;
+          const t = String(raw.timing || '').toLowerCase();
+          if (t === 'stat' || t === 'dyn') timingTag = t;
         } else {
           continue;
         }
@@ -1637,12 +1683,14 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
         const key = trimmed.toLowerCase();
         if (dupSet.has(key) || seen.has(key)) continue;
         seen.add(key);
-        // Only decisions get a kind tag; uncertainties come back as plain names.
-        if (kind === 'decision') {
-          ideas.push({ name: trimmed, kind: kindTag || 'gen' });
-        } else {
-          ideas.push({ name: trimmed });
-        }
+        // Both decisions and uncertainties now carry kind + timing.
+        // Kind defaults to 'gen', timing defaults to 'dyn' when the
+        // model omits them.
+        ideas.push({
+          name: trimmed,
+          kind: kindTag || 'gen',
+          timing: timingTag || 'dyn',
+        });
       }
 
       return res.json({
@@ -2070,13 +2118,24 @@ const FRAMING_TOOL_HELP = [
   '- **Drill out**: click any earlier breadcrumb step, or the ↑ up-level button.',
   '- Uncertainties do NOT nest — they always live at the root.',
   '',
-  '## Decision kind — (gen), (disc), (num)',
-  '- Every decision row shows a small clickable chip with one of three kinds. Click to cycle gen → disc → num → gen.',
-  '- **(gen)** general: a broad category that would naturally be refined into sub-decisions ("Choose supplier", "Assign drivers to loads"). Default.',
-  '- **(disc)** discrete: a specific choice from a discrete list, ready to implement ("Buy from ContractCo", "Prescribe metformin", "Overweight semis").',
-  '- **(num)** numeric: a numeric parameter, discrete integer OR continuous ("Safety stock level", "Reorder point", "Price in [0, 100]", "Discount rate").',
-  '- When the AI generates decision ideas via "Generate ideas", it classifies each proposal as gen/disc/num and the chip appears pre-tagged. The user can re-cycle any chip.',
-  '- Purely informational today — no functional impact — but planned to drive later features (tree collapsing, matrix roll-up, picking the right solver type per branch of the tree).',
+  '## Decision AND uncertainty kind — (gen), (disc), (num)',
+  '- Every decision AND every uncertainty row now shows a small clickable kind chip. Click to cycle gen → disc → num → gen.',
+  '- For decisions: **(gen)** = broad still-drillable category; **(disc)** = specific choice from a discrete list; **(num)** = numeric parameter.',
+  '- For uncertainties: **(gen)** = broad category ("Weather", "Interest rates"); **(disc)** = specific realization from a discrete set ("Recession scenario"); **(num)** = numeric random variable / parameter with a distribution ("Demand ~ Normal(100, 15)").',
+  '- Default is (gen) for both. The AI pre-tags every generated idea with the recommended kind; users can re-cycle any chip.',
+  '',
+  '## Timing — (stat) vs (dyn)',
+  '- A second chip on every decision AND every uncertainty. Click to toggle. Default is (dyn).',
+  '- **(stat)** static — fixed once at t=0 and does not change over the horizon. For decisions: design/capacity/one-time choices. For uncertainties: a fixed-but-uncertain parameter drawn once from a distribution.',
+  '- **(dyn)** dynamic — varies per period starting at t=0. For decisions: ongoing operational choices (routing, pricing, reordering). For uncertainties: realized period-by-period (demand, weather, prices).',
+  '- The AI pre-tags every generated idea with the recommended timing based on the framing\'s time step / horizon.',
+  '',
+  '## Time step and horizon (Problem scope inputs)',
+  '- **Time step**: the elementary period of the model. Value + unit (seconds / minutes / hours / days / weeks / months / quarters / years). Sets the granularity for dynamic decisions and for the exogenous information process (dynamic uncertainties).',
+  '- **Horizon**: the planning horizon. Same units, plus "periods" (which counts against the chosen time step). When both are wall-clock, the tool renders a derived "= N periods" hint next to the horizon so users see the number of decision epochs.',
+  '- These fields feed into the AI\'s stat/dyn classifications for generated ideas.',
+  '',
+  '- Kind + timing chips are purely informational today — no functional impact — but planned to drive later features (per-cell impact functions, solver-type selection, tree collapsing, matrix roll-up).',
   '',
   'When answering how-to questions, refer to the specific button labels above verbatim so users can find them. If a user is confused about which button does what, spell out the exact click path (e.g. "Library bar → Browse ▾ → click ✎ on that row").',
 ].join('\n');
