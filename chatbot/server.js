@@ -825,6 +825,54 @@ app.post('/framing/pyramid', framingLimiter, (req, res) => {
 // only — no matrix scoring, no pyramid. Used by the "Generate ideas"
 // button next to the Decisions/Uncertainties headers. Existing items
 // are sent as context so the model doesn't propose duplicates.
+// Warren's 10-type decision taxonomy (verbatim from the "Types of decision
+// settings" section at /decisionsdecisions/#types-of-decision-settings).
+// Injected into the /framing/ideas prompt when the user picks a subset via
+// the Types… button so the AI restricts its proposals to those types.
+// Keep in sync with _pages/whatisadecision.md.
+const DECISION_TYPES = {
+  1: {
+    brief: 'Physical and financial decisions',
+    full: 'These decisions arise in the management of physical and financial resources, spanning people, equipment, facilities, products, commodities, water, energy, in addition to cash, investments, loans, ... Decisions include buying, selling, moving, and modifying resources. This class is the domain of operations research, engineering control, and finance; it draws heavily on tools such as linear, integer and nonlinear programming.',
+  },
+  2: {
+    brief: 'Complex / strategic decisions',
+    full: 'These are decisions that may make multiple changes to a system (changing resources, parameters, beliefs), and which typically involve significant sources of uncertainty. These decisions are typically evaluated once, but the option of waiting and making the decision later may exist.',
+  },
+  3: {
+    brief: 'Information acquisition / observation',
+    full: 'These include decisions to acquire or observe information by running experiments in the lab, field, or with computer simulations that are conducted in a test environment (offline), or decisions to run and observe processes in the field using a "learning while doing" approach (online). Offline information acquisition can include laboratory experiments, simulations, internet searches, or hiring domain experts. Online learning involves observing a process as it evolves, such as how a market responds to advertising or pricing, or how a patient responds to a treatment. These decisions are studied under names such as design of experiments (static or sequential), stochastic search, active (or optimal) learning, multiarmed bandits, and Bayesian optimization.',
+  },
+  4: {
+    brief: 'Information sharing / communication',
+    full: 'These come in two forms: (a) Messaging — what we say in text, video and/or audio (prompt optimization, ad design, communications to a company or public broadcast, instructions to use a product, training given to employees, product-use instructions); (b) Channels and timing — the choice of channel (text/emails, publication print or online, social media, advertising channels) along with the timing and frequency.',
+  },
+  5: {
+    brief: 'Performance metrics / objectives',
+    full: 'These might be revenues, costs, stockouts, improved health, portfolio returns, inventory turns, strength of material, or voter polls. They might be evaluated on average, or using some form of risk measure that captures uncertain events not represented by averages. Performance metrics are decisions when they are used to evaluate more primitive decisions (typically over time) by a higher process — e.g. a company\'s stock price influenced by supply chain decisions, the spread of illnesses influenced by vaccination decisions, or whether a candidate wins an election influenced by campaigning decisions.',
+  },
+  6: {
+    brief: 'Choosing functions',
+    full: 'Often overlooked as a decision, functions may be methods to make decisions (policies), optimization models, objective functions, models for forecasting or estimation, or transition functions (such as how disease spreads). This category covers the choice of function — its STRUCTURE (not its parameters).',
+  },
+  7: {
+    brief: 'Setting parameters',
+    full: 'Functions are typically characterized by one or more parameters (typically continuous, but not always) that can be tuned to improve predictive accuracy (when fitting statistical models) or optimized to improve performance (when tuning a policy for making decisions). Parameters may be associated with a function; they can be the weight on a performance metric, or they could be a target (or limit) for a performance metric. Parameter-setting decisions are almost always (num) — numeric values or ranges.',
+  },
+  8: {
+    brief: 'Labeling / identification / estimation',
+    full: 'We may be asked to name a disease, identify a plant, or estimate tomorrow\'s load on the power grid. Other examples include judicial decisions, award winners, and employee assessments. Discrete labeling and continuous estimation both fall here.',
+  },
+  9: {
+    brief: 'Features and behaviors',
+    full: 'How to design a product, what features a software package should have, what services should be provided to a customer, and whether or not to be polite. This might also include a student\'s choice of major, which determines the skills they will graduate with.',
+  },
+  10: {
+    brief: 'Deciding what to decide',
+    full: 'In most real applications, the number of potential decisions (that is, anywhere we face a choice) can be quite large. We have to prioritize which decisions have the greatest economic value to justify doing any formal analysis. Meta-decisions about which choices to formalize.',
+  },
+};
+
 const IDEAS_TOOL = {
   name: 'record_ideas',
   description: 'Record a list of proposed decisions or uncertainties. For decisions, also classify each idea as general / specific / numeric.',
@@ -900,6 +948,24 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
       // (e.g. the specific marketing decisions) so proposed uncertainties
       // can be tightly linked to those.
       const subDecisions = parseList(req.body?.subDecisions);
+      // Decision-type filter (decisions only): array of integers 1..10 from
+      // Warren's 10-type taxonomy. When present, the FULL explanations of
+      // the selected types get injected into the prompt so the AI restricts
+      // its proposals to those types. Empty / missing = no filter.
+      let decisionTypes = [];
+      try {
+        const raw = req.body?.decisionTypes;
+        if (typeof raw === 'string' && raw) {
+          const arr = JSON.parse(raw);
+          if (Array.isArray(arr)) {
+            decisionTypes = arr
+              .map(Number)
+              .filter(n => Number.isInteger(n) && n >= 1 && n <= 10)
+              .filter((n, i, a) => a.indexOf(n) === i)   // dedupe
+              .sort((a, b) => a - b);
+          }
+        }
+      } catch (_) { /* ignore malformed */ }
 
       // Drill-in context. `parentPath` is the ancestry of decisions the user
       // has drilled into (root → … → leaf). When non-empty the model is
@@ -943,6 +1009,29 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
           type: 'text',
           text: 'PROBLEM-SETTING NOTES — the user has previously asked the AI to read their material and distill it. Treat these notes as authoritative background about the setting; use them to inform the ' + nounPlural + ' you propose:\n\n' + priorNotes,
         });
+      }
+      // Decision-type filter (decisions only). If the user picked a subset of
+      // the 10 types via the Types… button, inject the FULL explanations of
+      // those types and constrain the AI to propose decisions of those types.
+      if (kind === 'decision' && decisionTypes.length > 0) {
+        const parts = [
+          'DECISION-TYPE FILTER — the user has restricted decision generation ' +
+          'to the following types from the 10-type taxonomy at ' +
+          'warrenpowell.org/decisionsdecisions/#types-of-decision-settings. ' +
+          'Every idea you propose MUST fall clearly within one of these types. ' +
+          'Do NOT propose decisions of other types. If the setting genuinely ' +
+          'has no decisions of one of the chosen types, return fewer ideas ' +
+          'rather than stretching to fill the count.',
+          '',
+        ];
+        for (const n of decisionTypes) {
+          const t = DECISION_TYPES[n];
+          if (!t) continue;
+          parts.push(`Type ${n} — ${t.brief}:`);
+          parts.push(t.full);
+          parts.push('');
+        }
+        userContent.push({ type: 'text', text: parts.join('\n') });
       }
       // Metrics come first and are framed as the DRIVER of idea generation —
       // decisions are levers that move metrics; uncertainties are what makes
@@ -1633,6 +1722,7 @@ const FRAMING_TOOL_HELP = [
   '## Generating ideas',
   '- **Generate ideas** button (next to Decisions or Uncertainties header): opens an idea box with AI-proposed items scored to have H or M impact on at least one metric. Check the ones you want, click "Add checked" to append.',
   '- **count input** (small numeric box after the mode toggle): override how many ideas the AI returns. Blank = auto (uses the First-draft size setting: small=3, medium=5, large=8, max=20). Type any number 1-200 — handy for long (spec) lists like "50 potential suppliers" or "100 candidate SKUs".',
+  '- **Types… button** (Decisions header only): opens a modal with the 10 decision types from Warren\'s taxonomy (Physical/financial, Complex/strategic, Information acquisition, Information sharing, Performance metrics, Choosing functions, Setting parameters, Labeling/identification/estimation, Features/behaviors, Deciding what to decide — see /decisionsdecisions/#types-of-decision-settings). Check any subset to constrain Generate ideas to those types; leave all unchecked to let the AI decide (default). When any are checked, the button shows the count ("Types… (3)") and the AI receives the FULL definitions of the chosen types alongside the usual scope/description context.',
   '- **(gen)/(spec) mode toggle** next to Generate ideas: pick which mode fires on the next click. Default is (gen).',
   '  - **(gen)** — the AI proposes broad still-drillable categories ("Choose supplier", "Target markets"). Good for structuring the decision tree.',
   '  - **(spec)** — the AI enumerates concrete members OR numeric parameters, skipping the categorical layer. Drilled into "Target markets" in (spec) mode returns industry names ("Agriculture", "Healthcare", "Transportation", "Retail", "Energy"), NOT sub-processes like "Evaluate incumbent competition". Each item comes back tagged (disc) or (num).',

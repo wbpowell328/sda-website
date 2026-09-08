@@ -192,6 +192,49 @@ date: 2026-08-11
      Decisions and Uncertainties panels. Shows the AI's proposed list
      as checkboxes; user picks which ones to append to the underlying
      textarea. -->
+<!-- Decision-types filter modal — spawned by the "Types…" button on the
+     Decisions header. Checkboxes for the 10 types from
+     https://warrenpowell.org/decisionsdecisions/#types-of-decision-settings.
+     When any are checked, Generate ideas sends the numbers to the server,
+     and the server injects the FULL type explanations into the prompt so
+     the AI restricts its proposals to those types. If none are checked,
+     the generator runs with no type filter (current behavior). Session-
+     only — reset on page reload. -->
+<div id="fp-decision-types-modal" class="fp-modal" hidden>
+  <div class="fp-modal-card">
+    <div class="fp-modal-header">
+      <h3>Filter generated decisions by type</h3>
+      <button type="button" class="fp-modal-close" id="fp-decision-types-modal-close" aria-label="Close">×</button>
+    </div>
+    <p class="fp-muted" style="margin: 0 0 8px 0;">
+      Check any of the 10 <a href="/decisionsdecisions/#types-of-decision-settings" target="_blank" rel="noopener">decision types</a>
+      to constrain what the AI proposes when you click Generate ideas. Leave all
+      unchecked to let the AI decide (current behavior).
+    </p>
+    <div id="fp-decision-types-list" class="fp-decision-types-list">
+      <label><input type="checkbox" value="1"> <b>1.</b> Physical and financial decisions</label>
+      <label><input type="checkbox" value="2"> <b>2.</b> Complex / strategic decisions</label>
+      <label><input type="checkbox" value="3"> <b>3.</b> Information acquisition / observation</label>
+      <label><input type="checkbox" value="4"> <b>4.</b> Information sharing / communication</label>
+      <label><input type="checkbox" value="5"> <b>5.</b> Performance metrics / objectives</label>
+      <label><input type="checkbox" value="6"> <b>6.</b> Choosing functions</label>
+      <label><input type="checkbox" value="7"> <b>7.</b> Setting parameters</label>
+      <label><input type="checkbox" value="8"> <b>8.</b> Labeling / identification / estimation</label>
+      <label><input type="checkbox" value="9"> <b>9.</b> Features and behaviors</label>
+      <label><input type="checkbox" value="10"> <b>10.</b> Deciding what to decide</label>
+    </div>
+    <div class="fp-modal-actions" style="justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+      <div style="display: flex; gap: 6px;">
+        <button type="button" id="fp-decision-types-all" class="fp-modal-mini">All</button>
+        <button type="button" id="fp-decision-types-none" class="fp-modal-mini">None</button>
+      </div>
+      <div>
+        <button type="button" id="fp-decision-types-ok" class="fp-modal-primary">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="fp-ideas-modal" class="fp-modal" hidden>
   <div class="fp-modal-card">
     <div class="fp-modal-header">
@@ -380,6 +423,8 @@ date: 2026-08-11
       <input type="number" class="fp-ideas-count" data-kind="decision"
              min="1" max="200" step="1" placeholder="count"
              title="How many ideas to generate. Blank = auto (uses the First-draft size setting: small=3, medium=5, large=8, max=20). Type a number 1–200 to override — handy for long (spec) lists like 50 potential suppliers." />
+      <button type="button" id="fp-decision-types-btn" class="fp-decision-types-btn"
+              title="Constrain the AI to generate decisions of specific types (from the 10-type taxonomy at decisionsdecisions/#types-of-decision-settings). Click for the picker.">Types…</button>
     </div>
     <textarea id="fp-decisions-input" spellcheck="true" placeholder="Set the price&#10;Choose a supplier&#10;Approve the design&#10;Schedule production"></textarea>
   </div>
@@ -778,6 +823,39 @@ date: 2026-08-11
   }
   .fp-ideas-count::placeholder { color: #b8ac93; font-style: italic; }
   .fp-ideas-count:focus { outline: 1px solid #c9621e; border-color: #c9621e; }
+  /* Types… button — opens the decision-type filter modal. Shows a small
+     count in parens when any types are checked (e.g. "Types… (3)"). */
+  .fp-decision-types-btn {
+    margin-left: 6px;
+    padding: 2px 10px;
+    font-size: 0.72rem;
+    background: #fff; color: #7a6a55;
+    border: 1px solid #c9b891; border-radius: 12px;
+    cursor: pointer; font-family: inherit;
+  }
+  .fp-decision-types-btn:hover { background: #f0e5c8; }
+  .fp-decision-types-btn.is-active {
+    background: #eaf1e6; color: #345c48; border-color: #b8d6c4; font-weight: 600;
+  }
+  .fp-decision-types-list {
+    display: grid; grid-template-columns: 1fr; gap: 4px;
+    padding: 10px 12px;
+    background: #fdfaf1;
+    border: 1px solid #eae0c8;
+    border-radius: 4px;
+    max-height: 55vh; overflow-y: auto;
+    margin-bottom: 8px;
+  }
+  .fp-decision-types-list label {
+    display: flex; align-items: baseline; gap: 8px;
+    padding: 4px 6px; cursor: pointer;
+    border-radius: 3px;
+    font-size: 0.95rem;
+  }
+  .fp-decision-types-list label:hover { background: #f2ead4; }
+  .fp-decision-types-list input[type="checkbox"] {
+    flex-shrink: 0; margin: 0;
+  }
 
   /* Idea box modal */
   .fp-ideas-list {
@@ -3303,6 +3381,51 @@ date: 2026-08-11
   // members (industry names, brand names, etc.) or numeric parameters,
   // skipping the categorical layer. Reset per page load.
   const ideasMode = { decision: 'gen', uncertainty: 'gen' };
+  // Session-only filter: which of the 10 decision types (from the taxonomy
+  // at /decisionsdecisions/#types-of-decision-settings) constrain the
+  // AI's decision-idea generation. Empty = no filter (current behavior).
+  // Numbers 1..10. Uncertainties don't use this taxonomy.
+  const decisionTypesFilter = new Set();
+  function updateDecisionTypesBtn() {
+    const btn = document.getElementById('fp-decision-types-btn');
+    if (!btn) return;
+    const n = decisionTypesFilter.size;
+    btn.textContent = n > 0 ? 'Types… (' + n + ')' : 'Types…';
+    btn.classList.toggle('is-active', n > 0);
+  }
+  function openDecisionTypesModal() {
+    const modal = document.getElementById('fp-decision-types-modal');
+    if (!modal) return;
+    // Sync checkboxes to state before showing.
+    modal.querySelectorAll('.fp-decision-types-list input[type="checkbox"]').forEach(cb => {
+      cb.checked = decisionTypesFilter.has(Number(cb.value));
+    });
+    modal.hidden = false;
+  }
+  function closeDecisionTypesModal() {
+    const modal = document.getElementById('fp-decision-types-modal');
+    if (modal) modal.hidden = true;
+  }
+  function commitDecisionTypesModal() {
+    // Read checkboxes into state, close, refresh button label.
+    decisionTypesFilter.clear();
+    const modal = document.getElementById('fp-decision-types-modal');
+    if (modal) {
+      modal.querySelectorAll('.fp-decision-types-list input[type="checkbox"]:checked').forEach(cb => {
+        const n = Number(cb.value);
+        if (Number.isInteger(n) && n >= 1 && n <= 10) decisionTypesFilter.add(n);
+      });
+    }
+    updateDecisionTypesBtn();
+    closeDecisionTypesModal();
+  }
+  function decisionTypesSetAll(on) {
+    const modal = document.getElementById('fp-decision-types-modal');
+    if (!modal) return;
+    modal.querySelectorAll('.fp-decision-types-list input[type="checkbox"]').forEach(cb => {
+      cb.checked = on;
+    });
+  }
   async function openIdeaBox(kind) {
     if (kind !== 'decision' && kind !== 'uncertainty') return;
     ideasCurrentKind = kind;
@@ -3396,6 +3519,11 @@ date: 2026-08-11
       const rawCount = countInput ? parseInt(countInput.value, 10) : NaN;
       if (Number.isFinite(rawCount) && rawCount >= 1 && rawCount <= 200) {
         form.append('countOverride', String(rawCount));
+      }
+      // Decision-type filter (decisions only) — session-only picker.
+      if (ideasCurrentKind === 'decision' && decisionTypesFilter.size > 0) {
+        const nums = Array.from(decisionTypesFilter).sort((a, b) => a - b);
+        form.append('decisionTypes', JSON.stringify(nums));
       }
       if (scope) form.append('scope', scope);
       if (desc)  form.append('description', desc);
@@ -5846,6 +5974,22 @@ date: 2026-08-11
         }
       }
     });
+    // Decision-types filter modal wiring.
+    (function wireDecisionTypesModal() {
+      const openBtn = $('#fp-decision-types-btn');
+      if (openBtn) openBtn.addEventListener('click', openDecisionTypesModal);
+      const closeBtn = $('#fp-decision-types-modal-close');
+      if (closeBtn) closeBtn.addEventListener('click', closeDecisionTypesModal);
+      const okBtn = $('#fp-decision-types-ok');
+      if (okBtn) okBtn.addEventListener('click', commitDecisionTypesModal);
+      const allBtn = $('#fp-decision-types-all');
+      if (allBtn) allBtn.addEventListener('click', () => decisionTypesSetAll(true));
+      const noneBtn = $('#fp-decision-types-none');
+      if (noneBtn) noneBtn.addEventListener('click', () => decisionTypesSetAll(false));
+      const modal = $('#fp-decision-types-modal');
+      if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) commitDecisionTypesModal(); });
+      updateDecisionTypesBtn();
+    })();
     // Idea-box modal wiring.
     (function wireIdeaBox() {
       const modal = $('#fp-ideas-modal');
