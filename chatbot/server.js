@@ -841,8 +841,8 @@ const IDEAS_TOOL = {
             },
             kind: {
               type: 'string',
-              enum: ['gen', 'spec', 'num'],
-              description: 'For DECISIONS only, classify the idea: "gen" = a general/broad category that could be drilled into ("Choose supplier"); "spec" = a specific concrete choice from a discrete set ("Buy from ContractCo", "Prescribe metformin"); "num" = a numeric parameter, discrete integer or continuous ("Safety stock level", "Reorder point", "Discount rate"). Omit for uncertainties.',
+              enum: ['gen', 'disc', 'num'],
+              description: 'For DECISIONS only, classify the idea: "gen" = a general/broad category that could be drilled into ("Choose supplier"); "disc" = a discrete choice from a specific list ("Buy from ContractCo", "Prescribe metformin"); "num" = a numeric parameter, discrete integer or continuous ("Safety stock level", "Reorder point", "Discount rate"). Omit for uncertainties.',
             },
           },
           required: ['name'],
@@ -1084,7 +1084,7 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
           '  - "gen" (general) — a broad category that would naturally be ' +
           'refined into sub-decisions ("Choose supplier", "Assign drivers ' +
           'to loads", "Increase equity investments").\n' +
-          '  - "spec" (specific) — a concrete choice from a discrete set, ' +
+          '  - "disc" (discrete) — a specific choice from a discrete list, ' +
           'ready to implement without further drilling ("Buy from ContractCo", ' +
           '"Prescribe metformin", "Overweight semis").\n' +
           '  - "num" (numeric) — a numeric parameter, discrete integer OR ' +
@@ -1128,8 +1128,9 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
           name = raw;
         } else if (raw && typeof raw === 'object') {
           name = raw.name;
-          const k = String(raw.kind || '').toLowerCase();
-          if (k === 'gen' || k === 'spec' || k === 'num') kindTag = k;
+          let k = String(raw.kind || '').toLowerCase();
+          if (k === 'spec') k = 'disc';   // legacy alias — accept and normalize
+          if (k === 'gen' || k === 'disc' || k === 'num') kindTag = k;
         } else {
           continue;
         }
@@ -1564,12 +1565,12 @@ const FRAMING_TOOL_HELP = [
   '- **Drill out**: click any earlier breadcrumb step, or the ↑ up-level button.',
   '- Uncertainties do NOT nest — they always live at the root.',
   '',
-  '## Decision kind — (gen), (spec), (num)',
-  '- Every decision row shows a small clickable chip with one of three kinds. Click to cycle gen → spec → num → gen.',
+  '## Decision kind — (gen), (disc), (num)',
+  '- Every decision row shows a small clickable chip with one of three kinds. Click to cycle gen → disc → num → gen.',
   '- **(gen)** general: a broad category that would naturally be refined into sub-decisions ("Choose supplier", "Assign drivers to loads"). Default.',
-  '- **(spec)** specific: a concrete choice from a discrete set, ready to implement ("Buy from ContractCo", "Prescribe metformin", "Overweight semis").',
+  '- **(disc)** discrete: a specific choice from a discrete list, ready to implement ("Buy from ContractCo", "Prescribe metformin", "Overweight semis").',
   '- **(num)** numeric: a numeric parameter, discrete integer OR continuous ("Safety stock level", "Reorder point", "Price in [0, 100]", "Discount rate").',
-  '- When the AI generates decision ideas via "Generate ideas", it classifies each proposal as gen/spec/num and the chip appears pre-tagged. The user can re-cycle any chip.',
+  '- When the AI generates decision ideas via "Generate ideas", it classifies each proposal as gen/disc/num and the chip appears pre-tagged. The user can re-cycle any chip.',
   '- Purely informational today — no functional impact — but planned to drive later features (tree collapsing, matrix roll-up, picking the right solver type per branch of the tree).',
   '',
   'When answering how-to questions, refer to the specific button labels above verbatim so users can find them. If a user is confused about which button does what, spell out the exact click path (e.g. "Library bar → Browse ▾ → click ✎ on that row").',

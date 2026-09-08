@@ -1337,10 +1337,10 @@ date: 2026-08-11
     border-color: #b6c0cf; background: #eef2f7; color: #3a4a63;
   }
   .fp-decision-kind-gen:hover { background: #dee5ee; }
-  .fp-decision-kind-spec {
+  .fp-decision-kind-disc {
     border-color: #c9a76a; background: #f9ecd0; color: #5a3e1f; font-weight: 600;
   }
-  .fp-decision-kind-spec:hover { background: #f2e6c9; }
+  .fp-decision-kind-disc:hover { background: #f2e6c9; }
   .fp-decision-kind-num {
     border-color: #7ba7c9; background: #dfeaf3; color: #1e3a52; font-weight: 600;
     font-family: "Cambria", "Times New Roman", serif;   /* mathy feel */
@@ -1866,19 +1866,21 @@ date: 2026-08-11
   // An empty array (or a missing entry) means the uncertainty applies at
   // the root — i.e. to every decision and sub-decision.
   // Per-decision kind map (per-frame — sub-frames get their own): decision
-  // name → 'gen' (general / broad category), 'spec' (specific choice from
-  // a discrete set), or 'num' (a numeric value — discrete integer OR
+  // name → 'gen' (general / broad category), 'disc' (a discrete choice from
+  // a specific list), or 'num' (a numeric value — discrete integer OR
   // continuous). Missing entries mean 'gen' (the default). Purely
   // informational for now — later phases (tree collapsing, matrix roll-up,
   // suggesting solver types) will use this to distinguish still-drillable
   // categories from concrete choices or numeric parameters.
+  // Legacy: 'spec' from earlier snapshots is silently migrated to 'disc'.
   function normalizeDecisionKinds(dk) {
     const out = {};
     if (!dk || typeof dk !== 'object') return out;
     for (const k of Object.keys(dk)) {
       if (typeof k !== 'string' || !k) continue;
-      const v = String(dk[k] || '').toLowerCase();
-      if (v === 'spec' || v === 'num') out[k] = v;
+      let v = String(dk[k] || '').toLowerCase();
+      if (v === 'spec') v = 'disc';         // legacy alias
+      if (v === 'disc' || v === 'num') out[k] = v;
       // 'gen' is the default — we only need to record non-default kinds.
     }
     return out;
@@ -2772,10 +2774,11 @@ date: 2026-08-11
     if (!frame.decisionKinds || typeof frame.decisionKinds !== 'object') {
       frame.decisionKinds = {};
     }
-    const stored = frame.decisionKinds[name];
-    const cur = (stored === 'spec' || stored === 'num') ? stored : 'gen';
-    // Cycle: gen -> spec -> num -> gen
-    const cycle = { gen: 'spec', spec: 'num', num: 'gen' };
+    let stored = frame.decisionKinds[name];
+    if (stored === 'spec') stored = 'disc';   // legacy alias
+    const cur = (stored === 'disc' || stored === 'num') ? stored : 'gen';
+    // Cycle: gen -> disc -> num -> gen
+    const cycle = { gen: 'disc', disc: 'num', num: 'gen' };
     const next = cycle[cur];
     if (next === 'gen') {
       delete frame.decisionKinds[name];   // 'gen' is the default; keep the map sparse
@@ -2933,22 +2936,23 @@ date: 2026-08-11
           nameTd.appendChild(chip);
         }
       }
-      // Decision-kind chip: "(gen)", "(spec)", or "(num)" — decisions only.
-      // Default is gen. Click cycles gen -> spec -> num -> gen. Purely
+      // Decision-kind chip: "(gen)", "(disc)", or "(num)" — decisions only.
+      // Default is gen. Click cycles gen -> disc -> num -> gen. Purely
       // informational for now; later phases will use this to pick solver
       // types and to distinguish still-drillable categories from
-      // concrete choices from numeric parameters.
+      // discrete choices from numeric parameters.
       if (kind === 'decision') {
         const kindMap = frame.decisionKinds || {};
-        const stored = kindMap[name];
-        const dk = (stored === 'spec' || stored === 'num') ? stored : 'gen';
+        let stored = kindMap[name];
+        if (stored === 'spec') stored = 'disc';   // legacy alias
+        const dk = (stored === 'disc' || stored === 'num') ? stored : 'gen';
         const kchip = document.createElement('button');
         kchip.type = 'button';
         kchip.className = 'fp-decision-kind-chip fp-decision-kind-' + dk;
         kchip.textContent = '(' + dk + ')';
         const titles = {
-          gen:  'General — a broad category of decision that can be refined into sub-decisions ("Choose supplier"). Click to switch to (spec).',
-          spec: 'Specific — a concrete choice from a discrete set ("Buy from ContractCo", "Prescribe metformin"). Click to switch to (num).',
+          gen:  'General — a broad category of decision that can be refined into sub-decisions ("Choose supplier"). Click to switch to (disc).',
+          disc: 'Discrete — a specific choice from a discrete list ("Buy from ContractCo", "Prescribe metformin"). Click to switch to (num).',
           num:  'Numeric — a discrete integer or continuous value ("Safety stock = 42", "Price in [0, 100]"). Click to switch to (gen).',
         };
         kchip.title = titles[dk];
@@ -3384,8 +3388,9 @@ date: 2026-08-11
     if (typeof raw === 'string') return { name: raw.trim(), kind: null };
     if (raw && typeof raw === 'object') {
       const name = String(raw.name || '').trim();
-      const k = String(raw.kind || '').toLowerCase();
-      const kind = (k === 'gen' || k === 'spec' || k === 'num') ? k : null;
+      let k = String(raw.kind || '').toLowerCase();
+      if (k === 'spec') k = 'disc';   // legacy alias
+      const kind = (k === 'gen' || k === 'disc' || k === 'num') ? k : null;
       return { name, kind };
     }
     return { name: '', kind: null };
@@ -3488,7 +3493,7 @@ date: 2026-08-11
         frame.decisionKinds = {};
       }
       for (const p of newlyAdded) {
-        if (p.kind === 'spec' || p.kind === 'num') {
+        if (p.kind === 'disc' || p.kind === 'num') {
           frame.decisionKinds[p.name] = p.kind;
         } else {
           // 'gen' is the default — leave the map entry absent to keep it sparse.
