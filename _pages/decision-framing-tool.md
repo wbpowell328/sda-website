@@ -1341,6 +1341,11 @@ date: 2026-08-11
     border-color: #c9a76a; background: #f9ecd0; color: #5a3e1f; font-weight: 600;
   }
   .fp-decision-kind-spec:hover { background: #f2e6c9; }
+  .fp-decision-kind-num {
+    border-color: #7ba7c9; background: #dfeaf3; color: #1e3a52; font-weight: 600;
+    font-family: "Cambria", "Times New Roman", serif;   /* mathy feel */
+  }
+  .fp-decision-kind-num:hover { background: #cbdcea; }
   /* Uncertainty scope chip — appears after the uncertainty name in the
      matrix row when the uncertainty was generated while drilled into a
      specific sub-decision. Distinguishes "for: X" scope-tagged rows
@@ -1861,18 +1866,20 @@ date: 2026-08-11
   // An empty array (or a missing entry) means the uncertainty applies at
   // the root — i.e. to every decision and sub-decision.
   // Per-decision kind map (per-frame — sub-frames get their own): decision
-  // name → 'gen' (general / broad category) or 'spec' (specific action).
-  // Missing entries mean 'gen' (the default). Purely informational for now
-  // — later phases (e.g. tree collapsing, matrix roll-up) will use this
-  // to distinguish "still-drillable" categories from concrete actions.
+  // name → 'gen' (general / broad category), 'spec' (specific choice from
+  // a discrete set), or 'num' (a numeric value — discrete integer OR
+  // continuous). Missing entries mean 'gen' (the default). Purely
+  // informational for now — later phases (tree collapsing, matrix roll-up,
+  // suggesting solver types) will use this to distinguish still-drillable
+  // categories from concrete choices or numeric parameters.
   function normalizeDecisionKinds(dk) {
     const out = {};
     if (!dk || typeof dk !== 'object') return out;
     for (const k of Object.keys(dk)) {
       if (typeof k !== 'string' || !k) continue;
       const v = String(dk[k] || '').toLowerCase();
-      if (v === 'spec') out[k] = 'spec';
-      // 'gen' is the default — we only need to record 'spec' explicitly.
+      if (v === 'spec' || v === 'num') out[k] = v;
+      // 'gen' is the default — we only need to record non-default kinds.
     }
     return out;
   }
@@ -2765,8 +2772,11 @@ date: 2026-08-11
     if (!frame.decisionKinds || typeof frame.decisionKinds !== 'object') {
       frame.decisionKinds = {};
     }
-    const cur = frame.decisionKinds[name] === 'spec' ? 'spec' : 'gen';
-    const next = cur === 'gen' ? 'spec' : 'gen';
+    const stored = frame.decisionKinds[name];
+    const cur = (stored === 'spec' || stored === 'num') ? stored : 'gen';
+    // Cycle: gen -> spec -> num -> gen
+    const cycle = { gen: 'spec', spec: 'num', num: 'gen' };
+    const next = cycle[cur];
     if (next === 'gen') {
       delete frame.decisionKinds[name];   // 'gen' is the default; keep the map sparse
     } else {
@@ -2923,20 +2933,25 @@ date: 2026-08-11
           nameTd.appendChild(chip);
         }
       }
-      // Decision-kind chip: "(gen)" or "(spec)" — decisions only. Default
-      // is gen (general / broad category). Click to toggle. Purely
-      // informational for now; later phases will use this to distinguish
-      // still-drillable categories from concrete actions.
+      // Decision-kind chip: "(gen)", "(spec)", or "(num)" — decisions only.
+      // Default is gen. Click cycles gen -> spec -> num -> gen. Purely
+      // informational for now; later phases will use this to pick solver
+      // types and to distinguish still-drillable categories from
+      // concrete choices from numeric parameters.
       if (kind === 'decision') {
         const kindMap = frame.decisionKinds || {};
-        const dk = kindMap[name] === 'spec' ? 'spec' : 'gen';
+        const stored = kindMap[name];
+        const dk = (stored === 'spec' || stored === 'num') ? stored : 'gen';
         const kchip = document.createElement('button');
         kchip.type = 'button';
         kchip.className = 'fp-decision-kind-chip fp-decision-kind-' + dk;
         kchip.textContent = '(' + dk + ')';
-        kchip.title = dk === 'gen'
-          ? 'General — a broad category of decision that can be refined into sub-decisions. Click to switch to (spec).'
-          : 'Specific — a concrete action or choice ready to implement. Click to switch to (gen).';
+        const titles = {
+          gen:  'General — a broad category of decision that can be refined into sub-decisions ("Choose supplier"). Click to switch to (spec).',
+          spec: 'Specific — a concrete choice from a discrete set ("Buy from ContractCo", "Prescribe metformin"). Click to switch to (num).',
+          num:  'Numeric — a discrete integer or continuous value ("Safety stock = 42", "Price in [0, 100]"). Click to switch to (gen).',
+        };
+        kchip.title = titles[dk];
         kchip.addEventListener('click', (e) => {
           e.stopPropagation();
           toggleDecisionKind(frame, name);
@@ -3362,6 +3377,19 @@ date: 2026-08-11
       $('#fp-ideas-regenerate').disabled = false;
     }
   }
+  // Normalize a server-returned idea into { name, kind } — accepts either
+  // a plain string (legacy) or a {name, kind} object. Kind is only set
+  // for decision ideas (gen/spec/num); uncertainties come back kindless.
+  function normalizeIdea(raw) {
+    if (typeof raw === 'string') return { name: raw.trim(), kind: null };
+    if (raw && typeof raw === 'object') {
+      const name = String(raw.name || '').trim();
+      const k = String(raw.kind || '').toLowerCase();
+      const kind = (k === 'gen' || k === 'spec' || k === 'num') ? k : null;
+      return { name, kind };
+    }
+    return { name: '', kind: null };
+  }
   function renderIdeasList(ideas) {
     const list = $('#fp-ideas-list');
     list.innerHTML = '';
@@ -3370,19 +3398,33 @@ date: 2026-08-11
       $('#fp-ideas-add').disabled = true;
       return;
     }
-    ideas.forEach((idea, i) => {
+    ideas.forEach((raw, i) => {
+      const idea = normalizeIdea(raw);
+      if (!idea.name) return;
       const row = document.createElement('div');
       row.className = 'fp-ideas-row';
       const cb = document.createElement('input');
       cb.type = 'checkbox';
       cb.id = 'fp-idea-cb-' + i;
       cb.checked = true;
-      cb.value = idea;
+      cb.value = idea.name;
+      // Stash the kind on the checkbox so ideasApply() can pick it up
+      // without re-parsing.
+      if (idea.kind) cb.dataset.ideaKind = idea.kind;
       const label = document.createElement('label');
       label.htmlFor = cb.id;
-      label.textContent = idea;
+      label.textContent = idea.name;
       row.appendChild(cb);
       row.appendChild(label);
+      // Little chip next to decision-kind ideas so the user sees the
+      // AI's classification before checking. Matches the matrix chip.
+      if (idea.kind) {
+        const chip = document.createElement('span');
+        chip.className = 'fp-decision-kind-chip fp-decision-kind-' + idea.kind;
+        chip.textContent = '(' + idea.kind + ')';
+        chip.style.cursor = 'default';
+        row.appendChild(chip);
+      }
       // Clicking the row (not just the checkbox) toggles the checkbox.
       row.addEventListener('click', (e) => {
         if (e.target === cb || e.target === label) return;
@@ -3399,10 +3441,13 @@ date: 2026-08-11
   function ideasApply() {
     if (!ideasCurrentKind) return;
     const list = $('#fp-ideas-list');
+    // Collect picked ideas along with their AI-tagged kind (if any).
     const picked = [];
     list.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
       const v = String(cb.value || '').trim();
-      if (v) picked.push(v);
+      if (!v) return;
+      const k = cb.dataset.ideaKind || null;
+      picked.push({ name: v, kind: k });
     });
     if (!picked.length) {
       $('#fp-ideas-status').textContent = 'Nothing checked — pick at least one, or Cancel.';
@@ -3416,7 +3461,10 @@ date: 2026-08-11
     const existingSet = new Set(existing.map(s => s.trim().toLowerCase()));
     const newlyAdded = [];
     for (const p of picked) {
-      if (!existingSet.has(p.toLowerCase())) { existing.push(p); newlyAdded.push(p); }
+      if (!existingSet.has(p.name.toLowerCase())) {
+        existing.push(p.name);
+        newlyAdded.push(p);
+      }
     }
     // Uncertainties are flat at the root, but each carries a scope tag
     // recording the drill path at generation time so users can see
@@ -3425,13 +3473,30 @@ date: 2026-08-11
     if (ideasCurrentKind === 'uncertainty' && currentPath.length > 0 && newlyAdded.length) {
       if (!state.uncertaintyScopes) state.uncertaintyScopes = {};
       const scopePath = currentPath.slice();
-      for (const name of newlyAdded) state.uncertaintyScopes[name] = scopePath;
+      for (const p of newlyAdded) state.uncertaintyScopes[p.name] = scopePath;
     }
     // Route through the textarea so the standard sync logic (rename
     // detection, matrix pruning) fires the same as if the user typed
     // the new lines themselves.
     $(cfg.textareaSel).value = existing.join('\n');
     syncListFromTextarea(ideasCurrentKind);
+    // Now apply the AI's gen/spec/num classification to the freshly-added
+    // decisions (uncertainties have no kind). Do this AFTER the sync so
+    // the frame's decisionKinds map is in a known state.
+    if (ideasCurrentKind === 'decision' && newlyAdded.length) {
+      if (!frame.decisionKinds || typeof frame.decisionKinds !== 'object') {
+        frame.decisionKinds = {};
+      }
+      for (const p of newlyAdded) {
+        if (p.kind === 'spec' || p.kind === 'num') {
+          frame.decisionKinds[p.name] = p.kind;
+        } else {
+          // 'gen' is the default — leave the map entry absent to keep it sparse.
+          delete frame.decisionKinds[p.name];
+        }
+      }
+      renderImpactMatrix('decision');   // re-render to show the fresh chips
+    }
     $('#fp-ideas-modal').hidden = true;
     flashStatus('Added ' + picked.length + ' idea' + (picked.length === 1 ? '' : 's') + '.');
   }

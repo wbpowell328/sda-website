@@ -826,14 +826,28 @@ app.post('/framing/pyramid', framingLimiter, (req, res) => {
 // are sent as context so the model doesn't propose duplicates.
 const IDEAS_TOOL = {
   name: 'record_ideas',
-  description: 'Record a list of proposed decisions or uncertainties (names only, no matrix scoring).',
+  description: 'Record a list of proposed decisions or uncertainties. For decisions, also classify each idea as general / specific / numeric.',
   input_schema: {
     type: 'object',
     properties: {
       ideas: {
         type: 'array',
-        items: { type: 'string' },
-        description: 'Short 3–4 word noun phrases. Do not repeat any name in the "existing" list the user already has on screen.',
+        items: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string',
+              description: 'Short 3–4 word noun phrase for the idea. Do not repeat any name in the "existing" list the user already has on screen.',
+            },
+            kind: {
+              type: 'string',
+              enum: ['gen', 'spec', 'num'],
+              description: 'For DECISIONS only, classify the idea: "gen" = a general/broad category that could be drilled into ("Choose supplier"); "spec" = a specific concrete choice from a discrete set ("Buy from ContractCo", "Prescribe metformin"); "num" = a numeric parameter, discrete integer or continuous ("Safety stock level", "Reorder point", "Discount rate"). Omit for uncertainties.',
+            },
+          },
+          required: ['name'],
+        },
+        description: 'The proposed ideas. For decisions each idea gets a kind classification; for uncertainties just names.',
       },
     },
     required: ['ideas'],
@@ -1061,6 +1075,25 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
           `Do NOT repeat anything already on screen. Return via the ` +
           `record_ideas tool.`;
       }
+      // Decisions get a kind classification (gen/spec/num). Add the
+      // classification rule to every decision-generation prompt so the
+      // model tags each idea correctly. Uncertainties don't use this.
+      if (kind === 'decision') {
+        closingText +=
+          '\n\nFor EACH decision idea, also classify its "kind":\n' +
+          '  - "gen" (general) — a broad category that would naturally be ' +
+          'refined into sub-decisions ("Choose supplier", "Assign drivers ' +
+          'to loads", "Increase equity investments").\n' +
+          '  - "spec" (specific) — a concrete choice from a discrete set, ' +
+          'ready to implement without further drilling ("Buy from ContractCo", ' +
+          '"Prescribe metformin", "Overweight semis").\n' +
+          '  - "num" (numeric) — a numeric parameter, discrete integer OR ' +
+          'continuous ("Safety stock level", "Reorder point", "Discount rate", ' +
+          '"Price in [0, 100]"). If the decision is fundamentally "pick a ' +
+          'number", classify as num regardless of whether specific candidate ' +
+          'numbers are provided.\n' +
+          'Set the kind field on each idea object accordingly.';
+      }
       userContent.push({ type: 'text', text: closingText });
 
       const response = await client.messages.create({
@@ -1079,10 +1112,9 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
         return res.status(502).json({ error: 'Model did not produce ideas. Try again.' });
       }
 
-      // Coerce + dedupe against existing lists.
-      const rawIdeas = Array.isArray(toolBlock.input.ideas)
-        ? toolBlock.input.ideas.filter(Boolean).map(String)
-        : [];
+      // Coerce + dedupe against existing lists. Each idea is normalized to
+      // {name, kind?} — kind is only set for decisions (gen/spec/num).
+      const rawIdeas = Array.isArray(toolBlock.input.ideas) ? toolBlock.input.ideas : [];
       const dupSet = new Set(
         (kind === 'uncertainty' ? existingUncertainties : existingDecisions)
           .map((s) => s.trim().toLowerCase())
@@ -1090,12 +1122,28 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
       const ideas = [];
       const seen = new Set();
       for (const raw of rawIdeas) {
-        const trimmed = raw.trim();
+        // Accept both string (legacy shape) and {name, kind} objects.
+        let name, kindTag;
+        if (typeof raw === 'string') {
+          name = raw;
+        } else if (raw && typeof raw === 'object') {
+          name = raw.name;
+          const k = String(raw.kind || '').toLowerCase();
+          if (k === 'gen' || k === 'spec' || k === 'num') kindTag = k;
+        } else {
+          continue;
+        }
+        const trimmed = String(name || '').trim();
         if (!trimmed) continue;
         const key = trimmed.toLowerCase();
         if (dupSet.has(key) || seen.has(key)) continue;
         seen.add(key);
-        ideas.push(trimmed);
+        // Only decisions get a kind tag; uncertainties come back as plain names.
+        if (kind === 'decision') {
+          ideas.push({ name: trimmed, kind: kindTag || 'gen' });
+        } else {
+          ideas.push({ name: trimmed });
+        }
       }
 
       return res.json({
@@ -1516,11 +1564,13 @@ const FRAMING_TOOL_HELP = [
   '- **Drill out**: click any earlier breadcrumb step, or the ↑ up-level button.',
   '- Uncertainties do NOT nest — they always live at the root.',
   '',
-  '## Decision kind — (gen) vs (spec)',
-  '- Every decision row shows a small clickable chip: "(gen)" for a general/broad category, or "(spec)" for a specific action ready to implement.',
-  '- Default is (gen). Click the chip to toggle.',
-  '- Meaning: (gen) decisions are still-drillable categories ("Choose supplier", "Assign drivers to loads") that usually get broken into sub-decisions. (spec) decisions are concrete actions ("Buy from ContractCo, Q3 2026", "Assign Driver #47 to Route 12") that don\'t need further drilling.',
-  '- Purely informational today — no functional impact — but planned to drive later features (tree collapsing, matrix roll-up, "still-needs-refinement" flagging).',
+  '## Decision kind — (gen), (spec), (num)',
+  '- Every decision row shows a small clickable chip with one of three kinds. Click to cycle gen → spec → num → gen.',
+  '- **(gen)** general: a broad category that would naturally be refined into sub-decisions ("Choose supplier", "Assign drivers to loads"). Default.',
+  '- **(spec)** specific: a concrete choice from a discrete set, ready to implement ("Buy from ContractCo", "Prescribe metformin", "Overweight semis").',
+  '- **(num)** numeric: a numeric parameter, discrete integer OR continuous ("Safety stock level", "Reorder point", "Price in [0, 100]", "Discount rate").',
+  '- When the AI generates decision ideas via "Generate ideas", it classifies each proposal as gen/spec/num and the chip appears pre-tagged. The user can re-cycle any chip.',
+  '- Purely informational today — no functional impact — but planned to drive later features (tree collapsing, matrix roll-up, picking the right solver type per branch of the tree).',
   '',
   'When answering how-to questions, refer to the specific button labels above verbatim so users can find them. If a user is confused about which button does what, spell out the exact click path (e.g. "Library bar → Browse ▾ → click ✎ on that row").',
 ].join('\n');
