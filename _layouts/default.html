@@ -155,9 +155,20 @@
 <script>
   var __host = window.location.hostname;
   var __isLocal = (__host === "localhost" || __host === "127.0.0.1");
-  window.CASTLE_CHAT_API = __isLocal
-    ? "http://localhost:3000/chat"
-    : "https://castle-chatbot.onrender.com/chat";
+  // Beta backend override: any page loaded with ?backend=beta routes its
+  // chatbot calls (widget /chat, framing tool /framing/*, /api/framing-nodes/*)
+  // to the beta Render service. Same DB, so library URLs (?node=…) work
+  // on either.
+  var __isBeta = false;
+  try {
+    __isBeta = new URLSearchParams(window.location.search).get("backend") === "beta";
+  } catch (e) { /* ignore */ }
+  var __chatbotHost = __isLocal
+    ? "http://localhost:3000"
+    : (__isBeta
+        ? "https://castle-chatbot-beta.onrender.com"
+        : "https://castle-chatbot.onrender.com");
+  window.CASTLE_CHAT_API = __chatbotHost + "/chat";
 
   // Pre-warm the Render-hosted chatbot in production so a visitor's first
   // chatbot click doesn't trigger a cold-start (~30s on Render free tier).
@@ -167,7 +178,7 @@
     window.addEventListener("load", function () {
       setTimeout(function () {
         try {
-          fetch("https://castle-chatbot.onrender.com/", {
+          fetch(__chatbotHost + "/", {
             method: "GET",
             mode: "no-cors",
             cache: "no-store",
@@ -179,14 +190,12 @@
   }
 </script>
 <!-- Loaded directly from the chatbot service so there is only one copy
-     of widget.js to maintain (the one served by castle-chatbot.onrender.com).
+     of widget.js to maintain (the one served by castle-chatbot.onrender.com,
+     or castle-chatbot-beta.onrender.com when ?backend=beta is set).
      On localhost the Node proxy serves it from chatbot/public/widget.js. -->
 <script>
   document.write(
-    '<script src="' + (__isLocal
-      ? 'http://localhost:3000/widget.js'
-      : 'https://castle-chatbot.onrender.com/widget.js')
-    + '" defer><\/script>'
+    '<script src="' + __chatbotHost + '/widget.js" defer><\/script>'
   );
 </script>
 

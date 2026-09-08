@@ -6,6 +6,15 @@ date: 2026-08-11
 ---
 
 {% raw %}
+<!-- Beta banner — only visible when the page URL has ?backend=beta.
+     Wired by the same JS that sets CHATBOT_BASE, so the banner shows
+     up in lockstep with the AI calls being routed to the beta service. -->
+<div id="fp-beta-banner" class="fp-beta-banner" hidden>
+  🧪 <strong>Beta backend</strong> — this page is talking to <code>castle-chatbot-beta.onrender.com</code>
+  instead of the production chatbot. AI behavior may be experimental. Remove
+  <code>?backend=beta</code> from the URL to switch back to production.
+</div>
+
 <p>The decision framing tool is designed to help people making decisions that improve performance. At this stage it is primarily an "ideating" tool. The process starts by asking you to identify who is making decisions, and then provides several ways to provide background information, from a sentence or two to complete documents in various forms.</p>
 
 <p>The tool helps you frame a decision problem, which consists of identifying performance metrics, types of decisions, and sources of uncertainty that might affect performance. A specially trained AI agent is available to help throughout. You can ask it to provide a rough draft of an entire frame, but we recommend providing as much input as you can. The most important input from you is providing the context and the performance metrics that are most important to you.</p>
@@ -691,6 +700,23 @@ date: 2026-08-11
     font-size: 0.72rem;
   }
   #fp-help:hover { background: #d8e8d1; }
+
+  /* Beta backend banner — only rendered when ?backend=beta is in the URL.
+     Sits above everything else on the page so it's impossible to miss. */
+  .fp-beta-banner {
+    margin: 12px 0 16px 0;
+    padding: 10px 16px;
+    background: #fff4d6;
+    border: 2px dashed #c9821e;
+    border-radius: 4px;
+    color: #5a3a15;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+  .fp-beta-banner code {
+    background: #fff; padding: 1px 5px; border-radius: 3px;
+    font-size: 0.88em; color: #6a4a20;
+  }
 
   .fp-toolbar {
     display: flex; gap: 8px; margin: 16px 0; align-items: center; flex-wrap: wrap;
@@ -3242,12 +3268,28 @@ date: 2026-08-11
   // ── Per-matrix First-draft (AI) + Reset ────────────────────
   // Note is session-only — not persisted across page reloads or saves.
   // It's a "you just clicked First draft" reminder, not a permanent tag.
-  const MATRIX_ENDPOINT = 'https://castle-chatbot.onrender.com/framing/matrix';
-  const PYRAMID_ENDPOINT = 'https://castle-chatbot.onrender.com/framing/pyramid';
-  const IDEAS_ENDPOINT   = 'https://castle-chatbot.onrender.com/framing/ideas';
-  const INGEST_ENDPOINT  = 'https://castle-chatbot.onrender.com/framing/ingest';
-  const SUGGEST_TYPES_ENDPOINT = 'https://castle-chatbot.onrender.com/framing/decision-types';
-  const SUGGEST_UNCERTAINTY_TYPES_ENDPOINT = 'https://castle-chatbot.onrender.com/framing/uncertainty-types';
+  // Chatbot backend host — production by default, beta when the page URL
+  // has ?backend=beta. Same DB is shared across both backends, so library
+  // URLs (?node=…) work on either. Only the /framing/*, /chat, and
+  // /api/framing-nodes/* endpoints get routed to the beta service.
+  const IS_BETA_BACKEND = (function () {
+    try {
+      return new URLSearchParams(window.location.search).get('backend') === 'beta';
+    } catch (_) { return false; }
+  })();
+  const CHATBOT_BASE = IS_BETA_BACKEND
+    ? 'https://castle-chatbot-beta.onrender.com'
+    : 'https://castle-chatbot.onrender.com';
+  if (IS_BETA_BACKEND) {
+    const b = document.getElementById('fp-beta-banner');
+    if (b) b.hidden = false;
+  }
+  const MATRIX_ENDPOINT = CHATBOT_BASE + '/framing/matrix';
+  const PYRAMID_ENDPOINT = CHATBOT_BASE + '/framing/pyramid';
+  const IDEAS_ENDPOINT   = CHATBOT_BASE + '/framing/ideas';
+  const INGEST_ENDPOINT  = CHATBOT_BASE + '/framing/ingest';
+  const SUGGEST_TYPES_ENDPOINT = CHATBOT_BASE + '/framing/decision-types';
+  const SUGGEST_UNCERTAINTY_TYPES_ENDPOINT = CHATBOT_BASE + '/framing/uncertainty-types';
   function showAiNote(kind) {
     const el = document.querySelector('.fp-matrix-ai-note[data-kind="' + kind + '"]');
     if (el) el.hidden = false;
@@ -4068,7 +4110,7 @@ date: 2026-08-11
   // framing JSON, drops it into the workspace. Doesn't set a save-target
   // (currentName stays null) so the user hits Save-as… if they want to keep
   // the AI's draft; the banner shows a soft "AI draft" label meanwhile.
-  const FRAMING_URL = 'https://castle-chatbot.onrender.com/framing';
+  const FRAMING_URL = CHATBOT_BASE + '/framing';
   function setBotStatus(msg, kind) {
     const el = $('#fp-bot-status');
     if (!el) return;
@@ -4354,7 +4396,7 @@ date: 2026-08-11
   // Base URL for the framing-node backend (running on the chatbot Render
   // service). Every endpoint accepts a read_id in the URL and, for writes,
   // a write_token in ?w=.
-  const NODES_BASE = 'https://castle-chatbot.onrender.com/api/framing-nodes';
+  const NODES_BASE = CHATBOT_BASE + '/api/framing-nodes';
   // The public examples library — a server-side node curated by Warren
   // and readable by anyone. Auto-added to every visitor's "My server
   // libraries" list on first visit so casual users can discover it.
