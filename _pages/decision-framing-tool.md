@@ -39,7 +39,6 @@ date: 2026-08-11
   <span class="fp-toolbar-sep" aria-hidden="true"></span>
   <button type="button" id="fp-clear">Clear pyramid</button>
   <button type="button" id="fp-reset">Reset all</button>
-  <button type="button" id="fp-share" title="Copy a URL that opens this framing as a fresh snapshot in someone else's browser (their edits don't affect your copy). NOT a library link — use Share URLs in the library bar for that.">Copy URL</button>
   <button type="button" id="fp-print">Print</button>
   <button type="button" id="fp-help" class="fp-section-help" title="Open the Ask Professor Powell chat panel (save, share, rename, sub-libraries, ideas, etc.). Same panel every other ? Ask button opens.">? Ask</button>
   <span id="fp-status" class="fp-status" role="status"></span>
@@ -3660,14 +3659,10 @@ date: 2026-08-11
     });
   }
 
-  // ── Share URL ───────────────────────────────────────────────
-  function toShareUrl() {
-    const enc = btoa(JSON.stringify(state))
-      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-    const url = new URL(window.location.href);
-    url.searchParams.set(URL_PARAM, enc);
-    return url.toString();
-  }
+  // The Copy URL button (snapshot-encoded ?p= URL) was retired 2026-09-08
+  // in favor of the server-backed library's clean Share URLs. The URL_PARAM
+  // decoder in load() is kept so any snapshot URLs already in the wild
+  // (emailed to colleagues before the retirement) still open correctly.
   function flashStatus(msg) {
     const el = $('#fp-status');
     if (!el) return;
@@ -5770,15 +5765,6 @@ date: 2026-08-11
       $('#fp-decisions-input').value     = '';
       $('#fp-uncertainties-input').value = '';
       render(); renderAllMatrices(); autoSave();
-    });
-    $('#fp-share').addEventListener('click', async () => {
-      const url = toShareUrl();
-      try {
-        await navigator.clipboard.writeText(url);
-        flashStatus('URL copied to clipboard.');
-      } catch (_) {
-        window.prompt('Copy this URL to share your framing:', url);
-      }
     });
     $('#fp-print').addEventListener('click', () => window.print());
     // Help — open the floating Ask Professor Powell panel WITHOUT

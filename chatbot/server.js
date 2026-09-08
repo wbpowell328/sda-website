@@ -293,10 +293,11 @@ const FRAMING_TOOL = {
 
 // ---- create_framing_link (AskPP chatbot tool) -----------------------------
 // Lets the AskPP chatbot hand the user a URL that opens Warren's decision
-// framing tool with a fully-populated framing. The framing tool already
-// reads its whole state from the ?p= URL param (that's how Copy URL works);
-// we just base64url-encode the framing here and prepend &src=askpp so the
-// tool page can badge the banner as "AI draft — Ask Professor Powell".
+// framing tool with a fully-populated framing. The framing tool reads its
+// whole state from the ?p= URL param on page load (a decoder retained from
+// the retired Copy URL button); we just base64url-encode the framing here
+// and prepend &src=askpp so the tool page can badge the banner as
+// "AI draft — Ask Professor Powell".
 const FRAMING_TOOL_URL = process.env.FRAMING_TOOL_URL
   || 'https://warrenpowell.org/decision-framing-tool/';
 const CREATE_FRAMING_LINK_TOOL = {
@@ -1597,7 +1598,7 @@ const FRAMING_TOOL_HELP = [
   '',
   'The tool has this layout, top to bottom:',
   '- **Doc banner** (amber strip near top) — shows the currently-loaded framing name and an "✎ Rename" button (only visible when a server-backed framing is loaded in edit mode).',
-  '- **Toolbar** — File menu, Clear pyramid, Reset all, Copy URL, Print, ? Help.',
+  '- **Toolbar** — File menu, Clear pyramid, Reset all, Print, ? Ask.',
   '- **Library bar** (only when a server library is loaded) — breadcrumb of the library ancestry, Save (green primary, in-place update), + New framing, + New sub-library, Share URLs, Rename ✎, Regenerate URLs, Delete library, Browse ▾.',
   '- **Tree side pane** (right side, when a library is loaded) — sub-libraries + framings in the current library; click any row to open.',
   '- **Problem scope** — decision-maker scope textarea + Describe your problem + URL / file inputs + two action buttons: "Read introductory materials" (ingests the material once so future AI calls can use it as background without generating a framing) and "Generate first draft (AI)" (produces a whole framing on the spot). After ingestion, a green "📄 Notes loaded" chip appears with a "View notes" button so the user can see the distilled notes; a small × clears them.',
@@ -1619,8 +1620,7 @@ const FRAMING_TOOL_HELP = [
   '- **Delete a library**: library bar → Delete library (only in admin mode; irreversible; wipes everything under it).',
   '',
   '## Sharing and access',
-  '- **Copy URL** (toolbar): copies a URL that opens the current framing as a fresh SNAPSHOT in someone else\'s browser — their edits do NOT affect the original. Good for pasting into an email.',
-  '- **Share URLs** (library bar): shows the View URL and Edit URL for the currently-loaded library. Anyone with the View URL gets read-only access; anyone with the Edit URL gets edit access. NOT a snapshot — it\'s the live library.',
+  '- **Share URLs** (library bar): shows the View URL and Edit URL for the currently-loaded library. Anyone with the View URL gets read-only access; anyone with the Edit URL gets edit access — including future edits, since it\'s a live library link.',
   '- **Access model**: there are NO accounts or passwords. The URL IS the credential. Anyone with a URL has whatever access it encodes. To revoke: Regenerate URLs (invalidates the old ones for everyone, including you).',
   '- **Cross-device access**: your libraries are remembered in this browser\'s localStorage. To access them from a different browser or device, bookmark or email yourself the Edit URL of your root personal library — every sub-library you create hangs off it in the tree pane. Nothing else to remember.',
   '',
