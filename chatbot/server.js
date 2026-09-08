@@ -873,6 +873,62 @@ const DECISION_TYPES = {
   },
 };
 
+// Warren's 12-category uncertainty taxonomy (verbatim from the "12
+// categories of uncertainty" section at /modeling-uncertainty/#categories).
+// Injected into the /framing/ideas prompt when the user picks a subset via
+// the Types… button on the Uncertainties header. Keep in sync with
+// _pages/modeling-uncertainty.md.
+const UNCERTAINTY_TYPES = {
+  1: {
+    brief: 'Observational uncertainty',
+    full: 'Uncertainty in our ability to observe the true state of the world. Did we detect breast cancer in an X-ray? Do we know the exact location of a driver? What is the true infection rate? Any measurement, imaging, sensing, or classification task where the observed value may differ from the true value.',
+  },
+  2: {
+    brief: 'Exogenous uncertainty',
+    full: 'The wide range of external inputs to a model: customer demands, equipment failures, weather delays, and human behavior. Uncertain quantities that arrive from outside the system the decision-maker controls.',
+  },
+  3: {
+    brief: 'Prognostic uncertainty',
+    full: 'Errors in forecasts of future events. Any prediction of future demand, rainfall, prices, or arrival rates carries prognostic error — the forecast is a point estimate whose realization may differ.',
+  },
+  4: {
+    brief: 'Inferential uncertainty',
+    full: 'Errors in estimates of how a system or market responds. How much does demand shift when price changes 10%? What is the true condition of a piece of equipment given noisy sensor data? What is the elasticity of a customer segment? Inferences drawn from data always carry uncertainty.',
+  },
+  5: {
+    brief: 'Experimental variability',
+    full: 'When we run experiments — in a lab, a computer simulation, or the field — there is always variability in the results. Two runs of the same experiment can give different answers. This is central to design-of-experiments, stochastic search, and any policy-tuning process.',
+  },
+  6: {
+    brief: 'Model uncertainty',
+    full: 'We may not know how disease is being transmitted in a population, or how information about a new product spreads among consumers. The STRUCTURE of the model is uncertain — not just its parameters.',
+  },
+  7: {
+    brief: 'Transitional uncertainty',
+    full: 'A form of exogenous input affecting how the system evolves over time. Classic examples: wind buffeting a drone, theft from inventory, evolution of the value of an investment. Uncertainty in the transition dynamics themselves rather than in observations.',
+  },
+  8: {
+    brief: 'Implementation errors',
+    full: 'When decisions from the model are not implemented properly in the field. A field operative overrides an instruction (based on local information), equipment failures prevent execution (a generator fails to come on), or a manual step is skipped. What was decided is not what actually happens.',
+  },
+  9: {
+    brief: 'Communication errors',
+    full: 'A different cause of implementation errors, arising from errors in communication. Verbal miscommunication, misinterpretation of instructions, language / translation errors, ambiguous documentation, or noise in the communication channel itself.',
+  },
+  10: {
+    brief: 'Algorithmic instability',
+    full: 'Multiple runs of the same algorithm — even for deterministic optimization — can produce different answers for technical reasons: random initialization, numerical precision, tie-breaking, or non-deterministic parallelism. The algorithm itself is a source of uncertainty in the output.',
+  },
+  11: {
+    brief: 'Goal uncertainty',
+    full: 'Different people solving the same problem may produce different answers because they do not share the same goals. Multiple stakeholders, unclear objectives, or trade-offs that different decision-makers weight differently all fall here.',
+  },
+  12: {
+    brief: 'Environmental uncertainty',
+    full: '"Environment" spans the entire range from climate, the political climate, the state of the economy, to the emphasis of a management team. Slow-moving background conditions that shift the setting the decision-maker operates in.',
+  },
+};
+
 // Suggest which of the 10 decision types are most relevant to the user's
 // current framing context. Powers the "✦ Suggest" button in the Types…
 // modal so users don't have to eyeball the 10-item list themselves.
@@ -993,6 +1049,119 @@ app.post('/framing/decision-types', framingLimiter, (req, res) => {
   });
 });
 
+// Suggest which of the 12 uncertainty categories are most relevant to the
+// user's current framing context. Parallel to /framing/decision-types.
+const SUGGEST_UNCERTAINTY_TYPES_TOOL = {
+  name: 'recommend_uncertainty_types',
+  description: 'Recommend which of Warren\'s 12 uncertainty categories are most relevant to the user\'s current framing.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      types: {
+        type: 'array',
+        items: { type: 'integer', minimum: 1, maximum: 12 },
+        description: 'The category NUMBERS (1..12, from the taxonomy provided) most relevant to this setting. Typically 3–6 categories. Skip categories that clearly do not apply. Do not pad.',
+      },
+      reasoning: {
+        type: 'string',
+        description: 'ONE short sentence (≤ 25 words) naming why these categories fit.',
+      },
+    },
+    required: ['types'],
+  },
+};
+
+app.post('/framing/uncertainty-types', framingLimiter, (req, res) => {
+  framingUpload.single('file')(req, res, async (uploadErr) => {
+    if (uploadErr) return res.status(400).json({ error: uploadErr.message });
+    try {
+      const scope       = String(req.body?.scope || '').trim().slice(0, 2000);
+      const description = String(req.body?.description || '').trim().slice(0, FRAMING_MAX_CHARS);
+      const url         = String(req.body?.url || '').trim();
+      const priorNotes  = String(req.body?.priorNotes || '').trim().slice(0, 20000);
+      const parseList = (raw) => {
+        try {
+          if (typeof raw !== 'string' || !raw) return [];
+          const arr = JSON.parse(raw);
+          return Array.isArray(arr) ? arr.filter(Boolean).map(String).slice(0, 60) : [];
+        } catch (_) { return []; }
+      };
+      const existingMetrics       = parseList(req.body?.existingMetrics);
+      const existingDecisions     = parseList(req.body?.existingDecisions);
+      const existingUncertainties = parseList(req.body?.existingUncertainties);
+
+      const userContent = [];
+      if (scope) userContent.push({ type: 'text', text: 'DECISION-MAKER SCOPE:\n' + scope });
+      if (req.file) {
+        userContent.push(await fileToContentBlock(req.file.buffer, req.file.mimetype, req.file.originalname));
+      }
+      if (url) {
+        if (!/^https?:\/\//i.test(url)) {
+          return res.status(400).json({ error: 'URL must start with http:// or https://.' });
+        }
+        userContent.push(await urlToContentBlock(url));
+      }
+      if (description) userContent.push({ type: 'text', text: 'PROBLEM DESCRIPTION:\n' + description });
+      if (priorNotes) userContent.push({ type: 'text', text: 'INGESTED PROBLEM NOTES:\n' + priorNotes });
+      if (existingMetrics.length) {
+        userContent.push({ type: 'text', text: 'PERFORMANCE METRICS on screen:\n' + existingMetrics.map(m => '  - ' + m).join('\n') });
+      }
+      if (existingDecisions.length) {
+        userContent.push({ type: 'text', text: 'DECISIONS on screen:\n' + existingDecisions.map(d => '  - ' + d).join('\n') });
+      }
+      if (existingUncertainties.length) {
+        userContent.push({ type: 'text', text: 'UNCERTAINTIES already listed:\n' + existingUncertainties.map(u => '  - ' + u).join('\n') });
+      }
+      if (userContent.length === 0) {
+        return res.status(400).json({ error: 'Add a scope, description, URL, or file first — the AI needs something to reason about.' });
+      }
+
+      const taxonomyText = Object.entries(UNCERTAINTY_TYPES)
+        .map(([n, t]) => `Category ${n} — ${t.brief}:\n${t.full}`)
+        .join('\n\n');
+
+      userContent.push({
+        type: 'text',
+        text:
+          'Warren\'s 12 categories of uncertainty (from modeling-uncertainty/#categories):\n\n' +
+          taxonomyText +
+          '\n\nGiven the setting above, which of these 12 categories are MOST relevant? ' +
+          'Recommend 3–6 (occasionally 7 for very rich settings). Skip categories ' +
+          'that clearly do not apply. Do not pad — better to return 4 sharp ' +
+          'categories than 10 loose ones. Return via the recommend_uncertainty_types tool.',
+      });
+
+      const response = await client.messages.create({
+        model: FRAMING_MODEL,
+        max_tokens: 512,
+        system: framingPrompt || 'You are Professor Warren Powell\'s decision-framing assistant.',
+        tools: [SUGGEST_UNCERTAINTY_TYPES_TOOL],
+        tool_choice: { type: 'tool', name: SUGGEST_UNCERTAINTY_TYPES_TOOL.name },
+        messages: [{ role: 'user', content: userContent }],
+      });
+
+      const toolBlock = (response.content || []).find(
+        (b) => b.type === 'tool_use' && b.name === SUGGEST_UNCERTAINTY_TYPES_TOOL.name,
+      );
+      if (!toolBlock) {
+        return res.status(502).json({ error: 'Model did not produce a recommendation. Try again.' });
+      }
+      const rawTypes = Array.isArray(toolBlock.input.types) ? toolBlock.input.types : [];
+      const types = rawTypes
+        .map(Number)
+        .filter((n) => Number.isInteger(n) && n >= 1 && n <= 12)
+        .filter((n, i, a) => a.indexOf(n) === i)
+        .sort((a, b) => a - b);
+      const reasoning = String(toolBlock.input.reasoning || '').trim();
+
+      return res.json({ types, reasoning, model: FRAMING_MODEL, usage: response.usage });
+    } catch (err) {
+      console.error('Framing/uncertainty-types error:', err);
+      return res.status(500).json({ error: (err && err.message) || 'Unknown error' });
+    }
+  });
+});
+
 const IDEAS_TOOL = {
   name: 'record_ideas',
   description: 'Record a list of proposed decisions or uncertainties. For decisions, also classify each idea as general / specific / numeric.',
@@ -1090,6 +1259,23 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
           }
         }
       } catch (_) { /* ignore malformed */ }
+      // Uncertainty-category filter (uncertainties only): array of ints 1..12
+      // from Warren's 12-category taxonomy. When present, the FULL
+      // explanations of the selected categories get injected into the prompt.
+      let uncertaintyTypes = [];
+      try {
+        const raw = req.body?.uncertaintyTypes;
+        if (typeof raw === 'string' && raw) {
+          const arr = JSON.parse(raw);
+          if (Array.isArray(arr)) {
+            uncertaintyTypes = arr
+              .map(Number)
+              .filter(n => Number.isInteger(n) && n >= 1 && n <= 12)
+              .filter((n, i, a) => a.indexOf(n) === i)
+              .sort((a, b) => a - b);
+          }
+        }
+      } catch (_) { /* ignore malformed */ }
 
       // Drill-in context. `parentPath` is the ancestry of decisions the user
       // has drilled into (root → … → leaf). When non-empty the model is
@@ -1152,6 +1338,29 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
           const t = DECISION_TYPES[n];
           if (!t) continue;
           parts.push(`Type ${n} — ${t.brief}:`);
+          parts.push(t.full);
+          parts.push('');
+        }
+        userContent.push({ type: 'text', text: parts.join('\n') });
+      }
+      // Uncertainty-category filter (uncertainties only). Parallel to the
+      // decision-type filter above but from the 12-category taxonomy at
+      // /modeling-uncertainty/#categories.
+      if (kind === 'uncertainty' && uncertaintyTypes.length > 0) {
+        const parts = [
+          'UNCERTAINTY-CATEGORY FILTER — the user has restricted uncertainty ' +
+          'generation to the following categories from the 12-category taxonomy ' +
+          'at warrenpowell.org/modeling-uncertainty/#categories. Every idea you ' +
+          'propose MUST fall clearly within one of these categories. Do NOT ' +
+          'propose uncertainties of other categories. If the setting genuinely ' +
+          'has no uncertainties of one of the chosen categories, return fewer ' +
+          'ideas rather than stretching to fill the count.',
+          '',
+        ];
+        for (const n of uncertaintyTypes) {
+          const t = UNCERTAINTY_TYPES[n];
+          if (!t) continue;
+          parts.push(`Category ${n} — ${t.brief}:`);
           parts.push(t.full);
           parts.push('');
         }
@@ -1846,8 +2055,9 @@ const FRAMING_TOOL_HELP = [
   '## Generating ideas',
   '- **Generate ideas** button (next to Decisions or Uncertainties header): opens an idea box with AI-proposed items scored to have H or M impact on at least one metric. Check the ones you want, click "Add checked" to append.',
   '- **count input** (small numeric box after the mode toggle): override how many ideas the AI returns. Blank = auto (uses the First-draft size setting: small=3, medium=5, large=8, max=20). Type any number 1-200 — handy for long (spec) lists like "50 potential suppliers" or "100 candidate SKUs".',
-  '- **Types… button** (Decisions header only): opens a modal with the 10 decision types from Warren\'s taxonomy (Physical/financial, Complex/strategic, Information acquisition, Information sharing, Performance metrics, Choosing functions, Setting parameters, Labeling/identification/estimation, Features/behaviors, Deciding what to decide — see /decisionsdecisions/#types-of-decision-settings). Check any subset to constrain Generate ideas to those types; leave all unchecked to let the AI decide (default). When any are checked, the button shows the count ("Types… (3)") and the AI receives the FULL definitions of the chosen types alongside the usual scope/description context.',
-  '- **✦ Suggest** button inside the Types… modal: asks the AI to read your current scope / description / notes / metrics / existing decisions and check the boxes for the types most relevant to your setting. Typically returns 2-5 types with a one-sentence rationale. User is free to adjust the ticks before clicking Done.',
+  '- **Types… button on Decisions**: opens a modal with the 10 decision types from Warren\'s taxonomy (Physical/financial, Complex/strategic, Information acquisition, Information sharing, Performance metrics [inactive], Choosing functions, Setting parameters, Labeling/identification/estimation, Features/behaviors, Deciding what to decide [inactive] — see /decisionsdecisions/#types-of-decision-settings). Check any subset to constrain Generate ideas to those types; leave all unchecked to let the AI decide (default). Types 5 and 10 are shown greyed out — 5 is set separately via the metrics pyramid, 10 is what this whole tool is for. When any are checked, the button shows the count ("Types… (3)") and the AI receives the FULL definitions of the chosen types alongside the usual scope/description context.',
+  '- **Types… button on Uncertainties**: parallel to the decisions picker but based on the 12 categories of uncertainty at /modeling-uncertainty/#categories (Observational, Exogenous, Prognostic, Inferential, Experimental variability, Model, Transitional, Implementation errors, Communication errors, Algorithmic instability, Goal, Environmental). All 12 are active. Same UX — check a subset to constrain what "Generate ideas" proposes.',
+  '- **✦ Suggest** button inside either Types… modal: asks the AI to read your current scope / description / notes / metrics / existing decisions (and existing uncertainties, for the uncertainty picker) and check the boxes for the types most relevant to your setting. Typically returns 2-5 decision types or 3-6 uncertainty categories with a one-sentence rationale. User is free to adjust the ticks before clicking Done.',
   '- **(gen)/(spec) mode toggle** next to Generate ideas: pick which mode fires on the next click. Default is (gen).',
   '  - **(gen)** — the AI proposes broad still-drillable categories ("Choose supplier", "Target markets"). Good for structuring the decision tree.',
   '  - **(spec)** — the AI enumerates concrete members OR numeric parameters, skipping the categorical layer. Drilled into "Target markets" in (spec) mode returns industry names ("Agriculture", "Healthcare", "Transportation", "Retail", "Energy"), NOT sub-processes like "Evaluate incumbent competition". Each item comes back tagged (disc) or (num).',

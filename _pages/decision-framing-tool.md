@@ -238,6 +238,50 @@ date: 2026-08-11
   </div>
 </div>
 
+<!-- Uncertainty-types filter modal — spawned by the "Types…" button on
+     the Uncertainties header. Checkboxes for the 12 categories from
+     https://warrenpowell.org/modeling-uncertainty/#categories.
+     Same UX as the decision-types picker. -->
+<div id="fp-uncertainty-types-modal" class="fp-modal" hidden>
+  <div class="fp-modal-card">
+    <div class="fp-modal-header">
+      <h3>Filter generated uncertainties by category</h3>
+      <button type="button" class="fp-modal-close" id="fp-uncertainty-types-modal-close" aria-label="Close">×</button>
+    </div>
+    <p class="fp-muted" style="margin: 0 0 8px 0;">
+      Check any of the 12 <a href="/modeling-uncertainty/#categories" target="_blank" rel="noopener">categories of uncertainty</a>
+      to constrain what the AI proposes when you click Generate ideas. Leave all
+      unchecked to let the AI decide (current behavior).
+    </p>
+    <div id="fp-uncertainty-types-list" class="fp-decision-types-list">
+      <label><input type="checkbox" value="1"> <b>1.</b> Observational uncertainty</label>
+      <label><input type="checkbox" value="2"> <b>2.</b> Exogenous uncertainty</label>
+      <label><input type="checkbox" value="3"> <b>3.</b> Prognostic uncertainty</label>
+      <label><input type="checkbox" value="4"> <b>4.</b> Inferential uncertainty</label>
+      <label><input type="checkbox" value="5"> <b>5.</b> Experimental variability</label>
+      <label><input type="checkbox" value="6"> <b>6.</b> Model uncertainty</label>
+      <label><input type="checkbox" value="7"> <b>7.</b> Transitional uncertainty</label>
+      <label><input type="checkbox" value="8"> <b>8.</b> Implementation errors</label>
+      <label><input type="checkbox" value="9"> <b>9.</b> Communication errors</label>
+      <label><input type="checkbox" value="10"> <b>10.</b> Algorithmic instability</label>
+      <label><input type="checkbox" value="11"> <b>11.</b> Goal uncertainty</label>
+      <label><input type="checkbox" value="12"> <b>12.</b> Environmental uncertainty</label>
+    </div>
+    <div id="fp-uncertainty-types-status" class="fp-bot-status" role="status" aria-live="polite" style="min-height: 1.2em;"></div>
+    <div class="fp-modal-actions" style="justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+      <div style="display: flex; gap: 6px;">
+        <button type="button" id="fp-uncertainty-types-all" class="fp-modal-mini">All</button>
+        <button type="button" id="fp-uncertainty-types-none" class="fp-modal-mini">None</button>
+        <button type="button" id="fp-uncertainty-types-suggest" class="fp-modal-mini"
+                title="Ask the AI to read your scope / description / notes / metrics / existing decisions and check the categories most relevant to your setting.">✦ Suggest</button>
+      </div>
+      <div>
+        <button type="button" id="fp-uncertainty-types-ok" class="fp-modal-primary">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="fp-ideas-modal" class="fp-modal" hidden>
   <div class="fp-modal-card">
     <div class="fp-modal-header">
@@ -475,6 +519,8 @@ date: 2026-08-11
       <input type="number" class="fp-ideas-count" data-kind="uncertainty"
              min="1" max="200" step="1" placeholder="count"
              title="How many ideas to generate. Blank = auto (uses the First-draft size setting). Type a number 1–200 to override — handy for long (spec) lists." />
+      <button type="button" id="fp-uncertainty-types-btn" class="fp-decision-types-btn"
+              title="Constrain the AI to generate uncertainties from specific categories (from the 12-category taxonomy at modeling-uncertainty/#categories). Click for the picker.">Types…</button>
     </div>
     <textarea id="fp-uncertainties-input" spellcheck="true" placeholder="Demand volatility&#10;Supplier reliability&#10;Currency fluctuation&#10;Regulatory change"></textarea>
   </div>
@@ -3201,6 +3247,7 @@ date: 2026-08-11
   const IDEAS_ENDPOINT   = 'https://castle-chatbot.onrender.com/framing/ideas';
   const INGEST_ENDPOINT  = 'https://castle-chatbot.onrender.com/framing/ingest';
   const SUGGEST_TYPES_ENDPOINT = 'https://castle-chatbot.onrender.com/framing/decision-types';
+  const SUGGEST_UNCERTAINTY_TYPES_ENDPOINT = 'https://castle-chatbot.onrender.com/framing/uncertainty-types';
   function showAiNote(kind) {
     const el = document.querySelector('.fp-matrix-ai-note[data-kind="' + kind + '"]');
     if (el) el.hidden = false;
@@ -3404,6 +3451,9 @@ date: 2026-08-11
   // AI's decision-idea generation. Empty = no filter (current behavior).
   // Numbers 1..10. Uncertainties don't use this taxonomy.
   const decisionTypesFilter = new Set();
+  // Session-only filter for uncertainties, from the 12 categories at
+  // /modeling-uncertainty/#categories. Empty = no filter.
+  const uncertaintyTypesFilter = new Set();
   function updateDecisionTypesBtn() {
     const btn = document.getElementById('fp-decision-types-btn');
     if (!btn) return;
@@ -3524,6 +3574,116 @@ date: 2026-08-11
       cb.checked = on;
     });
   }
+  // ── Uncertainty-types filter — parallel to the decision one ──
+  function updateUncertaintyTypesBtn() {
+    const btn = document.getElementById('fp-uncertainty-types-btn');
+    if (!btn) return;
+    const n = uncertaintyTypesFilter.size;
+    btn.textContent = n > 0 ? 'Types… (' + n + ')' : 'Types…';
+    btn.classList.toggle('is-active', n > 0);
+  }
+  function openUncertaintyTypesModal() {
+    const modal = document.getElementById('fp-uncertainty-types-modal');
+    if (!modal) return;
+    modal.querySelectorAll('#fp-uncertainty-types-list input[type="checkbox"]').forEach(cb => {
+      cb.checked = uncertaintyTypesFilter.has(Number(cb.value));
+    });
+    const status = document.getElementById('fp-uncertainty-types-status');
+    if (status) { status.textContent = ''; status.style.color = ''; }
+    modal.hidden = false;
+  }
+  function closeUncertaintyTypesModal() {
+    const modal = document.getElementById('fp-uncertainty-types-modal');
+    if (modal) modal.hidden = true;
+  }
+  function commitUncertaintyTypesModal() {
+    uncertaintyTypesFilter.clear();
+    const modal = document.getElementById('fp-uncertainty-types-modal');
+    if (modal) {
+      modal.querySelectorAll('#fp-uncertainty-types-list input[type="checkbox"]:checked').forEach(cb => {
+        const n = Number(cb.value);
+        if (Number.isInteger(n) && n >= 1 && n <= 12) uncertaintyTypesFilter.add(n);
+      });
+    }
+    updateUncertaintyTypesBtn();
+    closeUncertaintyTypesModal();
+  }
+  function uncertaintyTypesSetAll(on) {
+    const modal = document.getElementById('fp-uncertainty-types-modal');
+    if (!modal) return;
+    modal.querySelectorAll('#fp-uncertainty-types-list input[type="checkbox"]').forEach(cb => {
+      cb.checked = on;
+    });
+  }
+  async function suggestUncertaintyTypes() {
+    const btn = document.getElementById('fp-uncertainty-types-suggest');
+    const status = document.getElementById('fp-uncertainty-types-status');
+    const scope = $('#fp-scope-input').value.trim();
+    const desc  = $('#fp-bot-desc').value.trim();
+    const url   = $('#fp-bot-url').value.trim();
+    const file  = $('#fp-bot-file').files && $('#fp-bot-file').files[0];
+    const notes = (state.problemNotes || '').trim();
+    if (!scope && !desc && !url && !file && !notes) {
+      if (status) {
+        status.textContent = 'Fill in a scope, description, URL, or file in the Problem scope section above first — the AI needs something to reason about.';
+        status.style.color = '#7a1c1c';
+      }
+      return;
+    }
+    const prev = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = 'Thinking…'; }
+    if (status) {
+      status.textContent = 'Asking Professor Powell to review your context…';
+      status.style.color = '#c9621e';
+    }
+    try {
+      const form = new FormData();
+      if (scope) form.append('scope', scope);
+      if (desc)  form.append('description', desc);
+      if (notes) {
+        form.append('priorNotes', notes);
+      } else {
+        if (url)  form.append('url', url);
+        if (file) form.append('file', file, file.name);
+      }
+      if (Array.isArray(state.metrics) && state.metrics.length) {
+        form.append('existingMetrics', JSON.stringify(state.metrics));
+      }
+      if (Array.isArray(state.decisions) && state.decisions.length) {
+        form.append('existingDecisions', JSON.stringify(state.decisions));
+      }
+      if (Array.isArray(state.uncertainties) && state.uncertainties.length) {
+        form.append('existingUncertainties', JSON.stringify(state.uncertainties));
+      }
+      const resp = await fetch(SUGGEST_UNCERTAINTY_TYPES_ENDPOINT, { method: 'POST', body: form });
+      const data = await resp.json().catch(() => ({ error: 'Bad response from server.' }));
+      if (!resp.ok) throw new Error(data.error || ('Request failed (' + resp.status + ')'));
+      const types = (Array.isArray(data.types) ? data.types : [])
+        .map(Number)
+        .filter(n => Number.isInteger(n) && n >= 1 && n <= 12);
+      const modal = document.getElementById('fp-uncertainty-types-modal');
+      if (modal) {
+        modal.querySelectorAll('#fp-uncertainty-types-list input[type="checkbox"]').forEach(cb => {
+          cb.checked = types.includes(Number(cb.value));
+        });
+      }
+      if (status) {
+        const reasoning = String(data.reasoning || '').trim();
+        status.textContent = reasoning
+          ? 'AI: ' + reasoning + ' — review and adjust if needed.'
+          : 'Categories checked based on your context — review and adjust if needed.';
+        status.style.color = '#345c48';
+      }
+    } catch (err) {
+      console.error('Suggest uncertainty types failed:', err);
+      if (status) {
+        status.textContent = 'Sorry — ' + (err && err.message ? err.message : 'request failed') + '. (First request after idle can take ~30 s while the server wakes up.)';
+        status.style.color = '#7a1c1c';
+      }
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = prev; }
+    }
+  }
   async function openIdeaBox(kind) {
     if (kind !== 'decision' && kind !== 'uncertainty') return;
     ideasCurrentKind = kind;
@@ -3622,6 +3782,11 @@ date: 2026-08-11
       if (ideasCurrentKind === 'decision' && decisionTypesFilter.size > 0) {
         const nums = Array.from(decisionTypesFilter).sort((a, b) => a - b);
         form.append('decisionTypes', JSON.stringify(nums));
+      }
+      // Uncertainty-category filter (uncertainties only) — session-only.
+      if (ideasCurrentKind === 'uncertainty' && uncertaintyTypesFilter.size > 0) {
+        const nums = Array.from(uncertaintyTypesFilter).sort((a, b) => a - b);
+        form.append('uncertaintyTypes', JSON.stringify(nums));
       }
       if (scope) form.append('scope', scope);
       if (desc)  form.append('description', desc);
@@ -6089,6 +6254,24 @@ date: 2026-08-11
       const modal = $('#fp-decision-types-modal');
       if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) commitDecisionTypesModal(); });
       updateDecisionTypesBtn();
+    })();
+    // Uncertainty-types filter modal wiring (parallel to decisions).
+    (function wireUncertaintyTypesModal() {
+      const openBtn = $('#fp-uncertainty-types-btn');
+      if (openBtn) openBtn.addEventListener('click', openUncertaintyTypesModal);
+      const closeBtn = $('#fp-uncertainty-types-modal-close');
+      if (closeBtn) closeBtn.addEventListener('click', closeUncertaintyTypesModal);
+      const okBtn = $('#fp-uncertainty-types-ok');
+      if (okBtn) okBtn.addEventListener('click', commitUncertaintyTypesModal);
+      const allBtn = $('#fp-uncertainty-types-all');
+      if (allBtn) allBtn.addEventListener('click', () => uncertaintyTypesSetAll(true));
+      const noneBtn = $('#fp-uncertainty-types-none');
+      if (noneBtn) noneBtn.addEventListener('click', () => uncertaintyTypesSetAll(false));
+      const suggestBtn = $('#fp-uncertainty-types-suggest');
+      if (suggestBtn) suggestBtn.addEventListener('click', suggestUncertaintyTypes);
+      const modal = $('#fp-uncertainty-types-modal');
+      if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) commitUncertaintyTypesModal(); });
+      updateUncertaintyTypesBtn();
     })();
     // Idea-box modal wiring.
     (function wireIdeaBox() {
