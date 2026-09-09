@@ -120,7 +120,7 @@ We refer to information in class 2 as *decisions*. This suggests a formal defini
 
 An informal definition might be:
 
-> **Definition (informal):** A **decision** is something we control.
+> **Definition (informal):** A **decision** is information we control.
 
 These definitions offer a starting point, but we do not learn very much from them.  Much more interesting is to identify specific examples of decisions, which we do next.
 
