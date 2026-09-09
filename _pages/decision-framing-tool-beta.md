@@ -1125,7 +1125,7 @@ noindex: true
   }
 
   /* Play modal — discrete-choice simulator (▶ Play on disc rows) */
-  .fp-play-card { max-width: 880px; }
+  .fp-play-card { max-width: 880px; overflow-y: auto; }
   .fp-play-lede { margin: 0 0 14px 0; }
   .fp-play-section {
     border-top: 1px solid #ede0bd;
