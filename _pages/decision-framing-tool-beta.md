@@ -461,7 +461,7 @@ noindex: true
   </div>
 
   <div class="fp-bot-row">
-    <label for="fp-bot-desc" class="fp-bot-label">Describe your problem <span class="fp-muted">(only needed if you want an AI first draft)</span></label>
+    <label for="fp-bot-desc" class="fp-bot-label">Describe your problem <span class="fp-muted">(context for every AI call — first draft, generated ideas, and type suggestions)</span></label>
     <textarea id="fp-bot-desc" rows="4" spellcheck="true"
       placeholder="e.g. A regional pharmacy chain has to decide, each week, how much of a slow-moving cold-and-flu medication to keep in each of 40 stores given uncertain seasonal demand, expiring inventory, and a shared central warehouse..."></textarea>
   </div>
