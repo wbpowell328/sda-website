@@ -100,6 +100,33 @@
   </ol>
 </nav>
 
+{%- comment -%}
+  Fixed side arrows for prev/next-chapter navigation. Vertically
+  centered, always visible while scrolling. Hidden when there is no
+  target in that direction (first chapter has no prev; last has no
+  next). Keyboard shortcuts ArrowLeft / ArrowRight below wire the
+  same behavior. Only rendered when we found the current chapter in
+  the TOC — otherwise this is a non-chapter page and arrows are hidden.
+{%- endcomment -%}
+{% if current_index >= 0 %}
+  {% assign prev_i_arrow = current_index | minus: 1 %}
+  {% assign next_i_arrow = current_index | plus: 1 %}
+  {% assign prev_c_arrow = nil %}
+  {% assign next_c_arrow = nil %}
+  {% if prev_i_arrow >= 0 %}{% assign prev_c_arrow = reachable[prev_i_arrow] %}{% endif %}
+  {% if next_i_arrow < reachable.size %}{% assign next_c_arrow = reachable[next_i_arrow] %}{% endif %}
+  {% if prev_c_arrow %}
+    <a class="book-side-arrow book-side-arrow-prev" href="{{ prev_c_arrow.url | relative_url }}"
+       aria-label="Previous: {% if prev_c_arrow.num != '' %}Chapter {{ prev_c_arrow.num }} — {% endif %}{{ prev_c_arrow.title }}"
+       title="{% if prev_c_arrow.num != '' %}Chapter {{ prev_c_arrow.num }}: {% endif %}{{ prev_c_arrow.title }}">‹</a>
+  {% endif %}
+  {% if next_c_arrow %}
+    <a class="book-side-arrow book-side-arrow-next" href="{{ next_c_arrow.url | relative_url }}"
+       aria-label="Next: {% if next_c_arrow.num != '' %}Chapter {{ next_c_arrow.num }} — {% endif %}{{ next_c_arrow.title }}"
+       title="{% if next_c_arrow.num != '' %}Chapter {{ next_c_arrow.num }}: {% endif %}{{ next_c_arrow.title }}">›</a>
+  {% endif %}
+{% endif %}
+
 <main class="book-page">
   {% if page.title %}<h1 class="book-page-title">{{ page.title }}</h1>{% endif %}
   {{ content }}
@@ -133,6 +160,26 @@
 <footer class="book-footer">
   <p>&copy; {{ site.time | date: "%Y" }} {{ book.author }} &middot; <a href="{{ '/teaching-books/' | relative_url }}">Back to the Sequential Decision Analytics site</a></p>
 </footer>
+
+<!-- Keyboard chapter navigation — ArrowLeft = prev chapter, ArrowRight =
+     next chapter. Same targets the fixed side arrows use. Ignored when
+     the user is typing in an input or has any modifier held (so the
+     arrow keys still work normally in search boxes and for horizontal
+     table scrolling with Shift/Ctrl). -->
+<script>
+  (function () {
+    var prev = document.querySelector('.book-side-arrow-prev');
+    var next = document.querySelector('.book-side-arrow-next');
+    if (!prev && !next) return;
+    document.addEventListener('keydown', function (e) {
+      if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+      var t = e.target;
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+      if (e.key === 'ArrowLeft'  && prev) { e.preventDefault(); window.location.href = prev.getAttribute('href'); }
+      if (e.key === 'ArrowRight' && next) { e.preventDefault(); window.location.href = next.getAttribute('href'); }
+    });
+  })();
+</script>
 
 <!-- Language switcher — hops to /sdam/<lang>/chapter-N/ (or /sdam/chapter-N/
      for English). Records the choice in localStorage so subsequent chapters
