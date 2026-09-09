@@ -7001,16 +7001,25 @@ noindex: true
   }
 
   async function publishToLibrary() {
+    // Save as… always prompts for a name — this matches the convention
+    // in every desktop app (Word, Sheets, etc.) and prevents surprises
+    // where the tool auto-picks the first-decision text or the bot's
+    // compact case name. The pre-fill priority is the same as the
+    // silent derivation used to be — bot title, current save name,
+    // banner-derived name, then a date-stamped fallback so the box is
+    // never empty.
+    const suggested = (state.title && state.title.trim())
+      || (currentName && currentName.trim())
+      || deriveSuggestedName();
+    const raw = window.prompt('Save as (name for this framing):', suggested);
+    if (raw == null) return;                          // user cancelled
+    const framingTitle = raw.trim().slice(0, 200);
+    if (!framingTitle) return;                        // empty → no-op
+
     const btn = $('#fp-menu-publish');
     const prevText = btn ? btn.textContent : '';
     if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
     try {
-      // The framing title is best derived from whatever meaningful label
-      // we already have — bot title, current save name, banner-derived
-      // suggestion, or a date-stamped placeholder as last resort.
-      const framingTitle = (state.title && state.title.trim())
-        || (currentName && currentName.trim())
-        || deriveSuggestedName();
 
       // Do we already have a personal library on this browser? If so,
       // ADD this framing to it. If not, create the library first, then
