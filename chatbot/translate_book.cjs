@@ -94,12 +94,36 @@ function stringifyFrontMatter(fm, order) {
   return lines.join('\n');
 }
 
-// ── Math extractor ──────────────────────────────────────────────
-function extractMath(text) {
+// ── Protected-span extractor ────────────────────────────────────
+// Replaces math ($…$ and $$…$$) AND Liquid tags/outputs ({% … %} and
+// {{ … }}) with opaque ⟦N⟧ placeholders. Liquid tags matter because SDAM
+// chapters wrap their whole body in {% raw %} … {% endraw %} — dropping
+// either side of that pair breaks Jekyll/Pages builds.
+function extractProtected(text) {
   const blocks = [];
   let out = '';
   let i = 0;
   while (i < text.length) {
+    // Liquid tag {% … %} (highest priority — includes {% raw %} / {% endraw %}).
+    if (text[i] === '{' && text[i + 1] === '%') {
+      const end = text.indexOf('%}', i + 2);
+      if (end !== -1) {
+        blocks.push(text.slice(i, end + 2));
+        out += '⟦' + (blocks.length - 1) + '⟧';
+        i = end + 2;
+        continue;
+      }
+    }
+    // Liquid output {{ … }}.
+    if (text[i] === '{' && text[i + 1] === '{') {
+      const end = text.indexOf('}}', i + 2);
+      if (end !== -1) {
+        blocks.push(text.slice(i, end + 2));
+        out += '⟦' + (blocks.length - 1) + '⟧';
+        i = end + 2;
+        continue;
+      }
+    }
     // Block math $$…$$
     if (text[i] === '$' && text[i + 1] === '$') {
       const end = text.indexOf('$$', i + 2);
@@ -126,7 +150,7 @@ function extractMath(text) {
   }
   return { text: out, blocks };
 }
-function restoreMath(text, blocks) {
+function restoreProtected(text, blocks) {
   return text.replace(/⟦(\d+)⟧/g, (_, n) => blocks[Number(n)] || '');
 }
 
@@ -241,7 +265,7 @@ async function translateFile(sourcePath, lang, outputPath) {
   }
 
   // 2) Extract math → placeholders, chunk, translate each chunk, restore math.
-  const { text: bodyProse, blocks } = extractMath(body);
+  const { text: bodyProse, blocks } = extractProtected(body);
   const chunks = chunkBody(bodyProse);
   console.error('  ' + chunks.length + ' chunk(s), ' + blocks.length + ' math block(s)');
   let usageIn = 0, usageOut = 0;
@@ -253,7 +277,7 @@ async function translateFile(sourcePath, lang, outputPath) {
     if (usage) { usageIn += usage.input_tokens || 0; usageOut += usage.output_tokens || 0; }
   }
   const trBodyProse = translatedChunks.join('\n\n');
-  const trBody = restoreMath(trBodyProse, blocks);
+  const trBody = restoreProtected(trBodyProse, blocks);
 
   // 3) Rewrite front matter for the translated page.
   fm.title = trTitle;
