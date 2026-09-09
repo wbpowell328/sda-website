@@ -2,7 +2,7 @@
 layout: book
 book_data: sdam_toc_zh
 book_home: /sdam/zh/contents/
-title: "# 第1章：序贯决策问题建模"
+title: "第1章：序贯决策问题建模"
 permalink: /sdam/zh/chapter-1/
 date: 2026-07-17
 lang: zh

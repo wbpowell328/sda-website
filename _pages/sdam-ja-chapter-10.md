@@ -2,7 +2,7 @@
 layout: book
 book_data: sdam_toc_ja
 book_home: /sdam/ja/contents/
-title: "## 第10章:サプライチェーン管理 I:2エージェント新聞売り子問題"
+title: "第10章:サプライチェーン管理 I:2エージェント新聞売り子問題"
 permalink: /sdam/ja/chapter-10/
 date: 2026-07-17
 lang: ja

@@ -280,6 +280,7 @@ async function translateFile(sourcePath, lang, outputPath) {
     console.error('  translating title...');
     const { text } = await translateChunk(enTitle, lang, glossary);
     trTitle = text.trim()
+      .replace(/^#{1,6}\s+/, '')                 // "## Kapitel 2..." → "Kapitel 2..."
       .replace(/^\*\*(.*)\*\*$/, '$1')
       .replace(/^\*(.*)\*$/, '$1')
       .replace(/^_{1,2}(.*)_{1,2}$/, '$1')

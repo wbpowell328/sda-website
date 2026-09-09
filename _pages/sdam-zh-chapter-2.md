@@ -2,7 +2,7 @@
 layout: book
 book_data: sdam_toc_zh
 book_home: /sdam/zh/contents/
-title: "## 第2章:资产出售问题"
+title: "第2章:资产出售问题"
 permalink: /sdam/zh/chapter-2/
 date: 2026-07-17
 lang: zh

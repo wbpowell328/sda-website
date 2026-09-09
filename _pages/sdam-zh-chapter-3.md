@@ -2,7 +2,7 @@
 layout: book
 book_data: sdam_toc_zh
 book_home: /sdam/zh/contents/
-title: "# 第3章:自适应市场规划"
+title: "第3章:自适应市场规划"
 permalink: /sdam/zh/chapter-3/
 date: 2026-07-17
 lang: zh

@@ -7,7 +7,7 @@ permalink: /sdam/es/contents/
 date: 2026-07-19
 lang: es
 translated_from: en
-translated_from_hash: 7f9941f97f3b6ba6
+translated_from_hash: ae561f774704c6c5
 ---
 
 {%- assign book = site.data[page.book_data] -%}

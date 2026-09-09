@@ -2,7 +2,7 @@
 layout: book
 book_data: sdam_toc_ja
 book_home: /sdam/ja/contents/
-title: "# 序文と謝辞"
+title: "序文と謝辞"
 permalink: /sdam/ja/preface/
 date: 2026-07-17
 lang: ja

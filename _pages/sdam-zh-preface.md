@@ -2,7 +2,7 @@
 layout: book
 book_data: sdam_toc_zh
 book_home: /sdam/zh/contents/
-title: "# 前言与致谢"
+title: "前言与致谢"
 permalink: /sdam/zh/preface/
 date: 2026-07-17
 lang: zh

@@ -2,7 +2,7 @@
 layout: book
 book_data: sdam_toc_fr
 book_home: /sdam/fr/contents/
-title: "# Chapitre 7 : Applications, revisitées"
+title: "Chapitre 7 : Applications, revisitées"
 permalink: /sdam/fr/chapter-7/
 date: 2026-07-17
 lang: fr

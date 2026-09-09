@@ -2,7 +2,7 @@
 layout: book
 book_data: sdam_toc_de
 book_home: /sdam/de/contents/
-title: "## Kapitel 2: Ein Problem des Verkaufs eines Vermögenswerts"
+title: "Kapitel 2: Ein Problem des Verkaufs eines Vermögenswerts"
 permalink: /sdam/de/chapter-2/
 date: 2026-07-17
 lang: de
