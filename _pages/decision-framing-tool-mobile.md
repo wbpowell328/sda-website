@@ -370,73 +370,68 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
 
   <!-- ── Step 1: Frame ── -->
   <section class="mfa-step" data-step="0" id="mfa-step-frame">
-    <h1>Who's deciding, and what's the problem?</h1>
-    <p class="mfa-lede">A one-line role and a short problem description are all Professor Powell's AI needs to help you throughout.</p>
+    <h1>Frame the problem</h1>
 
-    <label class="mfa-label" for="mfa-role">Decision maker <span class="mfa-muted">(role, altitude, cadence)</span></label>
+    <label class="mfa-label" for="mfa-role">Decision maker</label>
     <input type="text" class="mfa-input" id="mfa-role" placeholder="e.g. Regional sales manager, weekly cycle" autocomplete="off">
 
-    <label class="mfa-label" for="mfa-desc">Describe your problem <span class="mfa-muted">(a few sentences)</span></label>
+    <label class="mfa-label" for="mfa-desc">Problem</label>
     <div class="mfa-voice-wrap">
-      <textarea class="mfa-input" id="mfa-desc" rows="6" placeholder="Say or type: what decision, why it matters, what's uncertain, what success looks like..."></textarea>
+      <textarea class="mfa-input" id="mfa-desc" rows="6" placeholder="What's the decision? Why does it matter? What's uncertain?"></textarea>
       <button type="button" class="mfa-voice-btn" id="mfa-voice-btn" aria-label="Tap to speak">🎤</button>
     </div>
-    <p class="mfa-voice-hint" id="mfa-voice-hint">Tip: tap the 🎤 to dictate, or use your keyboard.</p>
+    <p class="mfa-voice-hint" id="mfa-voice-hint" hidden></p>
 
-    <label class="mfa-label" for="mfa-url">Optional URL <span class="mfa-muted">(a case, article, or brief)</span></label>
+    <label class="mfa-label" for="mfa-url">URL <span class="mfa-muted">(optional)</span></label>
     <input type="url" class="mfa-input" id="mfa-url" placeholder="https://..." autocomplete="off">
   </section>
 
   <!-- ── Step 2: Metrics ── -->
   <section class="mfa-step" data-step="1" id="mfa-step-metrics">
-    <h1>What matters?</h1>
-    <p class="mfa-lede">Add the metrics that measure success. Tap each metric's tier to cycle High → Medium → Low.</p>
+    <h1>Metrics</h1>
     <ul class="mfa-item-list" id="mfa-metrics-list"></ul>
     <div class="mfa-add-row">
       <input type="text" class="mfa-input" id="mfa-metric-new" placeholder="Add a metric" autocomplete="off">
       <button type="button" class="mfa-btn mfa-btn-primary" id="mfa-metric-add">+ Add</button>
     </div>
     <div class="mfa-suggest-row">
-      <button type="button" class="mfa-btn mfa-btn-secondary" id="mfa-metric-suggest">✦ Suggest metrics</button>
+      <button type="button" class="mfa-btn mfa-btn-secondary" id="mfa-metric-suggest">✦ Suggest</button>
     </div>
     <div class="mfa-status" id="mfa-metric-status"></div>
   </section>
 
   <!-- ── Step 3: Decisions ── -->
   <section class="mfa-step" data-step="2" id="mfa-step-decisions">
-    <h1>What can you decide?</h1>
-    <p class="mfa-lede">Add the decisions you'd consider. Tap ▸ on any decision to score its impact on each metric.</p>
+    <h1>Decisions</h1>
     <ul class="mfa-item-list" id="mfa-decisions-list"></ul>
     <div class="mfa-add-row">
       <input type="text" class="mfa-input" id="mfa-decision-new" placeholder="Add a decision" autocomplete="off">
       <button type="button" class="mfa-btn mfa-btn-primary" id="mfa-decision-add">+ Add</button>
     </div>
     <div class="mfa-suggest-row">
-      <button type="button" class="mfa-btn mfa-btn-secondary" id="mfa-decision-suggest">✦ Suggest decisions</button>
-      <button type="button" class="mfa-btn mfa-btn-secondary" id="mfa-decision-suggest-impact">✦ Suggest impact scores</button>
+      <button type="button" class="mfa-btn mfa-btn-secondary" id="mfa-decision-suggest">✦ Suggest</button>
+      <button type="button" class="mfa-btn mfa-btn-secondary" id="mfa-decision-suggest-impact">✦ Score impact</button>
     </div>
     <div class="mfa-status" id="mfa-decision-status"></div>
   </section>
 
   <!-- ── Step 4: Uncertainties ── -->
   <section class="mfa-step" data-step="3" id="mfa-step-uncertainties">
-    <h1>What's uncertain?</h1>
-    <p class="mfa-lede">Add sources of uncertainty that could affect your metrics. Tap ▸ to score each one.</p>
+    <h1>Uncertainties</h1>
     <ul class="mfa-item-list" id="mfa-uncerts-list"></ul>
     <div class="mfa-add-row">
       <input type="text" class="mfa-input" id="mfa-uncert-new" placeholder="Add an uncertainty" autocomplete="off">
       <button type="button" class="mfa-btn mfa-btn-primary" id="mfa-uncert-add">+ Add</button>
     </div>
     <div class="mfa-suggest-row">
-      <button type="button" class="mfa-btn mfa-btn-secondary" id="mfa-uncert-suggest">✦ Suggest uncertainties</button>
+      <button type="button" class="mfa-btn mfa-btn-secondary" id="mfa-uncert-suggest">✦ Suggest</button>
     </div>
     <div class="mfa-status" id="mfa-uncert-status"></div>
   </section>
 
   <!-- ── Step 5: Review & Share ── -->
   <section class="mfa-step" data-step="4" id="mfa-step-review">
-    <h1>Review &amp; share</h1>
-    <p class="mfa-lede">This is your frame. Save it to your library or share the read-only link.</p>
+    <h1>Review</h1>
 
     <div class="mfa-review-block">
       <h3>Scope</h3>
@@ -870,9 +865,10 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
     const R = window.SpeechRecognition || window.webkitSpeechRecognition;
     const btn = $('#mfa-voice-btn');
     const hint = $('#mfa-voice-hint');
+    function showHint(msg) { hint.textContent = msg; hint.hidden = !msg; }
     if (!R) {
       btn.style.display = 'none';
-      hint.textContent = 'Tip: use your keyboard\'s built-in dictation to speak this in.';
+      // Silent fallback — the keyboard's own mic covers this case.
       return;
     }
     let baseText = '';
@@ -897,13 +893,13 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
       listening = false;
       btn.classList.remove('is-recording');
       btn.textContent = '🎤';
-      hint.textContent = 'Tap the 🎤 again to add more.';
+      showHint('');
     };
     recognition.onerror = (e) => {
       listening = false;
       btn.classList.remove('is-recording');
       btn.textContent = '🎤';
-      hint.textContent = 'Voice input error: ' + (e.error || 'unknown') + '. You can type instead.';
+      showHint('Voice: ' + (e.error || 'unknown') + '. Type instead.');
     };
     btn.addEventListener('click', () => {
       if (listening) { recognition.stop(); return; }
@@ -913,9 +909,9 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
         listening = true;
         btn.classList.add('is-recording');
         btn.textContent = '■';
-        hint.textContent = 'Listening… tap ■ to stop.';
+        showHint('Listening…');
       } catch (err) {
-        hint.textContent = 'Could not start voice input: ' + (err.message || err);
+        showHint('Voice failed: ' + (err.message || err));
       }
     });
   }
