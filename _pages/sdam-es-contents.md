@@ -10,8 +10,9 @@ translated_from: en
 translated_from_hash: 7f9941f97f3b6ba6
 ---
 
+{%- assign book = site.data[page.book_data] -%}
 <ul class="book-toc-list">
-{% for c in site.data.sdam_toc.chapters %}
+{% for c in book.chapters %}
   {% unless c.is_toc or c.no_expand %}
     <li>
       {% if c.url != "" %}
