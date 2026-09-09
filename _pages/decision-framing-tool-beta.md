@@ -3817,7 +3817,10 @@ noindex: true
         // previously-saved alternatives / spreads / history under
         // frame.playConfigs[name]). The button hangs off the current-frame
         // context so per-level play state stays with the frame it belongs to.
-        if (dk === 'disc') {
+        // (Re-read the kind here — the `dk` variable in the chip block above
+        //  is scoped to that block; this branch runs independently.)
+        const rowKind = (frame.decisionKinds || {})[name];
+        if (rowKind === 'disc') {
           const play = document.createElement('button');
           play.type = 'button';
           play.className = 'fp-play-btn';
