@@ -50,7 +50,7 @@ Módulos de Python acompañan a la mayoría de los capítulos; estos módulos fu
 Los problemas de decisión secuencial siempre pueden escribirse como
 
 $$
-decision,\ information, \ decision, \ information, \ decision, \ldots
+\text{decisión},\ \text{información}, \ \text{decisión}, \ \text{información}, \ \text{decisión}, \ldots
 $$
 
 Cada vez que tomamos una decisión, incurrimos en un costo o recibimos una contribución o recompensa (hay muchas formas de medir el desempeño). Las decisiones se toman con un método al que nos referiremos como una *política*. Un objetivo importante que es un enfoque central de este libro es diseñar políticas efectivas que funcionen bien a lo largo del tiempo, en presencia de la incertidumbre de información que aún no ha llegado.
