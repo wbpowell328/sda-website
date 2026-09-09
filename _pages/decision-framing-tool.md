@@ -1996,6 +1996,24 @@ date: 2026-08-11
   }
 </style>
 
+<!-- Mobile redirect: if the viewport is narrower than the desktop tool
+     can reasonably handle, hop the reader to the mobile wizard version
+     unless they've opted out via ?forceDesktop=1. Query params on the
+     current URL (?node=…, ?admin=…, ?w=…, ?backend=beta) are preserved
+     so a link shared to a phone still lands on the right library. -->
+<script>
+(function () {
+  try {
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('forceDesktop') === '1') return;
+    if (window.innerWidth >= 700) return;
+    var target = '/decision-framing-tool-mobile/';
+    var qs = window.location.search;
+    window.location.replace(target + (qs || ''));
+  } catch (_) { /* on any error, stay on desktop */ }
+})();
+</script>
+
 <script>
 (function () {
   const STORAGE_KEY = 'framing_pyramid_v1';       // "working" (autosave) state

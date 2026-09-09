@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#5a3e1f">
+  <title>{% if page.title %}{{ page.title }}{% else %}Decision Framing{% endif %}</title>
+  {% if page.noindex %}<meta name="robots" content="noindex, nofollow">{% endif %}
+  <link rel="icon" href="{{ '/assets/images/favicon.png' | relative_url }}">
+
+  <!-- Google Analytics 4 — property "CASTLE website", stream "Main website". -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-W5YKX4DTGL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-W5YKX4DTGL');
+  </script>
+</head>
+<body>
+{{ content }}
+</body>
+</html>
