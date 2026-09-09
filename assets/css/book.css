@@ -86,6 +86,24 @@ html { scroll-padding-top: 90px; }
 }
 .book-search-toggle:hover { background: rgba(245,236,214,0.1); }
 
+/* Language switcher — the small dropdown in the topbar. Styled to sit
+   inline with the Search / Contents buttons but stay unobtrusive. */
+.book-langswitch {
+  background: transparent;
+  color: #f5ecd6;
+  border: 1px solid #6b5a3f;
+  border-radius: 4px;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+.book-langswitch option { color: #2b2419; background: #fbf6e7; }
+.book-langswitch:hover { background: rgba(245,236,214,0.1); }
+.book-langswitch:focus { outline: 2px solid #c9621e; outline-offset: 1px; }
+
 /* ============================================================
    Search panel — dropdown under the top bar with an input and a
    results list. Not a modal: clicking outside or Escape closes it.

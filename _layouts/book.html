@@ -12,13 +12,17 @@
   <link rel="stylesheet" href="{{ '/assets/css/book.css' | relative_url }}">
   {% seo title=false %}
 
-  <!-- Google Analytics 4 — property "CASTLE website", stream "Main website" -->
+  <!-- Google Analytics 4 — property "CASTLE website", stream "Main website".
+       page_language event parameter carries the localization of this page
+       (defaults to 'en' when a page doesn't set one); GA4 dashboard uses
+       this to break page views out by language. Requires a custom
+       dimension 'page_language' registered in the GA4 admin. -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-W5YKX4DTGL"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-W5YKX4DTGL');
+    gtag('config', 'G-W5YKX4DTGL', { page_language: {{ page.lang | default: "en" | jsonify }} });
   </script>
 
   {% include mathjax-setup.html %}
@@ -40,6 +44,24 @@
     <span class="book-topbar-subtitle" id="book-topbar-subtitle" data-default-text="{{ book.book_subtitle }}">{{ book.book_subtitle }}</span>
   </a>
   <div class="book-topbar-actions">
+    {%- comment -%}
+      Language switcher — hops to the equivalent chapter in the chosen
+      language. Only shown on books that have at least one translation
+      (page.lang is set OR the URL is under a language-tagged /sdam/<lang>/
+      prefix). The list of options is hard-coded so we don't ship broken
+      links: add a language here after its full 14-chapter batch is done.
+
+      Current chapter is derived by stripping /sdam/<lang>/ (or /sdam/)
+      from the front of the URL; the switcher navigates by prepending
+      /sdam/<target-lang>/ back on. If a translation of the current
+      chapter doesn't exist yet, the target page 404s — until every
+      language covers every chapter, keep this option list minimal.
+    {%- endcomment -%}
+    {%- assign current_lang = page.lang | default: "en" -%}
+    <select class="book-langswitch" data-current-lang="{{ current_lang }}" aria-label="Language">
+      <option value="en"    {% if current_lang == "en"    %}selected{% endif %}>English</option>
+      <option value="es"    {% if current_lang == "es"    %}selected{% endif %}>Español</option>
+    </select>
     <button type="button" class="book-search-toggle search-widget-toggle" aria-controls="book-search-panel" aria-expanded="false">
       Search
     </button>
@@ -110,6 +132,42 @@
 <footer class="book-footer">
   <p>&copy; {{ site.time | date: "%Y" }} {{ book.author }} &middot; <a href="{{ '/teaching-books/' | relative_url }}">Back to the Sequential Decision Analytics site</a></p>
 </footer>
+
+<!-- Language switcher — hops to /sdam/<lang>/chapter-N/ (or /sdam/chapter-N/
+     for English). Records the choice in localStorage so subsequent chapters
+     open in the same language, and fires a GA4 `language_switch` event with
+     from/to so we can see how often users deliberately re-language. -->
+<script>
+  (function () {
+    var sel = document.querySelector('.book-langswitch');
+    if (!sel) return;
+    var current = sel.getAttribute('data-current-lang') || 'en';
+    // Split "/sdam/<lang>/chapter-N/" (or "/sdam/chapter-N/", "/sdam/") into
+    // { lang, slug } so we can rebuild the URL with a different language.
+    function bookSlugFromUrl(url) {
+      var m = url.match(/^\/sdam\/(?:([a-z]{2}(?:-[A-Z]{2})?)\/)?(.*)$/);
+      if (!m) return null;
+      return { lang: m[1] || 'en', slug: m[2] || '' };
+    }
+    sel.addEventListener('change', function () {
+      var to = sel.value;
+      if (to === current) return;
+      var parts = bookSlugFromUrl(window.location.pathname);
+      if (!parts) return;
+      var target = '/sdam/' + (to === 'en' ? '' : to + '/') + parts.slug;
+      try { localStorage.setItem('sdam-lang', to); } catch (_) { /* ignore */ }
+      if (window.gtag) {
+        window.gtag('event', 'language_switch', {
+          book: 'sdam',
+          from: current,
+          to: to,
+          slug: parts.slug || 'home',
+        });
+      }
+      window.location.href = target;
+    });
+  })();
+</script>
 
 <script>
   (function () {
