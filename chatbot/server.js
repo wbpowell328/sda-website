@@ -1162,6 +1162,118 @@ app.post('/framing/uncertainty-types', framingLimiter, (req, res) => {
   });
 });
 
+// Discrete-choice play modal (▶ Play button on (disc) decision rows on
+// the beta framing tool). Given a decision name, its enumerated
+// alternatives, and the on-screen metrics, propose plausible
+// p10 / p50 / p90 quantile triples for each (alternative, metric) so the
+// user can jump straight to the play chart without hand-filling the
+// spread table. Called from /decision-framing-tool-beta/'s
+// playSuggestSpreads(). Asymmetric spreads are fine and expected.
+const SUGGEST_PLAY_SPREADS_TOOL = {
+  name: 'recommend_play_spreads',
+  description: 'For each (metric, alternative) pair, recommend a three-point uncertainty spread as [p10, p50, p90] — the 10th, 50th (median), and 90th percentiles of the realized performance under that alternative for that metric. Asymmetric is fine. Numbers only, monotone: p10 ≤ p50 ≤ p90.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      spreads: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            metric:      { type: 'string', description: 'The metric name, EXACTLY as it appears in the METRICS list. Skip metrics you cannot score numerically.' },
+            alternative: { type: 'string', description: 'The alternative name, EXACTLY as it appears in the ALTERNATIVES list.' },
+            p10:         { type: 'number', description: 'The 10th percentile of realized performance under this alternative for this metric.' },
+            p50:         { type: 'number', description: 'The median (50th percentile) of realized performance.' },
+            p90:         { type: 'number', description: 'The 90th percentile of realized performance.' },
+            unit:        { type: 'string', description: 'Optional short unit tag (e.g. "$", "%", "days"). Purely informational; not used numerically.' },
+          },
+          required: ['metric', 'alternative', 'p10', 'p50', 'p90'],
+        },
+        description: 'One entry per (metric, alternative) pair. Ensure p10 ≤ p50 ≤ p90 in every entry.',
+      },
+      reasoning: {
+        type: 'string',
+        description: 'ONE short sentence (≤ 30 words) explaining the numeric scale you assumed for each metric (e.g. "cost in USD per unit; efficacy in %; delivery time in days").',
+      },
+    },
+    required: ['spreads'],
+  },
+};
+
+app.post('/framing/play-spreads', framingLimiter, async (req, res) => {
+  try {
+    const decision = String(req.body?.decision || '').trim().slice(0, 300);
+    const scope = String(req.body?.scope || '').trim().slice(0, 2000);
+    const problemDescription = String(req.body?.problemDescription || '').trim().slice(0, FRAMING_MAX_CHARS);
+    const problemNotes = String(req.body?.problemNotes || '').trim().slice(0, 20000);
+    const alternatives = Array.isArray(req.body?.alternatives)
+      ? req.body.alternatives.filter(a => typeof a === 'string' && a.trim()).map(a => String(a).trim()).slice(0, 40)
+      : [];
+    const metrics = Array.isArray(req.body?.metrics)
+      ? req.body.metrics.filter(m => typeof m === 'string' && m.trim()).map(m => String(m).trim()).slice(0, 20)
+      : [];
+    if (!decision) return res.status(400).json({ error: 'decision name is required.' });
+    if (alternatives.length < 2) return res.status(400).json({ error: 'At least 2 alternatives are required.' });
+    if (metrics.length < 1) return res.status(400).json({ error: 'At least 1 metric is required.' });
+
+    const userContent = [];
+    if (scope) userContent.push({ type: 'text', text: 'DECISION-MAKER SCOPE:\n' + scope });
+    if (problemDescription) userContent.push({ type: 'text', text: 'PROBLEM DESCRIPTION:\n' + problemDescription });
+    if (problemNotes) userContent.push({ type: 'text', text: 'INGESTED PROBLEM NOTES:\n' + problemNotes });
+    userContent.push({
+      type: 'text',
+      text:
+        'DECISION being played:\n  ' + decision +
+        '\n\nALTERNATIVES (choices the user can pick from):\n' + alternatives.map(a => '  - ' + a).join('\n') +
+        '\n\nMETRICS (the performance dimensions to score each alternative on):\n' + metrics.map(m => '  - ' + m).join('\n') +
+        '\n\nTask: for EVERY (metric, alternative) pair, propose a plausible three-point ' +
+        'uncertainty spread [p10, p50, p90] on the realized performance if that alternative ' +
+        'is picked. Use realistic scales for each metric — dollars, percent, days, count, whatever ' +
+        'fits — and be consistent across alternatives within the same metric. Asymmetric spreads ' +
+        'are welcome (real-world uncertainty is rarely symmetric). Ensure p10 ≤ p50 ≤ p90 in every ' +
+        'entry. Return via the recommend_play_spreads tool. Total entries expected: ' +
+        (metrics.length * alternatives.length) + '.',
+    });
+
+    const response = await client.messages.create({
+      model: FRAMING_MODEL,
+      max_tokens: 4096,
+      system: framingPrompt || 'You are Professor Warren Powell\'s decision-framing assistant.',
+      tools: [SUGGEST_PLAY_SPREADS_TOOL],
+      tool_choice: { type: 'tool', name: SUGGEST_PLAY_SPREADS_TOOL.name },
+      messages: [{ role: 'user', content: userContent }],
+    });
+
+    const toolBlock = (response.content || []).find(
+      (b) => b.type === 'tool_use' && b.name === SUGGEST_PLAY_SPREADS_TOOL.name,
+    );
+    if (!toolBlock) {
+      return res.status(502).json({ error: 'Model did not produce spreads. Try again.' });
+    }
+    const rawSpreads = Array.isArray(toolBlock.input.spreads) ? toolBlock.input.spreads : [];
+    const metricSet = new Set(metrics);
+    const altSet = new Set(alternatives);
+    // Fold the flat list into { metric: { alternative: [p10, p50, p90] } }.
+    const spreads = {};
+    for (const entry of rawSpreads) {
+      if (!entry || typeof entry !== 'object') continue;
+      const m = String(entry.metric || '').trim();
+      const a = String(entry.alternative || '').trim();
+      if (!metricSet.has(m) || !altSet.has(a)) continue;
+      const p10 = Number(entry.p10), p50 = Number(entry.p50), p90 = Number(entry.p90);
+      if (![p10, p50, p90].every(Number.isFinite)) continue;
+      if (!(p10 <= p50 && p50 <= p90)) continue;
+      if (!spreads[m]) spreads[m] = {};
+      spreads[m][a] = [p10, p50, p90];
+    }
+    const reasoning = String(toolBlock.input.reasoning || '').trim();
+    return res.json({ spreads, reasoning, model: FRAMING_MODEL, usage: response.usage });
+  } catch (err) {
+    console.error('Framing/play-spreads error:', err);
+    return res.status(500).json({ error: (err && err.message) || 'Unknown error' });
+  }
+});
+
 const IDEAS_TOOL = {
   name: 'record_ideas',
   description: 'Record a list of proposed decisions or uncertainties. Classify each idea by kind (gen/disc/num) and by timing (stat/dyn).',
