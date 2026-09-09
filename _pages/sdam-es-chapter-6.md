@@ -13,9 +13,9 @@ translated_from_hash: 0cd6be02e9b93c08
 {% raw %}
 ## Descripción general del capítulo
 
-El [Capítulo 5](/sdam/chapter-5/) planteó un problema de ruta más corta que asume que o bien no sabemos nada sobre los tiempos de viaje que cambian dinámicamente en los enlaces, o bien podemos observar los tiempos en los enlaces que están conectados a la intersección donde se encuentra nuestro viajero (pero nada más en el futuro).
+El [Capítulo 5](/sdam/es/chapter-5/) planteó un problema de ruta más corta que asume que o bien no sabemos nada sobre los tiempos de viaje que cambian dinámicamente en los enlaces, o bien podemos observar los tiempos en los enlaces que están conectados a la intersección donde se encuentra nuestro viajero (pero nada más en el futuro).
 
-Ahora imaginemos que somos un servicio como Google maps que tiene acceso a información en tiempo real sobre toda la red. Además, esta información se está actualizando en tiempo real, lo que lleva a que Google actualice la ruta recomendada hacia el destino del viajero. Esta información introduce un cambio importante en el modelo que elimina por completo cualquier posibilidad de usar los métodos que presentamos en el [Capítulo 5](/sdam/chapter-5/).
+Ahora imaginemos que somos un servicio como Google maps que tiene acceso a información en tiempo real sobre toda la red. Además, esta información se está actualizando en tiempo real, lo que lleva a que Google actualice la ruta recomendada hacia el destino del viajero. Esta información introduce un cambio importante en el modelo que elimina por completo cualquier posibilidad de usar los métodos que presentamos en el [Capítulo 5](/sdam/es/chapter-5/).
 
 El enfoque que usamos para este problema se aplica a cualquier problema que resolveríamos planificando hacia el futuro utilizando lo que podríamos llamar "mejores estimaciones" de valores incierto. Esto proporciona un entorno para nuestro primer uso de la cuarta clase de política, que llamamos aproximaciones de anticipación directa. Usamos este entorno para demostrar un método práctico y poderoso para tomar decisiones en un entorno dinámico (lo que significa bajo incertidumbre), donde comenzamos con un modelo de anticipación determinista y luego introducimos parámetros para que funcione mejor a lo largo del tiempo, bajo incertidumbre.
 
@@ -165,7 +165,7 @@ Esto significa que ya no tenemos las variables de información exógena $\Wtilde
 
 Esto nos permite resolver nuestro modelo de anticipación de manera determinista, tratando las estimaciones de costos $\ctilde_{tt',k\ell}$ como el costo correcto en lugar de variables aleatorias. En este caso, nuestra variable de estado es una vez más simplemente el nodo donde se encuentra el viajero (dentro del modelo de anticipación).
 
-Podemos resolver este problema con un algoritmo estándar de ruta más corta que, como vimos en el [Capítulo 5](/sdam/chapter-5/), es un programa dinámico determinista que podemos resolver con la ecuación de Bellman, lo cual hacemos encontrando primero el "valor" de estar en el nodo $i$ en el tiempo $t'$ en nuestro modelo de anticipación. Podemos calcular estos valores estableciendo los valores al final de nuestro modelo de anticipación para el tiempo $t$ igual a cero
+Podemos resolver este problema con un algoritmo estándar de ruta más corta que, como vimos en el [Capítulo 5](/sdam/es/chapter-5/), es un programa dinámico determinista que podemos resolver con la ecuación de Bellman, lo cual hacemos encontrando primero el "valor" de estar en el nodo $i$ en el tiempo $t'$ en nuestro modelo de anticipación. Podemos calcular estos valores estableciendo los valores al final de nuestro modelo de anticipación para el tiempo $t$ igual a cero
 
 $$
 \Vtilde_{t,t+H}(i) = 0,\ \text{for all } i.
@@ -262,7 +262,7 @@ Una pregunta obvia es si el uso de un percentil diferente de $\theta = 0.5$ mejo
 **Preguntas de repaso**
 
 <ol class="book-exercises">
-<li>¿Por qué no podríamos usar los métodos de programación dinámica aproximada del [Capítulo 5](/sdam/chapter-5/) para resolver nuestro problema dinámico?</li>
+<li>¿Por qué no podríamos usar los métodos de programación dinámica aproximada del [Capítulo 5](/sdam/es/chapter-5/) para resolver nuestro problema dinámico?</li>
 <li>¿Cómo estamos modelando el proceso exógeno $W_t$, en el modelo de anticipación?</li>
 <li>Describa con palabras qué queremos decir con una política de anticipación.</li>
 </ol>

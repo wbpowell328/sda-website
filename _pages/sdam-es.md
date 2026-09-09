@@ -10,7 +10,7 @@ translated_from: en
 translated_from_hash: 248174ea9f70128e
 ---
 
-<a class="book-cover-splash" href="/sdam/about/" aria-label="Click to continue">
+<a class="book-cover-splash" href="/sdam/es/about/" aria-label="Click to continue">
   <img src="/assets/images/sdam/cover.jpg" alt="Portada de Sequential Decision Analytics and Modeling, 2nd edition, por Warren B. Powell" />
   <p class="book-cover-splash-hint">Haga clic para entrar</p>
 </a>

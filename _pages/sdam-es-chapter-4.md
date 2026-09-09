@@ -19,7 +19,7 @@ En el corazón de este problema están nuestras creencias sobre cómo se desempe
 
 Consideramos solo los tipos más simples de políticas, que son todas formas de aproximaciones de función de política. Estas son bastante simples de usar, pero todas involucran parámetros ajustables, lo cual no se aborda en este capítulo.
 
-Consideramos como una extensión el caso donde queremos usar lo que aprendemos de un paciente para otros pacientes con atributos similares. Esto introduce los atributos de un paciente en la variable de estado, produciendo lo que se conoce como un *problema de bandido contextual*, lo que significa aprender el desempeño de la medicación en el "contexto" de los atributos del paciente. Retomamos estos temas en un contexto de problema mucho más rico en el [Capítulo 12](/sdam/chapter-12/) para el problema de optimizar la elección de URLs a mostrar para maximizar los clics en anuncios.
+Consideramos como una extensión el caso donde queremos usar lo que aprendemos de un paciente para otros pacientes con atributos similares. Esto introduce los atributos de un paciente en la variable de estado, produciendo lo que se conoce como un *problema de bandido contextual*, lo que significa aprender el desempeño de la medicación en el "contexto" de los atributos del paciente. Retomamos estos temas en un contexto de problema mucho más rico en el [Capítulo 12](/sdam/es/chapter-12/) para el problema de optimizar la elección de URLs a mostrar para maximizar los clics en anuncios.
 
 ## Enmarcando el problema
 
@@ -289,7 +289,7 @@ $$
 \end{align}
 $$
 
-el cual podemos resolver usando una variedad de procedimientos de búsqueda, como los métodos que presentamos en este capítulo o en el [Capítulo 3](/sdam/chapter-3/). Revisamos los métodos de búsqueda con mayor profundidad en el [Capítulo 7](/sdam/chapter-7/).
+el cual podemos resolver usando una variedad de procedimientos de búsqueda, como los métodos que presentamos en este capítulo o en el [Capítulo 3](/sdam/es/chapter-3/). Revisamos los métodos de búsqueda con mayor profundidad en el [Capítulo 7](/sdam/es/chapter-7/).
 
 ## Extensiones
 
@@ -323,7 +323,7 @@ Con nuestro nuevo modelo, sin embargo, $n$ se refiere a un paciente. Tiene más 
 **Preguntas de repaso**
 
 <ol class="book-exercises">
-<li>¿Cuál es la diferencia fundamental, desde una perspectiva algorítmica, entre el problema de diabetes que resolvimos en este capítulo y el problema resuelto en el [Capítulo 3](/sdam/chapter-3/)?</li>
+<li>¿Cuál es la diferencia fundamental, desde una perspectiva algorítmica, entre el problema de diabetes que resolvimos en este capítulo y el problema resuelto en el [Capítulo 3](/sdam/es/chapter-3/)?</li>
 <li>Cuando dejamos que $\mubar^n_x$ sea la estimación de qué tan bien funciona el fármaco en un paciente después de $n$ pruebas, ¿qué mide $n$? ¿Es el número de veces que hemos probado el fármaco $x$?</li>
 <li>¿Cuál es la variable de estado para este problema?</li>
 <li>Anteriormente introdujimos una política de acotamiento de confianza superior, una política de estimación de intervalo, y una política basada en muestreo de Thompson. ¿Qué características tenían en común estas políticas?</li>
@@ -353,8 +353,8 @@ $$
   </ol>
 </li>
 <li>Muestre cómo adaptar la política presentada anteriormente a nuestro problema donde el género es el único atributo del paciente, usando una representación de tabla de búsqueda, lo que significa que en lugar de aprender $\mubar^n_x$, aprendemos $\mubar^n_{a,x}$ donde $a=$ género. Entonces, en lugar de aprender una estimación $\mubar^n_x$ para cada tratamiento $x$, tenemos que aprender una estimación $\mubar^n_{a,x}$ para cada combinación de género $a = G^n$ y tratamiento $x=x^n$.</li>
-<li>Esboce una estrategia para aplicar las ideas de este capítulo al problema de planificación de mercado en el [Capítulo 3](/sdam/chapter-3/).</li>
-<li>¿Es posible aplicar los métodos del [Capítulo 3](/sdam/chapter-3/) al problema de la diabetes? Explique.</li>
+<li>Esboce una estrategia para aplicar las ideas de este capítulo al problema de planificación de mercado en el [Capítulo 3](/sdam/es/chapter-3/).</li>
+<li>¿Es posible aplicar los métodos del [Capítulo 3](/sdam/es/chapter-3/) al problema de la diabetes? Explique.</li>
 <li>Ahora imagine que, en lugar de solo el género, capturamos la edad por década $(0$–$9, 10$–$19, \ldots, 80^+)$, si fuma o no, y la raza (suponga ocho categorías de etnia), lo que nos da un vector de atributos $a = (a_{gender}, a_{age}, a_{smoker}, a_{race})$. Si $a\in\Acal$, ¿cuántos elementos tiene $\Acal$? ¿Cómo afectaría esto a su solución propuesta en el ejercicio 7?</li>
 <li>Imagine que cada elemento $a_k$ en el vector de atributos $a$ tiene $L$ valores posibles, y que $a$ tiene $K$ elementos, lo que significa que $\Acal$ tiene $L^K$ elementos. Si $L = 10$, ¿cuál es el mayor valor de $K$ de modo que aprender nuestro modelo basado en atributos sea más fácil que aprender un modelo para cada uno de los 7 millones de pacientes diabéticos?</li>
 <li>Ahora imagine que nuestro espacio de atributos $\Acal$ es simplemente demasiado grande para ser práctico. Lo que hemos hecho hasta ahora es una representación de tabla de búsqueda donde encontramos una estimación $\mubar^n_{a,x}$, lo cual se vuelve problemático cuando el número de valores posibles de $a$ se vuelve grande. Un enfoque alternativo es usar un modelo paramétrico. El más simple sería un modelo lineal donde escribiríamos

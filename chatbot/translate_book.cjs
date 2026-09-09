@@ -246,6 +246,19 @@ function rewriteFrontMatter(fm, lang) {
 }
 
 // ── Driver ──────────────────────────────────────────────────────
+// Localize internal `/sdam/…` links in a translated body to `/sdam/<lang>/…`.
+// - Negative lookbehind excludes URL-interior occurrences (asset paths like
+//   `/assets/images/sdam/foo.png` have a letter directly before `/sdam/`).
+// - Negative lookahead skips URLs already carrying a known language prefix
+//   (idempotent — safe to run twice).
+// So only URL-start occurrences (preceded by whitespace, `"`, `'`, `(`,
+// `=`, or start-of-string) get rewritten.
+function localizeSdamLinks(text, lang) {
+  const knownLangs = Object.keys(LANG_NAMES).join('|');
+  const re = new RegExp('(?<![A-Za-z0-9_])/sdam/(?!(?:' + knownLangs + ')/)', 'g');
+  return text.replace(re, '/sdam/' + lang + '/');
+}
+
 async function translateFile(sourcePath, lang, outputPath) {
   if (!LANG_NAMES[lang]) throw new Error('Unknown lang: ' + lang + '. Known: ' + Object.keys(LANG_NAMES).join(', '));
   const raw = fs.readFileSync(sourcePath, 'utf8');
@@ -277,30 +290,34 @@ async function translateFile(sourcePath, lang, outputPath) {
     if (usage) { usageIn += usage.input_tokens || 0; usageOut += usage.output_tokens || 0; }
   }
   const trBodyProse = translatedChunks.join('\n\n');
-  const trBody = restoreProtected(trBodyProse, blocks);
+  let trBody = restoreProtected(trBodyProse, blocks);
+  // Rewrite internal SDAM links to keep the reader in their chosen language.
+  trBody = localizeSdamLinks(trBody, lang);
 
   // 3) Rewrite front matter for the translated page.
   fm.title = trTitle;
   rewriteFrontMatter(fm, lang);
   fm.translated_from_hash = bodyHash;
 
-  // 4) Write output.
-  const out = stringifyFrontMatter(fm, order) + '\n\n' + trBody;
-  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-  fs.writeFileSync(outputPath, out, 'utf8');
-  console.error('  wrote ' + outputPath + '  (in=' + usageIn + ', out=' + usageOut + ' tokens)');
-
-  // Round-trip sanity: every placeholder present in the extract should be
-  // present exactly once in the translated body. If not, the model dropped
-  // one and we need to bail with an error rather than emit corrupt output.
+  // 4) Round-trip sanity BEFORE write: every placeholder present in the
+  // extract must survive translation. If the model dropped one we bail —
+  // otherwise the corrupt file sits on disk and the batch's idempotent
+  // "skip if exists" logic would prevent a clean re-run.
   const missing = [];
   for (let i = 0; i < blocks.length; i++) {
     if (!trBodyProse.includes('⟦' + i + '⟧')) missing.push(i);
   }
   if (missing.length) {
     throw new Error('Translated text lost ' + missing.length + ' math placeholder(s): ⟦' +
-      missing.slice(0, 5).join('⟧, ⟦') + '⟧' + (missing.length > 5 ? ', …' : ''));
+      missing.slice(0, 5).join('⟧, ⟦') + '⟧' + (missing.length > 5 ? ', …' : '') +
+      ' — nothing written; re-run to try again.');
   }
+
+  // 5) Write output.
+  const out = stringifyFrontMatter(fm, order) + '\n\n' + trBody;
+  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  fs.writeFileSync(outputPath, out, 'utf8');
+  console.error('  wrote ' + outputPath + '  (in=' + usageIn + ', out=' + usageOut + ' tokens)');
 }
 
 // ── CLI ─────────────────────────────────────────────────────────

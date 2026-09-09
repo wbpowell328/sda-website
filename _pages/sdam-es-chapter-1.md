@@ -93,7 +93,7 @@ Nuestra presentación procede de la siguiente manera:
 - El capítulo 1 ofrece una introducción ligera al marco de modelado universal, ilustrado utilizando dos problemas de inventario (uno simple y otro ligeramente más complejo), seguido de una breve discusión sobre el modelado de la incertidumbre. Luego proporciona una introducción a las cuatro clases de políticas que cubren todos los métodos para tomar decisiones.
 - Los capítulos 2–6 describen cada uno un problema de decisión secuencial específico para ilustrar el marco de modelado utilizando un estilo de enseñanza por ejemplos. Estas aplicaciones fueron elegidas para resaltar cada una de las cuatro clases de políticas.
 - El capítulo 7 retoma el marco de modelado universal con mayor detalle. Se ofrece una discusión mucho más cuidadosa de las cuatro clases de políticas, así como de diferentes tipos de variables de estado, utilizando los ejemplos de los capítulos 2–6 para dar contexto.
-- Los capítulos 8–14 proporcionan ejemplos adicionales, utilizando entornos más complejos para ilustrar conceptos de modelado más avanzados, cubriendo tanto el modelado de la incertidumbre (en particular el modelado de precios de electricidad en el [Capítulo 8](/sdam/chapter-8/)) como un conjunto más rico de políticas.
+- Los capítulos 8–14 proporcionan ejemplos adicionales, utilizando entornos más complejos para ilustrar conceptos de modelado más avanzados, cubriendo tanto el modelado de la incertidumbre (en particular el modelado de precios de electricidad en el [Capítulo 8](/sdam/es/chapter-8/)) como un conjunto más rico de políticas.
 
 Los capítulos de aplicación (2–6 y 8–14) siguen todos el mismo esquema. Pueden abordarse en cualquier orden, teniendo en cuenta que las aplicaciones de los capítulos 2–6 son más simples y fueron elegidas para ilustrar cada una de las cuatro clases de políticas. Los lectores interesados en temas de modelado específicos (como variables de estado, modelado de la incertidumbre, o ver diferentes ejemplos de políticas) pueden hojear los capítulos, saltando directamente a los temas que les interesen.
 
@@ -964,7 +964,7 @@ Los libros de la Figura 1.2 presentan una variedad de formas de tomar decisiones
 **Búsqueda de políticas** – Aquí se buscan entre métodos (funciones) para tomar decisiones, simulando su desempeño (como hacemos en la ecuación $\eqref{eq:objectivecumulativereward}$), para encontrar el método que funciona mejor en promedio a lo largo del tiempo. Esto puede implicar buscar entre diferentes clases de métodos, así como entre cualquier parámetro ajustable para un método dado. Esta idea abre dos clases de políticas:
 
 - **1) Aproximaciones de función de política (PFA, por sus siglas en inglés)** – Estas son funciones analíticas de un estado que especifican directamente una acción. La política de pedido hasta un nivel en la ecuación $\eqref{eq:introorderupto}$ es un buen ejemplo, junto con nuestra política de usar un pronóstico ajustado en la ecuación $\eqref{eq:adjustedforecastpolicy}$.
-- **2) Aproximaciones de función de costo (CFA, por sus siglas en inglés)** – Estas son políticas que implican resolver un problema de optimización que típicamente es una simplificación del problema original, con parámetros introducidos para ayudar a que la política funcione mejor a lo largo del tiempo. Esta es una idea particularmente poderosa que se usa ampliamente en la industria. Tenemos varias ilustraciones de CFA más adelante en el libro (comenzando en el [Capítulo 4](/sdam/chapter-4/), para aprender el mejor medicamento para la diabetes).
+- **2) Aproximaciones de función de costo (CFA, por sus siglas en inglés)** – Estas son políticas que implican resolver un problema de optimización que típicamente es una simplificación del problema original, con parámetros introducidos para ayudar a que la política funcione mejor a lo largo del tiempo. Esta es una idea particularmente poderosa que se usa ampliamente en la industria. Tenemos varias ilustraciones de CFA más adelante en el libro (comenzando en el [Capítulo 4](/sdam/es/chapter-4/), para aprender el mejor medicamento para la diabetes).
 
 **Políticas de anticipación** – Podemos construir políticas efectivas optimizando a través de la contribución (o costo) de una decisión, más una aproximación de las contribuciones (o costos) posteriores que resultan de la decisión tomada ahora. Nuevamente, podemos dividir estas en dos clases más de políticas:
 
@@ -1063,11 +1063,11 @@ Si $W_{t+1}$ depende del estado $S_t$ y/o de la decisión $x_t$, entonces tenemo
 
 Los próximos cinco capítulos del libro aplicarán nuestro marco de modelado a cinco problemas diferentes:
 
-- [Capítulo 2](/sdam/chapter-2/) – Un problema de venta de activos
-- [Capítulo 3](/sdam/chapter-3/) – Planificación adaptativa de mercado
-- [Capítulo 4](/sdam/chapter-4/) – Aprendiendo el mejor medicamento para la diabetes
-- [Capítulo 5](/sdam/chapter-5/) – Problemas de ruta más corta estocástica - Estático
-- [Capítulo 6](/sdam/chapter-6/) – Problemas de ruta más corta estocástica - Dinámico
+- [Capítulo 2](/sdam/es/chapter-2/) – Un problema de venta de activos
+- [Capítulo 3](/sdam/es/chapter-3/) – Planificación adaptativa de mercado
+- [Capítulo 4](/sdam/es/chapter-4/) – Aprendiendo el mejor medicamento para la diabetes
+- [Capítulo 5](/sdam/es/chapter-5/) – Problemas de ruta más corta estocástica - Estático
+- [Capítulo 6](/sdam/es/chapter-6/) – Problemas de ruta más corta estocástica - Dinámico
 
 Cada uno de estos capítulos seguirá el mismo esquema que usamos anteriormente para describir los dos problemas de inventario. Este esquema consiste en:
 
@@ -1077,17 +1077,17 @@ Cada uno de estos capítulos seguirá el mismo esquema que usamos anteriormente 
 - Diseño de políticas – Vamos a sugerir posibles políticas para tomar decisiones. Hemos elegido nuestros problemas de manera que los cinco entornos de aplicación nos den un recorrido por las cuatro clases de políticas. Por ahora, vamos a dejar que el lector intente reconocer cuál de las cuatro clases estamos eligiendo.
 - Extensión – Finalmente, podemos sugerir una o más posibles extensiones de nuestro problema básico que pueden requerir cambiar la política.
 
-Luego regresamos a las cuatro clases de políticas en el [Capítulo 7](/sdam/chapter-7/) y discutimos nuestro marco de modelado general, usando los problemas de los Capítulos 2–6 para ilustrar diferentes ideas de modelado.
+Luego regresamos a las cuatro clases de políticas en el [Capítulo 7](/sdam/es/chapter-7/) y discutimos nuestro marco de modelado general, usando los problemas de los Capítulos 2–6 para ilustrar diferentes ideas de modelado.
 
 Después de esta discusión, volvemos a nuestro patrón de capítulos de enseñanza por medio de ejemplos, pero usando problemas más complejos. Nuestros capítulos restantes cubren los siguientes problemas:
 
-- [Capítulo 8](/sdam/chapter-8/) – Almacenamiento de energía I
-- [Capítulo 9](/sdam/chapter-9/) – Almacenamiento de energía II
-- [Capítulo 10](/sdam/chapter-10/) – Gestión de la cadena de suministro I: El vendedor de periódicos de dos agentes
-- [Capítulo 11](/sdam/chapter-11/) – Gestión de la cadena de suministro II: El juego de la cerveza
-- [Capítulo 12](/sdam/chapter-12/) – Optimización de clics publicitarios
-- [Capítulo 13](/sdam/chapter-13/) – Problema de gestión de sangre
-- [Capítulo 14](/sdam/chapter-14/) – Optimización de ensayos clínicos
+- [Capítulo 8](/sdam/es/chapter-8/) – Almacenamiento de energía I
+- [Capítulo 9](/sdam/es/chapter-9/) – Almacenamiento de energía II
+- [Capítulo 10](/sdam/es/chapter-10/) – Gestión de la cadena de suministro I: El vendedor de periódicos de dos agentes
+- [Capítulo 11](/sdam/es/chapter-11/) – Gestión de la cadena de suministro II: El juego de la cerveza
+- [Capítulo 12](/sdam/es/chapter-12/) – Optimización de clics publicitarios
+- [Capítulo 13](/sdam/es/chapter-13/) – Problema de gestión de sangre
+- [Capítulo 14](/sdam/es/chapter-14/) – Optimización de ensayos clínicos
 
 ## ¿Qué aprendimos?
 
@@ -1098,7 +1098,7 @@ Después de esta discusión, volvemos a nuestro patrón de capítulos de enseña
 - Aprendimos cómo modelar el flujo de información exógena que puede llegar de varias fuentes diferentes. La información exógena se representa como una función que podría depender del estado y/o la decisión.
 - Ilustramos dos formas de una clase simple de política conocida como aproximación de función de política (o PFA).
 - Aprendimos que las políticas pueden evaluarse de varias maneras diferentes que dependen del contexto y de cómo se usan las decisiones.
-- Cerramos con una breve visión general de cuatro clases de políticas. Se proporcionarán ilustraciones de las cuatro clases en los Capítulos 2–6, momento en el cual hacemos una pausa en el [Capítulo 7](/sdam/chapter-7/) para discutir las políticas con mayor profundidad, preparando el escenario para los problemas más complejos en los Capítulos 8–14.
+- Cerramos con una breve visión general de cuatro clases de políticas. Se proporcionarán ilustraciones de las cuatro clases en los Capítulos 2–6, momento en el cual hacemos una pausa en el [Capítulo 7](/sdam/es/chapter-7/) para discutir las políticas con mayor profundidad, preparando el escenario para los problemas más complejos en los Capítulos 8–14.
 
 ## Ejercicios
 

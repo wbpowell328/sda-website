@@ -336,7 +336,7 @@ $$
 
 ## ¿Qué aprendimos?
 
-- Usamos el contexto de un problema del vendedor de periódicos para ilustrar un algoritmo de gradiente estocástico como un problema de decisión secuencial. Mostramos cómo modelar un algoritmo de gradiente estocástico usando los cinco elementos de un problema de decisión secuencial introducidos en el [Capítulo 1](/sdam/chapter-1/).
+- Usamos el contexto de un problema del vendedor de periódicos para ilustrar un algoritmo de gradiente estocástico como un problema de decisión secuencial. Mostramos cómo modelar un algoritmo de gradiente estocástico usando los cinco elementos de un problema de decisión secuencial introducidos en el [Capítulo 1](/sdam/es/chapter-1/).
 - Introdujimos varios ejemplos de políticas PFA para elegir los tamaños de paso.
 - El problema del vendedor de periódicos se plantea clásicamente como un problema estático donde buscamos la mejor solución en la que solo nos interesa el desempeño de nuestra elección final de $x$. En este capítulo, introdujimos dos objetivos: la *recompensa acumulada* para el aprendizaje en línea (optimización) en el campo, y la *recompensa final* si estuviéramos utilizando un simulador para diseñar la mejor política de aprendizaje.
 - Introducimos la idea de usar una distribución de probabilidad (en este caso una distribución de Poisson) para las demandas aleatorias de producto, donde la media de la distribución de Poisson es en sí misma una variable aleatoria.
