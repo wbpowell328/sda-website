@@ -316,6 +316,87 @@ noindex: true
   </div>
 </div>
 
+<!-- Play modal — human-in-the-loop discrete-choice simulator. Opened by
+     the ▶ Play button on any (disc) decision row. Setup section: list
+     alternatives + fill p10/p50/p90 spreads per (alternative, metric).
+     Play section: bar chart with asymmetric whiskers per alternative;
+     click a bar to sample W_{t+1,i} from the fitted distribution and
+     advance the round (repeated mode) or end (one-shot).
+
+     Notation reminder: this problem class is x ∈ 𝒳^{choices},
+     realized performance W_{t+1,i} per information class i (one per
+     metric here), scored by C_m(S_t, x_t, W_{t+1}). All (t+1)-flavored. -->
+<div id="fp-play-modal" class="fp-modal" hidden>
+  <div class="fp-modal-card fp-play-card">
+    <div class="fp-modal-header">
+      <h3 id="fp-play-title">Play decision</h3>
+      <button type="button" class="fp-modal-close" id="fp-play-close" aria-label="Close">×</button>
+    </div>
+    <p class="fp-muted fp-play-lede">
+      Human-in-the-loop simulator for a discrete choice with uncertain performance.
+      Fill in alternatives and a low / median / high spread per metric, then click
+      a bar in <em>Play</em> to sample a realized outcome.
+    </p>
+
+    <!-- ─── Setup section ─────────────────────────────────────── -->
+    <div class="fp-play-section">
+      <h4 class="fp-play-h4">Setup</h4>
+
+      <div class="fp-play-row">
+        <label class="fp-play-label" for="fp-play-mode">Mode</label>
+        <select id="fp-play-mode" class="fp-play-select">
+          <option value="repeated">Repeated (pick, observe, advance to t+1)</option>
+          <option value="one-shot">One-shot (single pick, single reveal)</option>
+        </select>
+      </div>
+
+      <div class="fp-play-row">
+        <label class="fp-play-label">Alternatives</label>
+        <div id="fp-play-alts" class="fp-play-alts"></div>
+        <div class="fp-play-add-row">
+          <input type="text" id="fp-play-alt-new" class="fp-play-alt-new" placeholder="Add an alternative, then press Enter" />
+          <button type="button" id="fp-play-alt-add" class="fp-modal-mini">Add</button>
+        </div>
+      </div>
+
+      <div class="fp-play-row">
+        <label class="fp-play-label">Uncertainty spreads <span class="fp-muted">(per metric; p10 / p50 / p90; asymmetric allowed)</span></label>
+        <div id="fp-play-spreads-wrap" class="fp-play-spreads-wrap">
+          <p class="fp-muted" id="fp-play-spreads-empty">Add at least one alternative and one metric to begin.</p>
+        </div>
+        <div class="fp-play-actions-row">
+          <button type="button" id="fp-play-suggest" class="fp-modal-mini" title="Ask the AI to propose plausible p10 / p50 / p90 per alternative from the framing context">✦ Suggest spreads</button>
+          <button type="button" id="fp-play-clear-spreads" class="fp-modal-mini" title="Clear every spread cell (keeps alternatives)">Clear all spreads</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Play section ──────────────────────────────────────── -->
+    <div class="fp-play-section">
+      <h4 class="fp-play-h4">Play <span id="fp-play-round-badge" class="fp-play-round-badge"></span></h4>
+      <p id="fp-play-instruction" class="fp-muted fp-play-instruction">Fill in the spreads above, then click a bar to pick an alternative.</p>
+      <div id="fp-play-charts" class="fp-play-charts"></div>
+      <div class="fp-play-actions-row">
+        <button type="button" id="fp-play-reset" class="fp-modal-mini" title="Clear the pick history and restart at t = 1">Reset play</button>
+      </div>
+    </div>
+
+    <!-- ─── History section ───────────────────────────────────── -->
+    <div class="fp-play-section">
+      <h4 class="fp-play-h4">History</h4>
+      <div id="fp-play-history" class="fp-play-history">
+        <p class="fp-muted" id="fp-play-history-empty">No picks yet.</p>
+      </div>
+    </div>
+
+    <div id="fp-play-status" class="fp-bot-status" role="status" aria-live="polite"></div>
+
+    <div class="fp-modal-actions" style="justify-content: flex-end;">
+      <button type="button" id="fp-play-done" class="fp-modal-primary">Close</button>
+    </div>
+  </div>
+</div>
+
 <div id="fp-doc-banner" class="fp-doc-banner">
   <div class="fp-doc-banner-head">
     <h2 id="fp-doc-title" class="fp-doc-title" aria-live="polite"></h2>
@@ -1042,6 +1123,210 @@ noindex: true
     background: #d6c4a3; border-color: #d6c4a3; color: #fff;
     cursor: not-allowed;
   }
+
+  /* Play modal — discrete-choice simulator (▶ Play on disc rows) */
+  .fp-play-card { max-width: 880px; }
+  .fp-play-lede { margin: 0 0 14px 0; }
+  .fp-play-section {
+    border-top: 1px solid #ede0bd;
+    padding-top: 12px;
+    margin-top: 14px;
+  }
+  .fp-play-section:first-of-type { border-top: none; padding-top: 4px; margin-top: 0; }
+  .fp-play-h4 {
+    margin: 0 0 8px 0;
+    color: #5a4a35;
+    font-size: 1.02rem;
+  }
+  .fp-play-round-badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 1px 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #5a3e1f;
+    background: #faf0d5;
+    border: 1px solid #d6c4a3;
+    border-radius: 10px;
+  }
+  .fp-play-round-badge:empty { display: none; }
+  .fp-play-row { margin-bottom: 12px; }
+  .fp-play-label {
+    display: block;
+    font-weight: 600;
+    color: #5a4a35;
+    margin-bottom: 4px;
+    font-size: 0.92rem;
+  }
+  .fp-play-select {
+    padding: 5px 8px;
+    font-size: 0.9rem;
+    border: 1px solid #d6c4a3;
+    border-radius: 4px;
+    background: #fff;
+    color: #5a3e1f;
+  }
+  .fp-play-alts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 6px;
+    min-height: 22px;
+  }
+  .fp-play-alt-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 4px 3px 10px;
+    background: #ede0bd;
+    border: 1px solid #c9a86b;
+    border-radius: 12px;
+    font-size: 0.86rem;
+    color: #3d2914;
+  }
+  .fp-play-alt-chip button {
+    border: none;
+    background: transparent;
+    color: #8a3a1a;
+    font-size: 1rem;
+    line-height: 1;
+    padding: 0 4px;
+    cursor: pointer;
+  }
+  .fp-play-alt-chip button:hover { color: #c9621e; }
+  .fp-play-add-row { display: flex; gap: 6px; align-items: center; }
+  .fp-play-alt-new {
+    flex: 1;
+    padding: 5px 8px;
+    font-size: 0.9rem;
+    border: 1px solid #d6c4a3;
+    border-radius: 4px;
+    background: #fff;
+    color: #5a3e1f;
+  }
+  .fp-play-spreads-wrap { margin: 4px 0 6px 0; }
+  .fp-play-spread-block { margin-bottom: 14px; }
+  .fp-play-spread-block:last-child { margin-bottom: 4px; }
+  .fp-play-spread-metric {
+    font-weight: 600;
+    color: #5a3e1f;
+    font-size: 0.94rem;
+    margin: 0 0 4px 0;
+  }
+  table.fp-play-spread-table {
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    width: 100%;
+    max-width: 560px;
+  }
+  .fp-play-spread-table th,
+  .fp-play-spread-table td {
+    border: 1px solid #d6c4a3;
+    padding: 3px 5px;
+    text-align: left;
+  }
+  .fp-play-spread-table thead th {
+    background: #faf0d5;
+    color: #3d2914;
+    font-weight: 600;
+    text-align: center;
+  }
+  .fp-play-spread-table tbody th {
+    background: #faf5e6;
+    color: #3d2914;
+    font-weight: 500;
+    white-space: nowrap;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .fp-play-spread-table input {
+    width: 68px;
+    padding: 3px 5px;
+    font-size: 0.88rem;
+    border: 1px solid #d6c4a3;
+    border-radius: 3px;
+    background: #fff;
+    color: #5a3e1f;
+    text-align: right;
+  }
+  .fp-play-spread-table input:invalid { border-color: #c9621e; background: #fff5ee; }
+  .fp-play-actions-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 4px;
+  }
+  .fp-play-instruction { margin: 0 0 8px 0; font-size: 0.88rem; }
+  .fp-play-charts {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .fp-play-chart {
+    background: #fbf9f4;
+    border: 1px solid #ede0bd;
+    border-radius: 5px;
+    padding: 8px 10px;
+  }
+  .fp-play-chart-title {
+    font-weight: 600;
+    color: #5a3e1f;
+    font-size: 0.92rem;
+    margin: 0 0 4px 0;
+  }
+  .fp-play-chart svg { width: 100%; height: auto; display: block; }
+  .fp-play-bar { fill: #c9a86b; stroke: #8a6a2f; stroke-width: 1; cursor: pointer; transition: fill 120ms; }
+  .fp-play-bar:hover { fill: #8a3a1a; }
+  .fp-play-bar-disabled { fill: #d6c4a3; stroke: #a89273; cursor: not-allowed; }
+  .fp-play-bar-disabled:hover { fill: #d6c4a3; }
+  .fp-play-whisker { stroke: #5a3e1f; stroke-width: 1.4; fill: none; }
+  .fp-play-median { stroke: #3d2914; stroke-width: 2; }
+  .fp-play-realized {
+    fill: #8a3a1a;
+    stroke: #3d2914;
+    stroke-width: 1;
+  }
+  .fp-play-axis { stroke: #5a4a35; stroke-width: 1; }
+  .fp-play-axis-label { fill: #5a4a35; font-size: 10px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+  .fp-play-alt-label { fill: #3d2914; font-size: 11px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; text-anchor: middle; }
+  .fp-play-history {
+    max-height: 180px;
+    overflow-y: auto;
+    background: #fbf9f4;
+    border: 1px solid #ede0bd;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 0.87rem;
+    color: #3d2914;
+  }
+  .fp-play-history-row { padding: 2px 0; border-bottom: 1px dashed #ede0bd; }
+  .fp-play-history-row:last-child { border-bottom: none; }
+  .fp-play-history-t { display: inline-block; min-width: 42px; font-weight: 600; color: #5a3e1f; }
+  .fp-play-history-alt { color: #8a3a1a; font-weight: 500; }
+  .fp-play-history-sample { color: #5a4a35; }
+
+  /* ▶ Play button on (disc) decision rows */
+  .fp-play-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+    min-width: 22px;
+    height: 22px;
+    font-size: 0.78rem;
+    line-height: 20px;
+    color: #8a3a1a;
+    background: #faf0d5;
+    border: 1px solid #c9a86b;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+  .fp-play-btn:hover { background: #ede0bd; color: #6a2a10; }
 
   /* URL-display modal (first publish, sub-node creation, regenerate) */
   .fp-urls-lede { margin: 0 0 12px 0; color: #5a4a35; font-size: 0.95rem; }
@@ -2109,7 +2394,7 @@ noindex: true
   let state = {
     title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
     metrics: [], assignments: {}, chipColors: {},
-    decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {},
+    decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
     uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
   };
   let currentName = null;   // which named file, if any, is currently loaded
@@ -2170,6 +2455,7 @@ noindex: true
       decisionKinds: normalizeDecisionKinds(s && s.decisionKinds),
       decisionTimings: normalizeTimings(s && s.decisionTimings),
       subframes:     normalizeSubframes(s && s.subframes),
+      playConfigs:   normalizePlayConfigs(s && s.playConfigs),
       uncertainties: Array.isArray(s && s.uncertainties) ? s.uncertainties : [],
       uMatrix:       (s && s.uMatrix)                    ? s.uMatrix       : {},
       uncertaintyScopes:   normalizeUncertaintyScopes(s && s.uncertaintyScopes),
@@ -2231,6 +2517,69 @@ noindex: true
     const unit = allowed.indexOf(unitRaw) >= 0 ? unitRaw : '';
     return { value, unit };
   }
+  // Per-decision play configuration (per-frame; sub-frames get their own).
+  // Keyed by decision name → { alternatives, mode, spreads, history }.
+  //   alternatives : ordered list of strings (choice names).
+  //   mode         : 'repeated' (default) | 'one-shot'.
+  //   spreads      : { metricName: { altName: [p10, p50, p90] } }.
+  //                  Numbers only; missing → cell blank, missing whole
+  //                  metric row → no spread specified yet.
+  //   history      : [{ t, alt, samples: { metricName: value } }, …] —
+  //                  the record of picks + realized draws in play mode.
+  //                  t starts at 1 (round number).
+  // Only decisions that the user has actually opened in the Play modal
+  // appear here; other decisions leave the map sparse.
+  function normalizePlayConfigs(pc) {
+    const out = {};
+    if (!pc || typeof pc !== 'object') return out;
+    for (const decName of Object.keys(pc)) {
+      if (typeof decName !== 'string' || !decName) continue;
+      const raw = pc[decName];
+      if (!raw || typeof raw !== 'object') continue;
+      const alts = Array.isArray(raw.alternatives)
+        ? raw.alternatives.filter(a => typeof a === 'string' && a.trim()).map(a => a.trim())
+        : [];
+      const mode = raw.mode === 'one-shot' ? 'one-shot' : 'repeated';
+      const spreads = {};
+      if (raw.spreads && typeof raw.spreads === 'object') {
+        for (const m of Object.keys(raw.spreads)) {
+          if (typeof m !== 'string' || !m) continue;
+          const row = raw.spreads[m];
+          if (!row || typeof row !== 'object') continue;
+          const cleanedRow = {};
+          for (const a of Object.keys(row)) {
+            const cell = row[a];
+            if (Array.isArray(cell) && cell.length === 3) {
+              const nums = cell.map(v => (v === '' || v == null || !Number.isFinite(Number(v))) ? '' : Number(v));
+              cleanedRow[a] = nums;
+            }
+          }
+          if (Object.keys(cleanedRow).length) spreads[m] = cleanedRow;
+        }
+      }
+      const history = [];
+      if (Array.isArray(raw.history)) {
+        for (const h of raw.history) {
+          if (!h || typeof h !== 'object') continue;
+          const t = Number(h.t);
+          if (!Number.isFinite(t) || t < 1) continue;
+          const alt = typeof h.alt === 'string' ? h.alt : '';
+          if (!alt) continue;
+          const samples = {};
+          if (h.samples && typeof h.samples === 'object') {
+            for (const m of Object.keys(h.samples)) {
+              const v = Number(h.samples[m]);
+              if (Number.isFinite(v)) samples[m] = v;
+            }
+          }
+          history.push({ t: Math.floor(t), alt, samples });
+        }
+        history.sort((a, b) => a.t - b.t);
+      }
+      out[decName] = { alternatives: alts, mode, spreads, history };
+    }
+    return out;
+  }
   function normalizeUncertaintyScopes(sc) {
     const out = {};
     if (!sc || typeof sc !== 'object') return out;
@@ -2260,6 +2609,7 @@ noindex: true
         decisionKinds:   normalizeDecisionKinds(f.decisionKinds),
         decisionTimings: normalizeTimings(f.decisionTimings),
         subframes: normalizeSubframes(f.subframes),
+        playConfigs: normalizePlayConfigs(f.playConfigs),
       };
     }
     return out;
@@ -2290,7 +2640,7 @@ noindex: true
     if (!parentFrame.subframes) parentFrame.subframes = {};
     if (!parentFrame.subframes[name]) {
       parentFrame.subframes[name] = {
-        scope: '', decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {},
+        scope: '', decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
       };
     }
     return parentFrame.subframes[name];
@@ -2518,6 +2868,7 @@ noindex: true
       decisionKinds: state.decisionKinds,
       decisionTimings: state.decisionTimings,
       subframes: state.subframes,
+      playConfigs: state.playConfigs,
       uncertainties: state.uncertainties,
       uMatrix: state.uMatrix,
       uncertaintyScopes: state.uncertaintyScopes,
@@ -3461,6 +3812,24 @@ noindex: true
           e.preventDefault();
           drillInto(name);
         });
+        // ▶ Play button — only shown when the decision is marked (disc).
+        // Opens the play modal seeded with this decision's name (and any
+        // previously-saved alternatives / spreads / history under
+        // frame.playConfigs[name]). The button hangs off the current-frame
+        // context so per-level play state stays with the frame it belongs to.
+        if (dk === 'disc') {
+          const play = document.createElement('button');
+          play.type = 'button';
+          play.className = 'fp-play-btn';
+          play.textContent = '▶';
+          play.title = 'Play — human-in-the-loop simulator for this discrete choice';
+          play.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openPlayModal(name);
+          });
+          nameTd.appendChild(document.createTextNode(' '));
+          nameTd.appendChild(play);
+        }
       }
       tr.appendChild(nameTd);
 
@@ -4298,6 +4667,504 @@ noindex: true
     flashStatus('Added ' + picked.length + ' idea' + (picked.length === 1 ? '' : 's') + '.');
   }
 
+  // ── Play modal — discrete-choice simulator ─────────────────────
+  // First problem class: a (disc) decision whose realized performance
+  // W_{t+1,i} is uncertain; the human plays policy by clicking a bar
+  // in the chart. In our notation:
+  //   x ∈ 𝒳^{choices}, W_{t+1,i} per information class i (one per
+  //   metric here), scored by C_m(S_t, x_t, W_{t+1}).
+  // Config lives in the CURRENT frame's playConfigs[decisionName].
+  // Persistence rides with the frame — save/load/URL-share all carry
+  // it along.
+  let playCurrentDecision = null;   // decision name currently open in the modal
+
+  function playFrame() { return currentFrame(); }
+  function playEnsureConfig(name) {
+    const frame = playFrame();
+    if (!frame.playConfigs) frame.playConfigs = {};
+    if (!frame.playConfigs[name]) {
+      frame.playConfigs[name] = { alternatives: [], mode: 'repeated', spreads: {}, history: [] };
+    }
+    return frame.playConfigs[name];
+  }
+  function openPlayModal(decisionName) {
+    playCurrentDecision = decisionName;
+    playEnsureConfig(decisionName);
+    $('#fp-play-title').textContent = 'Play decision: ' + decisionName;
+    $('#fp-play-status').textContent = '';
+    playRender();
+    $('#fp-play-modal').hidden = false;
+  }
+  function closePlayModal() {
+    $('#fp-play-modal').hidden = true;
+    playCurrentDecision = null;
+  }
+  // Pull the metrics list from the top-level state — the metrics live
+  // on the root frame regardless of drill depth.
+  function playMetrics() {
+    return Array.isArray(state.metrics) ? state.metrics.filter(m => typeof m === 'string' && m.trim()) : [];
+  }
+  function playRender() {
+    if (!playCurrentDecision) return;
+    const cfg = playEnsureConfig(playCurrentDecision);
+    // Mode selector
+    $('#fp-play-mode').value = cfg.mode === 'one-shot' ? 'one-shot' : 'repeated';
+    playRenderAlts(cfg);
+    playRenderSpreads(cfg);
+    playRenderCharts(cfg);
+    playRenderHistory(cfg);
+    playRenderRoundBadge(cfg);
+  }
+  function playRenderAlts(cfg) {
+    const wrap = $('#fp-play-alts');
+    wrap.innerHTML = '';
+    if (!cfg.alternatives.length) {
+      const em = document.createElement('span');
+      em.className = 'fp-muted';
+      em.textContent = 'No alternatives yet — add some below.';
+      wrap.appendChild(em);
+      return;
+    }
+    cfg.alternatives.forEach((alt, idx) => {
+      const chip = document.createElement('span');
+      chip.className = 'fp-play-alt-chip';
+      chip.appendChild(document.createTextNode(alt));
+      const x = document.createElement('button');
+      x.type = 'button';
+      x.textContent = '×';
+      x.title = 'Remove ' + alt;
+      x.addEventListener('click', () => {
+        cfg.alternatives.splice(idx, 1);
+        // Prune spreads + history rows referring to this alt
+        for (const m of Object.keys(cfg.spreads || {})) {
+          if (cfg.spreads[m] && cfg.spreads[m][alt]) delete cfg.spreads[m][alt];
+        }
+        cfg.history = cfg.history.filter(h => h.alt !== alt);
+        autoSave();
+        playRender();
+      });
+      chip.appendChild(x);
+      wrap.appendChild(chip);
+    });
+  }
+  function playAddAlt() {
+    const input = $('#fp-play-alt-new');
+    const raw = (input.value || '').trim();
+    if (!raw) return;
+    const cfg = playEnsureConfig(playCurrentDecision);
+    if (cfg.alternatives.indexOf(raw) >= 0) {
+      $('#fp-play-status').textContent = 'Duplicate alternative: "' + raw + '"';
+      return;
+    }
+    cfg.alternatives.push(raw);
+    input.value = '';
+    $('#fp-play-status').textContent = '';
+    autoSave();
+    playRender();
+    input.focus();
+  }
+  function playRenderSpreads(cfg) {
+    const wrap = $('#fp-play-spreads-wrap');
+    wrap.innerHTML = '';
+    const metrics = playMetrics();
+    if (!cfg.alternatives.length || !metrics.length) {
+      const p = document.createElement('p');
+      p.className = 'fp-muted';
+      p.textContent = !cfg.alternatives.length
+        ? 'Add at least one alternative to begin filling in spreads.'
+        : 'Add at least one metric to the pyramid so the play can score outcomes.';
+      wrap.appendChild(p);
+      return;
+    }
+    for (const metric of metrics) {
+      const block = document.createElement('div');
+      block.className = 'fp-play-spread-block';
+      const h = document.createElement('div');
+      h.className = 'fp-play-spread-metric';
+      h.textContent = metric;
+      block.appendChild(h);
+      const table = document.createElement('table');
+      table.className = 'fp-play-spread-table';
+      const thead = document.createElement('thead');
+      thead.innerHTML = '<tr><th>Alternative</th><th>p10</th><th>p50</th><th>p90</th></tr>';
+      table.appendChild(thead);
+      const tbody = document.createElement('tbody');
+      cfg.alternatives.forEach(alt => {
+        const tr = document.createElement('tr');
+        const th = document.createElement('th');
+        th.textContent = alt;
+        th.title = alt;
+        tr.appendChild(th);
+        const stored = (cfg.spreads[metric] || {})[alt] || ['', '', ''];
+        for (let i = 0; i < 3; i++) {
+          const td = document.createElement('td');
+          const inp = document.createElement('input');
+          inp.type = 'number';
+          inp.step = 'any';
+          inp.value = stored[i] === '' || stored[i] == null ? '' : String(stored[i]);
+          inp.addEventListener('input', () => {
+            playSetSpread(metric, alt, i, inp.value);
+          });
+          inp.addEventListener('change', () => {
+            // On blur, validate monotone p10 <= p50 <= p90 and hint via :invalid
+            playValidateSpread(metric, alt, inp);
+            playRenderCharts(cfg);
+          });
+          td.appendChild(inp);
+          tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      block.appendChild(table);
+      wrap.appendChild(block);
+    }
+  }
+  function playSetSpread(metric, alt, idx, value) {
+    const cfg = playEnsureConfig(playCurrentDecision);
+    if (!cfg.spreads[metric]) cfg.spreads[metric] = {};
+    if (!cfg.spreads[metric][alt]) cfg.spreads[metric][alt] = ['', '', ''];
+    cfg.spreads[metric][alt][idx] = (value === '' || value == null) ? '' : Number(value);
+    autoSave();
+    // Skip full re-render on every keystroke — charts update on 'change'.
+  }
+  function playValidateSpread(metric, alt, inputEl) {
+    const cfg = playEnsureConfig(playCurrentDecision);
+    const row = (cfg.spreads[metric] || {})[alt];
+    if (!row) return;
+    const [p10, p50, p90] = row;
+    // Only mark invalid if we have all three AND they're out of order.
+    const allSet = [p10, p50, p90].every(v => v !== '' && Number.isFinite(Number(v)));
+    if (!allSet) { inputEl.setCustomValidity(''); return; }
+    if (!(Number(p10) <= Number(p50) && Number(p50) <= Number(p90))) {
+      inputEl.setCustomValidity('p10 ≤ p50 ≤ p90');
+    } else {
+      inputEl.setCustomValidity('');
+    }
+  }
+  // Piecewise-linear CDF through the three quantiles, with symmetric-width
+  // tails extended below p10 and above p90 (so samples are bounded but can
+  // exceed the given percentiles). Draws u ~ U[0,1] and inverts.
+  function sampleFromQuantiles(p10, p50, p90) {
+    const u = Math.random();
+    const lower = Math.max(p50 - p10, 1e-9);
+    const upper = Math.max(p90 - p50, 1e-9);
+    if (u < 0.1) return p10 - lower + (u / 0.1) * lower;
+    if (u < 0.5) return p10 + ((u - 0.1) / 0.4) * (p50 - p10);
+    if (u < 0.9) return p50 + ((u - 0.5) / 0.4) * (p90 - p50);
+    return p90 + ((u - 0.9) / 0.1) * upper;
+  }
+  function playSpreadComplete(cfg) {
+    // A metric is playable iff every alternative has a complete, monotone spread.
+    const metrics = playMetrics();
+    const usable = [];
+    for (const m of metrics) {
+      const row = cfg.spreads[m] || {};
+      let ok = cfg.alternatives.length > 0;
+      for (const alt of cfg.alternatives) {
+        const q = row[alt];
+        if (!q || q.length !== 3) { ok = false; break; }
+        const [a, b, c] = q.map(Number);
+        if (![a, b, c].every(Number.isFinite)) { ok = false; break; }
+        if (!(a <= b && b <= c)) { ok = false; break; }
+      }
+      if (ok) usable.push(m);
+    }
+    return usable;
+  }
+  function playRenderRoundBadge(cfg) {
+    const badge = $('#fp-play-round-badge');
+    if (cfg.mode === 'one-shot') {
+      badge.textContent = cfg.history.length ? 'one-shot: done' : 'one-shot';
+    } else {
+      const nextT = cfg.history.length + 1;
+      badge.textContent = 't = ' + nextT;
+    }
+  }
+  function playRenderCharts(cfg) {
+    const wrap = $('#fp-play-charts');
+    wrap.innerHTML = '';
+    const usable = playSpreadComplete(cfg);
+    const oneShotDone = (cfg.mode === 'one-shot' && cfg.history.length > 0);
+    if (!usable.length) {
+      $('#fp-play-instruction').textContent = 'Fill in p10 / p50 / p90 for every alternative in at least one metric to see the chart.';
+      return;
+    }
+    $('#fp-play-instruction').textContent = oneShotDone
+      ? 'One-shot done. Click Reset play to start over, or switch to Repeated mode.'
+      : 'Click a bar to pick that alternative and reveal a random draw.';
+    for (const metric of usable) {
+      const block = document.createElement('div');
+      block.className = 'fp-play-chart';
+      const title = document.createElement('div');
+      title.className = 'fp-play-chart-title';
+      title.textContent = metric;
+      block.appendChild(title);
+      block.appendChild(playBuildChartSvg(cfg, metric, oneShotDone));
+      wrap.appendChild(block);
+    }
+  }
+  function playBuildChartSvg(cfg, metric, disabled) {
+    const alts = cfg.alternatives;
+    const row = cfg.spreads[metric];
+    // Collect the extended [p10 - lower, p90 + upper] range for auto-scaling
+    let lo = Infinity, hi = -Infinity;
+    for (const alt of alts) {
+      const [p10, p50, p90] = row[alt].map(Number);
+      const lower = p50 - p10, upper = p90 - p50;
+      lo = Math.min(lo, p10 - lower);
+      hi = Math.max(hi, p90 + upper);
+    }
+    // Pad slightly; anchor baseline at zero if the range crosses it, else at lo.
+    const rangePad = Math.max((hi - lo) * 0.06, 1e-6);
+    let yMin = lo - rangePad;
+    let yMax = hi + rangePad;
+    if (yMin > 0 && yMin < (yMax - yMin) * 0.25) yMin = 0;  // baseline at 0 when close
+    const W = 560, H = 220;
+    const padL = 44, padR = 12, padT = 10, padB = 44;
+    const plotW = W - padL - padR;
+    const plotH = H - padT - padB;
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    function y(v) { return padT + plotH - ((v - yMin) / (yMax - yMin)) * plotH; }
+    // Y axis
+    const axisLine = document.createElementNS(svgNS, 'line');
+    axisLine.setAttribute('x1', padL); axisLine.setAttribute('x2', padL);
+    axisLine.setAttribute('y1', padT); axisLine.setAttribute('y2', padT + plotH);
+    axisLine.setAttribute('class', 'fp-play-axis');
+    svg.appendChild(axisLine);
+    // Y ticks: 5 evenly spaced values
+    for (let i = 0; i <= 4; i++) {
+      const v = yMin + (yMax - yMin) * (i / 4);
+      const yy = y(v);
+      const tick = document.createElementNS(svgNS, 'line');
+      tick.setAttribute('x1', padL - 4); tick.setAttribute('x2', padL);
+      tick.setAttribute('y1', yy); tick.setAttribute('y2', yy);
+      tick.setAttribute('class', 'fp-play-axis');
+      svg.appendChild(tick);
+      const lbl = document.createElementNS(svgNS, 'text');
+      lbl.setAttribute('x', padL - 6); lbl.setAttribute('y', yy + 3);
+      lbl.setAttribute('text-anchor', 'end');
+      lbl.setAttribute('class', 'fp-play-axis-label');
+      lbl.textContent = playFormatNum(v);
+      svg.appendChild(lbl);
+    }
+    // X axis (baseline)
+    const baselineV = Math.max(yMin, Math.min(0, yMax));  // if range crosses 0, put axis at 0, else at yMin
+    const baselineY = y(yMin);
+    const xAxisLine = document.createElementNS(svgNS, 'line');
+    xAxisLine.setAttribute('x1', padL); xAxisLine.setAttribute('x2', padL + plotW);
+    xAxisLine.setAttribute('y1', baselineY); xAxisLine.setAttribute('y2', baselineY);
+    xAxisLine.setAttribute('class', 'fp-play-axis');
+    svg.appendChild(xAxisLine);
+    // Bars — one per alternative
+    const nAlts = alts.length;
+    const slotW = plotW / nAlts;
+    const barW = Math.min(slotW * 0.55, 60);
+    alts.forEach((alt, idx) => {
+      const cx = padL + slotW * (idx + 0.5);
+      const [p10, p50, p90] = row[alt].map(Number);
+      const barTopY = y(p50);
+      const bar = document.createElementNS(svgNS, 'rect');
+      bar.setAttribute('x', cx - barW / 2);
+      bar.setAttribute('y', barTopY);
+      bar.setAttribute('width', barW);
+      bar.setAttribute('height', Math.max(0, baselineY - barTopY));
+      bar.setAttribute('class', 'fp-play-bar' + (disabled ? ' fp-play-bar-disabled' : ''));
+      bar.setAttribute('data-alt', alt);
+      if (!disabled) {
+        bar.addEventListener('click', () => playPick(alt));
+      }
+      const t = document.createElementNS(svgNS, 'title');
+      t.textContent = alt + '  •  p10 ' + playFormatNum(p10) + ' / p50 ' + playFormatNum(p50) + ' / p90 ' + playFormatNum(p90);
+      bar.appendChild(t);
+      svg.appendChild(bar);
+      // Whisker (p10 → p90) centered on cx
+      const wh = document.createElementNS(svgNS, 'line');
+      wh.setAttribute('x1', cx); wh.setAttribute('x2', cx);
+      wh.setAttribute('y1', y(p10)); wh.setAttribute('y2', y(p90));
+      wh.setAttribute('class', 'fp-play-whisker');
+      svg.appendChild(wh);
+      // Whisker caps
+      const capW = 8;
+      for (const q of [p10, p90]) {
+        const cap = document.createElementNS(svgNS, 'line');
+        cap.setAttribute('x1', cx - capW / 2); cap.setAttribute('x2', cx + capW / 2);
+        cap.setAttribute('y1', y(q)); cap.setAttribute('y2', y(q));
+        cap.setAttribute('class', 'fp-play-whisker');
+        svg.appendChild(cap);
+      }
+      // Median tick across the top of the bar
+      const med = document.createElementNS(svgNS, 'line');
+      med.setAttribute('x1', cx - barW / 2 - 2); med.setAttribute('x2', cx + barW / 2 + 2);
+      med.setAttribute('y1', barTopY); med.setAttribute('y2', barTopY);
+      med.setAttribute('class', 'fp-play-median');
+      svg.appendChild(med);
+      // Realized-draw marker(s) from history for this alt + metric
+      const draws = cfg.history.filter(h => h.alt === alt && Number.isFinite(h.samples[metric]));
+      for (const h of draws) {
+        const yy = y(h.samples[metric]);
+        const dot = document.createElementNS(svgNS, 'circle');
+        dot.setAttribute('cx', cx);
+        dot.setAttribute('cy', yy);
+        dot.setAttribute('r', 3.5);
+        dot.setAttribute('class', 'fp-play-realized');
+        const tt = document.createElementNS(svgNS, 'title');
+        tt.textContent = 't=' + h.t + ' realized: ' + playFormatNum(h.samples[metric]);
+        dot.appendChild(tt);
+        svg.appendChild(dot);
+      }
+      // Alt label
+      const lbl = document.createElementNS(svgNS, 'text');
+      lbl.setAttribute('x', cx);
+      lbl.setAttribute('y', H - 22);
+      lbl.setAttribute('class', 'fp-play-alt-label');
+      lbl.textContent = alt.length > 14 ? (alt.slice(0, 12) + '…') : alt;
+      const lblTitle = document.createElementNS(svgNS, 'title');
+      lblTitle.textContent = alt;
+      lbl.appendChild(lblTitle);
+      svg.appendChild(lbl);
+    });
+    return svg;
+  }
+  function playFormatNum(v) {
+    if (!Number.isFinite(v)) return '';
+    const av = Math.abs(v);
+    if (av >= 1000) return v.toFixed(0);
+    if (av >= 100)  return v.toFixed(1);
+    if (av >= 1)    return v.toFixed(2);
+    return v.toPrecision(3);
+  }
+  function playPick(alt) {
+    const cfg = playEnsureConfig(playCurrentDecision);
+    if (cfg.mode === 'one-shot' && cfg.history.length > 0) return;
+    const usable = playSpreadComplete(cfg);
+    const samples = {};
+    for (const m of usable) {
+      const [p10, p50, p90] = cfg.spreads[m][alt].map(Number);
+      samples[m] = sampleFromQuantiles(p10, p50, p90);
+    }
+    const nextT = cfg.history.length + 1;
+    cfg.history.push({ t: nextT, alt, samples });
+    autoSave();
+    playRender();
+    // Small callout
+    const pretty = usable.map(m => m + ': ' + playFormatNum(samples[m])).join('  •  ');
+    $('#fp-play-status').textContent = 't = ' + nextT + ' — picked "' + alt + '"' + (pretty ? '  →  ' + pretty : '');
+  }
+  function playReset() {
+    const cfg = playEnsureConfig(playCurrentDecision);
+    if (!cfg.history.length) return;
+    if (!confirm('Clear the pick history and restart at t = 1?')) return;
+    cfg.history = [];
+    autoSave();
+    playRender();
+    $('#fp-play-status').textContent = 'Play reset.';
+  }
+  function playRenderHistory(cfg) {
+    const wrap = $('#fp-play-history');
+    wrap.innerHTML = '';
+    if (!cfg.history.length) {
+      const p = document.createElement('p');
+      p.className = 'fp-muted';
+      p.textContent = 'No picks yet.';
+      wrap.appendChild(p);
+      return;
+    }
+    for (const h of cfg.history) {
+      const row = document.createElement('div');
+      row.className = 'fp-play-history-row';
+      const tSpan = document.createElement('span');
+      tSpan.className = 'fp-play-history-t';
+      tSpan.textContent = 't = ' + h.t;
+      row.appendChild(tSpan);
+      const altSpan = document.createElement('span');
+      altSpan.className = 'fp-play-history-alt';
+      altSpan.textContent = h.alt;
+      row.appendChild(altSpan);
+      const parts = Object.keys(h.samples).map(m => m + ': ' + playFormatNum(h.samples[m]));
+      if (parts.length) {
+        const sep = document.createTextNode('  →  ');
+        row.appendChild(sep);
+        const s = document.createElement('span');
+        s.className = 'fp-play-history-sample';
+        s.textContent = parts.join('  •  ');
+        row.appendChild(s);
+      }
+      wrap.appendChild(row);
+    }
+  }
+  function playClearSpreads() {
+    const cfg = playEnsureConfig(playCurrentDecision);
+    if (!Object.keys(cfg.spreads).length) return;
+    if (!confirm('Clear every p10 / p50 / p90 value for this decision?')) return;
+    cfg.spreads = {};
+    autoSave();
+    playRender();
+    $('#fp-play-status').textContent = 'Spreads cleared.';
+  }
+  async function playSuggestSpreads() {
+    const cfg = playEnsureConfig(playCurrentDecision);
+    const metrics = playMetrics();
+    if (!cfg.alternatives.length) {
+      $('#fp-play-status').textContent = 'Add alternatives first.';
+      return;
+    }
+    if (!metrics.length) {
+      $('#fp-play-status').textContent = 'Add metrics to the pyramid first.';
+      return;
+    }
+    const btn = $('#fp-play-suggest');
+    btn.disabled = true;
+    $('#fp-play-status').textContent = 'Asking the AI for plausible spreads…';
+    try {
+      const res = await fetch(CHATBOT_BASE + '/framing/play-spreads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          decision: playCurrentDecision,
+          alternatives: cfg.alternatives,
+          metrics,
+          scope: state.scope || '',
+          problemDescription: state.problemDescription || '',
+          problemNotes: state.problemNotes || '',
+        }),
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      const proposed = data && data.spreads;
+      if (!proposed || typeof proposed !== 'object') throw new Error('malformed response');
+      let filled = 0;
+      for (const m of Object.keys(proposed)) {
+        if (metrics.indexOf(m) < 0) continue;
+        const rowIn = proposed[m];
+        if (!rowIn || typeof rowIn !== 'object') continue;
+        if (!cfg.spreads[m]) cfg.spreads[m] = {};
+        for (const alt of Object.keys(rowIn)) {
+          if (cfg.alternatives.indexOf(alt) < 0) continue;
+          const q = rowIn[alt];
+          if (!Array.isArray(q) || q.length !== 3) continue;
+          const nums = q.map(Number);
+          if (!nums.every(Number.isFinite)) continue;
+          if (!(nums[0] <= nums[1] && nums[1] <= nums[2])) continue;
+          cfg.spreads[m][alt] = nums;
+          filled++;
+        }
+      }
+      autoSave();
+      playRender();
+      $('#fp-play-status').textContent = filled
+        ? ('Filled ' + filled + ' spread' + (filled === 1 ? '' : 's') + '.')
+        : 'AI returned no usable spreads — check monotone p10 ≤ p50 ≤ p90.';
+    } catch (err) {
+      $('#fp-play-status').textContent = 'Suggest failed: ' + (err && err.message ? err.message : err);
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
   function resetPyramid() {
     if (!state.metrics || state.metrics.length === 0) return;
     if (!confirm('Clear every metric and empty the pyramid? Decisions, uncertainties, and both matrices are not touched (but matrix column headers will disappear until you add metrics again).')) return;
@@ -4493,6 +5360,7 @@ noindex: true
       decisionKinds:   normalizeDecisionKinds(f.decisionKinds),
       decisionTimings: normalizeTimings(f.decisionTimings),
       subframes:   outSubframes,
+      playConfigs: normalizePlayConfigs(f.playConfigs),
       uncertainties,
       uMatrix:     norm(f.uMatrix, uncertainties),
       uncertaintyScopes:  normalizeUncertaintyScopes(f.uncertaintyScopes),
@@ -5474,7 +6342,7 @@ noindex: true
       state = {
         title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
         metrics: [], assignments: {}, chipColors: {},
-        decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {},
+        decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
         uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
       };
       currentPath = [];
@@ -6044,7 +6912,7 @@ noindex: true
         state = {
           title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
           metrics: [], assignments: {}, chipColors: {},
-          decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {},
+          decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
           uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
         };
         currentPath = [];
@@ -6365,7 +7233,7 @@ noindex: true
       state = {
         title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
         metrics: [], assignments: {}, chipColors: {},
-        decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {},
+        decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
         uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
       };
       currentPath = [];
@@ -6530,7 +7398,7 @@ noindex: true
       state = {
         title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
         metrics: [], assignments: {}, chipColors: {},
-        decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {},
+        decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
         uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
       };
       currentPath = [];
@@ -6671,6 +7539,30 @@ noindex: true
       $('#fp-ideas-select-none').addEventListener('click', () => ideasSelectAll(false));
       $('#fp-ideas-regenerate').addEventListener('click', runIdeasFetch);
       $('#fp-ideas-add').addEventListener('click', ideasApply);
+    })();
+    // Play modal wiring — discrete-choice human-in-the-loop simulator.
+    (function wirePlayModal() {
+      const modal = $('#fp-play-modal');
+      if (!modal) return;
+      $('#fp-play-close').addEventListener('click', closePlayModal);
+      $('#fp-play-done').addEventListener('click', closePlayModal);
+      modal.addEventListener('click', (e) => { if (e.target === modal) closePlayModal(); });
+      $('#fp-play-mode').addEventListener('change', (e) => {
+        const cfg = playEnsureConfig(playCurrentDecision);
+        cfg.mode = e.target.value === 'one-shot' ? 'one-shot' : 'repeated';
+        autoSave();
+        playRender();
+      });
+      $('#fp-play-alt-add').addEventListener('click', playAddAlt);
+      $('#fp-play-alt-new').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); playAddAlt(); }
+      });
+      $('#fp-play-suggest').addEventListener('click', playSuggestSpreads);
+      $('#fp-play-clear-spreads').addEventListener('click', playClearSpreads);
+      $('#fp-play-reset').addEventListener('click', playReset);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.hidden) closePlayModal();
+      });
     })();
     // Inline rename for the current framing (banner button).
     const renameBtn = $('#fp-doc-rename-btn');
