@@ -2,7 +2,7 @@
 layout: book
 book_data: sdam_toc_fr
 book_home: /sdam/fr/contents/
-title: "**Chapitre 2 : Un problème de vente d'actif**"
+title: "Chapitre 2 : Un problème de vente d'actif"
 permalink: /sdam/fr/chapter-2/
 date: 2026-07-17
 lang: fr

@@ -2,7 +2,7 @@
 layout: book
 book_data: sdam_toc_fr
 book_home: /sdam/fr/contents/
-title: "**Chapitre 12 : Optimisation des clics publicitaires**"
+title: "Chapitre 12 : Optimisation des clics publicitaires"
 permalink: /sdam/fr/chapter-12/
 date: 2026-07-17
 lang: fr

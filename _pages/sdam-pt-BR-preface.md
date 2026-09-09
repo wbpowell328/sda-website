@@ -2,7 +2,7 @@
 layout: book
 book_data: sdam_toc_pt_br
 book_home: /sdam/pt-BR/contents/
-title: **Prefácio e agradecimentos**
+title: "Prefácio e agradecimentos"
 permalink: /sdam/pt-BR/preface/
 date: 2026-07-17
 lang: pt-BR

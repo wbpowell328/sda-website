@@ -2,7 +2,7 @@
 layout: book
 book_data: sdam_toc_de
 book_home: /sdam/de/contents/
-title: **Sequenzielle Entscheidungsanalytik und Modellierung**
+title: "Sequenzielle Entscheidungsanalytik und Modellierung"
 permalink: /sdam/de/
 date: 2026-07-17
 lang: de

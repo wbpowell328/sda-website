@@ -2,7 +2,7 @@
 layout: book
 book_data: sdam_toc_fr
 book_home: /sdam/fr/contents/
-title: "**Chapitre 13 : Problème de gestion des stocks de sang**"
+title: "Chapitre 13 : Problème de gestion des stocks de sang"
 permalink: /sdam/fr/chapter-13/
 date: 2026-07-17
 lang: fr

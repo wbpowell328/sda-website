@@ -2,7 +2,7 @@
 layout: book
 book_data: sdam_toc_es
 book_home: /sdam/es/contents/
-title: "**Capítulo 3: Planificación de mercado adaptativa**"
+title: "Capítulo 3: Planificación de mercado adaptativa"
 permalink: /sdam/es/chapter-3/
 date: 2026-07-17
 lang: es

@@ -2,7 +2,7 @@
 layout: book
 book_data: sdam_toc_fr
 book_home: /sdam/fr/contents/
-title: "**Chapitre 10 : Gestion de la chaîne d'approvisionnement I : le problème du vendeur de journaux à deux agents**"
+title: "Chapitre 10 : Gestion de la chaîne d'approvisionnement I : le problème du vendeur de journaux à deux agents"
 permalink: /sdam/fr/chapter-10/
 date: 2026-07-17
 lang: fr

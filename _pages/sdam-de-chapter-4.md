@@ -2,7 +2,7 @@
 layout: book
 book_data: sdam_toc_de
 book_home: /sdam/de/contents/
-title: "**Kapitel 4: Erlernen der besten Diabetes-Medikation**"
+title: "Kapitel 4: Erlernen der besten Diabetes-Medikation"
 permalink: /sdam/de/chapter-4/
 date: 2026-07-17
 lang: de

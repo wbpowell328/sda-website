@@ -269,12 +269,22 @@ async function translateFile(sourcePath, lang, outputPath) {
   const bodyHash = crypto.createHash('sha256').update(body).digest('hex').slice(0, 16);
 
   // 1) Translate the title separately (small, worth doing on its own).
+  // Claude occasionally wraps translated titles in **bold** or *italics*
+  // markdown (probably matching the emphasis it perceives in a "chapter
+  // title"). That breaks Jekyll YAML if the title lands in front matter
+  // unquoted — strip surrounding emphasis so downstream YAML is always
+  // a plain string.
   const enTitle = fm.title || '';
   let trTitle = enTitle;
   if (enTitle.trim()) {
     console.error('  translating title...');
     const { text } = await translateChunk(enTitle, lang, glossary);
-    trTitle = text.trim();
+    trTitle = text.trim()
+      .replace(/^\*\*(.*)\*\*$/, '$1')
+      .replace(/^\*(.*)\*$/, '$1')
+      .replace(/^_{1,2}(.*)_{1,2}$/, '$1')
+      .replace(/^["'“”‘’](.*)["'“”‘’]$/, '$1')
+      .trim();
   }
 
   // 2) Extract math → placeholders, chunk, translate each chunk, restore math.

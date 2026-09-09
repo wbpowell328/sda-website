@@ -2,7 +2,7 @@
 layout: book
 book_data: sdam_toc_es
 book_home: /sdam/es/contents/
-title: "**Capítulo 1: Modelado de problemas de decisión secuencial**"
+title: "Capítulo 1: Modelado de problemas de decisión secuencial"
 permalink: /sdam/es/chapter-1/
 date: 2026-07-17
 lang: es

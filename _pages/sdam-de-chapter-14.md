@@ -2,7 +2,7 @@
 layout: book
 book_data: sdam_toc_de
 book_home: /sdam/de/contents/
-title: "**Kapitel 14: Optimierung klinischer Studien**"
+title: "Kapitel 14: Optimierung klinischer Studien"
 permalink: /sdam/de/chapter-14/
 date: 2026-07-17
 lang: de
