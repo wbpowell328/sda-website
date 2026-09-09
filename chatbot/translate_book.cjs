@@ -278,7 +278,24 @@ async function translateFile(sourcePath, lang, outputPath) {
   }
 
   // 2) Extract math → placeholders, chunk, translate each chunk, restore math.
-  const { text: bodyProse, blocks } = extractProtected(body);
+  // First strip the boundary {% raw %} … {% endraw %} wrapper if present.
+  // These tags land at the very start / end of every chunk and Claude
+  // occasionally drops the leading one as "noise" — better to add them
+  // back deterministically than to send them through the model.
+  let rawPrefix = '';
+  let rawSuffix = '';
+  let bodyForXtract = body;
+  const rawOpen  = bodyForXtract.match(/^([\s]*\{%-?\s*raw\s*-?%\}[\s]*)/);
+  if (rawOpen) {
+    rawPrefix = rawOpen[1];
+    bodyForXtract = bodyForXtract.slice(rawPrefix.length);
+  }
+  const rawClose = bodyForXtract.match(/([\s]*\{%-?\s*endraw\s*-?%\}[\s]*)$/);
+  if (rawClose) {
+    rawSuffix = rawClose[1];
+    bodyForXtract = bodyForXtract.slice(0, bodyForXtract.length - rawSuffix.length);
+  }
+  const { text: bodyProse, blocks } = extractProtected(bodyForXtract);
   const chunks = chunkBody(bodyProse);
   console.error('  ' + chunks.length + ' chunk(s), ' + blocks.length + ' math block(s)');
   let usageIn = 0, usageOut = 0;
@@ -293,6 +310,10 @@ async function translateFile(sourcePath, lang, outputPath) {
   let trBody = restoreProtected(trBodyProse, blocks);
   // Rewrite internal SDAM links to keep the reader in their chosen language.
   trBody = localizeSdamLinks(trBody, lang);
+  // Re-attach the {% raw %} / {% endraw %} boundary wrapper we stripped
+  // before extraction, so Jekyll sees the same "raw" contract as the
+  // original.
+  trBody = rawPrefix + trBody + rawSuffix;
 
   // 3) Rewrite front matter for the translated page.
   fm.title = trTitle;
