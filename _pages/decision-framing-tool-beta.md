@@ -581,7 +581,7 @@ noindex: true
 <h2 id="decision-prioritization-tool" class="fp-section-h2">Decision prioritization tool<button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
 <p>Decisions, which go by <a href="/decisionsdecisions/#different-words">many names</a> (including "idea"), represent the ways to impact or influence your metrics. They also come in many flavors and styles <a href="/decisionsdecisions/#types-of-decision-settings">as we list here</a>. They may be obvious, but they often are not. This tool is designed to help you identify the most important ones.</p>
 <p>List the decisions you'd consider (one per line). The matrix below has one column per <em>tier-assigned</em> metric from the pyramid above, ordered top-to-bottom by tier (left-to-right within the same tier by the order the metrics appear in the metrics list). Click any cell to cycle through <b>H</b> (high impact) → <b>M</b> → <b>L</b> → <b>N</b> (none) → blank. When you're done scoring, drag any row up or down via the <span class="fp-grip-inline">☰</span> handle to prioritize decisions by their impact on the most important metrics.</p>
-<p>Decisions can be general descriptions ("Assigning machines to jobs", "Optimizing warehouses") or specific actions ("Assign machine X to job Y", "Put warehouse in city X"). Use higher levels for general descriptions and lower levels for specific actions. To break a decision down into sub-decisions, click the <span class="fp-drill-inline">▸</span> button next to that decision (or right-click its row). You can nest sub-decisions to any depth; the metrics pyramid stays fixed.</p>
+<p>Decisions can be general descriptions ("Assigning machines to jobs", "Optimizing warehouses") or specific actions ("Assign machine X to job Y", "Put warehouse in city X"). Use higher levels for general descriptions and lower levels for specific actions. Each decision you enter shows up in the <em>Attributes</em> list below the textarea with its <b>(gen)/(disc)/(num)</b> and <b>(stat)/(dyn)</b> chips plus a <span class="fp-drill-inline">▸</span> drill button. Click the drill button (or right-click a matrix row) to break a decision down into sub-decisions — you can nest to any depth; the metrics pyramid stays fixed.</p>
 
 <div id="fp-decision-breadcrumb" class="fp-decision-breadcrumb" hidden></div>
 <div id="fp-decision-subscope" class="fp-decision-subscope" hidden>
@@ -611,6 +611,11 @@ noindex: true
               title="Constrain the AI to generate decisions of specific types (from the 10-type taxonomy at decisionsdecisions/#types-of-decision-settings). Click for the picker.">Types…</button>
     </div>
     <textarea id="fp-decisions-input" spellcheck="true" placeholder="Set the price&#10;Choose a supplier&#10;Approve the design&#10;Schedule production"></textarea>
+    <div class="fp-decision-attrs-header">
+      <span>Attributes</span>
+      <span class="fp-muted">(gen)/(disc)/(num) · (stat)/(dyn) · ▸ drill into sub-decisions</span>
+    </div>
+    <div id="fp-decision-attrs" class="fp-decision-attrs"></div>
   </div>
   <div class="fp-panel fp-matrix-panel">
     <h3>Decision impact matrix</h3>
@@ -2186,6 +2191,41 @@ noindex: true
     border-color: #a89988; background: #f0ebe1; color: #4a3f30;
   }
   .fp-timing-stat:hover { background: #e2dbcd; }
+
+  /* Per-decision attributes list — sits under the Decisions textarea.
+     One row per decision entered above, carrying the (gen)/(disc)/(num)
+     kind chip, the (stat)/(dyn) timing chip, and the ▸ drill-in button
+     so the matrix cell can stay uncluttered (name + drag handle only). */
+  .fp-decision-attrs-header {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: #5a3e1f;
+    display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap;
+  }
+  .fp-decision-attrs-header .fp-muted { font-size: 0.78rem; }
+  .fp-decision-attrs {
+    margin-top: 4px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .fp-decision-attr-row {
+    display: flex; align-items: center; gap: 4px;
+    padding: 4px 8px;
+    background: #f7efd8;
+    border: 1px solid #e2d4b0;
+    border-radius: 4px;
+    font-size: 0.92rem;
+  }
+  .fp-decision-attr-name {
+    flex: 1; min-width: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    color: #3a2d18;
+  }
+  .fp-decision-attrs-empty {
+    padding: 6px 8px;
+    color: #7a6a4a;
+    font-size: 0.85rem;
+    font-style: italic;
+  }
 
   /* Time step + horizon inputs at the top of the Problem scope card. */
   .fp-time-input-row {
@@ -4076,6 +4116,8 @@ noindex: true
     const frame = frameFor(kind);
     const metrics = orderedMetrics();
     const rows = frame[cfg.listKey];
+    // Attributes panel mirrors decisions regardless of matrix state.
+    if (kind === 'decision') renderDecisionAttrs();
     if (metrics.length === 0 && rows.length === 0) {
       wrap.innerHTML = '<p class="fp-matrix-empty">' +
         'Add metrics (and drag them into pyramid tiers) above, and list ' +
@@ -4189,76 +4231,15 @@ noindex: true
           nameTd.appendChild(chip);
         }
       }
-      // Decision-kind chip: "(gen)", "(disc)", or "(num)" — decisions only.
-      // Default is gen. Click cycles gen -> disc -> num -> gen. Purely
-      // informational for now; later phases will use this to pick solver
-      // types and to distinguish still-drillable categories from
-      // discrete choices from numeric parameters.
+      // Right-click anywhere on a decision row still drills in — the
+      // (gen)/(disc)/(num), (stat)/(dyn) chips and ▸ drill button now
+      // live in the Attributes list under the textarea, so the matrix
+      // cell stays clean (drag handle + decision name only).
       if (kind === 'decision') {
-        const kindMap = frame.decisionKinds || {};
-        let stored = kindMap[name];
-        if (stored === 'spec') stored = 'disc';   // legacy alias
-        const dk = (stored === 'disc' || stored === 'num') ? stored : 'gen';
-        const kchip = document.createElement('button');
-        kchip.type = 'button';
-        kchip.className = 'fp-decision-kind-chip fp-decision-kind-' + dk;
-        kchip.textContent = '(' + dk + ')';
-        const titles = {
-          gen:  'General — a broad category of decision that can be refined into sub-decisions ("Choose supplier"). Click to switch to (disc).',
-          disc: 'Discrete — a specific choice from a discrete list ("Buy from ContractCo", "Prescribe metformin"). Click to switch to (num).',
-          num:  'Numeric — a discrete integer or continuous value ("Safety stock = 42", "Price in [0, 100]"). Click to switch to (gen).',
-        };
-        kchip.title = titles[dk];
-        kchip.addEventListener('click', (e) => {
-          e.stopPropagation();
-          toggleDecisionKind(frame, name);
-        });
-        nameTd.appendChild(document.createTextNode(' '));
-        nameTd.appendChild(kchip);
-        // Timing chip — (stat)/(dyn). Sits next to the kind chip.
-        // Default (dyn); click toggles. Stored per-frame.
-        const timingMap = frame.decisionTimings || {};
-        const dt = timingMap[name] === 'stat' ? 'stat' : 'dyn';
-        const tchip = document.createElement('button');
-        tchip.type = 'button';
-        tchip.className = 'fp-timing-chip fp-timing-' + dt;
-        tchip.textContent = '(' + dt + ')';
-        tchip.title = dt === 'stat'
-          ? 'Static — fixed once at t=0 (design/capacity/one-time choice). Click to switch to (dyn).'
-          : 'Dynamic — can change per period starting at t=0. Click to switch to (stat).';
-        tchip.addEventListener('click', (e) => {
-          e.stopPropagation();
-          toggleTiming(frame, 'decisionTimings', name);
-          renderImpactMatrix('decision');
-        });
-        nameTd.appendChild(document.createTextNode(' '));
-        nameTd.appendChild(tchip);
-      }
-      // Drill-in affordance — decisions only. Click (or right-click
-      // anywhere on the row) descends into this decision's own
-      // sub-decisions. The badge shows how many sub-decisions already
-      // exist so users can see which parent decisions have a sub-tree.
-      if (kind === 'decision') {
-        const count = subDecisionCount(frame, name);
-        const drill = document.createElement('button');
-        drill.type = 'button';
-        drill.className = 'fp-drill-btn' + (count > 0 ? ' fp-drill-btn-has' : '');
-        drill.textContent = count > 0 ? ('▸ ' + count) : '▸';
-        drill.title = count > 0
-          ? ('Drill into ' + count + ' sub-decision' + (count === 1 ? '' : 's'))
-          : 'Add sub-decisions for this decision';
-        drill.addEventListener('click', (e) => {
-          e.stopPropagation();
-          drillInto(name);
-        });
-        nameTd.appendChild(document.createTextNode(' '));
-        nameTd.appendChild(drill);
         tr.addEventListener('contextmenu', (e) => {
           e.preventDefault();
           drillInto(name);
         });
-        // (▶ Play button moved to the Modeling section at the bottom of
-        //  the page — the impact matrix stays focused on framing.)
       }
       tr.appendChild(nameTd);
 
@@ -4279,6 +4260,91 @@ noindex: true
     wrap.innerHTML = '';
     wrap.appendChild(table);
   }
+  // Per-decision attributes list — one row per decision in the current
+  // frame, carrying the (gen)/(disc)/(num) kind chip, the (stat)/(dyn)
+  // timing chip, and the ▸ drill-in button. Rendered under the Decisions
+  // textarea so the impact-matrix cell can stay uncluttered.
+  function renderDecisionAttrs() {
+    const wrap = document.getElementById('fp-decision-attrs');
+    if (!wrap) return;
+    const frame = frameFor('decision');
+    const rows = Array.isArray(frame.decisions) ? frame.decisions : [];
+    wrap.innerHTML = '';
+    if (rows.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'fp-decision-attrs-empty';
+      empty.textContent = 'Enter decisions above — attribute chips (gen/disc/num, stat/dyn) and the ▸ drill-in button will appear here.';
+      wrap.appendChild(empty);
+      return;
+    }
+    for (const name of rows) {
+      const row = document.createElement('div');
+      row.className = 'fp-decision-attr-row';
+      row.dataset.name = name;
+
+      const nameEl = document.createElement('span');
+      nameEl.className = 'fp-decision-attr-name';
+      nameEl.textContent = name;
+      nameEl.title = name;
+      row.appendChild(nameEl);
+
+      // (gen) / (disc) / (num) kind chip
+      const kindMap = frame.decisionKinds || {};
+      let stored = kindMap[name];
+      if (stored === 'spec') stored = 'disc';   // legacy alias
+      const dk = (stored === 'disc' || stored === 'num') ? stored : 'gen';
+      const kchip = document.createElement('button');
+      kchip.type = 'button';
+      kchip.className = 'fp-decision-kind-chip fp-decision-kind-' + dk;
+      kchip.textContent = '(' + dk + ')';
+      const kTitles = {
+        gen:  'General — a broad category of decision that can be refined into sub-decisions ("Choose supplier"). Click to switch to (disc).',
+        disc: 'Discrete — a specific choice from a discrete list ("Buy from ContractCo", "Prescribe metformin"). Click to switch to (num).',
+        num:  'Numeric — a discrete integer or continuous value ("Safety stock = 42", "Price in [0, 100]"). Click to switch to (gen).',
+      };
+      kchip.title = kTitles[dk];
+      kchip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleDecisionKind(frame, name);
+      });
+      row.appendChild(kchip);
+
+      // (stat) / (dyn) timing chip
+      const timingMap = frame.decisionTimings || {};
+      const dt = timingMap[name] === 'stat' ? 'stat' : 'dyn';
+      const tchip = document.createElement('button');
+      tchip.type = 'button';
+      tchip.className = 'fp-timing-chip fp-timing-' + dt;
+      tchip.textContent = '(' + dt + ')';
+      tchip.title = dt === 'stat'
+        ? 'Static — fixed once at t=0 (design/capacity/one-time choice). Click to switch to (dyn).'
+        : 'Dynamic — can change per period starting at t=0. Click to switch to (stat).';
+      tchip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleTiming(frame, 'decisionTimings', name);
+        renderImpactMatrix('decision');
+      });
+      row.appendChild(tchip);
+
+      // ▸ drill-in button (count of sub-decisions when > 0)
+      const count = subDecisionCount(frame, name);
+      const drill = document.createElement('button');
+      drill.type = 'button';
+      drill.className = 'fp-drill-btn' + (count > 0 ? ' fp-drill-btn-has' : '');
+      drill.textContent = count > 0 ? ('▸ ' + count) : '▸';
+      drill.title = count > 0
+        ? ('Drill into ' + count + ' sub-decision' + (count === 1 ? '' : 's'))
+        : 'Add sub-decisions for this decision';
+      drill.addEventListener('click', (e) => {
+        e.stopPropagation();
+        drillInto(name);
+      });
+      row.appendChild(drill);
+
+      wrap.appendChild(row);
+    }
+  }
+
   function renderAllMatrices() {
     renderImpactMatrix('decision');
     renderImpactMatrix('uncertainty');
