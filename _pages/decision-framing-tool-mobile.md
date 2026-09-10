@@ -1128,7 +1128,10 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
     const status = $('#mfa-library-status');
     status.textContent = 'Opening…';
     try {
-      const resp = await apiFetch(NODES_BASE + '/framings/' + encodeURIComponent(framingId));
+      const resp = await apiFetch(
+        NODES_BASE + '/framings/' + encodeURIComponent(framingId) +
+        '?readId=' + encodeURIComponent(readId)
+      );
       const content = (resp && resp.framing && resp.framing.content) || {};
       // Merge server content into local state, keeping defaults for missing fields.
       state = Object.assign(defaultState(), content);
