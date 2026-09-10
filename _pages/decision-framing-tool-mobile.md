@@ -490,9 +490,27 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
       <button type="button" class="mfa-modal-close" id="mfa-menu-close" aria-label="Close">×</button>
     </div>
     <div class="mfa-modal-body">
+      <button type="button" class="mfa-btn mfa-btn-secondary mfa-btn-block" id="mfa-menu-open" style="margin-bottom:8px;">Open from my library</button>
       <button type="button" class="mfa-btn mfa-btn-secondary mfa-btn-block" id="mfa-menu-new" style="margin-bottom:8px;">New framing (start over)</button>
       <button type="button" class="mfa-btn mfa-btn-secondary mfa-btn-block" id="mfa-menu-save" style="margin-bottom:8px;">Save changes to server</button>
       <a href="/decision-framing-tool/?forceDesktop=1" class="mfa-btn mfa-btn-secondary mfa-btn-block" style="text-decoration:none;">Open on desktop for full features</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── Library modal — lists framings so a returning user can reopen one ── -->
+<div class="mfa-modal" id="mfa-library-modal" hidden>
+  <div class="mfa-modal-card">
+    <div class="mfa-modal-header">
+      <h3 id="mfa-library-title">My library</h3>
+      <button type="button" class="mfa-modal-close" id="mfa-library-close" aria-label="Close">×</button>
+    </div>
+    <div class="mfa-modal-body" id="mfa-library-body">
+      <p class="mfa-status" id="mfa-library-status" style="margin:0 0 8px 0;">Loading…</p>
+      <ul class="mfa-item-list" id="mfa-library-list"></ul>
+    </div>
+    <div class="mfa-modal-actions">
+      <button type="button" class="mfa-btn mfa-btn-secondary" id="mfa-library-refresh">Refresh</button>
     </div>
   </div>
 </div>
@@ -1034,6 +1052,113 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
     $('#mfa-suggest-modal').hidden = true;
   }
 
+  // ── Open library / load a framing ────────────────
+  async function openLibraryModal() {
+    const modal = $('#mfa-library-modal');
+    const status = $('#mfa-library-status');
+    const list = $('#mfa-library-list');
+    list.innerHTML = '';
+    modal.hidden = false;
+    // Prefer the library the user has previously saved into on this device.
+    // If none, fall back to any ?node= param on the URL (someone shared
+    // their library with them). If neither, tell the user to save first.
+    let lib = myLibrary();
+    let readId, writeToken;
+    if (lib && lib.readId) {
+      readId = lib.readId; writeToken = lib.writeToken;
+    } else {
+      try {
+        const p = new URLSearchParams(window.location.search);
+        readId = p.get('node');
+        writeToken = p.get('w') || p.get('admin');
+      } catch (_) {}
+    }
+    if (!readId) {
+      status.textContent = 'No library yet on this device. Save a framing once and it will appear here.';
+      return;
+    }
+    status.textContent = 'Loading…';
+    try {
+      const resp = await apiFetch(NODES_BASE + '/nodes/' + encodeURIComponent(readId));
+      const name = resp.node && resp.node.name;
+      $('#mfa-library-title').textContent = name ? ('Library: ' + name) : 'My library';
+      const framings = Array.isArray(resp.framings) ? resp.framings : [];
+      if (!framings.length) {
+        status.textContent = 'This library has no framings yet.';
+        return;
+      }
+      status.textContent = '';
+      for (const f of framings) {
+        const li = document.createElement('li');
+        li.className = 'mfa-item';
+        const nameEl = document.createElement('div');
+        nameEl.className = 'mfa-item-name';
+        nameEl.textContent = f.title || 'Untitled framing';
+        try {
+          const meta = document.createElement('div');
+          meta.style.fontSize = '0.78rem'; meta.style.color = 'var(--muted)'; meta.style.marginTop = '2px';
+          meta.textContent = 'edited ' + new Date(f.updated_at).toLocaleString();
+          nameEl.appendChild(meta);
+        } catch (_) {}
+        li.appendChild(nameEl);
+        const openBtn = document.createElement('button');
+        openBtn.type = 'button'; openBtn.className = 'mfa-btn mfa-btn-primary';
+        openBtn.style.padding = '6px 12px'; openBtn.style.minHeight = '36px';
+        openBtn.textContent = 'Open';
+        openBtn.addEventListener('click', () => openFraming(f.id, readId, writeToken, f.title));
+        li.appendChild(openBtn);
+        list.appendChild(li);
+      }
+    } catch (err) {
+      status.textContent = 'Failed to load library: ' + (err.message || err) +
+        '  (First request after idle can take ~30 s while the server wakes up.)';
+    }
+  }
+  async function openFraming(framingId, readId, writeToken, title) {
+    const status = $('#mfa-library-status');
+    status.textContent = 'Opening…';
+    try {
+      const resp = await apiFetch(NODES_BASE + '/framings/' + encodeURIComponent(framingId));
+      const content = (resp && resp.framing && resp.framing.content) || {};
+      // Merge server content into local state, keeping defaults for missing fields.
+      state = Object.assign(defaultState(), content);
+      state.title = title || state.title || '';
+      currentFramingId = framingId;
+      // Also remember which library this framing belongs to, so subsequent
+      // saves go back to the same place — even if the user opened via a
+      // shared URL rather than their own saved library.
+      if (readId && writeToken) {
+        saveMyLibrary({ readId, writeToken, name: state.title });
+      }
+      autoSave();
+      render();
+      $('#mfa-library-modal').hidden = true;
+      $('#mfa-menu-modal').hidden = true;
+      // Land on the review step so the user sees what they just loaded.
+      goToStep(STEP_COUNT - 1);
+      flashBanner('Loaded "' + (title || 'framing') + '".');
+    } catch (err) {
+      status.textContent = 'Open failed: ' + (err.message || err);
+    }
+  }
+  // Small transient status message pinned briefly under the topbar.
+  let flashTimer = null;
+  function flashBanner(msg) {
+    let el = document.getElementById('mfa-flash');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'mfa-flash';
+      el.style.cssText = 'position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top) + 88px);' +
+        'margin:0 12px;padding:10px 14px;background:var(--tan);color:var(--ink);border:1px solid var(--tan-deep);' +
+        'border-radius:6px;font-size:0.9rem;text-align:center;z-index:80;box-shadow:0 2px 8px rgba(0,0,0,0.08);';
+      document.body.appendChild(el);
+    }
+    el.textContent = msg;
+    el.hidden = false;
+    if (flashTimer) clearTimeout(flashTimer);
+    flashTimer = setTimeout(() => { el.hidden = true; }, 3200);
+  }
+
   // ── Save / share ─────────────────────────────────
   async function saveToServer() {
     const status = $('#mfa-save-status');
@@ -1152,6 +1277,13 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
     // Menu modal
     $('#mfa-menu-btn').addEventListener('click', () => { $('#mfa-menu-modal').hidden = false; });
     $('#mfa-menu-close').addEventListener('click', () => { $('#mfa-menu-modal').hidden = true; });
+    $('#mfa-menu-open').addEventListener('click', () => {
+      $('#mfa-menu-modal').hidden = true;
+      openLibraryModal();
+    });
+    // Library modal
+    $('#mfa-library-close').addEventListener('click', () => { $('#mfa-library-modal').hidden = true; });
+    $('#mfa-library-refresh').addEventListener('click', openLibraryModal);
     $('#mfa-menu-new').addEventListener('click', () => {
       if (!confirm('Start a new framing? Your current work will be cleared from this device (server-saved framings are not touched).')) return;
       state = defaultState(); currentFramingId = null;
@@ -1186,6 +1318,15 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
   wire();
   initVoice();
   goToStep(0);
+  // If someone opened this page with ?node=X (a shared library URL,
+  // or a redirect from the desktop tool that carried its params over),
+  // pop the library modal so they can pick a framing to open.
+  try {
+    const p = new URLSearchParams(window.location.search);
+    if (p.get('node')) {
+      setTimeout(openLibraryModal, 200);
+    }
+  } catch (_) {}
 })();
 </script>
 {% endraw %}
