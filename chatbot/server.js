@@ -1274,6 +1274,104 @@ app.post('/framing/play-spreads', framingLimiter, async (req, res) => {
   }
 });
 
+// Dynamic decision-framing interview. Mirror of the endpoint on main —
+// see main's server.js for full docs. Kept here in beta so both chatbot
+// services expose the same API and the beta desktop framing tool can
+// use its dedicated backend.
+const INTERVIEW_TOOL = {
+  name: 'ask_or_finish',
+  description: 'Either ask the next focused follow-up question, or signal that the interview has gathered enough context and produce a compact summary.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      action:   { type: 'string', enum: ['ask', 'finish'], description: '"ask" or "finish".' },
+      question: { type: 'string', description: 'ONE focused follow-up (when action=ask), ≤ 40 words, must reference the user\'s last answer.' },
+      summary:  { type: 'string', description: 'Compact summary (when action=finish), 100–300 words, sections DECISION MAKER / PROBLEM SETTING / RELEVANT HISTORY / GOALS / OTHER. No metrics/decisions/uncertainties proposed.' },
+      reason:   { type: 'string', description: 'Brief note (≤ 20 words) on why this question or why finishing.' },
+    },
+    required: ['action'],
+  },
+};
+
+app.post('/framing/interview', framingLimiter, async (req, res) => {
+  try {
+    const rawMessages = Array.isArray(req.body?.messages) ? req.body.messages : [];
+    const msgs = [];
+    for (const m of rawMessages) {
+      if (!m || typeof m !== 'object') continue;
+      if (m.role !== 'user' && m.role !== 'assistant') continue;
+      if (typeof m.text !== 'string' || !m.text.trim()) continue;
+      msgs.push({ role: m.role, content: m.text.slice(0, 4000) });
+    }
+    const anthMessages = msgs.length === 0
+      ? [{ role: 'user', content: 'Please begin the framing interview with your first question.' }]
+      : msgs;
+    if (anthMessages[anthMessages.length - 1].role === 'assistant') {
+      anthMessages.push({ role: 'user', content: '(no answer — proceed)' });
+    }
+    const userTurns = msgs.filter(m => m.role === 'user').length;
+    const sysExtras = userTurns >= 8
+      ? '\n\nThe user has answered 8 or more times already. On this turn you MUST set action="finish" and produce the summary.'
+      : userTurns >= 6
+      ? '\n\nThe user has answered 6+ times. Bias STRONGLY toward finishing on this turn unless there is a genuinely important gap.'
+      : '';
+    const sys =
+      'You are Professor Warren Powell\'s decision-framing interviewer. ' +
+      'Your job is to gather CONTEXT for a decision-framing exercise the user is about to complete ' +
+      '(metrics → decisions → uncertainties). You are NOT proposing any of those yet — you are ' +
+      'building shared understanding of the setting so those downstream steps can be sharp.\n\n' +
+      'INTERVIEW RULES:\n' +
+      '  1. Ask ONE focused follow-up per turn. Never ask two things in one message.\n' +
+      '  2. Every follow-up must reference something the user just said. No scripted question ' +
+      'lists — this is a conversation, not a form.\n' +
+      '  3. Cover, over the whole interview: who is deciding (role, altitude, cadence); the ' +
+      'problem setting (industry / environment); relevant history (prior attempts, incidents); ' +
+      'goals / what success looks like; anything else that might matter (constraints, ' +
+      'stakeholders, specific metrics on the user\'s mind).\n' +
+      '  4. Interview length: aim for 4–6 turns total (min 3, max 8). Finish as soon as you have ' +
+      'enough context — do not stretch to fill turns.\n' +
+      '  5. Warm but concise tone. Short questions (≤ 40 words). Do NOT lecture, quote a book, or ' +
+      'digress.\n' +
+      '  6. When finishing, produce a compact SUMMARY organized under labelled sections: ' +
+      'DECISION MAKER, PROBLEM SETTING, RELEVANT HISTORY, GOALS, OTHER. Skip any section that ' +
+      'has nothing. 100–300 words total. Never propose metrics, decisions, or uncertainties ' +
+      'in the summary — those are the user\'s next steps.\n' +
+      '  7. If the user\'s answer is very short or unclear, ask ONE clarifying follow-up before ' +
+      'moving on. If the answer clearly says "that\'s enough" or "let\'s move on", finish ' +
+      'immediately on the next turn.\n\n' +
+      'Return via the ask_or_finish tool ONLY — do not emit prose alongside the tool call.' +
+      sysExtras;
+    const response = await client.messages.create({
+      model: FRAMING_MODEL,
+      max_tokens: 1200,
+      system: sys,
+      tools: [INTERVIEW_TOOL],
+      tool_choice: { type: 'tool', name: INTERVIEW_TOOL.name },
+      messages: anthMessages,
+    });
+    const toolBlock = (response.content || []).find(
+      (b) => b.type === 'tool_use' && b.name === INTERVIEW_TOOL.name,
+    );
+    if (!toolBlock) return res.status(502).json({ error: 'Model did not respond. Try again.' });
+    const action  = String(toolBlock.input.action || 'ask').toLowerCase();
+    const question = String(toolBlock.input.question || '').trim();
+    const summary  = String(toolBlock.input.summary  || '').trim();
+    const reason   = String(toolBlock.input.reason   || '').trim();
+    if (action === 'ask' && !question) {
+      return res.json({ action: 'finish', summary: summary || '(no summary produced)', reason: reason || 'Model returned no next question.', model: FRAMING_MODEL, usage: response.usage });
+    }
+    return res.json({
+      action: action === 'finish' ? 'finish' : 'ask',
+      question, summary, reason,
+      turn: userTurns + (action === 'ask' ? 1 : 0),
+      model: FRAMING_MODEL, usage: response.usage,
+    });
+  } catch (err) {
+    console.error('Framing/interview error:', err);
+    return res.status(500).json({ error: (err && err.message) || 'Unknown error' });
+  }
+});
+
 const IDEAS_TOOL = {
   name: 'record_ideas',
   description: 'Record a list of proposed decisions or uncertainties. Classify each idea by kind (gen/disc/num) and by timing (stat/dyn).',
