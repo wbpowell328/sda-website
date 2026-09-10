@@ -406,14 +406,53 @@ noindex: true
 </div>
 
 <h2 id="problem-scope" class="fp-section-h2">Problem scope<button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
-<p>A decision frame reflects the perspective of a decision maker — a person, team, division, or a piece of software. Identify that perspective below, then (optionally) describe the problem itself. From your description, a URL to a case, or an uploaded file, the AI can either <strong>read the material</strong> so it can inform later steps (metrics, decisions, uncertainties) without generating anything on its own, or <strong>produce a rough first draft</strong> of the whole framing that you edit and refine below. Treat any draft as an illustration or a starting point, not a finished framing.</p>
+<p>A decision frame reflects the perspective of a decision maker. Answer as many of the guided questions below as you can — the AI uses your answers as context for every later step (generate ideas, suggest impact scores, first-draft framing). Each box supports voice input: tap <strong>🎤 Speak</strong> to dictate.</p>
 
 <div class="fp-bot-card">
-  <div class="fp-bot-row">
-    <label for="fp-scope-input" class="fp-bot-label">Decision maker <span class="fp-muted">(role + altitude in the org + planning horizon)</span></label>
+  <!-- Guided prompt — 5 question cards. Q1 keeps id="fp-scope-input" so
+       every existing reader of state.scope still works; Q2-Q5 get
+       concatenated (LABEL: prefixed) into state.problemDescription and
+       mirrored into the hidden #fp-bot-desc textarea so all existing
+       AI-call sites keep reading them unchanged. -->
+  <div class="fp-bot-row fp-qcard">
+    <label for="fp-scope-input" class="fp-bot-label fp-qcard-q">Who is making the decision?</label>
     <textarea id="fp-scope-input" class="fp-scope-input" rows="2" spellcheck="true"
-      placeholder="e.g. A regional dispatch manager at a mid-sized trucking company with a weekly planning horizon.  Or: The head of operations, quarterly cycle.  Or: An autonomous dispatch system routing trucks in real time."></textarea>
+      placeholder="Role, team, altitude in the org, planning cadence."></textarea>
+    <button type="button" class="fp-speak-btn" data-target="fp-scope-input" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
+    <p class="fp-voice-hint" data-hint-for="fp-scope-input" hidden></p>
   </div>
+  <div class="fp-bot-row fp-qcard">
+    <label for="fp-q-setting" class="fp-bot-label fp-qcard-q">What is the problem setting? <span class="fp-muted">(business, manufacturing, medical, finance…)</span></label>
+    <textarea id="fp-q-setting" rows="2" spellcheck="true"
+      placeholder="Industry, environment, market, what's happening around this decision."></textarea>
+    <button type="button" class="fp-speak-btn" data-target="fp-q-setting" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
+    <p class="fp-voice-hint" data-hint-for="fp-q-setting" hidden></p>
+  </div>
+  <div class="fp-bot-row fp-qcard">
+    <label for="fp-q-history" class="fp-bot-label fp-qcard-q">Is there relevant history? <span class="fp-muted">(optional)</span></label>
+    <textarea id="fp-q-history" rows="2" spellcheck="true"
+      placeholder="Prior attempts, incidents, patterns, constraints inherited from the past."></textarea>
+    <button type="button" class="fp-speak-btn" data-target="fp-q-history" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
+    <p class="fp-voice-hint" data-hint-for="fp-q-history" hidden></p>
+  </div>
+  <div class="fp-bot-row fp-qcard">
+    <label for="fp-q-goals" class="fp-bot-label fp-qcard-q">What are you trying to achieve?</label>
+    <textarea id="fp-q-goals" rows="2" spellcheck="true"
+      placeholder="Overall objectives — describe success in your own words."></textarea>
+    <button type="button" class="fp-speak-btn" data-target="fp-q-goals" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
+    <p class="fp-voice-hint" data-hint-for="fp-q-goals" hidden></p>
+  </div>
+  <div class="fp-bot-row fp-qcard">
+    <label for="fp-q-other" class="fp-bot-label fp-qcard-q">Any other information that might be relevant? <span class="fp-muted">(optional — specific metrics, stakeholders, constraints)</span></label>
+    <textarea id="fp-q-other" rows="2" spellcheck="true"
+      placeholder="Specific metrics you care about, stakeholders, constraints, anything else on your mind."></textarea>
+    <button type="button" class="fp-speak-btn" data-target="fp-q-other" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
+    <p class="fp-voice-hint" data-hint-for="fp-q-other" hidden></p>
+  </div>
+  <!-- Hidden derived textarea — kept in sync with the labelled blob of
+       Q2-Q5. Every existing reader of #fp-bot-desc.value now gets the
+       guided-prompt blob. -->
+  <textarea id="fp-bot-desc" hidden aria-hidden="true"></textarea>
 
   <!-- Time step + horizon. Time step is the elementary period of the
        model; it drives how uncertainties arrive and how dynamic decisions
@@ -458,12 +497,6 @@ noindex: true
         <span id="fp-horizon-derived" class="fp-muted fp-time-derived"></span>
       </div>
     </div>
-  </div>
-
-  <div class="fp-bot-row">
-    <label for="fp-bot-desc" class="fp-bot-label">Describe your problem <span class="fp-muted">(context for every AI call — first draft, generated ideas, and type suggestions)</span></label>
-    <textarea id="fp-bot-desc" rows="4" spellcheck="true"
-      placeholder="e.g. A regional pharmacy chain has to decide, each week, how much of a slow-moving cold-and-flu medication to keep in each of 40 stores given uncertain seasonal demand, expiring inventory, and a shared central warehouse..."></textarea>
   </div>
 
   <div class="fp-bot-row-inline">
@@ -2163,6 +2196,56 @@ noindex: true
     box-shadow: 0 0 0 2px rgba(201, 98, 30, 0.15);
   }
 
+  /* ── Guided-prompt question cards (Problem scope) ────────── */
+  .fp-qcard {
+    background: #fff;
+    border: 1px solid #d6c4a3;
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin: 8px 0;
+  }
+  .fp-qcard-q {
+    display: block; font-weight: 600; color: #3d2914;
+    font-size: 0.98rem; margin: 0 0 6px 0;
+  }
+  .fp-qcard-q .fp-muted { font-weight: 400; color: #7a6a55; font-size: 0.85rem; }
+  .fp-qcard textarea {
+    width: 100%; box-sizing: border-box;
+    padding: 8px 12px;
+    font-family: inherit; font-size: 0.95rem;
+    border: 1px solid #c9b891; border-radius: 4px;
+    background: #fff; color: #333;
+    resize: vertical; min-height: 60px; margin-bottom: 8px;
+  }
+  .fp-qcard textarea:focus {
+    outline: none; border-color: #c9621e;
+    box-shadow: 0 0 0 2px rgba(201, 98, 30, 0.15);
+  }
+  .fp-speak-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 8px 16px; min-height: 40px;
+    border: 1px solid #6a2a10; border-radius: 5px;
+    background: #8a3a1a; color: #fff;
+    font-family: inherit; font-size: 0.9rem; font-weight: 600;
+    cursor: pointer;
+  }
+  .fp-speak-btn:hover:not(:disabled) { background: #6a2a10; }
+  .fp-speak-btn:disabled { background: #d6c4a3; border-color: #d6c4a3; cursor: not-allowed; }
+  .fp-speak-btn.is-recording {
+    background: #c92525; border-color: #a01a1a;
+    animation: fp-speak-pulse 1.2s ease-in-out infinite;
+  }
+  .fp-speak-btn .fp-mic-glyph { font-size: 1.1rem; line-height: 1; }
+  @keyframes fp-speak-pulse {
+    0%, 100% { box-shadow: 0 1px 3px rgba(201,37,37,0.4); }
+    50%      { box-shadow: 0 2px 16px rgba(201,37,37,0.75); }
+  }
+  .fp-voice-hint {
+    font-size: 0.82rem; color: #7a6a55;
+    margin: 6px 0 0 2px;
+  }
+  .fp-voice-hint.is-err { color: #a72020; }
+
   /* Chip flavor colors — cycled by clicking a chip in the metrics list
      or pyramid. Legend swatches share these selectors so the legend and
      the live chips always stay in sync. */
@@ -2393,10 +2476,109 @@ noindex: true
   //                  missing = blank (not yet scored).
   let state = {
     title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
+    promptAnswers: { decisionMaker: '', setting: '', history: '', goals: '', other: '' },
     metrics: [], assignments: {}, chipColors: {},
     decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
     uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
   };
+  // Guided-prompt questions (same 5 as production + mobile).
+  const PROMPT_QUESTIONS = [
+    { key: 'decisionMaker', inputId: 'fp-scope-input', label: 'DECISION MAKER',   heading: 'Who is making the decision?' },
+    { key: 'setting',       inputId: 'fp-q-setting',   label: 'PROBLEM SETTING',  heading: 'What is the problem setting?' },
+    { key: 'history',       inputId: 'fp-q-history',   label: 'RELEVANT HISTORY', heading: 'Is there relevant history?' },
+    { key: 'goals',         inputId: 'fp-q-goals',     label: 'GOALS',            heading: 'What are you trying to achieve?' },
+    { key: 'other',         inputId: 'fp-q-other',     label: 'OTHER',            heading: 'Any other information that might be relevant?' },
+  ];
+  function hydratePromptAnswers() {
+    if (!state.promptAnswers || typeof state.promptAnswers !== 'object') {
+      state.promptAnswers = { decisionMaker: '', setting: '', history: '', goals: '', other: '' };
+    }
+    for (const q of PROMPT_QUESTIONS) {
+      if (typeof state.promptAnswers[q.key] !== 'string') state.promptAnswers[q.key] = '';
+    }
+    const anyAnswered = PROMPT_QUESTIONS.some(q => state.promptAnswers[q.key].trim());
+    if (!anyAnswered) {
+      if (state.scope && state.scope.trim()) state.promptAnswers.decisionMaker = state.scope.trim();
+      if (state.problemDescription && state.problemDescription.trim()) state.promptAnswers.other = state.problemDescription.trim();
+    }
+  }
+  function buildDerivedDesc() {
+    hydratePromptAnswers();
+    state.scope = (state.promptAnswers.decisionMaker || '').trim();
+    const parts = [];
+    for (const q of PROMPT_QUESTIONS) {
+      if (q.key === 'decisionMaker') continue;
+      const val = (state.promptAnswers[q.key] || '').trim();
+      if (val) parts.push(q.label + ': ' + val);
+    }
+    state.problemDescription = parts.join('\n\n');
+    const desc = document.getElementById('fp-bot-desc');
+    if (desc) desc.value = state.problemDescription;
+  }
+  function renderPromptCards() {
+    hydratePromptAnswers();
+    for (const q of PROMPT_QUESTIONS) {
+      const el = document.getElementById(q.inputId);
+      if (el) el.value = state.promptAnswers[q.key] || '';
+    }
+    buildDerivedDesc();
+  }
+  // Voice input — shared SpeechRecognition instance across all 🎤
+  // buttons. Silent fallback when the browser has no Web Speech API.
+  let fpVoiceState = { R: null, rec: null, targetEl: null, btnEl: null, baseText: '' };
+  function initFpVoiceInputs() {
+    fpVoiceState.R = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const buttons = document.querySelectorAll('.fp-speak-btn');
+    if (!fpVoiceState.R) { buttons.forEach(b => { b.style.display = 'none'; }); return; }
+    buttons.forEach(btn => btn.addEventListener('click', () => onFpSpeakClick(btn)));
+  }
+  function fpSpeakLabel(recording) { return recording ? '<span class="fp-mic-glyph">■</span>Stop' : '<span class="fp-mic-glyph">🎤</span>Speak'; }
+  function fpStopVoice() { if (fpVoiceState.rec) { try { fpVoiceState.rec.stop(); } catch (_) {} } }
+  function fpResetVoiceBtn() {
+    if (fpVoiceState.btnEl) {
+      fpVoiceState.btnEl.classList.remove('is-recording');
+      fpVoiceState.btnEl.innerHTML = fpSpeakLabel(false);
+    }
+  }
+  function fpSetHint(targetId, msg, isErr) {
+    const hint = document.querySelector('.fp-voice-hint[data-hint-for="' + targetId + '"]');
+    if (!hint) return;
+    hint.textContent = msg || '';
+    hint.hidden = !msg;
+    hint.classList.toggle('is-err', !!isErr);
+  }
+  function onFpSpeakClick(btn) {
+    if (fpVoiceState.btnEl === btn && fpVoiceState.rec) { fpStopVoice(); return; }
+    if (fpVoiceState.rec) fpStopVoice();
+    fpResetVoiceBtn();
+    const targetId = btn.dataset.target;
+    const targetEl = document.getElementById(targetId);
+    if (!targetEl) return;
+    const rec = new fpVoiceState.R();
+    rec.lang = navigator.language || 'en-US';
+    rec.continuous = true; rec.interimResults = true;
+    fpVoiceState.rec = rec; fpVoiceState.btnEl = btn;
+    fpVoiceState.targetEl = targetEl; fpVoiceState.baseText = targetEl.value || '';
+    rec.onresult = (e) => {
+      let final = '', interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const r = e.results[i];
+        if (r.isFinal) final += r[0].transcript; else interim += r[0].transcript;
+      }
+      const sep = fpVoiceState.baseText && !/[\s]$/.test(fpVoiceState.baseText) ? ' ' : '';
+      targetEl.value = fpVoiceState.baseText + sep + final + interim;
+      targetEl.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+    rec.onend = () => { fpVoiceState.rec = null; fpResetVoiceBtn(); fpSetHint(targetId, ''); };
+    rec.onerror = (e) => { fpVoiceState.rec = null; fpResetVoiceBtn(); fpSetHint(targetId, 'Voice: ' + (e.error || 'unknown') + '. Type instead.', true); };
+    try {
+      rec.start(); btn.classList.add('is-recording'); btn.innerHTML = fpSpeakLabel(true);
+      fpSetHint(targetId, 'Listening…');
+    } catch (err) {
+      fpVoiceState.rec = null; fpResetVoiceBtn();
+      fpSetHint(targetId, 'Voice failed: ' + (err.message || err), true);
+    }
+  }
   let currentName = null;   // which named file, if any, is currently loaded
   // Current position in the decision tree. Empty array = top level.
   // Each segment is a decision name within its parent frame.
@@ -2447,6 +2629,7 @@ noindex: true
       problemNotesSource: (s && typeof s.problemNotesSource === 'string') ? s.problemNotesSource : '',
       timeStep:           normalizeTimeSpec(s && s.timeStep),
       horizon:            normalizeTimeSpec(s && s.horizon, /* allowPeriods */ true),
+      promptAnswers:      (s && s.promptAnswers && typeof s.promptAnswers === 'object') ? s.promptAnswers : { decisionMaker: '', setting: '', history: '', goals: '', other: '' },
       metrics:       Array.isArray(s && s.metrics)            ? s.metrics      : [],
       assignments:   (s && s.assignments)                ? s.assignments   : {},
       chipColors:    (s && s.chipColors)                 ? s.chipColors    : {},
@@ -2850,6 +3033,7 @@ noindex: true
     }
   }
   function snapshotForSave() {
+    buildDerivedDesc();
     return {
       title: state.title,
       scope: state.scope,
@@ -2858,6 +3042,7 @@ noindex: true
       problemUrl: state.problemUrl,
       problemNotes: state.problemNotes,
       problemNotesSource: state.problemNotesSource,
+      promptAnswers: state.promptAnswers,
       timeStep: state.timeStep,
       horizon: state.horizon,
       metrics: state.metrics,
@@ -2993,8 +3178,7 @@ noindex: true
     state = normalizeState(file);
     currentPath = [];                                       // fresh doc → top level
     setCurrentName(name);
-    $('#fp-scope-input').value         = state.scope || '';
-    $('#fp-bot-desc').value            = state.problemDescription || '';
+    renderPromptCards();
     $('#fp-bot-url').value             = state.problemUrl || '';
     renderNotesChip(); syncTimeSpecDom();
     $('#fp-metrics-input').value       = state.metrics.join('\n');
@@ -3159,8 +3343,7 @@ noindex: true
         setCurrentName(null);
         const base = (file.name || 'file').replace(/\.json$/i, '');
         setDocTitle('Imported — ' + base);
-        $('#fp-scope-input').value         = state.scope || '';
-        $('#fp-bot-desc').value            = state.problemDescription || '';
+        renderPromptCards();
         $('#fp-bot-url').value             = state.problemUrl || '';
         renderNotesChip(); syncTimeSpecDom();
         $('#fp-metrics-input').value       = state.metrics.join('\n');
@@ -5391,8 +5574,7 @@ noindex: true
       ? state.title.trim()
       : (sourceLabel || 'Ask Professor Powell');
     setDocTitle('AI draft — ' + draftLabel);
-    $('#fp-scope-input').value         = state.scope || '';
-    $('#fp-bot-desc').value            = state.problemDescription || '';
+    renderPromptCards();
     $('#fp-bot-url').value             = state.problemUrl || '';
     renderNotesChip(); syncTimeSpecDom();
     $('#fp-metrics-input').value       = state.metrics.join('\n');
@@ -6050,8 +6232,7 @@ noindex: true
       loadedNode.currentFramingId = framingId;
       setCurrentName(null);
       setDocTitle(resp.framing.title || 'Untitled framing');
-      $('#fp-scope-input').value         = state.scope || '';
-      $('#fp-bot-desc').value            = state.problemDescription || '';
+      renderPromptCards();
       $('#fp-bot-url').value             = state.problemUrl || '';
       renderNotesChip(); syncTimeSpecDom();
       $('#fp-metrics-input').value       = state.metrics.join('\n');
@@ -6349,8 +6530,7 @@ noindex: true
         uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
       };
       currentPath = [];
-      $('#fp-scope-input').value         = '';
-      $('#fp-bot-desc').value            = '';
+      renderPromptCards();
       $('#fp-metrics-input').value       = '';
       $('#fp-decisions-input').value     = '';
       $('#fp-uncertainties-input').value = '';
@@ -6920,8 +7100,7 @@ noindex: true
         };
         currentPath = [];
         setDocTitle(null);
-        $('#fp-scope-input').value         = '';
-        $('#fp-bot-desc').value            = '';
+        renderPromptCards();
         $('#fp-metrics-input').value       = '';
         $('#fp-decisions-input').value     = '';
         $('#fp-uncertainties-input').value = '';
@@ -7184,8 +7363,7 @@ noindex: true
         setDocTitle(askppLabel);
       }
     } catch (_) { /* ignore malformed URLs */ }
-    $('#fp-scope-input').value         = state.scope || '';
-    $('#fp-bot-desc').value            = state.problemDescription || '';
+    renderPromptCards();
     $('#fp-bot-url').value             = state.problemUrl || '';
     renderNotesChip(); syncTimeSpecDom();
     $('#fp-metrics-input').value       = state.metrics.join('\n');
@@ -7193,17 +7371,21 @@ noindex: true
     $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
     renderCurrentFileLabel();
     $$('.fp-drop-zone').forEach(wireDropZone);
-    $('#fp-scope-input').addEventListener('input', () => {
-      state.scope = $('#fp-scope-input').value;
-      autoSave();
-    });
-    // Persist "Describe your problem" across saves and reloads (same
-    // treatment as the scope box). Without this the box is a one-shot
-    // input that empties on load or File → Open.
-    $('#fp-bot-desc').addEventListener('input', () => {
-      state.problemDescription = $('#fp-bot-desc').value;
-      autoSave();
-    });
+    // Guided-prompt textareas — Q1 (id=fp-scope-input) maps to
+    // state.promptAnswers.decisionMaker + state.scope; Q2-Q5 map to
+    // state.promptAnswers and get concatenated (LABEL: prefixed) into
+    // state.problemDescription + the hidden #fp-bot-desc.
+    for (const q of PROMPT_QUESTIONS) {
+      const el = document.getElementById(q.inputId);
+      if (!el) continue;
+      el.addEventListener('input', () => {
+        state.promptAnswers[q.key] = el.value;
+        buildDerivedDesc();
+        autoSave();
+      });
+    }
+    initFpVoiceInputs();
+    renderPromptCards();
     // Same for the URL-to-a-case field.
     $('#fp-bot-url').addEventListener('input', () => {
       state.problemUrl = $('#fp-bot-url').value;
@@ -7251,8 +7433,7 @@ noindex: true
       currentPath = [];
       setCurrentName(null);
       setDocTitle(null);   // wipe the banner too
-      $('#fp-scope-input').value         = '';
-      $('#fp-bot-desc').value            = '';
+      renderPromptCards();
       $('#fp-metrics-input').value       = '';
       $('#fp-decisions-input').value     = '';
       $('#fp-uncertainties-input').value = '';
@@ -7416,8 +7597,7 @@ noindex: true
       currentPath = [];
       setCurrentName(null);
       setDocTitle(null);   // also wipe the banner
-      $('#fp-scope-input').value         = '';
-      $('#fp-bot-desc').value            = '';
+      renderPromptCards();
       $('#fp-metrics-input').value       = '';
       $('#fp-decisions-input').value     = '';
       $('#fp-uncertainties-input').value = '';
