@@ -613,11 +613,8 @@ noindex: true
     <div class="fp-decisions-body">
       <textarea id="fp-decisions-input" spellcheck="true" wrap="off" placeholder="Set the price&#10;Choose a supplier&#10;Approve the design&#10;Schedule production"></textarea>
       <div class="fp-decision-attrs-side">
-        <div class="fp-decision-attrs-header">
-          <span>Attributes</span>
-          <span class="fp-muted">(gen)/(disc)/(num) · (stat)/(dyn) · ▸ drill</span>
-        </div>
-        <div id="fp-decision-attrs" class="fp-decision-attrs"></div>
+        <div id="fp-decision-attrs" class="fp-decision-attrs"
+             title="Attributes for each decision on the left: (gen)/(disc)/(num) kind · (stat)/(dyn) timing · ▸ drill into sub-decisions"></div>
       </div>
     </div>
   </div>
@@ -671,11 +668,8 @@ noindex: true
     <div class="fp-decisions-body">
       <textarea id="fp-uncertainties-input" spellcheck="true" wrap="off" placeholder="Demand volatility&#10;Supplier reliability&#10;Currency fluctuation&#10;Regulatory change"></textarea>
       <div class="fp-decision-attrs-side">
-        <div class="fp-decision-attrs-header">
-          <span>Attributes</span>
-          <span class="fp-muted">(gen)/(disc)/(num) · (stat)/(dyn) · <em>for:</em> tag</span>
-        </div>
-        <div id="fp-uncertainty-attrs" class="fp-decision-attrs"></div>
+        <div id="fp-uncertainty-attrs" class="fp-decision-attrs"
+             title="Attributes for each uncertainty on the left: (gen)/(disc)/(num) kind · (stat)/(dyn) timing · optional 'for:' tag when generated under a drill-in"></div>
       </div>
     </div>
   </div>
@@ -2222,11 +2216,13 @@ noindex: true
     align-items: stretch;
   }
   .fp-decisions-body > textarea {
-    flex: 1 1 55%;
+    flex: 1 1 auto;
     min-width: 0;
   }
   .fp-decision-attrs-side {
-    flex: 1 1 45%;
+    /* Just wide enough for two chips + drill button (~150px) — the
+       decision name is not repeated here, only its attributes are. */
+    flex: 0 0 160px;
     min-width: 0;
     display: flex; flex-direction: column;
   }
@@ -4301,11 +4297,9 @@ noindex: true
       row.className = 'fp-decision-attr-row';
       row.dataset.name = name;
 
-      const nameEl = document.createElement('span');
-      nameEl.className = 'fp-decision-attr-name';
-      nameEl.textContent = name;
-      nameEl.title = name;
-      row.appendChild(nameEl);
+      // Name is not repeated here — it appears on the same visual line
+      // in the textarea to the left. The row tooltip still carries it.
+      row.title = name;
 
       // (gen) / (disc) / (num) kind chip
       const kindMap = frame.decisionKinds || {};
@@ -4399,11 +4393,9 @@ noindex: true
       row.className = 'fp-decision-attr-row';
       row.dataset.name = name;
 
-      const nameEl = document.createElement('span');
-      nameEl.className = 'fp-decision-attr-name';
-      nameEl.textContent = name;
-      nameEl.title = name;
-      row.appendChild(nameEl);
+      // Name is not repeated here — it appears on the same visual line
+      // in the textarea to the left. The row tooltip still carries it.
+      row.title = name;
 
       // (gen) / (disc) / (num) kind chip
       const ukMap = state.uncertaintyKinds || {};
