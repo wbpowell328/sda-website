@@ -1198,8 +1198,9 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
     try {
       const kindRaw = String(req.body?.kind || '').toLowerCase();
       const kind = kindRaw === 'uncertainty' ? 'uncertainty'
+                 : kindRaw === 'metric' ? 'metric'
                  : (kindRaw === 'decision' ? 'decision' : null);
-      if (!kind) return res.status(400).json({ error: 'kind must be "decision" or "uncertainty".' });
+      if (!kind) return res.status(400).json({ error: 'kind must be "decision", "uncertainty", or "metric".' });
       // Generation mode: 'gen' (broad categories, default) or 'spec'
       // (enumerate concrete members / numeric parameters, skip the
       // categorical layer). Client is a (gen)/(spec) toggle next to the
@@ -1314,7 +1315,7 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
       }
       const priorNotes = String(req.body?.priorNotes || '').trim().slice(0, 20000);
       if (priorNotes) {
-        const nounPlural = kind === 'uncertainty' ? 'uncertainties' : 'decisions';
+        const nounPlural = kind === 'uncertainty' ? 'uncertainties' : (kind === 'metric' ? 'metrics' : 'decisions');
         userContent.push({
           type: 'text',
           text: 'PROBLEM-SETTING NOTES — the user has previously asked the AI to read their material and distill it. Treat these notes as authoritative background about the setting; use them to inform the ' + nounPlural + ' you propose:\n\n' + priorNotes,
@@ -1370,7 +1371,10 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
       // decisions are levers that move metrics; uncertainties are what makes
       // metric outcomes uncertain. Existing decisions/uncertainties are only
       // sent as an anti-duplication list.
-      if (existingMetrics.length) {
+      // Skip the "metrics drive ideas" block when kind='metric' (there are
+      // no metrics yet, and if some are already listed we don't want the
+      // "MUST score H/M on the metrics above" rule circularly applied).
+      if (existingMetrics.length && kind !== 'metric') {
         const mParts = [
           'PERFORMANCE METRICS the decision-maker is being evaluated on ' +
           '(these MUST drive your proposals):',
@@ -1455,9 +1459,11 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
       }
 
       const kindNounSingular = kind;
-      const kindNounPlural   = kind === 'uncertainty' ? 'uncertainties' : 'decisions';
+      const kindNounPlural   = kind === 'uncertainty' ? 'uncertainties' : (kind === 'metric' ? 'metrics' : 'decisions');
       const kindDescription  = kind === 'uncertainty'
         ? 'external uncertain factors the decision-maker must react to (things they do NOT control)'
+        : kind === 'metric'
+        ? 'measurable OUTCOMES that would tell the decision-maker whether they are succeeding'
         : 'levers the decision-maker actually controls — things they DO';
 
       // Closing prompt selection: 4 cases from cross of (drilled?, kind),
@@ -1466,8 +1472,37 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
       // the categorical layer — this is what a user picks when the parent
       // is already named ("Target markets" -> industry names, "Choose drug"
       // -> actual drug names, not "Pick drug class").
+      // Metrics have their own single closing prompt — they're not drilled
+      // into and don't have gen/spec/num.
       let closingText;
-      if (isDrilledIn && kind === 'decision' && mode === 'spec') {
+      if (kind === 'metric') {
+        closingText =
+          `Propose about ${count} performance METRICS for this decision-maker — ` +
+          `measurable OUTCOMES (not levers, not events). A metric is what you ` +
+          `would put on a dashboard to tell whether the decision-maker is ` +
+          `succeeding, phrased so someone could compute or observe its value. ` +
+          `HARD RULES:\n` +
+          `  1. Metrics are NOT decisions. Decisions are actions the decision-` +
+          `maker takes ("Choose supplier", "Set price"). Metrics are outcomes ` +
+          `("Cost per unit", "On-time delivery rate", "Customer churn rate", ` +
+          `"Net promoter score"). If the phrase could complete "I will …", ` +
+          `it is a decision — reject it.\n` +
+          `  2. Metrics are NOT policies or strategies. "Portfolio asset ` +
+          `allocation", "Trade execution strategy", "Liquidity positioning" ` +
+          `are all POLICIES the decision-maker chooses among. Reject those. ` +
+          `The corresponding METRICS would be "Portfolio return", ` +
+          `"Trading slippage", "Days of liquidity coverage".\n` +
+          `  3. Metrics are NOT uncertainties. Uncertainties are exogenous ` +
+          `factors ("Interest rate move"). Metrics measure the decision-` +
+          `maker's own outcomes.\n` +
+          `  4. Prefer short measurable phrases (2–5 words). If a metric ` +
+          `naturally carries a unit ($, %, count, days, ratio), imply it in ` +
+          `the phrasing.\n` +
+          `Aim for breadth — cover financial, operational, quality, risk, ` +
+          `and customer/stakeholder dimensions where they apply to this ` +
+          `decision-maker. Do NOT repeat anything already on screen. ` +
+          `Return via the record_ideas tool.`;
+      } else if (isDrilledIn && kind === 'decision' && mode === 'spec') {
         closingText =
           `Propose about ${count} NEW SPECIFIC members of "${leafParent}" — ` +
           `ENUMERATE concrete named entities (actual industry names, brand ` +
@@ -1614,7 +1649,7 @@ app.post('/framing/ideas', framingLimiter, (req, res) => {
       // {name, kind?} — kind is only set for decisions (gen/spec/num).
       const rawIdeas = Array.isArray(toolBlock.input.ideas) ? toolBlock.input.ideas : [];
       const dupSet = new Set(
-        (kind === 'uncertainty' ? existingUncertainties : existingDecisions)
+        (kind === 'uncertainty' ? existingUncertainties : (kind === 'metric' ? existingMetrics : existingDecisions))
           .map((s) => s.trim().toLowerCase())
       );
       const ideas = [];
