@@ -517,7 +517,16 @@ noindex: true
 
 <div class="fp-grid">
   <div class="fp-panel fp-metrics-panel">
-    <h3>Metrics</h3>
+    <div class="fp-list-header">
+      <h3>Metrics</h3>
+      <button type="button" class="fp-ideas-btn" data-kind="metric"
+        title="Use the AI to generate ideas for metrics from your scope/description/URL/file above. Pick which ones to add.">
+        Generate ideas
+      </button>
+      <input type="number" class="fp-ideas-count" data-kind="metric"
+             min="1" max="200" step="1" placeholder="count"
+             title="How many metric ideas to generate. Blank = auto (uses the First-draft size setting)." />
+    </div>
     <p class="fp-muted">One per line. Chips appear below and can be dragged into the pyramid on the right.</p>
     <textarea id="fp-metrics-input" spellcheck="true" placeholder="Revenue growth&#10;Customer satisfaction&#10;Employee retention&#10;On-time delivery&#10;Product quality"></textarea>
     <div class="fp-chip-legend" aria-hidden="true">
@@ -4937,7 +4946,7 @@ noindex: true
     }
   }
   async function openIdeaBox(kind) {
-    if (kind !== 'decision' && kind !== 'uncertainty') return;
+    if (kind !== 'decision' && kind !== 'uncertainty' && kind !== 'metric') return;
     ideasCurrentKind = kind;
     const modal = $('#fp-ideas-modal');
     // Drill-in aware: when the user is inside a sub-decision, both kinds
@@ -4972,6 +4981,13 @@ noindex: true
         ', in ' + modeLabel + ' mode. Uncertainties live once at the root — ' +
         'checked items are appended to your <b>root</b> uncertainty list. ' +
         'Re-generate for a fresh set.';
+    } else if (kind === 'metric') {
+      $('#fp-ideas-modal-title').textContent = 'Idea box — metrics';
+      $('#fp-ideas-modal-lede').innerHTML =
+        'AI-proposed <b>metrics</b> from your <b>Problem scope</b> above. ' +
+        'Metrics are measurable outcomes (not decisions or policies). ' +
+        'Check the ones you like, then <b>Add checked</b> to append them to ' +
+        'your metrics list. Re-generate for a fresh set.';
     } else {
       $('#fp-ideas-modal-title').textContent = 'Idea box — ' +
         (kind === 'decision' ? 'decisions' : 'uncertainties') +
@@ -5005,8 +5021,10 @@ noindex: true
       '<div class="fp-ideas-empty">Generating ideas… (first request after idle can take ~30 s while the server wakes up)</div>';
     // Nudge the user if there are no metrics yet — decisions and uncertainties
     // are supposed to be evaluated against metrics, so the ideas will be
-    // sharper if metrics are on screen first. Non-blocking.
-    if (!Array.isArray(state.metrics) || state.metrics.length === 0) {
+    // sharper if metrics are on screen first. Non-blocking. Skip for
+    // kind='metric' — the whole point of that call is to fill metrics.
+    if (ideasCurrentKind !== 'metric' &&
+        (!Array.isArray(state.metrics) || state.metrics.length === 0)) {
       $('#fp-ideas-status').textContent =
         'Tip: no metrics on screen. Ideas are usually sharper if you add metrics (or use "First draft (AI)" on the Priority pyramid) first.';
       $('#fp-ideas-status').style.color = '#7a5a1c';
@@ -5199,6 +5217,26 @@ noindex: true
     if (!picked.length) {
       $('#fp-ideas-status').textContent = 'Nothing checked — pick at least one, or Cancel.';
       $('#fp-ideas-status').style.color = '#7a1c1c';
+      return;
+    }
+    // Metrics: no matrix, no decisionKinds map — route straight into
+    // state.metrics via the standard textarea path so the pyramid picks
+    // them up the same way as if the user typed the lines themselves.
+    if (ideasCurrentKind === 'metric') {
+      const existing = Array.isArray(state.metrics) ? state.metrics.slice() : [];
+      const existingSet = new Set(existing.map(s => s.trim().toLowerCase()));
+      let added = 0;
+      for (const p of picked) {
+        if (!existingSet.has(p.name.toLowerCase())) {
+          existing.push(p.name);
+          existingSet.add(p.name.toLowerCase());
+          added++;
+        }
+      }
+      $('#fp-metrics-input').value = existing.join('\n');
+      syncMetricsFromTextarea();
+      $('#fp-ideas-modal').hidden = true;
+      flashStatus('Added ' + added + ' metric' + (added === 1 ? '' : 's') + '.');
       return;
     }
     const cfg = MATRIX[ideasCurrentKind];
@@ -8141,7 +8179,7 @@ noindex: true
       const ideas = e.target.closest('.fp-ideas-btn');
       if (ideas) {
         const k = ideas.dataset.kind;
-        if (k === 'decision' || k === 'uncertainty') openIdeaBox(k);
+        if (k === 'decision' || k === 'uncertainty' || k === 'metric') openIdeaBox(k);
         return;
       }
       // (gen)/(spec) mode toggle next to Generate ideas — flips which
