@@ -581,7 +581,7 @@ noindex: true
 <h2 id="decision-prioritization-tool" class="fp-section-h2">Decision prioritization tool<button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
 <p>Decisions, which go by <a href="/decisionsdecisions/#different-words">many names</a> (including "idea"), represent the ways to impact or influence your metrics. They also come in many flavors and styles <a href="/decisionsdecisions/#types-of-decision-settings">as we list here</a>. They may be obvious, but they often are not. This tool is designed to help you identify the most important ones.</p>
 <p>List the decisions you'd consider (one per line). The matrix below has one column per <em>tier-assigned</em> metric from the pyramid above, ordered top-to-bottom by tier (left-to-right within the same tier by the order the metrics appear in the metrics list). Click any cell to cycle through <b>H</b> (high impact) → <b>M</b> → <b>L</b> → <b>N</b> (none) → blank. When you're done scoring, drag any row up or down via the <span class="fp-grip-inline">☰</span> handle to prioritize decisions by their impact on the most important metrics.</p>
-<p>Decisions can be general descriptions ("Assigning machines to jobs", "Optimizing warehouses") or specific actions ("Assign machine X to job Y", "Put warehouse in city X"). Use higher levels for general descriptions and lower levels for specific actions. Each decision you enter shows up in the <em>Attributes</em> list below the textarea with its <b>(gen)/(disc)/(num)</b> and <b>(stat)/(dyn)</b> chips plus a <span class="fp-drill-inline">▸</span> drill button. Click the drill button (or right-click a matrix row) to break a decision down into sub-decisions — you can nest to any depth; the metrics pyramid stays fixed.</p>
+<p>Decisions can be general descriptions ("Assigning machines to jobs", "Optimizing warehouses") or specific actions ("Assign machine X to job Y", "Put warehouse in city X"). Use higher levels for general descriptions and lower levels for specific actions. Each decision shows up in the <em>Attributes</em> column to the right of the textarea with its <b>(gen)/(disc)/(num)</b> and <b>(stat)/(dyn)</b> chips plus a <b>+ sub-decisions</b> button (which changes to <b>N sub-decisions ›</b> once you have some). Click that button to break a decision down into sub-decisions — you can nest to any depth; the metrics pyramid stays fixed.</p>
 
 <div id="fp-decision-breadcrumb" class="fp-decision-breadcrumb" hidden></div>
 <div id="fp-decision-subscope" class="fp-decision-subscope" hidden>
@@ -2139,6 +2139,29 @@ noindex: true
     font-weight: 600;
     border-color: #c9a76a;
   }
+  /* Labeled "Sub-decisions" button in the Attributes side column —
+     replaces the bare ▸ triangle so the affordance is obvious. */
+  .fp-subdec-btn {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 8px;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    border: 1px solid #d6c4a3;
+    border-radius: 4px;
+    background: #faf5e6;
+    color: #5a3e1f;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+  .fp-subdec-btn:hover { background: #f2e6c9; }
+  .fp-subdec-btn-has {
+    background: #f2e6c9;
+    font-weight: 600;
+    border-color: #c9a76a;
+  }
+  .fp-subdec-btn-has:hover { background: #ecdcb4; }
   .fp-drill-inline {
     display: inline-block;
     padding: 0 5px;
@@ -2220,9 +2243,8 @@ noindex: true
     min-width: 0;
   }
   .fp-decision-attrs-side {
-    /* Just wide enough for two chips + drill button (~150px) — the
-       decision name is not repeated here, only its attributes are. */
-    flex: 0 0 160px;
+    /* Wide enough for two chips + a labeled "Sub-decisions ›" button. */
+    flex: 0 0 260px;
     min-width: 0;
     display: flex; flex-direction: column;
   }
@@ -4339,15 +4361,18 @@ noindex: true
       });
       row.appendChild(tchip);
 
-      // ▸ drill-in button (count of sub-decisions when > 0)
+      // Sub-decisions button — replaces the old bare ▸ triangle so the
+      // affordance is obvious. Shows the count when > 0.
       const count = subDecisionCount(frame, name);
       const drill = document.createElement('button');
       drill.type = 'button';
-      drill.className = 'fp-drill-btn' + (count > 0 ? ' fp-drill-btn-has' : '');
-      drill.textContent = count > 0 ? ('▸ ' + count) : '▸';
+      drill.className = 'fp-subdec-btn' + (count > 0 ? ' fp-subdec-btn-has' : '');
+      drill.textContent = count > 0
+        ? (count + ' sub-decision' + (count === 1 ? '' : 's') + ' ›')
+        : '+ sub-decisions';
       drill.title = count > 0
         ? ('Drill into ' + count + ' sub-decision' + (count === 1 ? '' : 's'))
-        : 'Add sub-decisions for this decision';
+        : 'Break this decision down into sub-decisions';
       drill.addEventListener('click', (e) => {
         e.stopPropagation();
         drillInto(name);
