@@ -610,12 +610,16 @@ noindex: true
       <button type="button" id="fp-decision-types-btn" class="fp-decision-types-btn"
               title="Constrain the AI to generate decisions of specific types (from the 10-type taxonomy at decisionsdecisions/#types-of-decision-settings). Click for the picker.">Types…</button>
     </div>
-    <textarea id="fp-decisions-input" spellcheck="true" placeholder="Set the price&#10;Choose a supplier&#10;Approve the design&#10;Schedule production"></textarea>
-    <div class="fp-decision-attrs-header">
-      <span>Attributes</span>
-      <span class="fp-muted">(gen)/(disc)/(num) · (stat)/(dyn) · ▸ drill into sub-decisions</span>
+    <div class="fp-decisions-body">
+      <textarea id="fp-decisions-input" spellcheck="true" placeholder="Set the price&#10;Choose a supplier&#10;Approve the design&#10;Schedule production"></textarea>
+      <div class="fp-decision-attrs-side">
+        <div class="fp-decision-attrs-header">
+          <span>Attributes</span>
+          <span class="fp-muted">(gen)/(disc)/(num) · (stat)/(dyn) · ▸ drill</span>
+        </div>
+        <div id="fp-decision-attrs" class="fp-decision-attrs"></div>
+      </div>
     </div>
-    <div id="fp-decision-attrs" class="fp-decision-attrs"></div>
   </div>
   <div class="fp-panel fp-matrix-panel">
     <h3>Decision impact matrix</h3>
@@ -664,12 +668,16 @@ noindex: true
       <button type="button" id="fp-uncertainty-types-btn" class="fp-decision-types-btn"
               title="Constrain the AI to generate uncertainties from specific categories (from the 12-category taxonomy at modeling-uncertainty/#categories). Click for the picker.">Types…</button>
     </div>
-    <textarea id="fp-uncertainties-input" spellcheck="true" placeholder="Demand volatility&#10;Supplier reliability&#10;Currency fluctuation&#10;Regulatory change"></textarea>
-    <div class="fp-decision-attrs-header">
-      <span>Attributes</span>
-      <span class="fp-muted">(gen)/(disc)/(num) · (stat)/(dyn) · <em>for:</em> tag when generated under a drill-in</span>
+    <div class="fp-decisions-body">
+      <textarea id="fp-uncertainties-input" spellcheck="true" placeholder="Demand volatility&#10;Supplier reliability&#10;Currency fluctuation&#10;Regulatory change"></textarea>
+      <div class="fp-decision-attrs-side">
+        <div class="fp-decision-attrs-header">
+          <span>Attributes</span>
+          <span class="fp-muted">(gen)/(disc)/(num) · (stat)/(dyn) · <em>for:</em> tag</span>
+        </div>
+        <div id="fp-uncertainty-attrs" class="fp-decision-attrs"></div>
+      </div>
     </div>
-    <div id="fp-uncertainty-attrs" class="fp-decision-attrs"></div>
   </div>
   <div class="fp-panel fp-matrix-panel">
     <h3>Uncertainty impact matrix</h3>
@@ -2197,20 +2205,43 @@ noindex: true
   }
   .fp-timing-stat:hover { background: #e2dbcd; }
 
-  /* Per-decision attributes list — sits under the Decisions textarea.
-     One row per decision entered above, carrying the (gen)/(disc)/(num)
-     kind chip, the (stat)/(dyn) timing chip, and the ▸ drill-in button
-     so the matrix cell can stay uncluttered (name + drag handle only). */
+  /* Per-decision (and per-uncertainty) attributes list — sits to the
+     RIGHT of the textarea inside the same panel. One row per entry
+     carrying the (gen)/(disc)/(num) kind chip, (stat)/(dyn) timing chip,
+     and (decisions only) ▸ drill-in button, so the matrix cell can stay
+     uncluttered (drag handle + name only). On narrow screens the pair
+     stacks vertically. */
+  .fp-decisions-body {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+  }
+  .fp-decisions-body > textarea {
+    flex: 1 1 55%;
+    min-width: 0;
+  }
+  .fp-decision-attrs-side {
+    flex: 1 1 45%;
+    min-width: 0;
+    display: flex; flex-direction: column;
+  }
+  @media (max-width: 700px) {
+    .fp-decisions-body { flex-direction: column; }
+    .fp-decisions-body > textarea,
+    .fp-decision-attrs-side { flex: 1 1 auto; }
+  }
   .fp-decision-attrs-header {
-    margin-top: 10px;
+    margin: 0 0 4px 0;
     font-size: 0.85rem;
     color: #5a3e1f;
     display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap;
   }
   .fp-decision-attrs-header .fp-muted { font-size: 0.78rem; }
   .fp-decision-attrs {
-    margin-top: 4px;
+    flex: 1 1 auto;
     display: flex; flex-direction: column; gap: 4px;
+    max-height: 480px;
+    overflow-y: auto;
   }
   .fp-decision-attr-row {
     display: flex; align-items: center; gap: 4px;
