@@ -25,13 +25,14 @@ noindex: true
 
 <p>If you have any questions, just <button type="button" class="fp-section-help" title="Open the Ask Professor Powell chat panel">? Ask</button></p>
 
-<p>The framing process is divided into four components, each with its own AI-assists.</p>
+<p>The framing process is divided into four components, each with its own AI-assists. Once framing is complete, the <a href="#modeling"><strong>Modeling</strong></a> section at the bottom moves into building and running the model.</p>
 
 <ol>
   <li><a href="#problem-scope"><strong>Problem scope</strong></a></li>
   <li><a href="#metrics-pyramid-tool"><strong>Metrics pyramid tool</strong></a></li>
   <li><a href="#decision-prioritization-tool"><strong>Decision prioritization tool</strong></a></li>
   <li><a href="#uncertainty-prioritization-tool"><strong>Uncertainty prioritization tool</strong></a></li>
+  <li><a href="#modeling"><strong>Modeling</strong></a> <span class="fp-muted">(after framing)</span></li>
 </ol>
 
 <div class="fp-toolbar">
@@ -454,50 +455,6 @@ noindex: true
        guided-prompt blob. -->
   <textarea id="fp-bot-desc" hidden aria-hidden="true"></textarea>
 
-  <!-- Time step + horizon. Time step is the elementary period of the
-       model; it drives how uncertainties arrive and how dynamic decisions
-       are indexed. Horizon can be given in wall-clock units OR in periods
-       (of the chosen time step). -->
-  <div class="fp-bot-row-inline">
-    <div class="fp-bot-inline">
-      <label class="fp-bot-label">Time step <span class="fp-muted">(one period of the model)</span></label>
-      <div class="fp-time-input-row">
-        <input type="number" id="fp-time-step-value" min="0" step="any"
-               class="fp-time-input-num" placeholder="1" />
-        <select id="fp-time-step-unit" class="fp-time-input-unit">
-          <option value=""></option>
-          <option value="seconds">seconds</option>
-          <option value="minutes">minutes</option>
-          <option value="hours">hours</option>
-          <option value="days">days</option>
-          <option value="weeks">weeks</option>
-          <option value="months">months</option>
-          <option value="quarters">quarters</option>
-          <option value="years">years</option>
-        </select>
-      </div>
-    </div>
-    <div class="fp-bot-inline">
-      <label class="fp-bot-label">Horizon <span class="fp-muted">(planning horizon; "periods" counts time steps)</span></label>
-      <div class="fp-time-input-row">
-        <input type="number" id="fp-horizon-value" min="0" step="any"
-               class="fp-time-input-num" placeholder="1" />
-        <select id="fp-horizon-unit" class="fp-time-input-unit">
-          <option value=""></option>
-          <option value="seconds">seconds</option>
-          <option value="minutes">minutes</option>
-          <option value="hours">hours</option>
-          <option value="days">days</option>
-          <option value="weeks">weeks</option>
-          <option value="months">months</option>
-          <option value="quarters">quarters</option>
-          <option value="years">years</option>
-          <option value="periods">periods (of time step)</option>
-        </select>
-        <span id="fp-horizon-derived" class="fp-muted fp-time-derived"></span>
-      </div>
-    </div>
-  </div>
 
   <div class="fp-bot-row-inline">
     <div class="fp-bot-inline">
@@ -711,6 +668,83 @@ noindex: true
     <p class="fp-muted">Columns follow the pyramid order. Rows can be dragged by their <span class="fp-grip-inline">☰</span> handle.</p>
     <div class="fp-matrix-wrapper">
       <div id="fp-umatrix"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     MODELING — a separate section for what happens AFTER framing:
+     time step + horizon, problem parameters that accumulate as the
+     model is built, and the list of (disc) decisions with per-row
+     ▶ Play buttons opening the simulation modal. This is deliberately
+     below the framing sections above; the framing sections should
+     stay focused on framing.
+     ══════════════════════════════════════════════════════════════ -->
+<h2 id="modeling" class="fp-section-h2">Modeling<button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
+<p>Once the framing above is complete, modeling turns it into something that can be reasoned about quantitatively. Set the time cadence of the model, accumulate the parameters that describe the problem, and (for discrete decisions) simulate choices.</p>
+
+<div class="fp-modeling-grid">
+  <div class="fp-modeling-left">
+
+    <div class="fp-bot-card fp-modeling-card">
+      <h3 class="fp-modeling-h3">Time</h3>
+      <div class="fp-bot-row-inline">
+        <div class="fp-bot-inline">
+          <label class="fp-bot-label">Time step <span class="fp-muted">(one period of the model)</span></label>
+          <div class="fp-time-input-row">
+            <input type="number" id="fp-time-step-value" min="0" step="any"
+                   class="fp-time-input-num" placeholder="1" />
+            <select id="fp-time-step-unit" class="fp-time-input-unit">
+              <option value=""></option>
+              <option value="seconds">seconds</option>
+              <option value="minutes">minutes</option>
+              <option value="hours">hours</option>
+              <option value="days">days</option>
+              <option value="weeks">weeks</option>
+              <option value="months">months</option>
+              <option value="quarters">quarters</option>
+              <option value="years">years</option>
+            </select>
+          </div>
+        </div>
+        <div class="fp-bot-inline">
+          <label class="fp-bot-label">Horizon <span class="fp-muted">(planning horizon; "periods" counts time steps)</span></label>
+          <div class="fp-time-input-row">
+            <input type="number" id="fp-horizon-value" min="0" step="any"
+                   class="fp-time-input-num" placeholder="1" />
+            <select id="fp-horizon-unit" class="fp-time-input-unit">
+              <option value=""></option>
+              <option value="seconds">seconds</option>
+              <option value="minutes">minutes</option>
+              <option value="hours">hours</option>
+              <option value="days">days</option>
+              <option value="weeks">weeks</option>
+              <option value="months">months</option>
+              <option value="quarters">quarters</option>
+              <option value="years">years</option>
+              <option value="periods">periods (of time step)</option>
+            </select>
+            <span id="fp-horizon-derived" class="fp-muted fp-time-derived"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fp-bot-card fp-modeling-card">
+      <h3 class="fp-modeling-h3">Problem parameters</h3>
+      <p class="fp-muted" style="margin: 0 0 8px 0;">Accumulate the parameters that describe the problem — costs, capacities, rates, arrival distributions, whatever the model needs. One per line or freeform notes; formal structure will come as the modeling flow matures.</p>
+      <textarea id="fp-problem-parameters" rows="6" spellcheck="true"
+        placeholder="e.g.&#10;  Holding cost per unit: $0.50/day&#10;  Order lead time: 3–5 days (uniform)&#10;  Weekly demand: Normal(mean=250, sd=40)&#10;  Max capacity per store: 800 units"
+        style="width: 100%; box-sizing: border-box; padding: 8px 12px; font-family: inherit; font-size: 0.95rem; border: 1px solid #c9b891; border-radius: 4px; background: #fff; color: #333; resize: vertical;"></textarea>
+    </div>
+
+  </div><!-- /.fp-modeling-left -->
+
+  <div class="fp-modeling-right">
+    <div class="fp-bot-card fp-modeling-card">
+      <h3 class="fp-modeling-h3">Discrete choices</h3>
+      <p class="fp-muted" style="margin: 0 0 8px 0;">Decisions marked <strong>(disc)</strong> in the impact matrix show up here. Tap ▶ to simulate — the play modal opens with alternatives, spreads, and history.</p>
+      <ul id="fp-modeling-decisions" class="fp-modeling-decisions"></ul>
     </div>
   </div>
 </div>
@@ -1360,6 +1394,63 @@ noindex: true
     vertical-align: middle;
   }
   .fp-play-btn:hover { background: #ede0bd; color: #6a2a10; }
+
+  /* ══════════════════════════════════════════════════════════
+     Modeling section — two-column grid: modeling inputs on the
+     left, decision list (with ▶ Play buttons) on the right so
+     the play modal has room to spawn without covering the list.
+     Collapses to one column on narrow screens.
+     ══════════════════════════════════════════════════════════ */
+  .fp-modeling-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 16px;
+    margin: 12px 0 20px;
+  }
+  @media (max-width: 900px) {
+    .fp-modeling-grid { grid-template-columns: 1fr; }
+  }
+  .fp-modeling-card { margin: 0 0 12px 0; }
+  .fp-modeling-h3 {
+    font-size: 1.05rem;
+    color: #5a4a35;
+    margin: 0 0 8px 0;
+  }
+  .fp-modeling-decisions {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .fp-modeling-decisions .fp-modeling-decision {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px;
+    background: #fff;
+    border: 1px solid #d6c4a3;
+    border-radius: 5px;
+  }
+  .fp-modeling-decisions .fp-modeling-decision-name {
+    flex: 1; overflow-wrap: anywhere;
+    color: #3d2914;
+  }
+  .fp-modeling-decisions .fp-modeling-decision-play {
+    background: #faf0d5;
+    border: 1px solid #c9a86b;
+    color: #8a3a1a;
+    font-weight: 600;
+    padding: 4px 12px; min-height: 32px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  .fp-modeling-decisions .fp-modeling-decision-play:hover {
+    background: #ede0bd; color: #6a2a10;
+  }
+  .fp-modeling-decisions-empty {
+    color: #7a6a55;
+    font-style: italic;
+    padding: 12px 4px;
+  }
 
   /* URL-display modal (first publish, sub-node creation, regenerate) */
   .fp-urls-lede { margin: 0 0 12px 0; color: #5a4a35; font-size: 0.95rem; }
@@ -2475,7 +2566,8 @@ noindex: true
   //   matrix       : { decision: { metric: 'H'|'M'|'L'|'N' } } —
   //                  missing = blank (not yet scored).
   let state = {
-    title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
+    title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
+    problemParameters: '',
     promptAnswers: { decisionMaker: '', setting: '', history: '', goals: '', other: '' },
     metrics: [], assignments: {}, chipColors: {},
     decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
@@ -2522,6 +2614,11 @@ noindex: true
       if (el) el.value = state.promptAnswers[q.key] || '';
     }
     buildDerivedDesc();
+    // Also refresh Modeling-section inputs so they follow the same
+    // load/reset paths as the prompt cards.
+    const pp = document.getElementById('fp-problem-parameters');
+    if (pp) pp.value = state.problemParameters || '';
+    renderModelingDecisions();
   }
   // Voice input — shared SpeechRecognition instance across all 🎤
   // buttons. Silent fallback when the browser has no Web Speech API.
@@ -2629,6 +2726,7 @@ noindex: true
       problemNotesSource: (s && typeof s.problemNotesSource === 'string') ? s.problemNotesSource : '',
       timeStep:           normalizeTimeSpec(s && s.timeStep),
       horizon:            normalizeTimeSpec(s && s.horizon, /* allowPeriods */ true),
+      problemParameters:  (s && typeof s.problemParameters === 'string') ? s.problemParameters : '',
       promptAnswers:      (s && s.promptAnswers && typeof s.promptAnswers === 'object') ? s.promptAnswers : { decisionMaker: '', setting: '', history: '', goals: '', other: '' },
       metrics:       Array.isArray(s && s.metrics)            ? s.metrics      : [],
       assignments:   (s && s.assignments)                ? s.assignments   : {},
@@ -3045,6 +3143,7 @@ noindex: true
       promptAnswers: state.promptAnswers,
       timeStep: state.timeStep,
       horizon: state.horizon,
+      problemParameters: state.problemParameters,
       metrics: state.metrics,
       assignments: state.assignments,
       chipColors: state.chipColors,
@@ -3995,27 +4094,8 @@ noindex: true
           e.preventDefault();
           drillInto(name);
         });
-        // ▶ Play button — only shown when the decision is marked (disc).
-        // Opens the play modal seeded with this decision's name (and any
-        // previously-saved alternatives / spreads / history under
-        // frame.playConfigs[name]). The button hangs off the current-frame
-        // context so per-level play state stays with the frame it belongs to.
-        // (Re-read the kind here — the `dk` variable in the chip block above
-        //  is scoped to that block; this branch runs independently.)
-        const rowKind = (frame.decisionKinds || {})[name];
-        if (rowKind === 'disc') {
-          const play = document.createElement('button');
-          play.type = 'button';
-          play.className = 'fp-play-btn';
-          play.textContent = '▶';
-          play.title = 'Play — human-in-the-loop simulator for this discrete choice';
-          play.addEventListener('click', (e) => {
-            e.stopPropagation();
-            openPlayModal(name);
-          });
-          nameTd.appendChild(document.createTextNode(' '));
-          nameTd.appendChild(play);
-        }
+        // (▶ Play button moved to the Modeling section at the bottom of
+        //  the page — the impact matrix stays focused on framing.)
       }
       tr.appendChild(nameTd);
 
@@ -4039,10 +4119,45 @@ noindex: true
   function renderAllMatrices() {
     renderImpactMatrix('decision');
     renderImpactMatrix('uncertainty');
+    renderModelingDecisions();
     // Align each textarea's top with the first data row of its matrix
     // — measure AFTER render so column widths / header wrapping are
     // fully laid out.
     requestAnimationFrame(alignMatrixTextareas);
+  }
+  // Populate the Modeling section's decision list — every (disc)-kind
+  // decision in the CURRENT frame gets a row with a ▶ Play button that
+  // opens the play modal (same modal the old row-level button used).
+  function renderModelingDecisions() {
+    const ul = document.getElementById('fp-modeling-decisions');
+    if (!ul) return;
+    const frame = currentFrame();
+    const kinds = frame.decisionKinds || {};
+    const discs = (frame.decisions || []).filter(name => kinds[name] === 'disc');
+    ul.innerHTML = '';
+    if (!discs.length) {
+      const li = document.createElement('li');
+      li.className = 'fp-modeling-decisions-empty';
+      li.textContent = 'No discrete decisions in this frame yet. Mark any decision as (disc) in the impact matrix above and it will appear here.';
+      ul.appendChild(li);
+      return;
+    }
+    for (const name of discs) {
+      const li = document.createElement('li');
+      li.className = 'fp-modeling-decision';
+      const nameEl = document.createElement('span');
+      nameEl.className = 'fp-modeling-decision-name';
+      nameEl.textContent = name;
+      li.appendChild(nameEl);
+      const play = document.createElement('button');
+      play.type = 'button';
+      play.className = 'fp-modeling-decision-play';
+      play.textContent = '▶ Play';
+      play.title = 'Human-in-the-loop simulator for this discrete choice';
+      play.addEventListener('click', () => openPlayModal(name));
+      li.appendChild(play);
+      ul.appendChild(li);
+    }
   }
   function alignMatrixTextareas() {
     // Historically pushed the textarea down so its top lined up with
@@ -6524,7 +6639,7 @@ noindex: true
       if (raw == null) return;
       const finalTitle = raw.trim() || 'New framing';
       state = {
-        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
+        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
         metrics: [], assignments: {}, chipColors: {},
         decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
         uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
@@ -7093,7 +7208,7 @@ noindex: true
         loadedNode.currentFramingId = null;
         // Blank the workspace since the framing on-screen no longer exists.
         state = {
-          title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
+          title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
           metrics: [], assignments: {}, chipColors: {},
           decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
           uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
@@ -7391,6 +7506,15 @@ noindex: true
       state.problemUrl = $('#fp-bot-url').value;
       autoSave();
     });
+    // Problem parameters textarea (Modeling section)
+    const pp = document.getElementById('fp-problem-parameters');
+    if (pp) {
+      pp.value = state.problemParameters || '';
+      pp.addEventListener('input', () => {
+        state.problemParameters = pp.value;
+        autoSave();
+      });
+    }
     // Time step + horizon inputs — 4 total controls. Any change writes
     // state, autosaves, and re-runs the derived "= N periods" hint.
     function pushTimeSpec(kind) {
@@ -7425,7 +7549,7 @@ noindex: true
       closeFileMenu();
       if (!confirm('Start a new framing? Anything on screen is discarded (Save to your library first if you want to keep it).')) return;
       state = {
-        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
+        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
         metrics: [], assignments: {}, chipColors: {},
         decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
         uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
@@ -7589,7 +7713,7 @@ noindex: true
     $('#fp-reset').addEventListener('click', () => {
       if (!confirm('Delete every metric, decision, and uncertainty, clear the pyramid and both matrices, and unload the current framing? (Framings saved to your library are not affected.) Cannot be undone.')) return;
       state = {
-        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
+        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
         metrics: [], assignments: {}, chipColors: {},
         decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
         uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
