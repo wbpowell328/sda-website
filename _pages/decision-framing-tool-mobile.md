@@ -582,7 +582,17 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
     } catch (_) {}
   }
   function myLibrary() {
-    try { return JSON.parse(localStorage.getItem(LIBRARY_KEY) || 'null'); } catch (_) { return null; }
+    // Prefer the mobile-tool's own saved library. Fall back to the desktop
+    // tool's storage key so anyone who's using the same browser origin
+    // for both (Chrome sync, same laptop) gets seamless access without
+    // having to bootstrap via the shared-URL path.
+    try {
+      const raw = localStorage.getItem(LIBRARY_KEY);
+      if (raw) return JSON.parse(raw);
+      const rawDesk = localStorage.getItem('framing_my_library_v1');
+      if (rawDesk) return JSON.parse(rawDesk);
+    } catch (_) {}
+    return null;
   }
   function saveMyLibrary(lib) {
     try { localStorage.setItem(LIBRARY_KEY, JSON.stringify(lib)); } catch (_) {}
