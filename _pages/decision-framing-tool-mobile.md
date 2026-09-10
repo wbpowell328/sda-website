@@ -116,6 +116,119 @@ textarea.mfa-input {
 textarea.mfa-input { min-height: 120px; resize: vertical; }
 input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outline-offset: 1px; }
 
+/* ── Prompt-mode toggle (Step 1 top) ─────────────── */
+.mfa-mode-toggle {
+  display: flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--card);
+  margin: 0 0 12px 0;
+}
+.mfa-mode-toggle button {
+  flex: 1;
+  padding: 10px 8px; min-height: 44px;
+  background: transparent; border: none;
+  font-size: 0.9rem; color: var(--muted);
+  cursor: pointer; font-family: inherit;
+}
+.mfa-mode-toggle button.is-active {
+  background: var(--accent); color: #fff; font-weight: 600;
+}
+.mfa-mode-pane { display: none; }
+.mfa-mode-pane.is-active { display: block; }
+
+/* ── Chat interview pane ──────────────────────────── */
+.mfa-chat-thread {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 10px 4px;
+  min-height: 200px;
+  max-height: 55vh;
+  overflow-y: auto;
+  background: #faf6ea;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.mfa-chat-msg {
+  max-width: 85%;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.mfa-chat-msg-ai {
+  align-self: flex-start;
+  background: #fff;
+  border: 1px solid var(--tan-deep);
+  color: var(--ink);
+  border-bottom-left-radius: 4px;
+}
+.mfa-chat-msg-user {
+  align-self: flex-end;
+  background: var(--accent);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.mfa-chat-msg-summary {
+  align-self: stretch;
+  background: var(--tan);
+  border: 1px solid var(--tan-deep);
+  color: var(--ink);
+  border-radius: 8px;
+  white-space: pre-wrap;
+  font-size: 0.9rem;
+}
+.mfa-chat-thinking {
+  align-self: flex-start;
+  color: var(--muted);
+  font-style: italic;
+  font-size: 0.88rem;
+  padding: 4px 12px;
+}
+.mfa-chat-composer {
+  display: flex; flex-direction: column; gap: 8px;
+  margin-top: 10px;
+}
+.mfa-chat-input-row { display: flex; gap: 6px; align-items: flex-end; }
+.mfa-chat-input {
+  flex: 1;
+  padding: 10px 12px; min-height: 44px;
+  border: 1px solid var(--line); border-radius: 6px;
+  background: var(--card); color: var(--ink);
+  font-family: inherit; font-size: 1rem;
+  resize: vertical;
+}
+.mfa-chat-mic {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--accent); color: #fff; border: none;
+  font-size: 1.2rem; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  flex: 0 0 auto;
+}
+.mfa-chat-mic.is-recording { background: #c92525; animation: mfa-pulse 1.2s ease-in-out infinite; }
+.mfa-chat-send {
+  padding: 10px 16px; min-height: 44px;
+  border: 1px solid var(--accent-hover);
+  background: var(--accent); color: #fff;
+  border-radius: 6px;
+  font-family: inherit; font-size: 0.95rem; font-weight: 600;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+.mfa-chat-send:disabled { background: var(--line); border-color: var(--line); cursor: not-allowed; }
+.mfa-chat-end-btn {
+  align-self: flex-end;
+  padding: 8px 14px; min-height: 40px;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  color: var(--ink-soft);
+  font-family: inherit; font-size: 0.88rem;
+  cursor: pointer;
+}
+.mfa-chat-end-btn:hover { background: var(--tan); color: var(--ink); }
+
 /* ── Guided-prompt question cards (Step 1) ─────────── */
 .mfa-qcard {
   background: var(--card);
@@ -488,13 +601,35 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
 <main class="mfa-content" id="mfa-content">
 
   <!-- ── Step 1: Frame ──────────────────────────────────────────
-       Five guided questions. Each card = question + textarea + a
-       prominent 🎤 Speak button. Answers are structured in
-       state.promptAnswers and derived into a single labelled context
-       blob at every AI call. -->
+       Two modes, toggleable at the top:
+         (a) Guided questions — five static cards (fastest / most control)
+         (b) Chat with AI — dynamic interview (AI asks follow-ups
+             based on your answers)
+       Whichever mode is active drives state.problemDescription, which
+       every downstream AI call reads. -->
   <section class="mfa-step" data-step="0" id="mfa-step-frame">
     <h1>Frame the problem</h1>
 
+    <div class="mfa-mode-toggle" role="tablist" aria-label="Prompt mode">
+      <button type="button" id="mfa-mode-static" class="is-active" aria-pressed="true">Guided questions</button>
+      <button type="button" id="mfa-mode-chat" aria-pressed="false">Chat with AI</button>
+    </div>
+
+    <!-- Chat mode -->
+    <div class="mfa-mode-pane" id="mfa-mode-pane-chat">
+      <div class="mfa-chat-thread" id="mfa-chat-thread" aria-live="polite"></div>
+      <div class="mfa-chat-composer">
+        <div class="mfa-chat-input-row">
+          <textarea class="mfa-chat-input" id="mfa-chat-input" rows="2" placeholder="Type your answer… (or tap 🎤 to speak)"></textarea>
+          <button type="button" class="mfa-chat-mic" id="mfa-chat-mic" aria-label="Tap to speak">🎤</button>
+          <button type="button" class="mfa-chat-send" id="mfa-chat-send">Send</button>
+        </div>
+        <button type="button" class="mfa-chat-end-btn" id="mfa-chat-end">End interview &amp; continue →</button>
+      </div>
+    </div>
+
+    <!-- Static mode -->
+    <div class="mfa-mode-pane is-active" id="mfa-mode-pane-static">
     <div class="mfa-qcard" data-answer-key="decisionMaker">
       <label class="mfa-qcard-q" for="mfa-q-decisionMaker">Who is making the decision?</label>
       <textarea class="mfa-input" id="mfa-q-decisionMaker" rows="3" placeholder="Role, team, organization, altitude in the org, planning cadence."></textarea>
@@ -529,6 +664,7 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
       <button type="button" class="mfa-speak-btn" data-target="mfa-q-other" aria-label="Tap to speak"><span class="mfa-mic-glyph">🎤</span>Speak</button>
       <p class="mfa-voice-hint" data-hint-for="mfa-q-other" hidden></p>
     </div>
+    </div><!-- /mfa-mode-pane-static -->
 
     <label class="mfa-label" for="mfa-url">URL <span class="mfa-muted">(optional — a case, article, or brief)</span></label>
     <input type="url" class="mfa-input" id="mfa-url" placeholder="https://..." autocomplete="off">
@@ -733,6 +869,12 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
       promptAnswers: {
         decisionMaker: '', setting: '', history: '', goals: '', other: '',
       },
+      // Dynamic-interview mode state. promptMode picks which one drives
+      // state.problemDescription; the other is preserved in state so
+      // toggling back doesn't lose the user's work.
+      promptMode: 'static',                // 'static' | 'interview'
+      interviewMessages: [],               // [{role: 'user'|'assistant', text}]
+      interviewSummary: '',                // set when the AI finishes
       metrics: [],
       assignments: {},             // metric -> 'H'|'M'|'L'
       decisions: [],
@@ -757,19 +899,33 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
       if (state.description && state.description.trim()) state.promptAnswers.other = state.description.trim();
     }
   }
-  // Build the labelled description blob sent to /framing/ideas. Skips
-  // empty sections. Also keeps state.scope / state.description in sync
-  // with the first / last answers for backward compat.
+  // Build the description blob every downstream AI call reads. Two modes:
+  //   'static'    → concatenate promptAnswers with LABEL: prefixes
+  //   'interview' → use interviewSummary if the AI has finished; else
+  //                 fall back to a rough transcript so the AI still has
+  //                 something to work with if the user leaves mid-flow
+  //                 and clicks Suggest.
   function buildDerivedContext() {
-    const parts = [];
-    for (const q of PROMPT_QUESTIONS) {
-      const val = (state.promptAnswers[q.key] || '').trim();
-      if (val) parts.push(q.label + ': ' + val);
+    let blob;
+    if (state.promptMode === 'interview') {
+      if (state.interviewSummary && state.interviewSummary.trim()) {
+        blob = state.interviewSummary.trim();
+      } else {
+        // Rough transcript fallback while the interview is still going.
+        blob = (state.interviewMessages || [])
+          .map(m => (m.role === 'user' ? 'USER: ' : 'AI: ') + m.text)
+          .join('\n\n');
+      }
+      state.scope = '';   // interview mode doesn't split off a role — everything is in the blob
+    } else {
+      const parts = [];
+      for (const q of PROMPT_QUESTIONS) {
+        const val = (state.promptAnswers[q.key] || '').trim();
+        if (val) parts.push(q.label + ': ' + val);
+      }
+      blob = parts.join('\n\n');
+      state.scope = (state.promptAnswers.decisionMaker || '').trim();
     }
-    const blob = parts.join('\n\n');
-    // Sync legacy fields — anything that reads state.scope /
-    // state.description still gets something sensible.
-    state.scope       = (state.promptAnswers.decisionMaker || '').trim();
     state.description = blob;
     return blob;
   }
@@ -832,6 +988,9 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
       problemDescription: state.problemDescription,
       problemUrl: state.problemUrl,
       promptAnswers: state.promptAnswers,
+      promptMode: state.promptMode,
+      interviewMessages: state.interviewMessages,
+      interviewSummary: state.interviewSummary,
       metrics: state.metrics,
       assignments: state.assignments,
       decisions: state.decisions,
@@ -1608,8 +1767,208 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
     }
   }
 
+  // ── Chat / interview mode ────────────────────────
+  function setPromptMode(mode) {
+    state.promptMode = mode === 'interview' ? 'interview' : 'static';
+    $('#mfa-mode-static').classList.toggle('is-active', state.promptMode === 'static');
+    $('#mfa-mode-chat').classList.toggle('is-active', state.promptMode === 'interview');
+    $('#mfa-mode-static').setAttribute('aria-pressed', state.promptMode === 'static' ? 'true' : 'false');
+    $('#mfa-mode-chat').setAttribute('aria-pressed', state.promptMode === 'interview' ? 'true' : 'false');
+    $('#mfa-mode-pane-static').classList.toggle('is-active', state.promptMode === 'static');
+    $('#mfa-mode-pane-chat').classList.toggle('is-active', state.promptMode === 'interview');
+    // Update the derived context — mode switch changes which blob feeds
+    // downstream AI calls.
+    buildDerivedContext();
+    autoSave();
+    // On entering chat mode for the first time (empty transcript), fetch
+    // the AI's opening question.
+    if (state.promptMode === 'interview' && (!state.interviewMessages || state.interviewMessages.length === 0)) {
+      startInterview();
+    } else if (state.promptMode === 'interview') {
+      renderChatThread();
+    }
+  }
+  function renderChatThread() {
+    const thread = $('#mfa-chat-thread');
+    thread.innerHTML = '';
+    for (const m of (state.interviewMessages || [])) {
+      const el = document.createElement('div');
+      el.className = 'mfa-chat-msg ' + (m.role === 'user' ? 'mfa-chat-msg-user' : 'mfa-chat-msg-ai');
+      el.textContent = m.text;
+      thread.appendChild(el);
+    }
+    if (state.interviewSummary) {
+      const el = document.createElement('div');
+      el.className = 'mfa-chat-msg mfa-chat-msg-summary';
+      el.textContent = 'Summary: ' + state.interviewSummary;
+      thread.appendChild(el);
+    }
+    thread.scrollTop = thread.scrollHeight;
+  }
+  function showChatThinking(show) {
+    const thread = $('#mfa-chat-thread');
+    let el = document.getElementById('mfa-chat-thinking');
+    if (show) {
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'mfa-chat-thinking';
+        el.className = 'mfa-chat-thinking';
+        el.textContent = 'Thinking… (first response after idle can take ~30 s)';
+        thread.appendChild(el);
+      }
+      thread.scrollTop = thread.scrollHeight;
+    } else if (el) {
+      el.remove();
+    }
+  }
+  function setChatBusy(busy) {
+    $('#mfa-chat-send').disabled = busy;
+    $('#mfa-chat-input').disabled = busy;
+    $('#mfa-chat-mic').disabled = busy;
+  }
+  async function startInterview() {
+    if (!state.interviewMessages) state.interviewMessages = [];
+    renderChatThread();
+    showChatThinking(true);
+    setChatBusy(true);
+    try {
+      const resp = await fetch(CHATBOT_BASE + '/framing/interview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: state.interviewMessages }),
+      });
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.error || 'Request failed');
+      handleInterviewResponse(data);
+    } catch (err) {
+      showChatThinking(false);
+      const el = document.createElement('div');
+      el.className = 'mfa-chat-msg mfa-chat-msg-ai';
+      el.textContent = 'Could not start the interview: ' + (err.message || err);
+      $('#mfa-chat-thread').appendChild(el);
+    } finally {
+      setChatBusy(false);
+    }
+  }
+  async function sendChatMessage() {
+    const inp = $('#mfa-chat-input');
+    const text = (inp.value || '').trim();
+    if (!text) return;
+    if (!state.interviewMessages) state.interviewMessages = [];
+    state.interviewMessages.push({ role: 'user', text });
+    inp.value = '';
+    renderChatThread();
+    buildDerivedContext();
+    autoSave();
+    showChatThinking(true);
+    setChatBusy(true);
+    try {
+      const resp = await fetch(CHATBOT_BASE + '/framing/interview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: state.interviewMessages }),
+      });
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.error || 'Request failed');
+      handleInterviewResponse(data);
+    } catch (err) {
+      showChatThinking(false);
+      const el = document.createElement('div');
+      el.className = 'mfa-chat-msg mfa-chat-msg-ai';
+      el.textContent = 'Reply failed: ' + (err.message || err);
+      $('#mfa-chat-thread').appendChild(el);
+    } finally {
+      setChatBusy(false);
+    }
+  }
+  function handleInterviewResponse(data) {
+    showChatThinking(false);
+    if (data.action === 'finish') {
+      state.interviewSummary = (data.summary || '').trim();
+      if (data.reason) {
+        state.interviewMessages.push({ role: 'assistant', text: 'Thanks — I have enough context now. (' + data.reason + ')' });
+      }
+      buildDerivedContext();
+      renderChatThread();
+      autoSave();
+    } else if (data.action === 'ask' && data.question) {
+      state.interviewMessages.push({ role: 'assistant', text: data.question });
+      renderChatThread();
+      buildDerivedContext();
+      autoSave();
+    }
+  }
+  function endInterviewEarly() {
+    // If we have a summary, we're done. Otherwise ask the server to
+    // finish now with whatever it's got.
+    if (state.interviewSummary) { goToStep(1); return; }
+    if (!state.interviewMessages || state.interviewMessages.length === 0) { goToStep(1); return; }
+    // Nudge the model to finish by appending a "done" user message.
+    state.interviewMessages.push({ role: 'user', text: "That's enough for now — please summarize and move on." });
+    renderChatThread();
+    showChatThinking(true);
+    setChatBusy(true);
+    fetch(CHATBOT_BASE + '/framing/interview', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: state.interviewMessages }),
+    })
+      .then(r => r.json())
+      .then(data => {
+        handleInterviewResponse(data);
+        goToStep(1);
+      })
+      .catch(err => {
+        showChatThinking(false);
+        const el = document.createElement('div');
+        el.className = 'mfa-chat-msg mfa-chat-msg-ai';
+        el.textContent = 'Continuing anyway: ' + (err.message || err);
+        $('#mfa-chat-thread').appendChild(el);
+        goToStep(1);
+      })
+      .finally(() => setChatBusy(false));
+  }
+
   // ── Wire ─────────────────────────────────────────
   function wire() {
+    // Prompt-mode toggle
+    $('#mfa-mode-static').addEventListener('click', () => setPromptMode('static'));
+    $('#mfa-mode-chat').addEventListener('click',   () => setPromptMode('interview'));
+    // Chat composer
+    $('#mfa-chat-send').addEventListener('click', sendChatMessage);
+    $('#mfa-chat-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
+    });
+    $('#mfa-chat-end').addEventListener('click', endInterviewEarly);
+    // Chat mic — reuse the same Web Speech API path, targeted at the
+    // chat input textarea.
+    $('#mfa-chat-mic').addEventListener('click', () => {
+      // Fake a speak-button click by mapping data-target to the chat input.
+      const R = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!R) { $('#mfa-chat-mic').style.display = 'none'; return; }
+      if (voiceState.btnEl === $('#mfa-chat-mic') && voiceState.rec) { voiceState.rec.stop(); return; }
+      if (voiceState.rec) voiceState.rec.stop();
+      const rec = new R();
+      rec.lang = navigator.language || 'en-US';
+      rec.continuous = true; rec.interimResults = true;
+      voiceState.rec = rec; voiceState.btnEl = $('#mfa-chat-mic');
+      voiceState.targetEl = $('#mfa-chat-input');
+      voiceState.baseText = voiceState.targetEl.value || '';
+      const btn = $('#mfa-chat-mic');
+      rec.onresult = (e) => {
+        let final = '', interim = '';
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          const r = e.results[i];
+          if (r.isFinal) final += r[0].transcript; else interim += r[0].transcript;
+        }
+        const sep = voiceState.baseText && !/[\s]$/.test(voiceState.baseText) ? ' ' : '';
+        voiceState.targetEl.value = voiceState.baseText + sep + final + interim;
+      };
+      rec.onend = () => { voiceState.rec = null; btn.classList.remove('is-recording'); btn.textContent = '🎤'; };
+      rec.onerror = () => { voiceState.rec = null; btn.classList.remove('is-recording'); btn.textContent = '🎤'; };
+      try { rec.start(); btn.classList.add('is-recording'); btn.textContent = '■'; } catch (_) {}
+    });
+
     // Guided-prompt answer inputs → state.promptAnswers
     for (const q of PROMPT_QUESTIONS) {
       const el = document.getElementById('mfa-q-' + q.key);
@@ -1716,6 +2075,8 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
   render();
   wire();
   initVoice();
+  // Restore prompt mode + render chat thread if user was in chat mode.
+  setPromptMode(state.promptMode || 'static');
   goToStep(0);
   // If someone opened this page with ?node=X (a shared library URL,
   // or a redirect from the desktop tool that carried its params over),
