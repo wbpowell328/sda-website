@@ -381,6 +381,139 @@ router.get('/admin/import-public-examples-ui', dbRoute(async (req, res) => {
 </body></html>`);
 }));
 
+// GET /admin/stats-ui?p=<ADMIN_PASSWORD>
+// Read-only aggregate stats about tool adoption — how many folders (nodes)
+// people have created, how many framings live in them, and how many
+// distinct creator-IP hashes we've seen. No user data is exposed; only
+// counts. Gated by ADMIN_PASSWORD.
+router.get('/admin/stats-ui', dbRoute(async (req, res) => {
+  const provided = String(req.query.p || '');
+  if (!process.env.ADMIN_PASSWORD || provided !== process.env.ADMIN_PASSWORD) {
+    return res.status(401).type('text/plain').send('Admin password required.');
+  }
+
+  // Exclude the two seed nodes (root + Public users container) — Warren
+  // is asking about user-created folders, not the seed structure.
+  const excludeSeed = 'is_root = false AND is_public_users = false';
+
+  const totals = (await query(
+    `SELECT
+       (SELECT COUNT(*) FROM nodes WHERE ${excludeSeed}) AS folders_total,
+       (SELECT COUNT(*) FROM nodes
+         WHERE ${excludeSeed} AND first_write_at IS NOT NULL)   AS folders_used,
+       (SELECT COUNT(DISTINCT created_ip_hash) FROM nodes
+         WHERE ${excludeSeed} AND created_ip_hash IS NOT NULL)  AS unique_creator_ips,
+       (SELECT COUNT(*) FROM framings)                          AS framings_total,
+       (SELECT COUNT(*) FROM nodes
+         WHERE ${excludeSeed} AND created_at > NOW() - INTERVAL '7 days')  AS folders_7d,
+       (SELECT COUNT(*) FROM nodes
+         WHERE ${excludeSeed} AND created_at > NOW() - INTERVAL '30 days') AS folders_30d,
+       (SELECT COUNT(*) FROM framings
+         WHERE created_at > NOW() - INTERVAL '7 days')                     AS framings_7d,
+       (SELECT COUNT(*) FROM framings
+         WHERE created_at > NOW() - INTERVAL '30 days')                    AS framings_30d,
+       (SELECT COUNT(DISTINCT n.created_ip_hash) FROM nodes n
+         WHERE ${excludeSeed.replace(/is_(root|public_users)/g, 'n.is_$1')}
+           AND n.created_ip_hash IS NOT NULL
+           AND n.created_at > NOW() - INTERVAL '7 days')  AS unique_ips_7d`
+  )).rows[0];
+
+  // Per-day node creation for the last 30 days.
+  const perDay = (await query(
+    `SELECT DATE_TRUNC('day', created_at) AS day, COUNT(*) AS n
+       FROM nodes
+      WHERE ${excludeSeed} AND created_at > NOW() - INTERVAL '30 days'
+      GROUP BY 1 ORDER BY 1 DESC`
+  )).rows;
+
+  // Framing-count distribution — how many folders have N framings inside.
+  const dist = (await query(
+    `SELECT bucket, COUNT(*) AS n FROM (
+       SELECT n.id,
+              CASE
+                WHEN c.cnt = 0    THEN '0'
+                WHEN c.cnt = 1    THEN '1'
+                WHEN c.cnt <= 3   THEN '2-3'
+                WHEN c.cnt <= 10  THEN '4-10'
+                ELSE '11+'
+              END AS bucket
+         FROM nodes n
+         LEFT JOIN (
+           SELECT node_id, COUNT(*) AS cnt FROM framings GROUP BY node_id
+         ) c ON c.node_id = n.id
+        WHERE ${excludeSeed}
+     ) s GROUP BY bucket
+       ORDER BY CASE bucket
+         WHEN '0' THEN 0 WHEN '1' THEN 1 WHEN '2-3' THEN 2
+         WHEN '4-10' THEN 3 WHEN '11+' THEN 4 END`
+  )).rows;
+
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+  const perDayRows = perDay.map(r =>
+    `<tr><td>${esc(new Date(r.day).toISOString().slice(0, 10))}</td>` +
+    `<td style="text-align:right">${esc(r.n)}</td></tr>`
+  ).join('\n');
+  const distRows = dist.map(r =>
+    `<tr><td>${esc(r.bucket)} framings</td>` +
+    `<td style="text-align:right">${esc(r.n)} folder${r.n === '1' ? '' : 's'}</td></tr>`
+  ).join('\n');
+
+  res.type('text/html').send(`<!doctype html>
+<html><head><meta charset="utf-8"><title>Framing tool — usage stats</title>
+<style>
+  body { font: 14px/1.5 system-ui, -apple-system, Segoe UI, sans-serif; max-width: 900px; margin: 24px auto; padding: 0 16px; color: #333; }
+  h1 { color: #8a3a1a; }
+  h2 { color: #5a3e1f; margin-top: 32px; border-bottom: 1px solid #e6d8bf; padding-bottom: 4px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-top: 12px; }
+  .card { background: #faf5e6; border: 1px solid #d6c4a3; border-radius: 6px; padding: 12px 14px; }
+  .card .label { color: #7a6a4a; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.03em; }
+  .card .value { color: #3a2d18; font-size: 1.8rem; font-weight: 700; line-height: 1.1; margin-top: 4px; }
+  .card .sub { color: #7a6a4a; font-size: 0.82rem; margin-top: 2px; }
+  table { border-collapse: collapse; margin-top: 12px; }
+  th, td { padding: 4px 12px; border-bottom: 1px solid #e6d8bf; }
+  th { text-align: left; color: #5a3e1f; }
+  .note { color: #7a6a4a; font-size: 0.85rem; margin-top: 8px; }
+</style>
+</head><body>
+<h1>Framing tool — usage stats</h1>
+<p class="note">Excludes seed nodes (root + "Public users" container). "Folders" = user-created libraries. Unique-user counts use a hashed IP as a coarse proxy.</p>
+
+<h2>Totals</h2>
+<div class="cards">
+  <div class="card"><div class="label">Folders created</div><div class="value">${esc(totals.folders_total)}</div><div class="sub">${esc(totals.folders_used)} have been written to</div></div>
+  <div class="card"><div class="label">Unique creator IPs</div><div class="value">${esc(totals.unique_creator_ips)}</div><div class="sub">distinct people (approx.)</div></div>
+  <div class="card"><div class="label">Framings saved</div><div class="value">${esc(totals.framings_total)}</div><div class="sub">across all folders</div></div>
+</div>
+
+<h2>Last 7 days</h2>
+<div class="cards">
+  <div class="card"><div class="label">New folders</div><div class="value">${esc(totals.folders_7d)}</div></div>
+  <div class="card"><div class="label">New framings</div><div class="value">${esc(totals.framings_7d)}</div></div>
+  <div class="card"><div class="label">Unique new creators</div><div class="value">${esc(totals.unique_ips_7d)}</div></div>
+</div>
+
+<h2>Last 30 days</h2>
+<div class="cards">
+  <div class="card"><div class="label">New folders</div><div class="value">${esc(totals.folders_30d)}</div></div>
+  <div class="card"><div class="label">New framings</div><div class="value">${esc(totals.framings_30d)}</div></div>
+</div>
+
+<h2>Folders by framing count</h2>
+<table>
+  <thead><tr><th>Bucket</th><th style="text-align:right">Folders</th></tr></thead>
+  <tbody>${distRows || '<tr><td colspan="2" class="note">No folders yet.</td></tr>'}</tbody>
+</table>
+
+<h2>Folder creation — last 30 days</h2>
+<table>
+  <thead><tr><th>Day (UTC)</th><th style="text-align:right">New folders</th></tr></thead>
+  <tbody>${perDayRows || '<tr><td colspan="2" class="note">No folders in the last 30 days.</td></tr>'}</tbody>
+</table>
+</body></html>`);
+}));
+
 // ---- routes --------------------------------------------------------------
 
 // POST /nodes  — first-save auto-create under Public users
