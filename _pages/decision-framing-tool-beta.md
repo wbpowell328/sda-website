@@ -665,6 +665,11 @@ noindex: true
               title="Constrain the AI to generate uncertainties from specific categories (from the 12-category taxonomy at modeling-uncertainty/#categories). Click for the picker.">Types…</button>
     </div>
     <textarea id="fp-uncertainties-input" spellcheck="true" placeholder="Demand volatility&#10;Supplier reliability&#10;Currency fluctuation&#10;Regulatory change"></textarea>
+    <div class="fp-decision-attrs-header">
+      <span>Attributes</span>
+      <span class="fp-muted">(gen)/(disc)/(num) · (stat)/(dyn) · <em>for:</em> tag when generated under a drill-in</span>
+    </div>
+    <div id="fp-uncertainty-attrs" class="fp-decision-attrs"></div>
   </div>
   <div class="fp-panel fp-matrix-panel">
     <h3>Uncertainty impact matrix</h3>
@@ -4116,8 +4121,9 @@ noindex: true
     const frame = frameFor(kind);
     const metrics = orderedMetrics();
     const rows = frame[cfg.listKey];
-    // Attributes panel mirrors decisions regardless of matrix state.
-    if (kind === 'decision') renderDecisionAttrs();
+    // Attributes panel mirrors the list regardless of matrix state.
+    if (kind === 'decision')    renderDecisionAttrs();
+    if (kind === 'uncertainty') renderUncertaintyAttrs();
     if (metrics.length === 0 && rows.length === 0) {
       wrap.innerHTML = '<p class="fp-matrix-empty">' +
         'Add metrics (and drag them into pyramid tiers) above, and list ' +
@@ -4178,59 +4184,9 @@ noindex: true
       const nameTd = document.createElement('td');
       nameTd.className = 'fp-matrix-decision';
       appendTextWithSlashBreaks(nameTd, name);
-      // Uncertainty chips: (gen)/(disc)/(num) kind + (stat)/(dyn) timing
-      // + optional "for: X" scope chip when generated under a drill-in.
-      if (kind === 'uncertainty') {
-        // Kind chip (parallel to decisions).
-        const ukMap = state.uncertaintyKinds || {};
-        const uk = (ukMap[name] === 'disc' || ukMap[name] === 'num') ? ukMap[name] : 'gen';
-        const kchip = document.createElement('button');
-        kchip.type = 'button';
-        kchip.className = 'fp-decision-kind-chip fp-decision-kind-' + uk;
-        kchip.textContent = '(' + uk + ')';
-        const ukTitles = {
-          gen:  'General uncertainty — a broad category ("Weather", "Interest rates"). Click to switch to (disc).',
-          disc: 'Discrete uncertainty — a specific realization from a discrete set ("Recession scenario", "Fed rate = 5.25%"). Click to switch to (num).',
-          num:  'Numeric uncertainty — a random variable with a distribution ("Demand ~ Normal(100, 15)"). Click to switch to (gen).',
-        };
-        kchip.title = ukTitles[uk];
-        kchip.addEventListener('click', (e) => {
-          e.stopPropagation();
-          toggleUncertaintyKind(name);
-        });
-        nameTd.appendChild(document.createTextNode(' '));
-        nameTd.appendChild(kchip);
-        // Timing chip (stat/dyn).
-        const utMap = state.uncertaintyTimings || {};
-        const ut = utMap[name] === 'stat' ? 'stat' : 'dyn';
-        const tchip = document.createElement('button');
-        tchip.type = 'button';
-        tchip.className = 'fp-timing-chip fp-timing-' + ut;
-        tchip.textContent = '(' + ut + ')';
-        tchip.title = ut === 'stat'
-          ? 'Static — a fixed but uncertain parameter, drawn once at t=0 from a distribution (unknown model parameter, one-time draw). Click to switch to (dyn).'
-          : 'Dynamic — arrives / evolves per period (demand, weather, prices over time). Click to switch to (stat).';
-        tchip.addEventListener('click', (e) => {
-          e.stopPropagation();
-          toggleTiming(state, 'uncertaintyTimings', name);
-          renderImpactMatrix('uncertainty');
-        });
-        nameTd.appendChild(document.createTextNode(' '));
-        nameTd.appendChild(tchip);
-        // Scope chip (existing behavior — shown only when generated under
-        // a drill-in).
-        const scopePath = (state.uncertaintyScopes && state.uncertaintyScopes[name]) || null;
-        if (Array.isArray(scopePath) && scopePath.length) {
-          const chip = document.createElement('span');
-          chip.className = 'fp-u-scope-chip';
-          const leaf = scopePath[scopePath.length - 1];
-          chip.textContent = 'for: ' + leaf;
-          chip.title = 'Generated while drilled into: ' + scopePath.join(' → ') +
-            '. This uncertainty is in the root list but was suggested for that sub-decision context.';
-          nameTd.appendChild(document.createTextNode(' '));
-          nameTd.appendChild(chip);
-        }
-      }
+      // Uncertainty chips (kind, timing, and any "for: X" scope tag) now
+      // live in the Attributes list under the Uncertainties textarea, so
+      // the matrix cell stays clean (drag handle + name only).
       // Right-click anywhere on a decision row still drills in — the
       // (gen)/(disc)/(num), (stat)/(dyn) chips and ▸ drill button now
       // live in the Attributes list under the textarea, so the matrix
@@ -4340,6 +4296,86 @@ noindex: true
         drillInto(name);
       });
       row.appendChild(drill);
+
+      wrap.appendChild(row);
+    }
+  }
+
+  // Per-uncertainty attributes list — mirrors renderDecisionAttrs but
+  // for uncertainties. Kind chip + timing chip + optional "for: X"
+  // scope tag (when the uncertainty was generated under a drill-in).
+  // Uncertainties are flat at the root, so no drill button.
+  function renderUncertaintyAttrs() {
+    const wrap = document.getElementById('fp-uncertainty-attrs');
+    if (!wrap) return;
+    const rows = Array.isArray(state.uncertainties) ? state.uncertainties : [];
+    wrap.innerHTML = '';
+    if (rows.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'fp-decision-attrs-empty';
+      empty.textContent = 'Enter uncertainties above — attribute chips (gen/disc/num, stat/dyn) will appear here.';
+      wrap.appendChild(empty);
+      return;
+    }
+    for (const name of rows) {
+      const row = document.createElement('div');
+      row.className = 'fp-decision-attr-row';
+      row.dataset.name = name;
+
+      const nameEl = document.createElement('span');
+      nameEl.className = 'fp-decision-attr-name';
+      nameEl.textContent = name;
+      nameEl.title = name;
+      row.appendChild(nameEl);
+
+      // (gen) / (disc) / (num) kind chip
+      const ukMap = state.uncertaintyKinds || {};
+      const uk = (ukMap[name] === 'disc' || ukMap[name] === 'num') ? ukMap[name] : 'gen';
+      const kchip = document.createElement('button');
+      kchip.type = 'button';
+      kchip.className = 'fp-decision-kind-chip fp-decision-kind-' + uk;
+      kchip.textContent = '(' + uk + ')';
+      const ukTitles = {
+        gen:  'General uncertainty — a broad category ("Weather", "Interest rates"). Click to switch to (disc).',
+        disc: 'Discrete uncertainty — a specific realization from a discrete set ("Recession scenario", "Fed rate = 5.25%"). Click to switch to (num).',
+        num:  'Numeric uncertainty — a random variable with a distribution ("Demand ~ Normal(100, 15)"). Click to switch to (gen).',
+      };
+      kchip.title = ukTitles[uk];
+      kchip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleUncertaintyKind(name);
+      });
+      row.appendChild(kchip);
+
+      // (stat) / (dyn) timing chip
+      const utMap = state.uncertaintyTimings || {};
+      const ut = utMap[name] === 'stat' ? 'stat' : 'dyn';
+      const tchip = document.createElement('button');
+      tchip.type = 'button';
+      tchip.className = 'fp-timing-chip fp-timing-' + ut;
+      tchip.textContent = '(' + ut + ')';
+      tchip.title = ut === 'stat'
+        ? 'Static — a fixed but uncertain parameter, drawn once at t=0 from a distribution (unknown model parameter, one-time draw). Click to switch to (dyn).'
+        : 'Dynamic — arrives / evolves per period (demand, weather, prices over time). Click to switch to (stat).';
+      tchip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleTiming(state, 'uncertaintyTimings', name);
+        renderImpactMatrix('uncertainty');
+      });
+      row.appendChild(tchip);
+
+      // "for: X" scope tag — shown only for uncertainties generated
+      // while drilled into a sub-decision.
+      const scopePath = (state.uncertaintyScopes && state.uncertaintyScopes[name]) || null;
+      if (Array.isArray(scopePath) && scopePath.length) {
+        const chip = document.createElement('span');
+        chip.className = 'fp-u-scope-chip';
+        const leaf = scopePath[scopePath.length - 1];
+        chip.textContent = 'for: ' + leaf;
+        chip.title = 'Generated while drilled into: ' + scopePath.join(' → ') +
+          '. This uncertainty is in the root list but was suggested for that sub-decision context.';
+        row.appendChild(chip);
+      }
 
       wrap.appendChild(row);
     }
