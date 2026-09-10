@@ -405,6 +405,14 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
 .mfa-suggest-row {
   margin-top: 12px;
   display: flex; gap: 6px; flex-wrap: wrap;
+  align-items: center;
+}
+.mfa-suggest-count {
+  width: 90px;
+  padding: 8px 10px; min-height: 40px;
+  border: 1px solid var(--line); border-radius: 6px;
+  background: var(--card); color: var(--ink);
+  font-family: inherit; font-size: 0.9rem;
 }
 .mfa-status {
   margin-top: 10px;
@@ -694,6 +702,7 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
     </div>
     <div class="mfa-suggest-row">
       <button type="button" class="mfa-btn mfa-btn-secondary" id="mfa-metric-suggest">✦ Suggest</button>
+      <input type="number" class="mfa-suggest-count" id="mfa-metric-suggest-count" min="1" max="50" placeholder="how many?" aria-label="How many to suggest" />
     </div>
     <div class="mfa-status" id="mfa-metric-status"></div>
   </section>
@@ -708,6 +717,7 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
     </div>
     <div class="mfa-suggest-row">
       <button type="button" class="mfa-btn mfa-btn-secondary" id="mfa-decision-suggest">✦ Suggest</button>
+      <input type="number" class="mfa-suggest-count" id="mfa-decision-suggest-count" min="1" max="50" placeholder="how many?" aria-label="How many to suggest" />
       <button type="button" class="mfa-btn mfa-btn-secondary" id="mfa-decision-suggest-impact">✦ Score impact</button>
     </div>
     <div class="mfa-status" id="mfa-decision-status"></div>
@@ -723,6 +733,7 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
     </div>
     <div class="mfa-suggest-row">
       <button type="button" class="mfa-btn mfa-btn-secondary" id="mfa-uncert-suggest">✦ Suggest</button>
+      <input type="number" class="mfa-suggest-count" id="mfa-uncert-suggest-count" min="1" max="50" placeholder="how many?" aria-label="How many to suggest" />
     </div>
     <div class="mfa-status" id="mfa-uncert-status"></div>
   </section>
@@ -1499,7 +1510,17 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
       if (state.metrics.length)       form.append('existingMetrics', JSON.stringify(state.metrics));
       if (state.decisions.length)     form.append('existingDecisions', JSON.stringify(state.decisions));
       if (state.uncertainties.length) form.append('existingUncertainties', JSON.stringify(state.uncertainties));
-      form.append('size', 'small');
+      // Default size bumps from 'small' (3) to 'medium' (5); a user
+      // "how many?" input beside the ✦ Suggest button overrides via
+      // countOverride (1–50). Empty input = size-based default.
+      form.append('size', 'medium');
+      const countSel = kind === 'metric'      ? '#mfa-metric-suggest-count'
+                    : kind === 'decision'     ? '#mfa-decision-suggest-count'
+                    :                            '#mfa-uncert-suggest-count';
+      const rawCount = parseInt(($(countSel) || {}).value || '', 10);
+      if (Number.isFinite(rawCount) && rawCount >= 1 && rawCount <= 50) {
+        form.append('countOverride', String(rawCount));
+      }
       const resp = await fetch(CHATBOT_BASE + '/framing/ideas', { method: 'POST', body: form });
       const data = await resp.json();
       if (!resp.ok) throw new Error(data.error || 'Request failed');
