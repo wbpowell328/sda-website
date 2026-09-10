@@ -182,14 +182,38 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
 .mfa-tier[data-tier="M"] { background: #c9621e; }
 .mfa-tier[data-tier="L"] { background: #d6a06b; color: var(--ink); }
 .mfa-tier[data-tier=""], .mfa-tier[data-tier="N"] { background: #e8e0d0; color: var(--muted); }
-.mfa-arrow-btn, .mfa-x-btn {
+.mfa-x-btn {
   background: transparent; border: none; color: var(--muted);
   font-size: 1.1rem; padding: 6px 8px; cursor: pointer;
   min-width: 36px; min-height: 36px;
   display: inline-flex; align-items: center; justify-content: center;
 }
-.mfa-arrow-btn:hover, .mfa-x-btn:hover { color: var(--accent); }
 .mfa-x-btn:hover { color: #c92525; }
+/* Drag handle — sits on the LEFT of each item, matches desktop convention. */
+.mfa-grip {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 32px; min-height: 44px;
+  margin: -4px 4px -4px -8px;   /* pull into the padding so touch target is generous */
+  color: var(--tan-deep);
+  font-size: 1.2rem;
+  cursor: grab;
+  touch-action: none;           /* let Sortable own the pointer */
+  user-select: none;
+  -webkit-user-select: none;
+}
+.mfa-grip:active { cursor: grabbing; color: var(--accent); }
+/* SortableJS classes — visual feedback while dragging. */
+.mfa-sortable-ghost {
+  opacity: 0.35;
+  background: var(--tan);
+}
+.mfa-sortable-chosen {
+  background: #faf0d5;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+.mfa-sortable-drag {
+  cursor: grabbing;
+}
 
 .mfa-item-expand {
   border: none; background: transparent;
@@ -722,6 +746,8 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
       const m = state.metrics[i];
       const li = document.createElement('li');
       li.className = 'mfa-item';
+      li.dataset.name = m;
+      li.appendChild(makeGrip());
       const name = document.createElement('div');
       name.className = 'mfa-item-name';
       name.textContent = m;
@@ -742,8 +768,6 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
         autoSave(); renderMetrics();
       });
       li.appendChild(tierBtn);
-      li.appendChild(makeArrow('↑', () => moveItem(state.metrics, i, -1, renderMetrics)));
-      li.appendChild(makeArrow('↓', () => moveItem(state.metrics, i, +1, renderMetrics)));
       li.appendChild(makeX(() => {
         state.metrics.splice(i, 1);
         delete state.assignments[m];
@@ -753,6 +777,7 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
       }));
       ul.appendChild(li);
     }
+    initSortable(ul, state.metrics, renderMetrics);
   }
   // Populate the mini pyramid at the top of the Metrics step with metric
   // chips stacked into their tier bands. Chips are non-interactive here —
@@ -800,11 +825,22 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
     const ul = $(isD ? '#mfa-decisions-list' : '#mfa-uncerts-list');
     const items = isD ? state.decisions : state.uncertainties;
     const matrix = isD ? state.matrix : state.uMatrix;
+    const rerender = isD ? renderDecisions : renderUncertainties;
     ul.innerHTML = '';
     for (let i = 0; i < items.length; i++) {
       const name = items[i];
-      const li = document.createElement('li');
+      // Container groups the row + its score drawer so Sortable moves them
+      // together (Sortable reorders direct children of the list only).
+      const group = document.createElement('li');
+      group.className = 'mfa-item-group';
+      group.style.listStyle = 'none';
+      group.style.padding = 0;
+      group.style.margin = 0;
+      group.dataset.name = name;
+
+      const li = document.createElement('div');
       li.className = 'mfa-item';
+      li.appendChild(makeGrip());
       const nameEl = document.createElement('div');
       nameEl.className = 'mfa-item-name';
       nameEl.textContent = name;
@@ -823,18 +859,16 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
         drawer.hidden = open;
       });
       li.appendChild(expand);
-      li.appendChild(makeArrow('↑', () => moveItem(items, i, -1, isD ? renderDecisions : renderUncertainties)));
-      li.appendChild(makeArrow('↓', () => moveItem(items, i, +1, isD ? renderDecisions : renderUncertainties)));
       li.appendChild(makeX(() => {
         items.splice(i, 1);
         delete matrix[name];
-        autoSave(); (isD ? renderDecisions : renderUncertainties)();
+        autoSave(); rerender();
       }));
-      const wrap = document.createDocumentFragment();
-      wrap.appendChild(li);
-      wrap.appendChild(drawer);
-      ul.appendChild(wrap);
+      group.appendChild(li);
+      group.appendChild(drawer);
+      ul.appendChild(group);
     }
+    initSortable(ul, items, rerender);
   }
   function buildScoreDrawer(kind, name, matrix) {
     const drawer = document.createElement('div');
@@ -883,12 +917,43 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
     }
     return drawer;
   }
-  function makeArrow(glyph, onClick) {
-    const b = document.createElement('button');
-    b.type = 'button'; b.className = 'mfa-arrow-btn';
-    b.textContent = glyph;
-    b.addEventListener('click', onClick);
-    return b;
+  function makeGrip() {
+    const g = document.createElement('span');
+    g.className = 'mfa-grip';
+    g.setAttribute('aria-label', 'Drag to reorder');
+    g.textContent = '☰';
+    return g;
+  }
+  // Wire SortableJS onto a list once its children are rendered. Called
+  // after each render — Sortable's own destroy/reinit handles the churn.
+  // The `dataArray` is mutated in place to match the new order, then
+  // `rerender` is called to redraw. Handle-only: only the ☰ grip element
+  // triggers drag, so tapping anywhere else on the row (tier button,
+  // ▸ expand, × delete) still works normally.
+  function initSortable(listEl, dataArray, rerender) {
+    if (!window.Sortable) {
+      // Library hasn't loaded yet — try again shortly. SortableJS in the
+      // layout head has `defer`, so on very first paint the render can
+      // beat it; a short retry covers that race.
+      setTimeout(() => initSortable(listEl, dataArray, rerender), 200);
+      return;
+    }
+    if (listEl.__mfaSortable) { listEl.__mfaSortable.destroy(); }
+    listEl.__mfaSortable = window.Sortable.create(listEl, {
+      handle: '.mfa-grip',
+      animation: 150,
+      ghostClass: 'mfa-sortable-ghost',
+      chosenClass: 'mfa-sortable-chosen',
+      dragClass: 'mfa-sortable-drag',
+      forceFallback: false,
+      onEnd(evt) {
+        if (evt.oldIndex === evt.newIndex) return;
+        const [moved] = dataArray.splice(evt.oldIndex, 1);
+        dataArray.splice(evt.newIndex, 0, moved);
+        autoSave();
+        rerender();
+      },
+    });
   }
   function makeX(onClick) {
     const b = document.createElement('button');
@@ -897,13 +962,6 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
     b.setAttribute('aria-label', 'Remove');
     b.addEventListener('click', onClick);
     return b;
-  }
-  function moveItem(arr, i, delta, rerender) {
-    const j = i + delta;
-    if (j < 0 || j >= arr.length) return;
-    const [it] = arr.splice(i, 1);
-    arr.splice(j, 0, it);
-    autoSave(); rerender();
   }
 
   function renderReview() {

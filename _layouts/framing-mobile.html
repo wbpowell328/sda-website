@@ -9,6 +9,11 @@
   <title>{% if page.title %}{{ page.title }}{% else %}Decision Framing{% endif %}</title>
   {% if page.noindex %}<meta name="robots" content="noindex, nofollow">{% endif %}
   <link rel="icon" href="{{ '/assets/images/favicon.png' | relative_url }}">
+  <!-- SortableJS for touch-friendly drag-to-reorder on item lists.
+       ~15 KB min, no dependencies, works cleanly on iOS Safari and
+       Android Chrome via pointer events. Pinned version. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"
+          defer></script>
 
   <!-- Google Analytics 4 — property "CASTLE website", stream "Main website". -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-W5YKX4DTGL"></script>
