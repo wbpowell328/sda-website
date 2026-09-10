@@ -116,28 +116,57 @@ textarea.mfa-input {
 textarea.mfa-input { min-height: 120px; resize: vertical; }
 input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outline-offset: 1px; }
 
-/* ── Voice input row ────────────────────────────────── */
-.mfa-voice-wrap { position: relative; }
-.mfa-voice-btn {
-  position: absolute; right: 10px; bottom: 10px;
-  width: 44px; height: 44px; border-radius: 50%;
-  background: var(--accent); color: #fff;
-  border: none;
-  font-size: 1.4rem;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  display: flex; align-items: center; justify-content: center;
+/* ── Guided-prompt question cards (Step 1) ─────────── */
+.mfa-qcard {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin: 10px 0;
 }
-.mfa-voice-btn:disabled { background: var(--line); cursor: not-allowed; }
-.mfa-voice-btn.is-recording { background: #c92525; animation: mfa-pulse 1.2s ease-in-out infinite; }
+.mfa-qcard-q {
+  display: block;
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 0.98rem;
+  margin: 0 0 6px 0;
+}
+.mfa-qcard-q .mfa-muted {
+  font-weight: 400; color: var(--muted); font-size: 0.85rem;
+}
+.mfa-qcard textarea.mfa-input {
+  min-height: 88px;
+  margin-bottom: 8px;
+}
+/* Prominent Speak button — full-width under each textarea. Turns red +
+   pulses while recording. Reusable across every question card. */
+.mfa-speak-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%;
+  padding: 10px 14px; min-height: 44px;
+  border: 1px solid var(--accent-hover);
+  border-radius: 6px;
+  background: var(--accent); color: #fff;
+  font-family: inherit; font-size: 0.95rem; font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.mfa-speak-btn:hover:not(:disabled) { background: var(--accent-hover); }
+.mfa-speak-btn:disabled { background: var(--line); border-color: var(--line); cursor: not-allowed; }
+.mfa-speak-btn.is-recording {
+  background: #c92525; border-color: #a01a1a;
+  animation: mfa-pulse 1.2s ease-in-out infinite;
+}
+.mfa-speak-btn .mfa-mic-glyph { font-size: 1.2rem; line-height: 1; }
 @keyframes mfa-pulse {
-  0%, 100% { box-shadow: 0 2px 6px rgba(201,37,37,0.4); }
-  50%      { box-shadow: 0 2px 20px rgba(201,37,37,0.9); }
+  0%, 100% { box-shadow: 0 1px 3px rgba(201,37,37,0.4); }
+  50%      { box-shadow: 0 2px 16px rgba(201,37,37,0.75); }
 }
 .mfa-voice-hint {
   font-size: 0.78rem; color: var(--muted);
-  margin: 4px 12px 0 0;
+  margin: 6px 0 0 2px;
 }
+.mfa-voice-hint.is-err { color: #a72020; }
 
 /* ── Buttons ────────────────────────────────────────── */
 .mfa-btn {
@@ -458,21 +487,50 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
 
 <main class="mfa-content" id="mfa-content">
 
-  <!-- ── Step 1: Frame ── -->
+  <!-- ── Step 1: Frame ──────────────────────────────────────────
+       Five guided questions. Each card = question + textarea + a
+       prominent 🎤 Speak button. Answers are structured in
+       state.promptAnswers and derived into a single labelled context
+       blob at every AI call. -->
   <section class="mfa-step" data-step="0" id="mfa-step-frame">
     <h1>Frame the problem</h1>
 
-    <label class="mfa-label" for="mfa-role">Decision maker</label>
-    <input type="text" class="mfa-input" id="mfa-role" placeholder="e.g. Regional sales manager, weekly cycle" autocomplete="off">
-
-    <label class="mfa-label" for="mfa-desc">Problem</label>
-    <div class="mfa-voice-wrap">
-      <textarea class="mfa-input" id="mfa-desc" rows="6" placeholder="What's the decision? Why does it matter? What's uncertain?"></textarea>
-      <button type="button" class="mfa-voice-btn" id="mfa-voice-btn" aria-label="Tap to speak">🎤</button>
+    <div class="mfa-qcard" data-answer-key="decisionMaker">
+      <label class="mfa-qcard-q" for="mfa-q-decisionMaker">Who is making the decision?</label>
+      <textarea class="mfa-input" id="mfa-q-decisionMaker" rows="3" placeholder="Role, team, organization, altitude in the org, planning cadence."></textarea>
+      <button type="button" class="mfa-speak-btn" data-target="mfa-q-decisionMaker" aria-label="Tap to speak"><span class="mfa-mic-glyph">🎤</span>Speak</button>
+      <p class="mfa-voice-hint" data-hint-for="mfa-q-decisionMaker" hidden></p>
     </div>
-    <p class="mfa-voice-hint" id="mfa-voice-hint" hidden></p>
 
-    <label class="mfa-label" for="mfa-url">URL <span class="mfa-muted">(optional)</span></label>
+    <div class="mfa-qcard" data-answer-key="setting">
+      <label class="mfa-qcard-q" for="mfa-q-setting">What is the problem setting? <span class="mfa-muted">(business, manufacturing, medical, finance…)</span></label>
+      <textarea class="mfa-input" id="mfa-q-setting" rows="3" placeholder="Industry, environment, market, what's happening around this decision."></textarea>
+      <button type="button" class="mfa-speak-btn" data-target="mfa-q-setting" aria-label="Tap to speak"><span class="mfa-mic-glyph">🎤</span>Speak</button>
+      <p class="mfa-voice-hint" data-hint-for="mfa-q-setting" hidden></p>
+    </div>
+
+    <div class="mfa-qcard" data-answer-key="history">
+      <label class="mfa-qcard-q" for="mfa-q-history">Is there relevant history? <span class="mfa-muted">(optional)</span></label>
+      <textarea class="mfa-input" id="mfa-q-history" rows="3" placeholder="Prior attempts, incidents, patterns, constraints inherited from the past."></textarea>
+      <button type="button" class="mfa-speak-btn" data-target="mfa-q-history" aria-label="Tap to speak"><span class="mfa-mic-glyph">🎤</span>Speak</button>
+      <p class="mfa-voice-hint" data-hint-for="mfa-q-history" hidden></p>
+    </div>
+
+    <div class="mfa-qcard" data-answer-key="goals">
+      <label class="mfa-qcard-q" for="mfa-q-goals">What are you trying to achieve?</label>
+      <textarea class="mfa-input" id="mfa-q-goals" rows="3" placeholder="Overall objectives — describe success in your own words."></textarea>
+      <button type="button" class="mfa-speak-btn" data-target="mfa-q-goals" aria-label="Tap to speak"><span class="mfa-mic-glyph">🎤</span>Speak</button>
+      <p class="mfa-voice-hint" data-hint-for="mfa-q-goals" hidden></p>
+    </div>
+
+    <div class="mfa-qcard" data-answer-key="other">
+      <label class="mfa-qcard-q" for="mfa-q-other">Any other information that might be relevant? <span class="mfa-muted">(optional)</span></label>
+      <textarea class="mfa-input" id="mfa-q-other" rows="3" placeholder="Specific metrics you care about, stakeholders, constraints, anything else on your mind."></textarea>
+      <button type="button" class="mfa-speak-btn" data-target="mfa-q-other" aria-label="Tap to speak"><span class="mfa-mic-glyph">🎤</span>Speak</button>
+      <p class="mfa-voice-hint" data-hint-for="mfa-q-other" hidden></p>
+    </div>
+
+    <label class="mfa-label" for="mfa-url">URL <span class="mfa-muted">(optional — a case, article, or brief)</span></label>
     <input type="url" class="mfa-input" id="mfa-url" placeholder="https://..." autocomplete="off">
   </section>
 
@@ -655,6 +713,15 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
   let currentFramingId = null;      // set once first save happens; used for in-place PUT
   let recognition = null;           // Web Speech API instance (lazy)
 
+  // Guided-prompt question keys, in display order. Also drives the
+  // labelled description blob sent to every AI call.
+  const PROMPT_QUESTIONS = [
+    { key: 'decisionMaker', label: 'DECISION MAKER',   heading: 'Who is making the decision?' },
+    { key: 'setting',       label: 'PROBLEM SETTING',  heading: 'What is the problem setting?' },
+    { key: 'history',       label: 'RELEVANT HISTORY', heading: 'Is there relevant history?' },
+    { key: 'goals',         label: 'GOALS',            heading: 'What are you trying to achieve?' },
+    { key: 'other',         label: 'OTHER',            heading: 'Any other information that might be relevant?' },
+  ];
   function defaultState() {
     return {
       title: '',
@@ -663,6 +730,9 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
       problemDescription: '',
       problemUrl: '',
       problemNotes: '',
+      promptAnswers: {
+        decisionMaker: '', setting: '', history: '', goals: '', other: '',
+      },
       metrics: [],
       assignments: {},             // metric -> 'H'|'M'|'L'
       decisions: [],
@@ -670,6 +740,38 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
       uncertainties: [],
       uMatrix: {},                 // same shape for uncertainties
     };
+  }
+  // Backward-compat: any state loaded from server / older localStorage
+  // may not have promptAnswers. Hydrate from legacy scope + description
+  // so returning users don't lose their prior text.
+  function hydratePromptAnswers() {
+    if (!state.promptAnswers) state.promptAnswers = { decisionMaker: '', setting: '', history: '', goals: '', other: '' };
+    for (const q of PROMPT_QUESTIONS) {
+      if (typeof state.promptAnswers[q.key] !== 'string') state.promptAnswers[q.key] = '';
+    }
+    // If EVERY answer is empty but legacy fields have content, seed the
+    // first / last cards so the user sees their prior text and can edit.
+    const anyAnswered = PROMPT_QUESTIONS.some(q => state.promptAnswers[q.key].trim());
+    if (!anyAnswered) {
+      if (state.scope && state.scope.trim()) state.promptAnswers.decisionMaker = state.scope.trim();
+      if (state.description && state.description.trim()) state.promptAnswers.other = state.description.trim();
+    }
+  }
+  // Build the labelled description blob sent to /framing/ideas. Skips
+  // empty sections. Also keeps state.scope / state.description in sync
+  // with the first / last answers for backward compat.
+  function buildDerivedContext() {
+    const parts = [];
+    for (const q of PROMPT_QUESTIONS) {
+      const val = (state.promptAnswers[q.key] || '').trim();
+      if (val) parts.push(q.label + ': ' + val);
+    }
+    const blob = parts.join('\n\n');
+    // Sync legacy fields — anything that reads state.scope /
+    // state.description still gets something sensible.
+    state.scope       = (state.promptAnswers.decisionMaker || '').trim();
+    state.description = blob;
+    return blob;
   }
 
   const $  = (sel) => document.querySelector(sel);
@@ -720,12 +822,16 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
     return data;
   }
   function snapshotForSave() {
+    // Keep the derived context fresh before serializing so the saved
+    // state.scope / state.description reflect the latest promptAnswers.
+    buildDerivedContext();
     return {
       title: state.title,
       scope: state.scope,
       description: state.description,
       problemDescription: state.problemDescription,
       problemUrl: state.problemUrl,
+      promptAnswers: state.promptAnswers,
       metrics: state.metrics,
       assignments: state.assignments,
       decisions: state.decisions,
@@ -767,9 +873,12 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
 
   // ── Render ────────────────────────────────────────
   function render() {
-    $('#mfa-role').value = state.scope || '';
-    $('#mfa-desc').value = state.description || '';
-    $('#mfa-url').value  = state.problemUrl || '';
+    hydratePromptAnswers();
+    for (const q of PROMPT_QUESTIONS) {
+      const el = document.getElementById('mfa-q-' + q.key);
+      if (el) el.value = state.promptAnswers[q.key] || '';
+    }
+    $('#mfa-url').value = state.problemUrl || '';
     renderMetrics();
     renderDecisions();
     renderUncertainties();
@@ -1035,21 +1144,20 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
 
   function renderReview() {
     const scopeEl = $('#mfa-review-scope');
-    if (state.scope || state.description) {
+    hydratePromptAnswers();
+    const filled = PROMPT_QUESTIONS.filter(q => (state.promptAnswers[q.key] || '').trim());
+    if (filled.length) {
       scopeEl.className = '';
       scopeEl.innerHTML = '';
-      if (state.scope) {
-        const p1 = document.createElement('p');
-        p1.style.margin = '0 0 6px';
-        p1.style.fontWeight = '600';
-        p1.textContent = state.scope;
-        scopeEl.appendChild(p1);
-      }
-      if (state.description) {
-        const p2 = document.createElement('p');
-        p2.style.margin = '0'; p2.style.color = 'var(--ink-soft)';
-        p2.textContent = state.description;
-        scopeEl.appendChild(p2);
+      for (const q of filled) {
+        const h = document.createElement('p');
+        h.style.margin = '0 0 2px'; h.style.fontWeight = '600'; h.style.fontSize = '0.88rem';
+        h.textContent = q.heading;
+        scopeEl.appendChild(h);
+        const p = document.createElement('p');
+        p.style.margin = '0 0 10px'; p.style.color = 'var(--ink-soft)';
+        p.textContent = state.promptAnswers[q.key];
+        scopeEl.appendChild(p);
       }
     } else {
       scopeEl.className = 'mfa-review-empty';
@@ -1101,67 +1209,114 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
   }
 
   // ── Voice input (Web Speech API) ──────────────────
+  // ONE SpeechRecognition instance shared across every 🎤 button on the
+  // page. Tapping any button stops any active recording and starts a
+  // fresh one bound to the tapped textarea. Handles graceful fallback
+  // when the browser has no Web Speech API (older iOS, Firefox).
+  let voiceState = {
+    R: null,           // Speech recognition constructor
+    rec: null,         // active recognition instance
+    targetEl: null,    // textarea being dictated into
+    btnEl: null,       // Speak button showing recording state
+    baseText: '',      // text in the textarea when recording started
+  };
   function initVoice() {
-    const R = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const btn = $('#mfa-voice-btn');
-    const hint = $('#mfa-voice-hint');
-    function showHint(msg) { hint.textContent = msg; hint.hidden = !msg; }
-    if (!R) {
-      btn.style.display = 'none';
-      // Silent fallback — the keyboard's own mic covers this case.
+    voiceState.R = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const buttons = document.querySelectorAll('.mfa-speak-btn');
+    if (!voiceState.R) {
+      // Silent fallback — hide every 🎤 button; the keyboard's own mic
+      // covers this case, and there's nothing useful to say inline.
+      buttons.forEach(b => { b.style.display = 'none'; });
       return;
     }
-    let baseText = '';
-    let listening = false;
-    recognition = new R();
-    recognition.lang = navigator.language || 'en-US';
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    recognition.onresult = (e) => {
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => onSpeakClick(btn));
+    });
+  }
+  function speakBtnLabel(recording) {
+    return (recording
+      ? '<span class="mfa-mic-glyph">■</span>Stop'
+      : '<span class="mfa-mic-glyph">🎤</span>Speak');
+  }
+  function stopVoice() {
+    if (voiceState.rec) { try { voiceState.rec.stop(); } catch (_) {} }
+  }
+  function resetVoiceBtn() {
+    if (voiceState.btnEl) {
+      voiceState.btnEl.classList.remove('is-recording');
+      voiceState.btnEl.innerHTML = speakBtnLabel(false);
+    }
+  }
+  function setHintFor(targetId, msg, isErr) {
+    const hint = document.querySelector('.mfa-voice-hint[data-hint-for="' + targetId + '"]');
+    if (!hint) return;
+    hint.textContent = msg || '';
+    hint.hidden = !msg;
+    hint.classList.toggle('is-err', !!isErr);
+  }
+  function onSpeakClick(btn) {
+    // If we're already recording this same button, stop.
+    if (voiceState.btnEl === btn && voiceState.rec) {
+      stopVoice();
+      return;
+    }
+    // If we're recording a different button, stop that first before
+    // starting fresh on this one.
+    if (voiceState.rec) stopVoice();
+    resetVoiceBtn();
+    const targetId = btn.dataset.target;
+    const targetEl = document.getElementById(targetId);
+    if (!targetEl) return;
+    const rec = new voiceState.R();
+    rec.lang = navigator.language || 'en-US';
+    rec.continuous = true;
+    rec.interimResults = true;
+    voiceState.rec = rec;
+    voiceState.btnEl = btn;
+    voiceState.targetEl = targetEl;
+    voiceState.baseText = targetEl.value || '';
+    rec.onresult = (e) => {
       let final = '', interim = '';
       for (let i = e.resultIndex; i < e.results.length; i++) {
         const r = e.results[i];
         if (r.isFinal) final += r[0].transcript;
         else interim += r[0].transcript;
       }
-      const sep = baseText && !/[\s]$/.test(baseText) ? ' ' : '';
-      $('#mfa-desc').value = baseText + sep + final + interim;
-      state.description = $('#mfa-desc').value;
-      autoSave();
+      const sep = voiceState.baseText && !/[\s]$/.test(voiceState.baseText) ? ' ' : '';
+      targetEl.value = voiceState.baseText + sep + final + interim;
+      // Fire input event so the change lands in state via the normal wiring.
+      targetEl.dispatchEvent(new Event('input', { bubbles: true }));
     };
-    recognition.onend = () => {
-      listening = false;
-      btn.classList.remove('is-recording');
-      btn.textContent = '🎤';
-      showHint('');
+    rec.onend = () => {
+      voiceState.rec = null;
+      resetVoiceBtn();
+      setHintFor(targetId, '');
     };
-    recognition.onerror = (e) => {
-      listening = false;
-      btn.classList.remove('is-recording');
-      btn.textContent = '🎤';
-      showHint('Voice: ' + (e.error || 'unknown') + '. Type instead.');
+    rec.onerror = (e) => {
+      voiceState.rec = null;
+      resetVoiceBtn();
+      setHintFor(targetId, 'Voice: ' + (e.error || 'unknown') + '. Type instead.', true);
     };
-    btn.addEventListener('click', () => {
-      if (listening) { recognition.stop(); return; }
-      baseText = $('#mfa-desc').value || '';
-      try {
-        recognition.start();
-        listening = true;
-        btn.classList.add('is-recording');
-        btn.textContent = '■';
-        showHint('Listening…');
-      } catch (err) {
-        showHint('Voice failed: ' + (err.message || err));
-      }
-    });
+    try {
+      rec.start();
+      btn.classList.add('is-recording');
+      btn.innerHTML = speakBtnLabel(true);
+      setHintFor(targetId, 'Listening…');
+    } catch (err) {
+      voiceState.rec = null;
+      resetVoiceBtn();
+      setHintFor(targetId, 'Voice failed: ' + (err.message || err), true);
+    }
   }
 
   // ── AI Suggest ────────────────────────────────────
   async function runSuggest(kind, statusSel) {
     const status = $(statusSel);
     status.className = 'mfa-status';
+    // Pull the freshest context from the 5 guided-prompt answers.
+    buildDerivedContext();
     if (!state.scope && !state.description && !state.problemUrl) {
-      status.textContent = 'Add a role or a problem description in Step 1 first.';
+      status.textContent = 'Answer at least one question in Step 1 first — the AI needs context to work with.';
       status.classList.add('is-err');
       return;
     }
@@ -1171,6 +1326,10 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
       return;
     }
     status.textContent = 'Asking Professor Powell… (first call after idle can take ~30 s)';
+    // Rebuild the derived context from the 5 answer cards right before
+    // sending so late edits aren't missed. state.scope / state.description
+    // get refreshed as a side effect.
+    buildDerivedContext();
     try {
       const form = new FormData();
       form.append('kind', kind);     // 'metric' | 'decision' | 'uncertainty'
@@ -1451,9 +1610,18 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
 
   // ── Wire ─────────────────────────────────────────
   function wire() {
-    // Text field → state
-    $('#mfa-role').addEventListener('input', (e) => { state.scope = e.target.value; autoSave(); });
-    $('#mfa-desc').addEventListener('input', (e) => { state.description = e.target.value; autoSave(); });
+    // Guided-prompt answer inputs → state.promptAnswers
+    for (const q of PROMPT_QUESTIONS) {
+      const el = document.getElementById('mfa-q-' + q.key);
+      if (!el) continue;
+      el.addEventListener('input', (e) => {
+        state.promptAnswers[q.key] = e.target.value;
+        // Keep the derived context (scope + description) in sync every
+        // keystroke so any downstream reader sees fresh values.
+        buildDerivedContext();
+        autoSave();
+      });
+    }
     $('#mfa-url').addEventListener('input', (e) => { state.problemUrl = e.target.value; autoSave(); });
 
     // Add-item buttons + Enter
