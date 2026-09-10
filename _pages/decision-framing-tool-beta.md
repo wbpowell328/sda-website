@@ -755,6 +755,50 @@ noindex: true
     </div>
 
     <div class="fp-bot-card fp-modeling-card">
+      <h3 class="fp-modeling-h3">Constraints</h3>
+      <p class="fp-muted" style="margin: 0 0 8px 0;">List problem constraints (capacity, non-negativity, budget, physical limits…). Give each a short name plus its LaTeX form.</p>
+      <div class="fp-metric-eq-row">
+        <label>
+          <span class="fp-metric-eq-lbl">Name</span>
+          <input type="text" id="fp-constraint-name" placeholder="e.g. Capacity" autocomplete="off" />
+        </label>
+      </div>
+      <label class="fp-metric-eq-lbl">Equation <span class="fp-muted">(LaTeX)</span></label>
+      <textarea id="fp-constraint-formula" rows="2" spellcheck="false"
+        placeholder="e.g.  \sum_{d} x_{t,d} \le M"></textarea>
+      <div class="fp-metric-eq-preview" id="fp-constraint-preview">
+        <span class="fp-muted">Preview appears here once you type an equation.</span>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <button type="button" id="fp-constraint-add" class="fp-modal-primary">+ Add constraint</button>
+        <button type="button" id="fp-constraint-clear" class="fp-modal-mini">Clear inputs</button>
+      </div>
+      <ul id="fp-constraint-list" class="fp-metric-eq-list"></ul>
+    </div>
+
+    <div class="fp-bot-card fp-modeling-card">
+      <h3 class="fp-modeling-h3">Transition function</h3>
+      <p class="fp-muted" style="margin: 0 0 8px 0;">How state variables evolve from t to t+1. One entry per state variable (e.g. inventory, cash, position). The left-hand side is usually a "prime"d state at t+1.</p>
+      <div class="fp-metric-eq-row">
+        <label>
+          <span class="fp-metric-eq-lbl">State variable</span>
+          <input type="text" id="fp-transition-name" placeholder="e.g. R_{t+1}" autocomplete="off" />
+        </label>
+      </div>
+      <label class="fp-metric-eq-lbl">Equation <span class="fp-muted">(LaTeX)</span></label>
+      <textarea id="fp-transition-formula" rows="2" spellcheck="false"
+        placeholder="e.g.  R_{t+1} = R_t + x_t - D_{t+1}"></textarea>
+      <div class="fp-metric-eq-preview" id="fp-transition-preview">
+        <span class="fp-muted">Preview appears here once you type an equation.</span>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <button type="button" id="fp-transition-add" class="fp-modal-primary">+ Add transition</button>
+        <button type="button" id="fp-transition-clear" class="fp-modal-mini">Clear inputs</button>
+      </div>
+      <ul id="fp-transition-list" class="fp-metric-eq-list"></ul>
+    </div>
+
+    <div class="fp-bot-card fp-modeling-card">
       <h3 class="fp-modeling-h3">Problem parameters</h3>
       <p class="fp-muted" style="margin: 0 0 8px 0;">Accumulate the parameters that describe the problem — costs, capacities, rates, arrival distributions, whatever the model needs. One per line or freeform notes; formal structure will come as the modeling flow matures.</p>
       <textarea id="fp-problem-parameters" rows="6" spellcheck="true"
@@ -2653,10 +2697,12 @@ noindex: true
   //   matrix       : { decision: { metric: 'H'|'M'|'L'|'N' } } —
   //                  missing = blank (not yet scored).
   let state = {
-    title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', metricLabels: {}, metricEquations: {}, timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
+    title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', metricLabels: {}, metricEquations: {}, constraints: [], transitionEquations: [], timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
     problemParameters: '',
     metricLabels: {},     // metric name → short math label (e.g. "C_{cost}")
     metricEquations: {},  // metric name → LaTeX formula string
+    constraints: [],           // [{name, formula}]
+    transitionEquations: [],   // [{name, formula}]
     promptAnswers: { decisionMaker: '', setting: '', history: '', goals: '', other: '' },
     metrics: [], assignments: {}, chipColors: {},
     decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
@@ -2709,6 +2755,15 @@ noindex: true
     if (pp) pp.value = state.problemParameters || '';
     renderModelingDecisions();
     renderMetricEquationsCard();
+    // Refresh constraint + transition lists too.
+    if (document.getElementById('fp-constraint-list')) {
+      renderNamedEqList('fp-constraint-list', 'constraints',
+                        'fp-constraint-name', 'fp-constraint-formula', 'fp-constraint-preview');
+    }
+    if (document.getElementById('fp-transition-list')) {
+      renderNamedEqList('fp-transition-list', 'transitionEquations',
+                        'fp-transition-name', 'fp-transition-formula', 'fp-transition-preview');
+    }
   }
   // Voice input — shared SpeechRecognition instance across all 🎤
   // buttons. Silent fallback when the browser has no Web Speech API.
@@ -2819,6 +2874,8 @@ noindex: true
       problemParameters:  (s && typeof s.problemParameters === 'string') ? s.problemParameters : '',
       metricLabels:       (s && s.metricLabels    && typeof s.metricLabels    === 'object') ? s.metricLabels    : {},
       metricEquations:    (s && s.metricEquations && typeof s.metricEquations === 'object') ? s.metricEquations : {},
+      constraints:        Array.isArray(s && s.constraints)         ? s.constraints         : [],
+      transitionEquations:Array.isArray(s && s.transitionEquations) ? s.transitionEquations : [],
       promptAnswers:      (s && s.promptAnswers && typeof s.promptAnswers === 'object') ? s.promptAnswers : { decisionMaker: '', setting: '', history: '', goals: '', other: '' },
       metrics:       Array.isArray(s && s.metrics)            ? s.metrics      : [],
       assignments:   (s && s.assignments)                ? s.assignments   : {},
@@ -3238,6 +3295,8 @@ noindex: true
       problemParameters: state.problemParameters,
       metricLabels: state.metricLabels,
       metricEquations: state.metricEquations,
+      constraints: state.constraints,
+      transitionEquations: state.transitionEquations,
       metrics: state.metrics,
       assignments: state.assignments,
       chipColors: state.chipColors,
@@ -4284,20 +4343,76 @@ noindex: true
     renderMetricEquationPreview();
   }
   function renderMetricEquationPreview() {
-    const form = document.getElementById('fp-metric-eq-formula');
-    const preview = document.getElementById('fp-metric-eq-preview');
+    renderEqPreview('fp-metric-eq-formula', 'fp-metric-eq-preview');
+  }
+  // Generic preview helper — reads a formula textarea's value, wraps
+  // it in $$…$$ if not already delimited, dumps into the preview
+  // container, and re-runs MathJax on that container.
+  function renderEqPreview(formulaId, previewId) {
+    const form = document.getElementById(formulaId);
+    const preview = document.getElementById(previewId);
     if (!form || !preview) return;
     const raw = (form.value || '').trim();
     if (!raw) {
       preview.innerHTML = '<span class="fp-muted">Preview appears here once you type an equation.</span>';
       return;
     }
-    // Wrap in $$ if not already delimited, so MathJax display-renders it.
     const wrapped = /^\$\$?|^\\\(|^\\\[/.test(raw) ? raw : '$$' + raw + '$$';
     preview.innerHTML = wrapped;
     if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
       window.MathJax.typesetPromise([preview]).catch(() => { /* ignore render errors */ });
     }
+  }
+  // Render the list of named LaTeX entries for a given array
+  // (constraints, transitionEquations, …). Uses the same .fp-metric-eq-list
+  // markup — name + LaTeX + edit / delete buttons.
+  function renderNamedEqList(listId, stateArrayName, nameInputId, formulaInputId, previewId) {
+    const list = document.getElementById(listId);
+    const arr = state[stateArrayName] || [];
+    if (!list) return;
+    list.innerHTML = '';
+    if (!arr.length) {
+      const li = document.createElement('li');
+      li.style.color = '#7a6a55'; li.style.fontStyle = 'italic';
+      li.textContent = 'None yet.';
+      list.appendChild(li);
+      return;
+    }
+    arr.forEach((entry, idx) => {
+      const li = document.createElement('li');
+      const nameEl = document.createElement('span');
+      nameEl.className = 'fp-metric-eq-list-name';
+      nameEl.textContent = entry.name || '(unnamed)';
+      li.appendChild(nameEl);
+      const formEl = document.createElement('span');
+      formEl.className = 'fp-metric-eq-list-formula';
+      formEl.textContent = entry.formula || '';
+      li.appendChild(formEl);
+      const editBtn = document.createElement('button');
+      editBtn.type = 'button'; editBtn.title = 'Edit'; editBtn.textContent = '✎';
+      editBtn.addEventListener('click', () => {
+        document.getElementById(nameInputId).value = entry.name || '';
+        document.getElementById(formulaInputId).value = entry.formula || '';
+        // Remove the entry from the list so the next Add re-inserts the
+        // edited version rather than duplicating.
+        arr.splice(idx, 1);
+        autoSave();
+        renderNamedEqList(listId, stateArrayName, nameInputId, formulaInputId, previewId);
+        renderEqPreview(formulaInputId, previewId);
+        document.getElementById(formulaInputId).focus();
+      });
+      li.appendChild(editBtn);
+      const delBtn = document.createElement('button');
+      delBtn.type = 'button'; delBtn.title = 'Delete'; delBtn.textContent = '×';
+      delBtn.addEventListener('click', () => {
+        if (!confirm('Delete "' + (entry.name || 'unnamed') + '"?')) return;
+        arr.splice(idx, 1);
+        autoSave();
+        renderNamedEqList(listId, stateArrayName, nameInputId, formulaInputId, previewId);
+      });
+      li.appendChild(delBtn);
+      list.appendChild(li);
+    });
   }
 
   // Populate the Modeling section's decision list — every (disc)-kind
@@ -6814,7 +6929,7 @@ noindex: true
       if (raw == null) return;
       const finalTitle = raw.trim() || 'New framing';
       state = {
-        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', metricLabels: {}, metricEquations: {}, timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
+        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', metricLabels: {}, metricEquations: {}, constraints: [], transitionEquations: [], timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
         metrics: [], assignments: {}, chipColors: {},
         decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
         uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
@@ -7383,7 +7498,7 @@ noindex: true
         loadedNode.currentFramingId = null;
         // Blank the workspace since the framing on-screen no longer exists.
         state = {
-          title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', metricLabels: {}, metricEquations: {}, timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
+          title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', metricLabels: {}, metricEquations: {}, constraints: [], transitionEquations: [], timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
           metrics: [], assignments: {}, chipColors: {},
           decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
           uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
@@ -7690,6 +7805,40 @@ noindex: true
         autoSave();
       });
     }
+    // Constraints + Transition function cards — same shape, reuse
+    // renderNamedEqList / renderEqPreview.
+    function wireNamedEqCard(nameId, formId, previewId, addBtnId, clearBtnId, listId, stateArrayName) {
+      const nm  = document.getElementById(nameId);
+      const fm  = document.getElementById(formId);
+      const add = document.getElementById(addBtnId);
+      const clr = document.getElementById(clearBtnId);
+      if (!nm || !fm || !add) return;
+      fm.addEventListener('input', () => renderEqPreview(formId, previewId));
+      add.addEventListener('click', () => {
+        const name = (nm.value || '').trim();
+        const formula = (fm.value || '').trim();
+        if (!name && !formula) return;
+        if (!state[stateArrayName]) state[stateArrayName] = [];
+        state[stateArrayName].push({ name, formula });
+        nm.value = ''; fm.value = '';
+        autoSave();
+        renderNamedEqList(listId, stateArrayName, nameId, formId, previewId);
+        renderEqPreview(formId, previewId);
+        nm.focus();
+      });
+      if (clr) clr.addEventListener('click', () => {
+        nm.value = ''; fm.value = '';
+        renderEqPreview(formId, previewId);
+      });
+      renderNamedEqList(listId, stateArrayName, nameId, formId, previewId);
+    }
+    wireNamedEqCard('fp-constraint-name', 'fp-constraint-formula', 'fp-constraint-preview',
+                    'fp-constraint-add',  'fp-constraint-clear',   'fp-constraint-list',
+                    'constraints');
+    wireNamedEqCard('fp-transition-name', 'fp-transition-formula', 'fp-transition-preview',
+                    'fp-transition-add',  'fp-transition-clear',   'fp-transition-list',
+                    'transitionEquations');
+
     // Performance metric equations card (Modeling section)
     const eqSel  = document.getElementById('fp-metric-eq-select');
     const eqLbl  = document.getElementById('fp-metric-eq-label');
@@ -7754,7 +7903,7 @@ noindex: true
       closeFileMenu();
       if (!confirm('Start a new framing? Anything on screen is discarded (Save to your library first if you want to keep it).')) return;
       state = {
-        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', metricLabels: {}, metricEquations: {}, timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
+        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', metricLabels: {}, metricEquations: {}, constraints: [], transitionEquations: [], timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
         metrics: [], assignments: {}, chipColors: {},
         decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
         uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
@@ -7918,7 +8067,7 @@ noindex: true
     $('#fp-reset').addEventListener('click', () => {
       if (!confirm('Delete every metric, decision, and uncertainty, clear the pyramid and both matrices, and unload the current framing? (Framings saved to your library are not affected.) Cannot be undone.')) return;
       state = {
-        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', metricLabels: {}, metricEquations: {}, timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
+        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', metricLabels: {}, metricEquations: {}, constraints: [], transitionEquations: [], timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
         metrics: [], assignments: {}, chipColors: {},
         decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
         uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
