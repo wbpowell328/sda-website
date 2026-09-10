@@ -611,7 +611,7 @@ noindex: true
               title="Constrain the AI to generate decisions of specific types (from the 10-type taxonomy at decisionsdecisions/#types-of-decision-settings). Click for the picker.">Types…</button>
     </div>
     <div class="fp-decisions-body">
-      <textarea id="fp-decisions-input" spellcheck="true" placeholder="Set the price&#10;Choose a supplier&#10;Approve the design&#10;Schedule production"></textarea>
+      <textarea id="fp-decisions-input" spellcheck="true" wrap="off" placeholder="Set the price&#10;Choose a supplier&#10;Approve the design&#10;Schedule production"></textarea>
       <div class="fp-decision-attrs-side">
         <div class="fp-decision-attrs-header">
           <span>Attributes</span>
@@ -669,7 +669,7 @@ noindex: true
               title="Constrain the AI to generate uncertainties from specific categories (from the 12-category taxonomy at modeling-uncertainty/#categories). Click for the picker.">Types…</button>
     </div>
     <div class="fp-decisions-body">
-      <textarea id="fp-uncertainties-input" spellcheck="true" placeholder="Demand volatility&#10;Supplier reliability&#10;Currency fluctuation&#10;Regulatory change"></textarea>
+      <textarea id="fp-uncertainties-input" spellcheck="true" wrap="off" placeholder="Demand volatility&#10;Supplier reliability&#10;Currency fluctuation&#10;Regulatory change"></textarea>
       <div class="fp-decision-attrs-side">
         <div class="fp-decision-attrs-header">
           <span>Attributes</span>
@@ -2006,17 +2006,22 @@ noindex: true
     color: #7a6a55;
   }
 
-  /* Decisions/Uncertainties textareas reuse the metrics textarea styling. */
+  /* Decisions/Uncertainties textareas — locked line-height so each entry
+     lines up with one attribute row on the right. wrap="off" (HTML attr)
+     keeps long lines on a single line. */
   #fp-decisions-input,
   #fp-uncertainties-input {
-    width: 100%; min-height: 180px;
-    padding: 8px 10px;
+    width: 100%; min-height: 210px;
+    padding: 6px 10px;
     border: 1px solid #c9b891; border-radius: 4px;
     font-family: inherit; font-size: 0.95rem;
+    line-height: 30px;
     resize: vertical;
     box-sizing: border-box;
     background: #fff;
     color: #333;
+    white-space: pre;
+    overflow-x: auto;
   }
 
   /* Impact matrix — table with clickable cells and draggable rows.
@@ -2239,17 +2244,28 @@ noindex: true
   .fp-decision-attrs-header .fp-muted { font-size: 0.78rem; }
   .fp-decision-attrs {
     flex: 1 1 auto;
-    display: flex; flex-direction: column; gap: 4px;
+    display: flex; flex-direction: column; gap: 0;
+    padding: 6px 0 0 0;   /* match textarea's 6px top padding */
     max-height: 480px;
     overflow-y: auto;
+    /* Match textarea's border height so both start at the same y */
+    border-top: 1px solid transparent;
   }
   .fp-decision-attr-row {
     display: flex; align-items: center; gap: 4px;
-    padding: 4px 8px;
+    height: 30px;                 /* exactly one textarea line-height */
+    padding: 0 8px;
     background: #f7efd8;
-    border: 1px solid #e2d4b0;
-    border-radius: 4px;
+    border-bottom: 1px solid #e2d4b0;
     font-size: 0.92rem;
+  }
+  .fp-decision-attr-row:nth-child(even) { background: #f2e6c3; }
+  /* Spacer for blank / in-progress lines in the textarea — one per line,
+     30px tall, so the attribute rows on the right stay line-aligned with
+     the textarea on the left. */
+  .fp-decision-attr-spacer {
+    height: 30px;
+    background: transparent;
   }
   .fp-decision-attr-name {
     flex: 1; min-width: 0;
@@ -4247,24 +4263,40 @@ noindex: true
     wrap.innerHTML = '';
     wrap.appendChild(table);
   }
-  // Per-decision attributes list — one row per decision in the current
-  // frame, carrying the (gen)/(disc)/(num) kind chip, the (stat)/(dyn)
-  // timing chip, and the ▸ drill-in button. Rendered under the Decisions
-  // textarea so the impact-matrix cell can stay uncluttered.
+  // Per-decision attributes list — one row per line in the Decisions
+  // textarea, carrying the (gen)/(disc)/(num) kind chip, the (stat)/(dyn)
+  // timing chip, and the ▸ drill-in button. Blank / in-progress lines
+  // render as spacer rows so the attribute list stays aligned line-for-
+  // line with the textarea on the left.
   function renderDecisionAttrs() {
     const wrap = document.getElementById('fp-decision-attrs');
     if (!wrap) return;
     const frame = frameFor('decision');
-    const rows = Array.isArray(frame.decisions) ? frame.decisions : [];
+    const known = Array.isArray(frame.decisions) ? frame.decisions : [];
+    const knownMap = new Map();  // lower-cased name → canonical name in frame
+    for (const d of known) knownMap.set(d.trim().toLowerCase(), d);
+    const ta = document.getElementById('fp-decisions-input');
+    const raw = ta ? ta.value : known.join('\n');
+    const lines = raw.split('\n');
     wrap.innerHTML = '';
-    if (rows.length === 0) {
+    if (known.length === 0 && raw.trim() === '') {
       const empty = document.createElement('div');
       empty.className = 'fp-decision-attrs-empty';
-      empty.textContent = 'Enter decisions above — attribute chips (gen/disc/num, stat/dyn) and the ▸ drill-in button will appear here.';
+      empty.textContent = 'Enter decisions on the left — attribute chips (gen/disc/num, stat/dyn) and the ▸ drill-in button will appear here on the same row.';
       wrap.appendChild(empty);
       return;
     }
-    for (const name of rows) {
+    for (const line of lines) {
+      const trimmed = line.trim();
+      const canonical = trimmed ? knownMap.get(trimmed.toLowerCase()) : null;
+      if (!canonical) {
+        // Blank or in-progress line — render a spacer so alignment holds
+        const spacer = document.createElement('div');
+        spacer.className = 'fp-decision-attr-spacer';
+        wrap.appendChild(spacer);
+        continue;
+      }
+      const name = canonical;
       const row = document.createElement('div');
       row.className = 'fp-decision-attr-row';
       row.dataset.name = name;
@@ -4339,16 +4371,30 @@ noindex: true
   function renderUncertaintyAttrs() {
     const wrap = document.getElementById('fp-uncertainty-attrs');
     if (!wrap) return;
-    const rows = Array.isArray(state.uncertainties) ? state.uncertainties : [];
+    const known = Array.isArray(state.uncertainties) ? state.uncertainties : [];
+    const knownMap = new Map();
+    for (const u of known) knownMap.set(u.trim().toLowerCase(), u);
+    const ta = document.getElementById('fp-uncertainties-input');
+    const raw = ta ? ta.value : known.join('\n');
+    const lines = raw.split('\n');
     wrap.innerHTML = '';
-    if (rows.length === 0) {
+    if (known.length === 0 && raw.trim() === '') {
       const empty = document.createElement('div');
       empty.className = 'fp-decision-attrs-empty';
-      empty.textContent = 'Enter uncertainties above — attribute chips (gen/disc/num, stat/dyn) will appear here.';
+      empty.textContent = 'Enter uncertainties on the left — attribute chips (gen/disc/num, stat/dyn) will appear here on the same row.';
       wrap.appendChild(empty);
       return;
     }
-    for (const name of rows) {
+    for (const line of lines) {
+      const trimmed = line.trim();
+      const canonical = trimmed ? knownMap.get(trimmed.toLowerCase()) : null;
+      if (!canonical) {
+        const spacer = document.createElement('div');
+        spacer.className = 'fp-decision-attr-spacer';
+        wrap.appendChild(spacer);
+        continue;
+      }
+      const name = canonical;
       const row = document.createElement('div');
       row.className = 'fp-decision-attr-row';
       row.dataset.name = name;
