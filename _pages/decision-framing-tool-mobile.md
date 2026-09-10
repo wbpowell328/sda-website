@@ -248,6 +248,45 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
 }
 .mfa-status.is-err { color: #a72020; }
 
+/* ── Mini metrics pyramid (Metrics step only) ────── */
+.mfa-pyramid {
+  margin: 4px 0 14px;
+  background: linear-gradient(180deg, #faf6ea 0%, #f2ead1 100%);
+  border: 1px solid var(--tan-deep);
+  border-radius: 8px;
+  padding: 10px 8px 8px;
+}
+.mfa-pyramid-tier {
+  margin: 0 auto 4px;
+  min-height: 32px;
+  border-radius: 4px;
+  display: flex; flex-wrap: wrap; gap: 4px;
+  align-items: center; justify-content: center;
+  padding: 4px 8px;
+  font-size: 0.82rem; color: var(--ink);
+  transition: background 200ms;
+}
+.mfa-pyramid-tier[data-tier="H"] { width: 45%;  background: #8a3a1a; color: #fff; }
+.mfa-pyramid-tier[data-tier="M"] { width: 65%;  background: #c9621e; color: #fff; }
+.mfa-pyramid-tier[data-tier="L"] { width: 85%;  background: #d6a06b; color: var(--ink); }
+.mfa-pyramid-tier[data-tier=""]  { width: 100%; background: transparent; border: 1px dashed var(--line); color: var(--muted); margin-top: 6px; }
+.mfa-pyramid-chip {
+  display: inline-block;
+  padding: 2px 8px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 10px;
+  font-weight: 500;
+  max-width: 100%;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.mfa-pyramid-tier[data-tier=""] .mfa-pyramid-chip {
+  background: var(--card); border: 1px solid var(--line); color: var(--ink-soft);
+}
+.mfa-pyramid-empty {
+  color: rgba(255,255,255,0.7); font-style: italic; font-size: 0.78rem;
+}
+.mfa-pyramid-tier[data-tier=""] .mfa-pyramid-empty { color: var(--muted); }
+
 /* ── Suggest modal ────────────────────────────────── */
 .mfa-modal {
   position: fixed; inset: 0;
@@ -389,6 +428,12 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
   <!-- ── Step 2: Metrics ── -->
   <section class="mfa-step" data-step="1" id="mfa-step-metrics">
     <h1>Metrics</h1>
+    <div class="mfa-pyramid" id="mfa-pyramid" aria-label="Metric priority pyramid">
+      <div class="mfa-pyramid-tier" data-tier="H"></div>
+      <div class="mfa-pyramid-tier" data-tier="M"></div>
+      <div class="mfa-pyramid-tier" data-tier="L"></div>
+      <div class="mfa-pyramid-tier" data-tier="" title="Not tiered yet"></div>
+    </div>
     <ul class="mfa-item-list" id="mfa-metrics-list"></ul>
     <div class="mfa-add-row">
       <input type="text" class="mfa-input" id="mfa-metric-new" placeholder="Add a metric" autocomplete="off">
@@ -670,6 +715,7 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
     renderUncertainties();
   }
   function renderMetrics() {
+    renderPyramid();
     const ul = $('#mfa-metrics-list');
     ul.innerHTML = '';
     for (let i = 0; i < state.metrics.length; i++) {
@@ -707,6 +753,45 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
       }));
       ul.appendChild(li);
     }
+  }
+  // Populate the mini pyramid at the top of the Metrics step with metric
+  // chips stacked into their tier bands. Chips are non-interactive here —
+  // the tap-target is the tier button in the list below (matches phone
+  // ergonomics: pyramid is a satisfying visual, list is where you edit).
+  function renderPyramid() {
+    const buckets = { H: [], M: [], L: [], '': [] };
+    for (const m of state.metrics) {
+      const t = state.assignments[m];
+      if (t === 'H' || t === 'M' || t === 'L') buckets[t].push(m);
+      else buckets[''].push(m);
+    }
+    for (const tier of ['H', 'M', 'L', '']) {
+      const band = document.querySelector('.mfa-pyramid-tier[data-tier="' + tier + '"]');
+      if (!band) continue;
+      band.innerHTML = '';
+      const items = buckets[tier];
+      if (!items.length) {
+        const empty = document.createElement('span');
+        empty.className = 'mfa-pyramid-empty';
+        empty.textContent = tier === '' ? 'All tiered ✓' : '—';
+        band.appendChild(empty);
+        continue;
+      }
+      for (const name of items) {
+        const chip = document.createElement('span');
+        chip.className = 'mfa-pyramid-chip';
+        chip.textContent = name;
+        chip.title = name;
+        band.appendChild(chip);
+      }
+    }
+    // Hide the "not tiered" band entirely when nothing sits there — keeps
+    // the visual clean once the user has tiered everything.
+    const unTierBand = document.querySelector('.mfa-pyramid-tier[data-tier=""]');
+    if (unTierBand) unTierBand.style.display = buckets[''].length ? 'flex' : 'none';
+    // Hide the pyramid entirely if there are no metrics at all.
+    const py = $('#mfa-pyramid');
+    if (py) py.style.display = state.metrics.length ? 'block' : 'none';
   }
   function renderDecisions() { renderScoredList('decision'); }
   function renderUncertainties() { renderScoredList('uncertainty'); }
@@ -961,27 +1046,9 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
     status.textContent = 'Asking Professor Powell… (first call after idle can take ~30 s)';
     try {
       const form = new FormData();
-      if (kind === 'metric') {
-        // /framing/ideas doesn't do 'metric' — we use a small custom prompt.
-        // For MVP, reuse the 'decision' endpoint but with a hint. Cleaner
-        // path: add a mobile-specific /framing/metric-ideas server endpoint
-        // later; for now, ask the AI to suggest metrics via decision-ideas
-        // with the description reframed.
-        // Simpler MVP: hit /framing/decision-types-style; but there's no
-        // metric-suggest yet on the server. Use /framing/ideas with a
-        // synthesized 'kind: metric' fallback client-side by asking with
-        // a stronger prompt in the description slot.
-        form.append('kind', 'decision');    // server accepts decision|uncertainty; we'll relabel below
-        form.append('mode', 'gen');
-        const augmented = 'PROPOSE PERFORMANCE METRICS (not decisions) for this problem, ' +
-          'as short 3-5 word noun phrases. Ignore the "decision" instruction — return metrics only.\n\n' +
-          (state.description || '');
-        form.append('description', augmented);
-      } else {
-        form.append('kind', kind);
-        form.append('mode', 'gen');
-        if (state.description) form.append('description', state.description);
-      }
+      form.append('kind', kind);     // 'metric' | 'decision' | 'uncertainty'
+      form.append('mode', 'gen');
+      if (state.description) form.append('description', state.description);
       if (state.scope) form.append('scope', state.scope);
       if (state.problemUrl) form.append('url', state.problemUrl);
       if (state.metrics.length)       form.append('existingMetrics', JSON.stringify(state.metrics));
