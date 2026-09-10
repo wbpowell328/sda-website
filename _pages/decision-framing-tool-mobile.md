@@ -272,6 +272,29 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
 }
 .mfa-status.is-err { color: #a72020; }
 
+/* ── View toggle (Metrics step) ───────────────────── */
+.mfa-view-toggle {
+  display: flex;
+  margin: 0 0 12px 0;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--card);
+}
+.mfa-view-toggle button {
+  flex: 1;
+  padding: 8px 12px; min-height: 40px;
+  background: transparent; border: none;
+  font-size: 0.9rem; color: var(--muted);
+  cursor: pointer;
+  font-family: inherit;
+}
+.mfa-view-toggle button.is-active {
+  background: var(--accent); color: #fff; font-weight: 600;
+}
+.mfa-view { display: none; }
+.mfa-view.is-active { display: block; }
+
 /* ── Mini metrics pyramid (Metrics step only) ────── */
 .mfa-pyramid {
   margin: 4px 0 14px;
@@ -456,13 +479,21 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
   <!-- ── Step 2: Metrics ── -->
   <section class="mfa-step" data-step="1" id="mfa-step-metrics">
     <h1>Metrics</h1>
-    <div class="mfa-pyramid" id="mfa-pyramid" aria-label="Metric priority pyramid">
-      <div class="mfa-pyramid-tier" data-tier="H"></div>
-      <div class="mfa-pyramid-tier" data-tier="M"></div>
-      <div class="mfa-pyramid-tier" data-tier="L"></div>
-      <div class="mfa-pyramid-tier" data-tier="" title="Not tiered yet"></div>
+    <div class="mfa-view-toggle" role="tablist" aria-label="Metrics view">
+      <button type="button" id="mfa-view-pyramid" class="is-active" aria-pressed="true">Pyramid</button>
+      <button type="button" id="mfa-view-list" aria-pressed="false">List</button>
     </div>
-    <ul class="mfa-item-list" id="mfa-metrics-list"></ul>
+    <div class="mfa-view is-active" id="mfa-view-pane-pyramid">
+      <div class="mfa-pyramid" id="mfa-pyramid" aria-label="Metric priority pyramid">
+        <div class="mfa-pyramid-tier" data-tier="H"></div>
+        <div class="mfa-pyramid-tier" data-tier="M"></div>
+        <div class="mfa-pyramid-tier" data-tier="L"></div>
+        <div class="mfa-pyramid-tier" data-tier="" title="Not tiered yet"></div>
+      </div>
+    </div>
+    <div class="mfa-view" id="mfa-view-pane-list">
+      <ul class="mfa-item-list" id="mfa-metrics-list"></ul>
+    </div>
     <div class="mfa-add-row">
       <input type="text" class="mfa-input" id="mfa-metric-new" placeholder="Add a metric" autocomplete="off">
       <button type="button" class="mfa-btn mfa-btn-primary" id="mfa-metric-add">+ Add</button>
@@ -611,6 +642,7 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
   const STORAGE_KEY   = 'mfa-state-v1';
   const LIBRARY_KEY   = 'mfa-my-library-v1';   // { readId, writeToken, name }
   const PUBLISHED_KEY = 'mfa-published-v1';    // { <readId>: { writeToken, framingId, name } }
+  const VIEW_KEY      = 'mfa-metrics-view-v1'; // 'pyramid' | 'list'
 
   const STEP_LABELS = ['Frame', 'Metrics', 'Decisions', 'Uncertainties', 'Review'];
   const STEP_COUNT = 5;
@@ -1437,6 +1469,30 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
     $('#mfa-uncert-new').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') { e.preventDefault(); addItemFromInput('#mfa-uncert-new', state.uncertainties, renderUncertainties); }
     });
+
+    // Metrics view toggle — Pyramid (visual, drag between tiers) vs List
+    // (drag to reorder within tier, tap-cycle to change tier, × delete).
+    // Choice sticks in localStorage per-device.
+    function setMetricsView(which) {
+      const pyBtn = $('#mfa-view-pyramid');
+      const liBtn = $('#mfa-view-list');
+      const pyPane = $('#mfa-view-pane-pyramid');
+      const liPane = $('#mfa-view-pane-list');
+      const isPy = which !== 'list';
+      pyBtn.classList.toggle('is-active', isPy);
+      liBtn.classList.toggle('is-active', !isPy);
+      pyBtn.setAttribute('aria-pressed', isPy ? 'true' : 'false');
+      liBtn.setAttribute('aria-pressed', !isPy ? 'true' : 'false');
+      pyPane.classList.toggle('is-active', isPy);
+      liPane.classList.toggle('is-active', !isPy);
+      try { localStorage.setItem(VIEW_KEY, isPy ? 'pyramid' : 'list'); } catch (_) {}
+    }
+    $('#mfa-view-pyramid').addEventListener('click', () => setMetricsView('pyramid'));
+    $('#mfa-view-list').addEventListener('click',    () => setMetricsView('list'));
+    try {
+      const savedView = localStorage.getItem(VIEW_KEY);
+      if (savedView === 'list') setMetricsView('list');
+    } catch (_) {}
 
     // Suggest buttons
     $('#mfa-metric-suggest').addEventListener('click', () => runSuggest('metric', '#mfa-metric-status'));
