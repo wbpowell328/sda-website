@@ -296,13 +296,17 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
 .mfa-pyramid-tier[data-tier=""]  { width: 100%; background: transparent; border: 1px dashed var(--line); color: var(--muted); margin-top: 6px; }
 .mfa-pyramid-chip {
   display: inline-block;
-  padding: 2px 8px;
+  padding: 3px 10px;
   background: rgba(255,255,255,0.25);
   border-radius: 10px;
   font-weight: 500;
   max-width: 100%;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  cursor: grab;
+  touch-action: none;                     /* let Sortable own the touch */
+  user-select: none; -webkit-user-select: none;
 }
+.mfa-pyramid-chip:active { cursor: grabbing; }
 .mfa-pyramid-tier[data-tier=""] .mfa-pyramid-chip {
   background: var(--card); border: 1px solid var(--line); color: var(--ink-soft);
 }
@@ -798,23 +802,25 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
       if (!items.length) {
         const empty = document.createElement('span');
         empty.className = 'mfa-pyramid-empty';
-        empty.textContent = tier === '' ? 'All tiered ✓' : '—';
+        empty.textContent = tier === '' ? 'All tiered ✓' : 'Drop here';
         band.appendChild(empty);
-        continue;
+      } else {
+        for (const name of items) {
+          const chip = document.createElement('span');
+          chip.className = 'mfa-pyramid-chip';
+          chip.dataset.name = name;
+          chip.textContent = name;
+          chip.title = name;
+          band.appendChild(chip);
+        }
       }
-      for (const name of items) {
-        const chip = document.createElement('span');
-        chip.className = 'mfa-pyramid-chip';
-        chip.textContent = name;
-        chip.title = name;
-        band.appendChild(chip);
-      }
+      initPyramidSortable(band, tier);
     }
-    // Hide the "not tiered" band entirely when nothing sits there — keeps
-    // the visual clean once the user has tiered everything.
-    const unTierBand = document.querySelector('.mfa-pyramid-tier[data-tier=""]');
-    if (unTierBand) unTierBand.style.display = buckets[''].length ? 'flex' : 'none';
-    // Hide the pyramid entirely if there are no metrics at all.
+    // Keep the "not tiered" band visible ALWAYS (even when empty) — it's
+    // a drop target so users can drag a chip out of a tier back into
+    // "not tiered". The empty-state text ("All tiered ✓") tells the user
+    // there's nothing here now but the band still accepts drops.
+    // Hide the pyramid entirely only when there are no metrics at all.
     const py = $('#mfa-pyramid');
     if (py) py.style.display = state.metrics.length ? 'block' : 'none';
   }
@@ -924,6 +930,37 @@ input:focus, textarea:focus, button:focus { outline: 2px solid var(--warn); outl
     g.textContent = '☰';
     return g;
   }
+  // Wire SortableJS onto each pyramid tier band. All bands share the
+  // same group name so a chip can be dragged from any band into any
+  // other — when it lands, we update state.assignments to match the
+  // destination tier ('' for the "not tiered" band) and re-render.
+  function initPyramidSortable(bandEl, tier) {
+    if (!window.Sortable) {
+      setTimeout(() => initPyramidSortable(bandEl, tier), 200);
+      return;
+    }
+    if (bandEl.__mfaSortable) { bandEl.__mfaSortable.destroy(); }
+    bandEl.__mfaSortable = window.Sortable.create(bandEl, {
+      group: 'mfa-pyramid',
+      animation: 150,
+      ghostClass: 'mfa-sortable-ghost',
+      chosenClass: 'mfa-sortable-chosen',
+      dragClass: 'mfa-sortable-drag',
+      filter: '.mfa-pyramid-empty',            // don't try to drag the placeholder
+      onAdd(evt) {
+        const name = evt.item && evt.item.dataset && evt.item.dataset.name;
+        if (!name) return;
+        if (tier === '') delete state.assignments[name];
+        else state.assignments[name] = tier;
+        autoSave();
+        renderMetrics();   // re-flow everything (pyramid + list tier chips)
+      },
+      // Within-band reorder is meaningless (tier is a set), but Sortable
+      // still fires onUpdate — we just ignore it.
+      onUpdate() { /* no-op */ },
+    });
+  }
+
   // Wire SortableJS onto a list once its children are rendered. Called
   // after each render — Sortable's own destroy/reinit handles the churn.
   // The `dataArray` is mutated in place to match the new order, then
