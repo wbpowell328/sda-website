@@ -731,6 +731,30 @@ noindex: true
     </div>
 
     <div class="fp-bot-card fp-modeling-card">
+      <h3 class="fp-modeling-h3">Performance metric equations</h3>
+      <p class="fp-muted" style="margin: 0 0 8px 0;">Give each metric a short math label, then write the equation using LaTeX. First flavor: a general LaTeX expression (more structured flavors — sum-over-time, target, limit — will come later).</p>
+      <div class="fp-metric-eq-row">
+        <label>
+          <span class="fp-metric-eq-lbl">Metric</span>
+          <select id="fp-metric-eq-select">
+            <option value="">— pick a metric —</option>
+          </select>
+        </label>
+        <label>
+          <span class="fp-metric-eq-lbl">Short label <span class="fp-muted">(for math)</span></span>
+          <input type="text" id="fp-metric-eq-label" placeholder="e.g. C_{cost}" autocomplete="off" />
+        </label>
+      </div>
+      <label class="fp-metric-eq-lbl">Equation <span class="fp-muted">(LaTeX; wrap with <code>$…$</code> to preview)</span></label>
+      <textarea id="fp-metric-eq-formula" rows="3" spellcheck="false"
+        placeholder="e.g.  \sum_{t} c_{t}\, x_{t,d}"></textarea>
+      <div class="fp-metric-eq-preview" id="fp-metric-eq-preview">
+        <span class="fp-muted">Preview appears here once you type an equation.</span>
+      </div>
+      <ul id="fp-metric-eq-list" class="fp-metric-eq-list"></ul>
+    </div>
+
+    <div class="fp-bot-card fp-modeling-card">
       <h3 class="fp-modeling-h3">Problem parameters</h3>
       <p class="fp-muted" style="margin: 0 0 8px 0;">Accumulate the parameters that describe the problem — costs, capacities, rates, arrival distributions, whatever the model needs. One per line or freeform notes; formal structure will come as the modeling flow matures.</p>
       <textarea id="fp-problem-parameters" rows="6" spellcheck="true"
@@ -1451,6 +1475,69 @@ noindex: true
     font-style: italic;
     padding: 12px 4px;
   }
+
+  /* ── Performance metric equations (Modeling section) ─────── */
+  .fp-metric-eq-row {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    margin: 6px 0 10px;
+  }
+  .fp-metric-eq-row label { flex: 1; min-width: 180px; display: block; }
+  .fp-metric-eq-lbl {
+    display: block;
+    font-size: 0.85rem; font-weight: 600; color: #5a4a35;
+    margin: 6px 0 4px;
+  }
+  .fp-metric-eq-lbl .fp-muted { font-weight: 400; }
+  #fp-metric-eq-select,
+  #fp-metric-eq-label,
+  #fp-metric-eq-formula {
+    width: 100%; box-sizing: border-box;
+    padding: 8px 12px;
+    font-family: inherit; font-size: 0.95rem;
+    border: 1px solid #c9b891; border-radius: 4px;
+    background: #fff; color: #333;
+  }
+  #fp-metric-eq-formula {
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    resize: vertical; min-height: 60px;
+  }
+  #fp-metric-eq-select:focus,
+  #fp-metric-eq-label:focus,
+  #fp-metric-eq-formula:focus {
+    outline: none; border-color: #c9621e;
+    box-shadow: 0 0 0 2px rgba(201, 98, 30, 0.15);
+  }
+  .fp-metric-eq-preview {
+    margin: 10px 0;
+    padding: 10px 14px;
+    background: #faf6ea;
+    border: 1px dashed #d6c4a3;
+    border-radius: 4px;
+    min-height: 40px;
+    font-size: 1rem;
+    color: #3d2914;
+    overflow-x: auto;
+  }
+  .fp-metric-eq-list {
+    list-style: none; padding: 0; margin: 8px 0 0;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .fp-metric-eq-list li {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 10px;
+    background: #fff;
+    border: 1px solid #d6c4a3;
+    border-radius: 4px;
+    font-size: 0.92rem;
+  }
+  .fp-metric-eq-list-name { color: #3d2914; font-weight: 500; min-width: 140px; }
+  .fp-metric-eq-list-label { color: #8a3a1a; font-family: ui-monospace, Menlo, Consolas, monospace; }
+  .fp-metric-eq-list-formula { flex: 1; color: #5a4a35; font-family: ui-monospace, Menlo, Consolas, monospace; overflow-x: auto; white-space: nowrap; }
+  .fp-metric-eq-list button {
+    background: transparent; border: none; color: #7a6a55;
+    font-size: 0.9rem; cursor: pointer; padding: 2px 6px;
+  }
+  .fp-metric-eq-list button:hover { color: #8a3a1a; }
 
   /* URL-display modal (first publish, sub-node creation, regenerate) */
   .fp-urls-lede { margin: 0 0 12px 0; color: #5a4a35; font-size: 0.95rem; }
@@ -2566,8 +2653,10 @@ noindex: true
   //   matrix       : { decision: { metric: 'H'|'M'|'L'|'N' } } —
   //                  missing = blank (not yet scored).
   let state = {
-    title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
+    title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', metricLabels: {}, metricEquations: {}, timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
     problemParameters: '',
+    metricLabels: {},     // metric name → short math label (e.g. "C_{cost}")
+    metricEquations: {},  // metric name → LaTeX formula string
     promptAnswers: { decisionMaker: '', setting: '', history: '', goals: '', other: '' },
     metrics: [], assignments: {}, chipColors: {},
     decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
@@ -2619,6 +2708,7 @@ noindex: true
     const pp = document.getElementById('fp-problem-parameters');
     if (pp) pp.value = state.problemParameters || '';
     renderModelingDecisions();
+    renderMetricEquationsCard();
   }
   // Voice input — shared SpeechRecognition instance across all 🎤
   // buttons. Silent fallback when the browser has no Web Speech API.
@@ -2727,6 +2817,8 @@ noindex: true
       timeStep:           normalizeTimeSpec(s && s.timeStep),
       horizon:            normalizeTimeSpec(s && s.horizon, /* allowPeriods */ true),
       problemParameters:  (s && typeof s.problemParameters === 'string') ? s.problemParameters : '',
+      metricLabels:       (s && s.metricLabels    && typeof s.metricLabels    === 'object') ? s.metricLabels    : {},
+      metricEquations:    (s && s.metricEquations && typeof s.metricEquations === 'object') ? s.metricEquations : {},
       promptAnswers:      (s && s.promptAnswers && typeof s.promptAnswers === 'object') ? s.promptAnswers : { decisionMaker: '', setting: '', history: '', goals: '', other: '' },
       metrics:       Array.isArray(s && s.metrics)            ? s.metrics      : [],
       assignments:   (s && s.assignments)                ? s.assignments   : {},
@@ -3144,6 +3236,8 @@ noindex: true
       timeStep: state.timeStep,
       horizon: state.horizon,
       problemParameters: state.problemParameters,
+      metricLabels: state.metricLabels,
+      metricEquations: state.metricEquations,
       metrics: state.metrics,
       assignments: state.assignments,
       chipColors: state.chipColors,
@@ -3608,6 +3702,7 @@ noindex: true
     }
     render();
     renderAllMatrices();   // metric columns may have changed
+    renderMetricEquationsCard();  // dropdown reflects the new metrics list
     autoSave();
   }
 
@@ -4125,6 +4220,86 @@ noindex: true
     // fully laid out.
     requestAnimationFrame(alignMatrixTextareas);
   }
+  // Populate the metric dropdown + list of already-defined equations.
+  // Called from renderPromptCards() (which is called on every load /
+  // reset) and after any edit to state.metrics.
+  function renderMetricEquationsCard() {
+    const sel = document.getElementById('fp-metric-eq-select');
+    const lbl = document.getElementById('fp-metric-eq-label');
+    const form = document.getElementById('fp-metric-eq-formula');
+    const list = document.getElementById('fp-metric-eq-list');
+    if (!sel || !lbl || !form || !list) return;
+    // Rebuild dropdown from current top-level metrics
+    const prev = sel.value;
+    sel.innerHTML = '<option value="">— pick a metric —</option>';
+    for (const m of (state.metrics || [])) {
+      const opt = document.createElement('option');
+      opt.value = m; opt.textContent = m;
+      sel.appendChild(opt);
+    }
+    // Restore prior selection if the metric still exists
+    if (prev && (state.metrics || []).indexOf(prev) >= 0) sel.value = prev;
+    // Populate label + formula from the selected metric
+    const cur = sel.value;
+    lbl.value  = cur ? (state.metricLabels[cur]    || '') : '';
+    form.value = cur ? (state.metricEquations[cur] || '') : '';
+    // Rebuild the list of already-defined equations
+    list.innerHTML = '';
+    for (const m of (state.metrics || [])) {
+      const eq = state.metricEquations[m];
+      if (!eq || !eq.trim()) continue;
+      const li = document.createElement('li');
+      const nameEl = document.createElement('span');
+      nameEl.className = 'fp-metric-eq-list-name';
+      nameEl.textContent = m;
+      li.appendChild(nameEl);
+      const labelEl = document.createElement('span');
+      labelEl.className = 'fp-metric-eq-list-label';
+      labelEl.textContent = state.metricLabels[m] ? '[' + state.metricLabels[m] + ']' : '';
+      li.appendChild(labelEl);
+      const formEl = document.createElement('span');
+      formEl.className = 'fp-metric-eq-list-formula';
+      formEl.textContent = eq;
+      li.appendChild(formEl);
+      const editBtn = document.createElement('button');
+      editBtn.type = 'button'; editBtn.title = 'Edit'; editBtn.textContent = '✎';
+      editBtn.addEventListener('click', () => {
+        sel.value = m;
+        renderMetricEquationsCard();
+        form.focus();
+      });
+      li.appendChild(editBtn);
+      const delBtn = document.createElement('button');
+      delBtn.type = 'button'; delBtn.title = 'Delete equation'; delBtn.textContent = '×';
+      delBtn.addEventListener('click', () => {
+        if (!confirm('Delete the equation for "' + m + '"? (Short label is kept.)')) return;
+        delete state.metricEquations[m];
+        autoSave();
+        renderMetricEquationsCard();
+        renderMetricEquationPreview();
+      });
+      li.appendChild(delBtn);
+      list.appendChild(li);
+    }
+    renderMetricEquationPreview();
+  }
+  function renderMetricEquationPreview() {
+    const form = document.getElementById('fp-metric-eq-formula');
+    const preview = document.getElementById('fp-metric-eq-preview');
+    if (!form || !preview) return;
+    const raw = (form.value || '').trim();
+    if (!raw) {
+      preview.innerHTML = '<span class="fp-muted">Preview appears here once you type an equation.</span>';
+      return;
+    }
+    // Wrap in $$ if not already delimited, so MathJax display-renders it.
+    const wrapped = /^\$\$?|^\\\(|^\\\[/.test(raw) ? raw : '$$' + raw + '$$';
+    preview.innerHTML = wrapped;
+    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+      window.MathJax.typesetPromise([preview]).catch(() => { /* ignore render errors */ });
+    }
+  }
+
   // Populate the Modeling section's decision list — every (disc)-kind
   // decision in the CURRENT frame gets a row with a ▶ Play button that
   // opens the play modal (same modal the old row-level button used).
@@ -6639,7 +6814,7 @@ noindex: true
       if (raw == null) return;
       const finalTitle = raw.trim() || 'New framing';
       state = {
-        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
+        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', metricLabels: {}, metricEquations: {}, timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
         metrics: [], assignments: {}, chipColors: {},
         decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
         uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
@@ -7208,7 +7383,7 @@ noindex: true
         loadedNode.currentFramingId = null;
         // Blank the workspace since the framing on-screen no longer exists.
         state = {
-          title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
+          title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', metricLabels: {}, metricEquations: {}, timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
           metrics: [], assignments: {}, chipColors: {},
           decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
           uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
@@ -7515,6 +7690,36 @@ noindex: true
         autoSave();
       });
     }
+    // Performance metric equations card (Modeling section)
+    const eqSel  = document.getElementById('fp-metric-eq-select');
+    const eqLbl  = document.getElementById('fp-metric-eq-label');
+    const eqForm = document.getElementById('fp-metric-eq-formula');
+    if (eqSel && eqLbl && eqForm) {
+      eqSel.addEventListener('change', () => {
+        // Switching metric — repaint label + formula fields, and preview.
+        renderMetricEquationsCard();
+      });
+      eqLbl.addEventListener('input', () => {
+        const m = eqSel.value;
+        if (!m) return;
+        const v = eqLbl.value.trim();
+        if (v) state.metricLabels[m] = v;
+        else delete state.metricLabels[m];
+        autoSave();
+      });
+      eqForm.addEventListener('input', () => {
+        const m = eqSel.value;
+        if (!m) return;
+        const v = eqForm.value;
+        if (v.trim()) state.metricEquations[m] = v;
+        else delete state.metricEquations[m];
+        autoSave();
+        renderMetricEquationPreview();
+      });
+      // On blur of formula, also refresh the list — a newly-added
+      // equation should show up in the summary immediately.
+      eqForm.addEventListener('blur', () => renderMetricEquationsCard());
+    }
     // Time step + horizon inputs — 4 total controls. Any change writes
     // state, autosaves, and re-runs the derived "= N periods" hint.
     function pushTimeSpec(kind) {
@@ -7549,7 +7754,7 @@ noindex: true
       closeFileMenu();
       if (!confirm('Start a new framing? Anything on screen is discarded (Save to your library first if you want to keep it).')) return;
       state = {
-        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
+        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', metricLabels: {}, metricEquations: {}, timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
         metrics: [], assignments: {}, chipColors: {},
         decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
         uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
@@ -7713,7 +7918,7 @@ noindex: true
     $('#fp-reset').addEventListener('click', () => {
       if (!confirm('Delete every metric, decision, and uncertainty, clear the pyramid and both matrices, and unload the current framing? (Framings saved to your library are not affected.) Cannot be undone.')) return;
       state = {
-        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
+        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', metricLabels: {}, metricEquations: {}, timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
         metrics: [], assignments: {}, chipColors: {},
         decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
         uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
