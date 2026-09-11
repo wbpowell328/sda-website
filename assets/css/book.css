@@ -71,8 +71,11 @@ html { scroll-padding-top: 90px; }
   cursor: pointer;
 }
 .book-toc-toggle:hover { background: #a84d12; }
-.book-topbar-exit { color: #f5ecd6; text-decoration: underline; }
-.book-topbar-exit:hover { color: #ffffff; }
+/* Force override of main.css's `a { color: #8a3a1a }` — same specificity
+   otherwise means the orange link color wins on some cache paths. */
+.book-topbar a.book-topbar-exit,
+.book-topbar a.book-topbar-exit:visited { color: #f5ecd6 !important; text-decoration: underline; }
+.book-topbar a.book-topbar-exit:hover  { color: #ffffff !important; }
 
 .book-search-toggle {
   background: transparent;
