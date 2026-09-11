@@ -504,7 +504,7 @@ sitemap: false
   <ul id="fp-constraint-list" class="fp-metric-eq-list"></ul>
 </div>
 
-<h2 id="transition-function" class="fp-section-h2">Transition function<button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
+<h2 id="transition-function-at-t" class="fp-section-h2">Transition function at <em>t</em><button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
 <p>One equation per state variable showing how it updates from time <em>t</em> to <em>t</em>+1 (e.g. inventory, cash, position). The left-hand side is usually the "primed" state at <em>t</em>+1.</p>
 <div class="fp-bot-card fp-modeling-card">
   <div class="fp-metric-eq-row">
