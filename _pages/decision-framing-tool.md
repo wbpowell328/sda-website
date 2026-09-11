@@ -23,13 +23,14 @@ date: 2026-08-11
 
 <p>If you have any questions, just <button type="button" class="fp-section-help" title="Open the Ask Professor Powell chat panel">? Ask</button></p>
 
-<p>The framing process is divided into four components, each with its own AI-assists.</p>
+<p>The framing process is divided into four components, each with its own AI-assists. Once framing is complete, the <a href="#modeling"><strong>Modeling</strong></a> section at the bottom moves into building and running the model.</p>
 
 <ol>
   <li><a href="#problem-scope"><strong>Problem scope</strong></a></li>
   <li><a href="#metrics-pyramid-tool"><strong>Metrics pyramid tool</strong></a></li>
   <li><a href="#decision-prioritization-tool"><strong>Decision prioritization tool</strong></a></li>
   <li><a href="#uncertainty-prioritization-tool"><strong>Uncertainty prioritization tool</strong></a></li>
+  <li><a href="#modeling"><strong>Modeling</strong></a> <span class="fp-muted">(after framing)</span></li>
 </ol>
 
 <div class="fp-toolbar">
@@ -314,6 +315,87 @@ date: 2026-08-11
   </div>
 </div>
 
+<!-- Play modal — human-in-the-loop discrete-choice simulator. Opened by
+     the ▶ Play button on any (disc) decision row. Setup section: list
+     alternatives + fill p10/p50/p90 spreads per (alternative, metric).
+     Play section: bar chart with asymmetric whiskers per alternative;
+     click a bar to sample W_{t+1,i} from the fitted distribution and
+     advance the round (repeated mode) or end (one-shot).
+
+     Notation reminder: this problem class is x ∈ 𝒳^{choices},
+     realized performance W_{t+1,i} per information class i (one per
+     metric here), scored by C_m(S_t, x_t, W_{t+1}). All (t+1)-flavored. -->
+<div id="fp-play-modal" class="fp-modal" hidden>
+  <div class="fp-modal-card fp-play-card">
+    <div class="fp-modal-header">
+      <h3 id="fp-play-title">Play decision</h3>
+      <button type="button" class="fp-modal-close" id="fp-play-close" aria-label="Close">×</button>
+    </div>
+    <p class="fp-muted fp-play-lede">
+      Human-in-the-loop simulator for a discrete choice with uncertain performance.
+      Fill in alternatives and a low / median / high spread per metric, then click
+      a bar in <em>Play</em> to sample a realized outcome.
+    </p>
+
+    <!-- ─── Setup section ─────────────────────────────────────── -->
+    <div class="fp-play-section">
+      <h4 class="fp-play-h4">Setup</h4>
+
+      <div class="fp-play-row">
+        <label class="fp-play-label" for="fp-play-mode">Mode</label>
+        <select id="fp-play-mode" class="fp-play-select">
+          <option value="repeated">Repeated (pick, observe, advance to t+1)</option>
+          <option value="one-shot">One-shot (single pick, single reveal)</option>
+        </select>
+      </div>
+
+      <div class="fp-play-row">
+        <label class="fp-play-label">Alternatives</label>
+        <div id="fp-play-alts" class="fp-play-alts"></div>
+        <div class="fp-play-add-row">
+          <input type="text" id="fp-play-alt-new" class="fp-play-alt-new" placeholder="Add an alternative, then press Enter" />
+          <button type="button" id="fp-play-alt-add" class="fp-modal-mini">Add</button>
+        </div>
+      </div>
+
+      <div class="fp-play-row">
+        <label class="fp-play-label">Uncertainty spreads <span class="fp-muted">(per metric; p10 / p50 / p90; asymmetric allowed)</span></label>
+        <div id="fp-play-spreads-wrap" class="fp-play-spreads-wrap">
+          <p class="fp-muted" id="fp-play-spreads-empty">Add at least one alternative and one metric to begin.</p>
+        </div>
+        <div class="fp-play-actions-row">
+          <button type="button" id="fp-play-suggest" class="fp-modal-mini" title="Ask the AI to propose plausible p10 / p50 / p90 per alternative from the framing context">✦ Suggest spreads</button>
+          <button type="button" id="fp-play-clear-spreads" class="fp-modal-mini" title="Clear every spread cell (keeps alternatives)">Clear all spreads</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Play section ──────────────────────────────────────── -->
+    <div class="fp-play-section">
+      <h4 class="fp-play-h4">Play <span id="fp-play-round-badge" class="fp-play-round-badge"></span></h4>
+      <p id="fp-play-instruction" class="fp-muted fp-play-instruction">Fill in the spreads above, then click a bar to pick an alternative.</p>
+      <div id="fp-play-charts" class="fp-play-charts"></div>
+      <div class="fp-play-actions-row">
+        <button type="button" id="fp-play-reset" class="fp-modal-mini" title="Clear the pick history and restart at t = 1">Reset play</button>
+      </div>
+    </div>
+
+    <!-- ─── History section ───────────────────────────────────── -->
+    <div class="fp-play-section">
+      <h4 class="fp-play-h4">History</h4>
+      <div id="fp-play-history" class="fp-play-history">
+        <p class="fp-muted" id="fp-play-history-empty">No picks yet.</p>
+      </div>
+    </div>
+
+    <div id="fp-play-status" class="fp-bot-status" role="status" aria-live="polite"></div>
+
+    <div class="fp-modal-actions" style="justify-content: flex-end;">
+      <button type="button" id="fp-play-done" class="fp-modal-primary">Close</button>
+    </div>
+  </div>
+</div>
+
 <div id="fp-doc-banner" class="fp-doc-banner">
   <div class="fp-doc-banner-head">
     <h2 id="fp-doc-title" class="fp-doc-title" aria-live="polite"></h2>
@@ -323,54 +405,78 @@ date: 2026-08-11
 </div>
 
 <h2 id="problem-scope" class="fp-section-h2">Problem scope<button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
-<p>A decision frame reflects the perspective of a decision maker. Answer as many of the guided questions below as you can — the AI uses your answers as context for every later step (generate ideas, suggest impact scores, first-draft framing). Each box supports voice input: tap <strong>🎤 Speak</strong> to dictate.</p>
+<p>A decision frame reflects the perspective of a decision maker. The AI uses whatever context you give it in every later step (generate ideas, suggest impact scores, first-draft framing).</p>
 
 <div class="fp-bot-card">
-  <!-- Guided prompt — 5 question cards. Q1 keeps id="fp-scope-input" so
-       every existing reader of state.scope still points at "Who is
-       making the decision?". The other 4 answers get concatenated into
-       state.problemDescription (labelled sections) by buildDerivedDesc()
-       — that value is mirrored into the hidden #fp-bot-desc textarea so
-       every existing AI-call site keeps working with zero refactor. -->
-  <div class="fp-bot-row fp-qcard">
-    <label for="fp-scope-input" class="fp-bot-label fp-qcard-q">Who is making the decision?</label>
-    <textarea id="fp-scope-input" class="fp-scope-input" rows="2" spellcheck="true"
-      placeholder="Role, team, altitude in the org, planning cadence."></textarea>
-    <button type="button" class="fp-speak-btn" data-target="fp-scope-input" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
-    <p class="fp-voice-hint" data-hint-for="fp-scope-input" hidden></p>
+  <!-- Guided prompt — hidden behind a "Contextual background" button so
+       the 5 questions don't dominate the page. Modal contents keep the
+       same IDs (fp-scope-input, fp-q-setting, …) so every existing
+       reader of state.scope / state.problemDescription / #fp-bot-desc
+       keeps working unchanged. -->
+  <div class="fp-context-launcher">
+    <button type="button" id="fp-context-open" class="fp-context-open-btn">
+      Contextual background <span class="fp-context-counter" id="fp-context-counter" hidden></span>
+    </button>
+    <p class="fp-muted fp-context-lede">
+      Begin by providing valuable contextual background by answering a series of questions <em>(optional)</em>.
+    </p>
   </div>
-  <div class="fp-bot-row fp-qcard">
-    <label for="fp-q-setting" class="fp-bot-label fp-qcard-q">What is the problem setting? <span class="fp-muted">(business, manufacturing, medical, finance…)</span></label>
-    <textarea id="fp-q-setting" rows="2" spellcheck="true"
-      placeholder="Industry, environment, market, what's happening around this decision."></textarea>
-    <button type="button" class="fp-speak-btn" data-target="fp-q-setting" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
-    <p class="fp-voice-hint" data-hint-for="fp-q-setting" hidden></p>
+
+  <div id="fp-context-modal" class="fp-modal" hidden>
+    <div class="fp-modal-card fp-context-modal-card" role="dialog" aria-modal="true" aria-labelledby="fp-context-title">
+      <div class="fp-modal-header">
+        <h3 id="fp-context-title">Contextual background</h3>
+        <button type="button" class="fp-modal-close" id="fp-context-close" aria-label="Close">×</button>
+      </div>
+      <p class="fp-muted" style="margin: 0 0 12px 0;">Answer as many as you can — the AI uses your answers as context for every later step (generate ideas, suggest impact scores, first-draft framing). Each box supports voice input: tap <strong>🎤 Speak</strong> to dictate. Everything here is optional.</p>
+
+      <div class="fp-bot-row fp-qcard">
+        <label for="fp-scope-input" class="fp-bot-label fp-qcard-q">Who is making the decision?</label>
+        <textarea id="fp-scope-input" class="fp-scope-input" rows="2" spellcheck="true"
+          placeholder="Role, team, altitude in the org, planning cadence."></textarea>
+        <button type="button" class="fp-speak-btn" data-target="fp-scope-input" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
+        <p class="fp-voice-hint" data-hint-for="fp-scope-input" hidden></p>
+      </div>
+      <div class="fp-bot-row fp-qcard">
+        <label for="fp-q-setting" class="fp-bot-label fp-qcard-q">What is the problem setting? <span class="fp-muted">(business, manufacturing, medical, finance…)</span></label>
+        <textarea id="fp-q-setting" rows="2" spellcheck="true"
+          placeholder="Industry, environment, market, what's happening around this decision."></textarea>
+        <button type="button" class="fp-speak-btn" data-target="fp-q-setting" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
+        <p class="fp-voice-hint" data-hint-for="fp-q-setting" hidden></p>
+      </div>
+      <div class="fp-bot-row fp-qcard">
+        <label for="fp-q-history" class="fp-bot-label fp-qcard-q">Is there relevant history? <span class="fp-muted">(optional)</span></label>
+        <textarea id="fp-q-history" rows="2" spellcheck="true"
+          placeholder="Prior attempts, incidents, patterns, constraints inherited from the past."></textarea>
+        <button type="button" class="fp-speak-btn" data-target="fp-q-history" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
+        <p class="fp-voice-hint" data-hint-for="fp-q-history" hidden></p>
+      </div>
+      <div class="fp-bot-row fp-qcard">
+        <label for="fp-q-goals" class="fp-bot-label fp-qcard-q">What are you trying to achieve?</label>
+        <textarea id="fp-q-goals" rows="2" spellcheck="true"
+          placeholder="Overall objectives — describe success in your own words."></textarea>
+        <button type="button" class="fp-speak-btn" data-target="fp-q-goals" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
+        <p class="fp-voice-hint" data-hint-for="fp-q-goals" hidden></p>
+      </div>
+      <div class="fp-bot-row fp-qcard">
+        <label for="fp-q-other" class="fp-bot-label fp-qcard-q">Any other information that might be relevant? <span class="fp-muted">(optional — specific metrics, stakeholders, constraints)</span></label>
+        <textarea id="fp-q-other" rows="2" spellcheck="true"
+          placeholder="Specific metrics you care about, stakeholders, constraints, anything else on your mind."></textarea>
+        <button type="button" class="fp-speak-btn" data-target="fp-q-other" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
+        <p class="fp-voice-hint" data-hint-for="fp-q-other" hidden></p>
+      </div>
+
+      <div class="fp-modal-actions" style="justify-content: flex-end;">
+        <button type="button" id="fp-context-done" class="fp-modal-primary">Done</button>
+      </div>
+    </div>
   </div>
-  <div class="fp-bot-row fp-qcard">
-    <label for="fp-q-history" class="fp-bot-label fp-qcard-q">Is there relevant history? <span class="fp-muted">(optional)</span></label>
-    <textarea id="fp-q-history" rows="2" spellcheck="true"
-      placeholder="Prior attempts, incidents, patterns, constraints inherited from the past."></textarea>
-    <button type="button" class="fp-speak-btn" data-target="fp-q-history" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
-    <p class="fp-voice-hint" data-hint-for="fp-q-history" hidden></p>
-  </div>
-  <div class="fp-bot-row fp-qcard">
-    <label for="fp-q-goals" class="fp-bot-label fp-qcard-q">What are you trying to achieve?</label>
-    <textarea id="fp-q-goals" rows="2" spellcheck="true"
-      placeholder="Overall objectives — describe success in your own words."></textarea>
-    <button type="button" class="fp-speak-btn" data-target="fp-q-goals" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
-    <p class="fp-voice-hint" data-hint-for="fp-q-goals" hidden></p>
-  </div>
-  <div class="fp-bot-row fp-qcard">
-    <label for="fp-q-other" class="fp-bot-label fp-qcard-q">Any other information that might be relevant? <span class="fp-muted">(optional — specific metrics, stakeholders, constraints)</span></label>
-    <textarea id="fp-q-other" rows="2" spellcheck="true"
-      placeholder="Specific metrics you care about, stakeholders, constraints, anything else on your mind."></textarea>
-    <button type="button" class="fp-speak-btn" data-target="fp-q-other" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
-    <p class="fp-voice-hint" data-hint-for="fp-q-other" hidden></p>
-  </div>
+
   <!-- Hidden derived textarea — kept in sync with the labelled blob of
-       Q2-Q5 (Q1 lives in fp-scope-input separately). Every existing
-       reader of #fp-bot-desc.value now gets the guided-prompt blob. -->
+       Q2-Q5. Every existing reader of #fp-bot-desc.value now gets the
+       guided-prompt blob. -->
   <textarea id="fp-bot-desc" hidden aria-hidden="true"></textarea>
+
 
   <div class="fp-bot-row-inline">
     <div class="fp-bot-inline">
@@ -433,7 +539,16 @@ date: 2026-08-11
 
 <div class="fp-grid">
   <div class="fp-panel fp-metrics-panel">
-    <h3>Metrics</h3>
+    <div class="fp-list-header">
+      <h3>Metrics</h3>
+      <button type="button" class="fp-ideas-btn" data-kind="metric"
+        title="Use the AI to generate ideas for metrics from your scope/description/URL/file above. Pick which ones to add.">
+        Generate ideas
+      </button>
+      <input type="number" class="fp-ideas-count" data-kind="metric"
+             min="1" max="200" step="1" placeholder="count"
+             title="How many metric ideas to generate. Blank = auto (uses the First-draft size setting)." />
+    </div>
     <p class="fp-muted">One per line. Chips appear below and can be dragged into the pyramid on the right.</p>
     <textarea id="fp-metrics-input" spellcheck="true" placeholder="Revenue growth&#10;Customer satisfaction&#10;Employee retention&#10;On-time delivery&#10;Product quality"></textarea>
     <div class="fp-chip-legend" aria-hidden="true">
@@ -486,9 +601,9 @@ date: 2026-08-11
 </div>
 
 <h2 id="decision-prioritization-tool" class="fp-section-h2">Decision prioritization tool<button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
-<p>Decisions, which go by <a href="/decisionsdecisions/#different-words">many names</a> (including "idea"), represent the ways to impact or influence your metrics. They may be obvious, but they often are not.</p>
+<p>Decisions, which go by <a href="/decisionsdecisions/#different-words">many names</a> (including "idea"), represent the ways to impact or influence your metrics. They also come in many flavors and styles <a href="/decisionsdecisions/#types-of-decision-settings">as we list here</a>. They may be obvious, but they often are not. This tool is designed to help you identify the most important ones.</p>
 <p>List the decisions you'd consider (one per line). The matrix below has one column per <em>tier-assigned</em> metric from the pyramid above, ordered top-to-bottom by tier (left-to-right within the same tier by the order the metrics appear in the metrics list). Click any cell to cycle through <b>H</b> (high impact) → <b>M</b> → <b>L</b> → <b>N</b> (none) → blank. When you're done scoring, drag any row up or down via the <span class="fp-grip-inline">☰</span> handle to prioritize decisions by their impact on the most important metrics.</p>
-<p>Decisions can be general descriptions ("Assigning machines to jobs", "Optimizing warehouses") or specific actions ("Assign machine X to job Y", "Put warehouse in city X"). Use higher levels for general descriptions and lower levels for specific actions. To break a decision down into sub-decisions, click the <span class="fp-drill-inline">▸</span> button next to that decision (or right-click its row). You can nest sub-decisions to any depth; the metrics pyramid stays fixed.</p>
+<p>Decisions can be general descriptions ("Assigning machines to jobs", "Optimizing warehouses") or specific actions ("Assign machine X to job Y", "Put warehouse in city X"). Use higher levels for general descriptions and lower levels for specific actions. Each decision shows up in the <em>Attributes</em> column to the right of the textarea with its <b>(gen)/(disc)/(num)</b> and <b>(stat)/(dyn)</b> chips plus a <b>+ sub-decisions</b> button (which changes to <b>N sub-decisions ›</b> once you have some). Click that button to break a decision down into sub-decisions — you can nest to any depth; the metrics pyramid stays fixed.</p>
 
 <div id="fp-decision-breadcrumb" class="fp-decision-breadcrumb" hidden></div>
 <div id="fp-decision-subscope" class="fp-decision-subscope" hidden>
@@ -517,7 +632,13 @@ date: 2026-08-11
       <button type="button" id="fp-decision-types-btn" class="fp-decision-types-btn"
               title="Constrain the AI to generate decisions of specific types (from the 10-type taxonomy at decisionsdecisions/#types-of-decision-settings). Click for the picker.">Types…</button>
     </div>
-    <textarea id="fp-decisions-input" spellcheck="true" placeholder="Set the price&#10;Choose a supplier&#10;Approve the design&#10;Schedule production"></textarea>
+    <div class="fp-decisions-body">
+      <textarea id="fp-decisions-input" spellcheck="true" wrap="off" placeholder="Set the price&#10;Choose a supplier&#10;Approve the design&#10;Schedule production"></textarea>
+      <div class="fp-decision-attrs-side">
+        <div id="fp-decision-attrs" class="fp-decision-attrs"
+             title="Attributes for each decision on the left: (gen)/(disc)/(num) kind · (stat)/(dyn) timing · ▸ drill into sub-decisions"></div>
+      </div>
+    </div>
   </div>
   <div class="fp-panel fp-matrix-panel">
     <h3>Decision impact matrix</h3>
@@ -566,7 +687,13 @@ date: 2026-08-11
       <button type="button" id="fp-uncertainty-types-btn" class="fp-decision-types-btn"
               title="Constrain the AI to generate uncertainties from specific categories (from the 12-category taxonomy at modeling-uncertainty/#categories). Click for the picker.">Types…</button>
     </div>
-    <textarea id="fp-uncertainties-input" spellcheck="true" placeholder="Demand volatility&#10;Supplier reliability&#10;Currency fluctuation&#10;Regulatory change"></textarea>
+    <div class="fp-decisions-body">
+      <textarea id="fp-uncertainties-input" spellcheck="true" wrap="off" placeholder="Demand volatility&#10;Supplier reliability&#10;Currency fluctuation&#10;Regulatory change"></textarea>
+      <div class="fp-decision-attrs-side">
+        <div id="fp-uncertainty-attrs" class="fp-decision-attrs"
+             title="Attributes for each uncertainty on the left: (gen)/(disc)/(num) kind · (stat)/(dyn) timing · optional 'for:' tag when generated under a drill-in"></div>
+      </div>
+    </div>
   </div>
   <div class="fp-panel fp-matrix-panel">
     <h3>Uncertainty impact matrix</h3>
@@ -588,6 +715,14 @@ date: 2026-08-11
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════════════════════
+     MODELING — a separate section for what happens AFTER framing:
+     time step + horizon, problem parameters that accumulate as the
+     model is built, and the list of (disc) decisions with per-row
+     ▶ Play buttons opening the simulation modal. This is deliberately
+     below the framing sections above; the framing sections should
+     stay focused on framing.
+     ══════════════════════════════════════════════════════════════ -->
 <!-- Floating "?" launcher — always visible at bottom-right when the
      chat panel is closed. One click opens the panel without scrolling
      the page, so users can keep the section they're reading in view
@@ -857,6 +992,47 @@ date: 2026-08-11
     z-index: 1000;
   }
   .fp-modal[hidden] { display: none; }
+  /* "Contextual background" launcher — replaces the 5 question cards on
+     the page. Click to open the fp-context-modal. */
+  .fp-context-launcher {
+    display: flex; align-items: center; gap: 16px;
+    padding: 12px 14px;
+    background: #faf5e6;
+    border: 1px solid #d6c4a3;
+    border-radius: 6px;
+    margin: 0 0 12px 0;
+    flex-wrap: wrap;
+  }
+  .fp-context-open-btn {
+    padding: 10px 18px;
+    background: #8a3a1a;
+    color: #fff;
+    border: none; border-radius: 4px;
+    font-size: 1rem; font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .fp-context-open-btn:hover { background: #a04a24; }
+  .fp-context-counter {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 8px;
+    background: rgba(255,255,255,0.28);
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 500;
+  }
+  .fp-context-lede {
+    flex: 1 1 300px;
+    margin: 0;
+    color: #5a3e1f;
+    font-size: 0.95rem;
+  }
+  .fp-context-modal-card {
+    max-width: 720px;
+    max-height: 88vh;
+    overflow-y: auto;
+  }
   .fp-modal-card {
     background: #fff; border-radius: 6px;
     padding: 20px;
@@ -1029,6 +1205,330 @@ date: 2026-08-11
     background: #d6c4a3; border-color: #d6c4a3; color: #fff;
     cursor: not-allowed;
   }
+
+  /* Play modal — discrete-choice simulator (▶ Play on disc rows) */
+  .fp-play-card { max-width: 880px; overflow-y: auto; }
+  .fp-play-lede { margin: 0 0 14px 0; }
+  .fp-play-section {
+    border-top: 1px solid #ede0bd;
+    padding-top: 12px;
+    margin-top: 14px;
+  }
+  .fp-play-section:first-of-type { border-top: none; padding-top: 4px; margin-top: 0; }
+  .fp-play-h4 {
+    margin: 0 0 8px 0;
+    color: #5a4a35;
+    font-size: 1.02rem;
+  }
+  .fp-play-round-badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 1px 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #5a3e1f;
+    background: #faf0d5;
+    border: 1px solid #d6c4a3;
+    border-radius: 10px;
+  }
+  .fp-play-round-badge:empty { display: none; }
+  .fp-play-row { margin-bottom: 12px; }
+  .fp-play-label {
+    display: block;
+    font-weight: 600;
+    color: #5a4a35;
+    margin-bottom: 4px;
+    font-size: 0.92rem;
+  }
+  .fp-play-select {
+    padding: 5px 8px;
+    font-size: 0.9rem;
+    border: 1px solid #d6c4a3;
+    border-radius: 4px;
+    background: #fff;
+    color: #5a3e1f;
+  }
+  .fp-play-alts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 6px;
+    min-height: 22px;
+  }
+  .fp-play-alt-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 4px 3px 10px;
+    background: #ede0bd;
+    border: 1px solid #c9a86b;
+    border-radius: 12px;
+    font-size: 0.86rem;
+    color: #3d2914;
+  }
+  .fp-play-alt-chip button {
+    border: none;
+    background: transparent;
+    color: #8a3a1a;
+    font-size: 1rem;
+    line-height: 1;
+    padding: 0 4px;
+    cursor: pointer;
+  }
+  .fp-play-alt-chip button:hover { color: #c9621e; }
+  .fp-play-add-row { display: flex; gap: 6px; align-items: center; }
+  .fp-play-alt-new {
+    flex: 1;
+    padding: 5px 8px;
+    font-size: 0.9rem;
+    border: 1px solid #d6c4a3;
+    border-radius: 4px;
+    background: #fff;
+    color: #5a3e1f;
+  }
+  .fp-play-spreads-wrap { margin: 4px 0 6px 0; }
+  .fp-play-spread-block { margin-bottom: 14px; }
+  .fp-play-spread-block:last-child { margin-bottom: 4px; }
+  .fp-play-spread-metric {
+    font-weight: 600;
+    color: #5a3e1f;
+    font-size: 0.94rem;
+    margin: 0 0 4px 0;
+  }
+  table.fp-play-spread-table {
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    width: 100%;
+    max-width: 560px;
+  }
+  .fp-play-spread-table th,
+  .fp-play-spread-table td {
+    border: 1px solid #d6c4a3;
+    padding: 3px 5px;
+    text-align: left;
+  }
+  .fp-play-spread-table thead th {
+    background: #faf0d5;
+    color: #3d2914;
+    font-weight: 600;
+    text-align: center;
+  }
+  .fp-play-spread-table tbody th {
+    background: #faf5e6;
+    color: #3d2914;
+    font-weight: 500;
+    white-space: nowrap;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .fp-play-spread-table input {
+    width: 68px;
+    padding: 3px 5px;
+    font-size: 0.88rem;
+    border: 1px solid #d6c4a3;
+    border-radius: 3px;
+    background: #fff;
+    color: #5a3e1f;
+    text-align: right;
+  }
+  .fp-play-spread-table input:invalid { border-color: #c9621e; background: #fff5ee; }
+  .fp-play-actions-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 4px;
+  }
+  .fp-play-instruction { margin: 0 0 8px 0; font-size: 0.88rem; }
+  .fp-play-charts {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .fp-play-chart {
+    background: #fbf9f4;
+    border: 1px solid #ede0bd;
+    border-radius: 5px;
+    padding: 8px 10px;
+  }
+  .fp-play-chart-title {
+    font-weight: 600;
+    color: #5a3e1f;
+    font-size: 0.92rem;
+    margin: 0 0 4px 0;
+  }
+  .fp-play-chart svg { width: 100%; height: auto; display: block; }
+  .fp-play-bar { fill: #c9a86b; stroke: #8a6a2f; stroke-width: 1; cursor: pointer; transition: fill 120ms; }
+  .fp-play-bar:hover { fill: #8a3a1a; }
+  .fp-play-bar-disabled { fill: #d6c4a3; stroke: #a89273; cursor: not-allowed; }
+  .fp-play-bar-disabled:hover { fill: #d6c4a3; }
+  .fp-play-whisker { stroke: #5a3e1f; stroke-width: 1.4; fill: none; }
+  .fp-play-median { stroke: #3d2914; stroke-width: 2; }
+  .fp-play-realized {
+    fill: #8a3a1a;
+    stroke: #3d2914;
+    stroke-width: 1;
+  }
+  .fp-play-axis { stroke: #5a4a35; stroke-width: 1; }
+  .fp-play-axis-label { fill: #5a4a35; font-size: 10px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+  .fp-play-alt-label { fill: #3d2914; font-size: 11px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; text-anchor: middle; }
+  .fp-play-history {
+    max-height: 180px;
+    overflow-y: auto;
+    background: #fbf9f4;
+    border: 1px solid #ede0bd;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 0.87rem;
+    color: #3d2914;
+  }
+  .fp-play-history-row { padding: 2px 0; border-bottom: 1px dashed #ede0bd; }
+  .fp-play-history-row:last-child { border-bottom: none; }
+  .fp-play-history-t { display: inline-block; min-width: 42px; font-weight: 600; color: #5a3e1f; }
+  .fp-play-history-alt { color: #8a3a1a; font-weight: 500; }
+  .fp-play-history-sample { color: #5a4a35; }
+
+  /* ▶ Play button on (disc) decision rows */
+  .fp-play-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+    min-width: 22px;
+    height: 22px;
+    font-size: 0.78rem;
+    line-height: 20px;
+    color: #8a3a1a;
+    background: #faf0d5;
+    border: 1px solid #c9a86b;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+  .fp-play-btn:hover { background: #ede0bd; color: #6a2a10; }
+
+  /* ══════════════════════════════════════════════════════════
+     Modeling section — two-column grid: modeling inputs on the
+     left, decision list (with ▶ Play buttons) on the right so
+     the play modal has room to spawn without covering the list.
+     Collapses to one column on narrow screens.
+     ══════════════════════════════════════════════════════════ */
+  .fp-modeling-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 16px;
+    margin: 12px 0 20px;
+  }
+  @media (max-width: 900px) {
+    .fp-modeling-grid { grid-template-columns: 1fr; }
+  }
+  .fp-modeling-card { margin: 0 0 12px 0; }
+  .fp-modeling-h3 {
+    font-size: 1.05rem;
+    color: #5a4a35;
+    margin: 0 0 8px 0;
+  }
+  .fp-modeling-decisions {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .fp-modeling-decisions .fp-modeling-decision {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px;
+    background: #fff;
+    border: 1px solid #d6c4a3;
+    border-radius: 5px;
+  }
+  .fp-modeling-decisions .fp-modeling-decision-name {
+    flex: 1; overflow-wrap: anywhere;
+    color: #3d2914;
+  }
+  .fp-modeling-decisions .fp-modeling-decision-play {
+    background: #faf0d5;
+    border: 1px solid #c9a86b;
+    color: #8a3a1a;
+    font-weight: 600;
+    padding: 4px 12px; min-height: 32px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  .fp-modeling-decisions .fp-modeling-decision-play:hover {
+    background: #ede0bd; color: #6a2a10;
+  }
+  .fp-modeling-decisions-empty {
+    color: #7a6a55;
+    font-style: italic;
+    padding: 12px 4px;
+  }
+
+  /* ── Performance metric equations (Modeling section) ─────── */
+  .fp-metric-eq-row {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    margin: 6px 0 10px;
+  }
+  .fp-metric-eq-row label { flex: 1; min-width: 180px; display: block; }
+  .fp-metric-eq-lbl {
+    display: block;
+    font-size: 0.85rem; font-weight: 600; color: #5a4a35;
+    margin: 6px 0 4px;
+  }
+  .fp-metric-eq-lbl .fp-muted { font-weight: 400; }
+  #fp-metric-eq-select,
+  #fp-metric-eq-label,
+  #fp-metric-eq-formula {
+    width: 100%; box-sizing: border-box;
+    padding: 8px 12px;
+    font-family: inherit; font-size: 0.95rem;
+    border: 1px solid #c9b891; border-radius: 4px;
+    background: #fff; color: #333;
+  }
+  #fp-metric-eq-formula {
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    resize: vertical; min-height: 60px;
+  }
+  #fp-metric-eq-select:focus,
+  #fp-metric-eq-label:focus,
+  #fp-metric-eq-formula:focus {
+    outline: none; border-color: #c9621e;
+    box-shadow: 0 0 0 2px rgba(201, 98, 30, 0.15);
+  }
+  .fp-metric-eq-preview {
+    margin: 10px 0;
+    padding: 10px 14px;
+    background: #faf6ea;
+    border: 1px dashed #d6c4a3;
+    border-radius: 4px;
+    min-height: 40px;
+    font-size: 1rem;
+    color: #3d2914;
+    overflow-x: auto;
+  }
+  .fp-metric-eq-list {
+    list-style: none; padding: 0; margin: 8px 0 0;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .fp-metric-eq-list li {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 10px;
+    background: #fff;
+    border: 1px solid #d6c4a3;
+    border-radius: 4px;
+    font-size: 0.92rem;
+  }
+  .fp-metric-eq-list-name { color: #3d2914; font-weight: 500; min-width: 140px; }
+  .fp-metric-eq-list-label { color: #8a3a1a; font-family: ui-monospace, Menlo, Consolas, monospace; }
+  .fp-metric-eq-list-formula { flex: 1; color: #5a4a35; font-family: ui-monospace, Menlo, Consolas, monospace; overflow-x: auto; white-space: nowrap; }
+  .fp-metric-eq-list button {
+    background: transparent; border: none; color: #7a6a55;
+    font-size: 0.9rem; cursor: pointer; padding: 2px 6px;
+  }
+  .fp-metric-eq-list button:hover { color: #8a3a1a; }
 
   /* URL-display modal (first publish, sub-node creation, regenerate) */
   .fp-urls-lede { margin: 0 0 12px 0; color: #5a4a35; font-size: 0.95rem; }
@@ -1426,17 +1926,22 @@ date: 2026-08-11
     color: #7a6a55;
   }
 
-  /* Decisions/Uncertainties textareas reuse the metrics textarea styling. */
+  /* Decisions/Uncertainties textareas — locked line-height so each entry
+     lines up with one attribute row on the right. wrap="off" (HTML attr)
+     keeps long lines on a single line. */
   #fp-decisions-input,
   #fp-uncertainties-input {
-    width: 100%; min-height: 180px;
-    padding: 8px 10px;
+    width: 100%; min-height: 210px;
+    padding: 6px 10px;
     border: 1px solid #c9b891; border-radius: 4px;
     font-family: inherit; font-size: 0.95rem;
+    line-height: 30px;
     resize: vertical;
     box-sizing: border-box;
     background: #fff;
     color: #333;
+    white-space: pre;
+    overflow-x: auto;
   }
 
   /* Impact matrix — table with clickable cells and draggable rows.
@@ -1560,6 +2065,29 @@ date: 2026-08-11
     font-weight: 600;
     border-color: #c9a76a;
   }
+  /* Labeled "Sub-decisions" button in the Attributes side column —
+     replaces the bare ▸ triangle so the affordance is obvious. */
+  .fp-subdec-btn {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 8px;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    border: 1px solid #d6c4a3;
+    border-radius: 4px;
+    background: #faf5e6;
+    color: #5a3e1f;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+  .fp-subdec-btn:hover { background: #f2e6c9; }
+  .fp-subdec-btn-has {
+    background: #f2e6c9;
+    font-weight: 600;
+    border-color: #c9a76a;
+  }
+  .fp-subdec-btn-has:hover { background: #ecdcb4; }
   .fp-drill-inline {
     display: inline-block;
     padding: 0 5px;
@@ -1599,6 +2127,121 @@ date: 2026-08-11
     font-family: "Cambria", "Times New Roman", serif;   /* mathy feel */
   }
   .fp-decision-kind-num:hover { background: #cbdcea; }
+  /* Timing chip — (stat) vs (dyn) — applied to decisions and uncertainties.
+     Sits next to the kind chip. Cycle: (stat) ↔ (dyn), toggle on click.
+     Default is (dyn) (implicit; only 'stat' is stored). */
+  .fp-timing-chip {
+    display: inline-block;
+    margin-left: 4px;
+    padding: 1px 6px;
+    font-size: 0.78rem;
+    line-height: 1.3;
+    border-radius: 4px;
+    border: 1px solid;
+    cursor: pointer;
+    vertical-align: 1px;
+    white-space: nowrap;
+    font-family: inherit;
+    font-weight: 600;
+  }
+  .fp-timing-dyn {
+    border-color: #b57ec9; background: #efe4f3; color: #52226a;
+  }
+  .fp-timing-dyn:hover { background: #e2cde9; }
+  .fp-timing-stat {
+    border-color: #a89988; background: #f0ebe1; color: #4a3f30;
+  }
+  .fp-timing-stat:hover { background: #e2dbcd; }
+
+  /* Per-decision (and per-uncertainty) attributes list — sits to the
+     RIGHT of the textarea inside the same panel. One row per entry
+     carrying the (gen)/(disc)/(num) kind chip, (stat)/(dyn) timing chip,
+     and (decisions only) ▸ drill-in button, so the matrix cell can stay
+     uncluttered (drag handle + name only). On narrow screens the pair
+     stacks vertically. */
+  .fp-decisions-body {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+  }
+  .fp-decisions-body > textarea {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .fp-decision-attrs-side {
+    /* Wide enough for two chips + a labeled "Sub-decisions ›" button. */
+    flex: 0 0 260px;
+    min-width: 0;
+    display: flex; flex-direction: column;
+  }
+  @media (max-width: 700px) {
+    .fp-decisions-body { flex-direction: column; }
+    .fp-decisions-body > textarea,
+    .fp-decision-attrs-side { flex: 1 1 auto; }
+  }
+  .fp-decision-attrs-header {
+    margin: 0 0 4px 0;
+    font-size: 0.85rem;
+    color: #5a3e1f;
+    display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap;
+  }
+  .fp-decision-attrs-header .fp-muted { font-size: 0.78rem; }
+  .fp-decision-attrs {
+    flex: 1 1 auto;
+    display: flex; flex-direction: column; gap: 0;
+    padding: 6px 0 0 0;   /* match textarea's 6px top padding */
+    max-height: 480px;
+    overflow-y: auto;
+    /* Match textarea's border height so both start at the same y */
+    border-top: 1px solid transparent;
+  }
+  .fp-decision-attr-row {
+    display: flex; align-items: center; gap: 4px;
+    height: 30px;                 /* exactly one textarea line-height */
+    padding: 0 8px;
+    background: #f7efd8;
+    border-bottom: 1px solid #e2d4b0;
+    font-size: 0.92rem;
+  }
+  .fp-decision-attr-row:nth-child(even) { background: #f2e6c3; }
+  /* Spacer for blank / in-progress lines in the textarea — one per line,
+     30px tall, so the attribute rows on the right stay line-aligned with
+     the textarea on the left. */
+  .fp-decision-attr-spacer {
+    height: 30px;
+    background: transparent;
+  }
+  .fp-decision-attr-name {
+    flex: 1; min-width: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    color: #3a2d18;
+  }
+  .fp-decision-attrs-empty {
+    padding: 6px 8px;
+    color: #7a6a4a;
+    font-size: 0.85rem;
+    font-style: italic;
+  }
+
+  /* Time step + horizon inputs at the top of the Problem scope card. */
+  .fp-time-input-row {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .fp-time-input-num {
+    width: 5em; padding: 4px 6px;
+    border: 1px solid #c9b891; border-radius: 4px;
+    font-family: inherit; font-size: 0.9rem;
+  }
+  .fp-time-input-num:focus { outline: 1px solid #c9621e; border-color: #c9621e; }
+  .fp-time-input-unit {
+    padding: 4px 6px;
+    border: 1px solid #c9b891; border-radius: 4px;
+    font-family: inherit; font-size: 0.9rem;
+    background: #fff;
+  }
+  .fp-time-derived {
+    font-size: 0.85em; margin-left: 6px;
+  }
   /* Uncertainty scope chip — appears after the uncertainty name in the
      matrix row when the uncertainty was generated while drilled into a
      specific sub-decision. Distinguishes "for: X" scope-tagged rows
@@ -1829,11 +2472,8 @@ date: 2026-08-11
     margin: 8px 0;
   }
   .fp-qcard-q {
-    display: block;
-    font-weight: 600;
-    color: #3d2914;
-    font-size: 0.98rem;
-    margin: 0 0 6px 0;
+    display: block; font-weight: 600; color: #3d2914;
+    font-size: 0.98rem; margin: 0 0 6px 0;
   }
   .fp-qcard-q .fp-muted { font-weight: 400; color: #7a6a55; font-size: 0.85rem; }
   .fp-qcard textarea {
@@ -1842,8 +2482,7 @@ date: 2026-08-11
     font-family: inherit; font-size: 0.95rem;
     border: 1px solid #c9b891; border-radius: 4px;
     background: #fff; color: #333;
-    resize: vertical; min-height: 60px;
-    margin-bottom: 8px;
+    resize: vertical; min-height: 60px; margin-bottom: 8px;
   }
   .fp-qcard textarea:focus {
     outline: none; border-color: #c9621e;
@@ -2085,24 +2724,6 @@ date: 2026-08-11
   }
 </style>
 
-<!-- Mobile redirect: if the viewport is narrower than the desktop tool
-     can reasonably handle, hop the reader to the mobile wizard version
-     unless they've opted out via ?forceDesktop=1. Query params on the
-     current URL (?node=…, ?admin=…, ?w=…, ?backend=beta) are preserved
-     so a link shared to a phone still lands on the right library. -->
-<script>
-(function () {
-  try {
-    var params = new URLSearchParams(window.location.search);
-    if (params.get('forceDesktop') === '1') return;
-    if (window.innerWidth >= 700) return;
-    var target = '/decision-framing-tool-mobile/';
-    var qs = window.location.search;
-    window.location.replace(target + (qs || ''));
-  } catch (_) { /* on any error, stay on desktop */ }
-})();
-</script>
-
 <script>
 (function () {
   const STORAGE_KEY = 'framing_pyramid_v1';       // "working" (autosave) state
@@ -2121,20 +2742,20 @@ date: 2026-08-11
   //   matrix       : { decision: { metric: 'H'|'M'|'L'|'N' } } —
   //                  missing = blank (not yet scored).
   let state = {
-    title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '',
+    title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', metricLabels: {}, metricEquations: {}, constraints: [], transitionEquations: [], timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
+    problemParameters: '',
+    metricLabels: {},     // metric name → short math label (e.g. "C_{cost}")
+    metricEquations: {},  // metric name → LaTeX formula string
+    constraints: [],           // [{name, formula}]
+    transitionEquations: [],   // [{name, formula}]
     promptAnswers: { decisionMaker: '', setting: '', history: '', goals: '', other: '' },
     metrics: [], assignments: {}, chipColors: {},
-    decisions: [], matrix: {}, decisionKinds: {}, subframes: {},
-    uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
+    decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
+    uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
   };
-  // Guided-prompt questions. Q1 (decisionMaker) uses id="fp-scope-input"
-  // and maps to state.scope for backward compat with every downstream
-  // reader; Q2-Q5 map to state.promptAnswers.* and get concatenated
-  // (with LABEL: prefixes) into state.problemDescription — that value
-  // is mirrored into the hidden #fp-bot-desc textarea so old AI-call
-  // sites keep reading it unchanged.
+  // Guided-prompt questions (same 5 as production + mobile).
   const PROMPT_QUESTIONS = [
-    { key: 'decisionMaker', inputId: 'fp-scope-input', label: 'DECISION MAKER',   heading: 'Who is making the decision?', mirrorState: 'scope' },
+    { key: 'decisionMaker', inputId: 'fp-scope-input', label: 'DECISION MAKER',   heading: 'Who is making the decision?' },
     { key: 'setting',       inputId: 'fp-q-setting',   label: 'PROBLEM SETTING',  heading: 'What is the problem setting?' },
     { key: 'history',       inputId: 'fp-q-history',   label: 'RELEVANT HISTORY', heading: 'Is there relevant history?' },
     { key: 'goals',         inputId: 'fp-q-goals',     label: 'GOALS',            heading: 'What are you trying to achieve?' },
@@ -2147,35 +2768,76 @@ date: 2026-08-11
     for (const q of PROMPT_QUESTIONS) {
       if (typeof state.promptAnswers[q.key] !== 'string') state.promptAnswers[q.key] = '';
     }
-    // Seed decisionMaker from legacy state.scope, and put legacy
-    // problemDescription into "other" if the guided answers are empty
-    // — so returning users don't lose their prior text.
     const anyAnswered = PROMPT_QUESTIONS.some(q => state.promptAnswers[q.key].trim());
     if (!anyAnswered) {
       if (state.scope && state.scope.trim()) state.promptAnswers.decisionMaker = state.scope.trim();
       if (state.problemDescription && state.problemDescription.trim()) state.promptAnswers.other = state.problemDescription.trim();
     }
   }
-  // ── Voice input (Web Speech API) — desktop ────────────────
-  // One shared SpeechRecognition instance across every 🎤 button on the
-  // page. Tapping any button stops any active recording and starts a
-  // fresh one bound to the tapped textarea. Silent fallback when the
-  // browser has no Web Speech API.
+  function buildDerivedDesc() {
+    hydratePromptAnswers();
+    state.scope = (state.promptAnswers.decisionMaker || '').trim();
+    const parts = [];
+    for (const q of PROMPT_QUESTIONS) {
+      if (q.key === 'decisionMaker') continue;
+      const val = (state.promptAnswers[q.key] || '').trim();
+      if (val) parts.push(q.label + ': ' + val);
+    }
+    state.problemDescription = parts.join('\n\n');
+    const desc = document.getElementById('fp-bot-desc');
+    if (desc) desc.value = state.problemDescription;
+  }
+  // Updates the "N of 5 answered" chip on the Contextual background
+  // launcher so the user can see at a glance how much they've filled in
+  // without opening the modal.
+  function updateContextCounter() {
+    const el = document.getElementById('fp-context-counter');
+    if (!el) return;
+    let filled = 0;
+    for (const q of PROMPT_QUESTIONS) {
+      if ((state.promptAnswers[q.key] || '').trim()) filled++;
+    }
+    if (filled === 0) {
+      el.hidden = true;
+    } else {
+      el.hidden = false;
+      el.textContent = filled + ' of ' + PROMPT_QUESTIONS.length + ' answered';
+    }
+  }
+  function renderPromptCards() {
+    hydratePromptAnswers();
+    for (const q of PROMPT_QUESTIONS) {
+      const el = document.getElementById(q.inputId);
+      if (el) el.value = state.promptAnswers[q.key] || '';
+    }
+    buildDerivedDesc();
+    updateContextCounter();
+    // Also refresh Modeling-section inputs so they follow the same
+    // load/reset paths as the prompt cards.
+    const pp = document.getElementById('fp-problem-parameters');
+    if (pp) pp.value = state.problemParameters || '';
+    renderModelingDecisions();
+    renderMetricEquationsCard();
+    // Refresh constraint + transition lists too.
+    if (document.getElementById('fp-constraint-list')) {
+      renderNamedEqList('fp-constraint-list', 'constraints',
+                        'fp-constraint-name', 'fp-constraint-formula', 'fp-constraint-preview');
+    }
+    if (document.getElementById('fp-transition-list')) {
+      renderNamedEqList('fp-transition-list', 'transitionEquations',
+                        'fp-transition-name', 'fp-transition-formula', 'fp-transition-preview');
+    }
+  }
+  // Voice input — shared SpeechRecognition instance across all 🎤
+  // buttons. Silent fallback when the browser has no Web Speech API.
   let fpVoiceState = { R: null, rec: null, targetEl: null, btnEl: null, baseText: '' };
   function initFpVoiceInputs() {
     fpVoiceState.R = window.SpeechRecognition || window.webkitSpeechRecognition;
     const buttons = document.querySelectorAll('.fp-speak-btn');
-    if (!fpVoiceState.R) {
-      buttons.forEach(b => { b.style.display = 'none'; });
-      return;
-    }
+    if (!fpVoiceState.R) { buttons.forEach(b => { b.style.display = 'none'; }); return; }
     buttons.forEach(btn => btn.addEventListener('click', () => onFpSpeakClick(btn)));
   }
-  function fpSpeakLabel(recording) {
-    return recording
-      ? '<span class="fp-mic-glyph">■</span>Stop'
-      : '<span class="fp-mic-glyph">🎤</span>Speak';
-  }
+  function fpSpeakLabel(recording) { return recording ? '<span class="fp-mic-glyph">■</span>Stop' : '<span class="fp-mic-glyph">🎤</span>Speak'; }
   function fpStopVoice() { if (fpVoiceState.rec) { try { fpVoiceState.rec.stop(); } catch (_) {} } }
   function fpResetVoiceBtn() {
     if (fpVoiceState.btnEl) {
@@ -2199,18 +2861,14 @@ date: 2026-08-11
     if (!targetEl) return;
     const rec = new fpVoiceState.R();
     rec.lang = navigator.language || 'en-US';
-    rec.continuous = true;
-    rec.interimResults = true;
-    fpVoiceState.rec = rec;
-    fpVoiceState.btnEl = btn;
-    fpVoiceState.targetEl = targetEl;
-    fpVoiceState.baseText = targetEl.value || '';
+    rec.continuous = true; rec.interimResults = true;
+    fpVoiceState.rec = rec; fpVoiceState.btnEl = btn;
+    fpVoiceState.targetEl = targetEl; fpVoiceState.baseText = targetEl.value || '';
     rec.onresult = (e) => {
       let final = '', interim = '';
       for (let i = e.resultIndex; i < e.results.length; i++) {
         const r = e.results[i];
-        if (r.isFinal) final += r[0].transcript;
-        else interim += r[0].transcript;
+        if (r.isFinal) final += r[0].transcript; else interim += r[0].transcript;
       }
       const sep = fpVoiceState.baseText && !/[\s]$/.test(fpVoiceState.baseText) ? ' ' : '';
       targetEl.value = fpVoiceState.baseText + sep + final + interim;
@@ -2219,47 +2877,12 @@ date: 2026-08-11
     rec.onend = () => { fpVoiceState.rec = null; fpResetVoiceBtn(); fpSetHint(targetId, ''); };
     rec.onerror = (e) => { fpVoiceState.rec = null; fpResetVoiceBtn(); fpSetHint(targetId, 'Voice: ' + (e.error || 'unknown') + '. Type instead.', true); };
     try {
-      rec.start();
-      btn.classList.add('is-recording');
-      btn.innerHTML = fpSpeakLabel(true);
+      rec.start(); btn.classList.add('is-recording'); btn.innerHTML = fpSpeakLabel(true);
       fpSetHint(targetId, 'Listening…');
     } catch (err) {
       fpVoiceState.rec = null; fpResetVoiceBtn();
       fpSetHint(targetId, 'Voice failed: ' + (err.message || err), true);
     }
-  }
-
-  // Populate all 5 guided-prompt textareas from state and refresh the
-  // derived state.scope / state.problemDescription / hidden #fp-bot-desc
-  // in one shot. Every load/reset site calls this instead of poking
-  // #fp-scope-input and #fp-bot-desc individually.
-  function renderPromptCards() {
-    hydratePromptAnswers();
-    for (const q of PROMPT_QUESTIONS) {
-      const el = document.getElementById(q.inputId);
-      if (el) el.value = state.promptAnswers[q.key] || '';
-    }
-    buildDerivedDesc();
-  }
-  // Recompute the labelled context blob (Q2-Q5 only — Q1 lives in
-  // state.scope) and mirror it into state.problemDescription + the
-  // hidden #fp-bot-desc textarea. Called after every keystroke on any
-  // guided-prompt textarea.
-  function buildDerivedDesc() {
-    hydratePromptAnswers();
-    // Q1 → state.scope
-    state.scope = (state.promptAnswers.decisionMaker || '').trim();
-    // Q2-Q5 → labelled blob
-    const parts = [];
-    for (const q of PROMPT_QUESTIONS) {
-      if (q.key === 'decisionMaker') continue;   // that's state.scope
-      const val = (state.promptAnswers[q.key] || '').trim();
-      if (val) parts.push(q.label + ': ' + val);
-    }
-    state.problemDescription = parts.join('\n\n');
-    // Mirror into the hidden textarea every existing AI-call site reads.
-    const desc = document.getElementById('fp-bot-desc');
-    if (desc) desc.value = state.problemDescription;
   }
   let currentName = null;   // which named file, if any, is currently loaded
   // Current position in the decision tree. Empty array = top level.
@@ -2309,6 +2932,13 @@ date: 2026-08-11
       problemUrl:         (s && typeof s.problemUrl === 'string')         ? s.problemUrl         : '',
       problemNotes:       (s && typeof s.problemNotes === 'string')       ? s.problemNotes       : '',
       problemNotesSource: (s && typeof s.problemNotesSource === 'string') ? s.problemNotesSource : '',
+      timeStep:           normalizeTimeSpec(s && s.timeStep),
+      horizon:            normalizeTimeSpec(s && s.horizon, /* allowPeriods */ true),
+      problemParameters:  (s && typeof s.problemParameters === 'string') ? s.problemParameters : '',
+      metricLabels:       (s && s.metricLabels    && typeof s.metricLabels    === 'object') ? s.metricLabels    : {},
+      metricEquations:    (s && s.metricEquations && typeof s.metricEquations === 'object') ? s.metricEquations : {},
+      constraints:        Array.isArray(s && s.constraints)         ? s.constraints         : [],
+      transitionEquations:Array.isArray(s && s.transitionEquations) ? s.transitionEquations : [],
       promptAnswers:      (s && s.promptAnswers && typeof s.promptAnswers === 'object') ? s.promptAnswers : { decisionMaker: '', setting: '', history: '', goals: '', other: '' },
       metrics:       Array.isArray(s && s.metrics)            ? s.metrics      : [],
       assignments:   (s && s.assignments)                ? s.assignments   : {},
@@ -2316,10 +2946,14 @@ date: 2026-08-11
       decisions:     Array.isArray(s && s.decisions)     ? s.decisions     : [],
       matrix:        (s && s.matrix)                     ? s.matrix        : {},
       decisionKinds: normalizeDecisionKinds(s && s.decisionKinds),
+      decisionTimings: normalizeTimings(s && s.decisionTimings),
       subframes:     normalizeSubframes(s && s.subframes),
+      playConfigs:   normalizePlayConfigs(s && s.playConfigs),
       uncertainties: Array.isArray(s && s.uncertainties) ? s.uncertainties : [],
       uMatrix:       (s && s.uMatrix)                    ? s.uMatrix       : {},
-      uncertaintyScopes: normalizeUncertaintyScopes(s && s.uncertaintyScopes),
+      uncertaintyScopes:   normalizeUncertaintyScopes(s && s.uncertaintyScopes),
+      uncertaintyKinds:    normalizeDecisionKinds(s && s.uncertaintyKinds),   // reuse gen/disc/num validator
+      uncertaintyTimings:  normalizeTimings(s && s.uncertaintyTimings),
     };
   }
   // Per-uncertainty scope map: uncertainty name → parentPath (array of
@@ -2343,6 +2977,99 @@ date: 2026-08-11
       if (v === 'spec') v = 'disc';         // legacy alias
       if (v === 'disc' || v === 'num') out[k] = v;
       // 'gen' is the default — we only need to record non-default kinds.
+    }
+    return out;
+  }
+  // Per-item timing map (decision or uncertainty name → 'stat' or 'dyn').
+  // Missing entries mean 'dyn' (the default — most sequential decision
+  // analytics deals with dynamic decisions/uncertainties). Sparse: we
+  // only record 'stat' explicitly.
+  function normalizeTimings(tm) {
+    const out = {};
+    if (!tm || typeof tm !== 'object') return out;
+    for (const k of Object.keys(tm)) {
+      if (typeof k !== 'string' || !k) continue;
+      const v = String(tm[k] || '').toLowerCase();
+      if (v === 'stat') out[k] = 'stat';
+      // 'dyn' is the default — no need to store.
+    }
+    return out;
+  }
+  // Time step / horizon spec: { value: '' | number, unit: '' | wall-clock }.
+  // Wall-clock units: seconds | minutes | hours | days | weeks | months |
+  // quarters | years. Horizon may additionally carry unit = 'periods' to
+  // count against the time-step unit directly. Empty when the user hasn't
+  // filled it in — no default (forces the choice).
+  const WALL_UNITS = ['seconds','minutes','hours','days','weeks','months','quarters','years'];
+  function normalizeTimeSpec(ts, allowPeriods) {
+    if (!ts || typeof ts !== 'object') return { value: '', unit: '' };
+    const rawVal = ts.value;
+    const value = (rawVal === '' || rawVal == null) ? '' : (Number.isFinite(Number(rawVal)) ? String(rawVal) : '');
+    const unitRaw = String(ts.unit || '').toLowerCase();
+    const allowed = allowPeriods ? WALL_UNITS.concat(['periods']) : WALL_UNITS;
+    const unit = allowed.indexOf(unitRaw) >= 0 ? unitRaw : '';
+    return { value, unit };
+  }
+  // Per-decision play configuration (per-frame; sub-frames get their own).
+  // Keyed by decision name → { alternatives, mode, spreads, history }.
+  //   alternatives : ordered list of strings (choice names).
+  //   mode         : 'repeated' (default) | 'one-shot'.
+  //   spreads      : { metricName: { altName: [p10, p50, p90] } }.
+  //                  Numbers only; missing → cell blank, missing whole
+  //                  metric row → no spread specified yet.
+  //   history      : [{ t, alt, samples: { metricName: value } }, …] —
+  //                  the record of picks + realized draws in play mode.
+  //                  t starts at 1 (round number).
+  // Only decisions that the user has actually opened in the Play modal
+  // appear here; other decisions leave the map sparse.
+  function normalizePlayConfigs(pc) {
+    const out = {};
+    if (!pc || typeof pc !== 'object') return out;
+    for (const decName of Object.keys(pc)) {
+      if (typeof decName !== 'string' || !decName) continue;
+      const raw = pc[decName];
+      if (!raw || typeof raw !== 'object') continue;
+      const alts = Array.isArray(raw.alternatives)
+        ? raw.alternatives.filter(a => typeof a === 'string' && a.trim()).map(a => a.trim())
+        : [];
+      const mode = raw.mode === 'one-shot' ? 'one-shot' : 'repeated';
+      const spreads = {};
+      if (raw.spreads && typeof raw.spreads === 'object') {
+        for (const m of Object.keys(raw.spreads)) {
+          if (typeof m !== 'string' || !m) continue;
+          const row = raw.spreads[m];
+          if (!row || typeof row !== 'object') continue;
+          const cleanedRow = {};
+          for (const a of Object.keys(row)) {
+            const cell = row[a];
+            if (Array.isArray(cell) && cell.length === 3) {
+              const nums = cell.map(v => (v === '' || v == null || !Number.isFinite(Number(v))) ? '' : Number(v));
+              cleanedRow[a] = nums;
+            }
+          }
+          if (Object.keys(cleanedRow).length) spreads[m] = cleanedRow;
+        }
+      }
+      const history = [];
+      if (Array.isArray(raw.history)) {
+        for (const h of raw.history) {
+          if (!h || typeof h !== 'object') continue;
+          const t = Number(h.t);
+          if (!Number.isFinite(t) || t < 1) continue;
+          const alt = typeof h.alt === 'string' ? h.alt : '';
+          if (!alt) continue;
+          const samples = {};
+          if (h.samples && typeof h.samples === 'object') {
+            for (const m of Object.keys(h.samples)) {
+              const v = Number(h.samples[m]);
+              if (Number.isFinite(v)) samples[m] = v;
+            }
+          }
+          history.push({ t: Math.floor(t), alt, samples });
+        }
+        history.sort((a, b) => a.t - b.t);
+      }
+      out[decName] = { alternatives: alts, mode, spreads, history };
     }
     return out;
   }
@@ -2372,8 +3099,10 @@ date: 2026-08-11
         scope:     (typeof f.scope === 'string') ? f.scope : '',
         decisions: Array.isArray(f.decisions)    ? f.decisions : [],
         matrix:    (f.matrix && typeof f.matrix === 'object') ? f.matrix : {},
-        decisionKinds: normalizeDecisionKinds(f.decisionKinds),
+        decisionKinds:   normalizeDecisionKinds(f.decisionKinds),
+        decisionTimings: normalizeTimings(f.decisionTimings),
         subframes: normalizeSubframes(f.subframes),
+        playConfigs: normalizePlayConfigs(f.playConfigs),
       };
     }
     return out;
@@ -2404,7 +3133,7 @@ date: 2026-08-11
     if (!parentFrame.subframes) parentFrame.subframes = {};
     if (!parentFrame.subframes[name]) {
       parentFrame.subframes[name] = {
-        scope: '', decisions: [], matrix: {}, decisionKinds: {}, subframes: {},
+        scope: '', decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
       };
     }
     return parentFrame.subframes[name];
@@ -2614,9 +3343,6 @@ date: 2026-08-11
     }
   }
   function snapshotForSave() {
-    // Keep the derived context fresh before serializing so the saved
-    // state.scope / state.problemDescription reflect the latest
-    // guided-prompt answers.
     buildDerivedDesc();
     return {
       title: state.title,
@@ -2627,16 +3353,27 @@ date: 2026-08-11
       problemNotes: state.problemNotes,
       problemNotesSource: state.problemNotesSource,
       promptAnswers: state.promptAnswers,
+      timeStep: state.timeStep,
+      horizon: state.horizon,
+      problemParameters: state.problemParameters,
+      metricLabels: state.metricLabels,
+      metricEquations: state.metricEquations,
+      constraints: state.constraints,
+      transitionEquations: state.transitionEquations,
       metrics: state.metrics,
       assignments: state.assignments,
       chipColors: state.chipColors,
       decisions: state.decisions,
       matrix: state.matrix,
       decisionKinds: state.decisionKinds,
+      decisionTimings: state.decisionTimings,
       subframes: state.subframes,
+      playConfigs: state.playConfigs,
       uncertainties: state.uncertainties,
       uMatrix: state.uMatrix,
       uncertaintyScopes: state.uncertaintyScopes,
+      uncertaintyKinds: state.uncertaintyKinds,
+      uncertaintyTimings: state.uncertaintyTimings,
       savedAt: new Date().toISOString(),
     };
   }
@@ -2758,7 +3495,7 @@ date: 2026-08-11
     setCurrentName(name);
     renderPromptCards();
     $('#fp-bot-url').value             = state.problemUrl || '';
-    renderNotesChip();
+    renderNotesChip(); syncTimeSpecDom();
     $('#fp-metrics-input').value       = state.metrics.join('\n');
     $('#fp-decisions-input').value     = state.decisions.join('\n');
     $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -2923,7 +3660,7 @@ date: 2026-08-11
         setDocTitle('Imported — ' + base);
         renderPromptCards();
         $('#fp-bot-url').value             = state.problemUrl || '';
-        renderNotesChip();
+        renderNotesChip(); syncTimeSpecDom();
         $('#fp-metrics-input').value       = state.metrics.join('\n');
         $('#fp-decisions-input').value     = state.decisions.join('\n');
         $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -3087,6 +3824,7 @@ date: 2026-08-11
     }
     render();
     renderAllMatrices();   // metric columns may have changed
+    renderMetricEquationsCard();  // dropdown reflects the new metrics list
     autoSave();
   }
 
@@ -3226,10 +3964,15 @@ date: 2026-08-11
     if (kind === 'decision') {
       reconcileSubframes(frame, renames, deletes);
       reconcileDecisionKinds(frame, renames, deletes);
+      reconcileTimings(frame, 'decisionTimings', renames, deletes);
     }
-    // Uncertainty-level renames/deletes propagate to the scope map so
-    // a wording tweak keeps the "[under X]" tag and a delete drops it.
-    if (kind === 'uncertainty') reconcileUncertaintyScopes(renames, deletes);
+    // Uncertainty-level renames/deletes propagate to all three uncertainty
+    // sidecar maps so labels follow the renamed item and drop on delete.
+    if (kind === 'uncertainty') {
+      reconcileUncertaintyScopes(renames, deletes);
+      reconcileUncertaintyKinds(renames, deletes);
+      reconcileTimings(state, 'uncertaintyTimings', renames, deletes);
+    }
     renderImpactMatrix(kind);
     autoSave();
   }
@@ -3251,6 +3994,70 @@ date: 2026-08-11
     }
     renderImpactMatrix('decision');
     autoSave();
+  }
+  // Timing toggle — parallels toggleDecisionKind. Applies to any item
+  // (decision on a frame, or uncertainty on the root). Pass the map
+  // that holds the timing entries (frame.decisionTimings or
+  // state.uncertaintyTimings) and the item name.
+  function toggleTiming(mapHolder, mapKey, name) {
+    if (!mapHolder) return;
+    if (!mapHolder[mapKey] || typeof mapHolder[mapKey] !== 'object') mapHolder[mapKey] = {};
+    const cur = mapHolder[mapKey][name] === 'stat' ? 'stat' : 'dyn';
+    const next = cur === 'stat' ? 'dyn' : 'stat';
+    if (next === 'dyn') {
+      delete mapHolder[mapKey][name];      // 'dyn' is the default; keep the map sparse
+    } else {
+      mapHolder[mapKey][name] = next;
+    }
+    autoSave();
+  }
+  // Uncertainty-kind toggle (gen -> disc -> num -> gen). Parallel to
+  // toggleDecisionKind but stored on state.uncertaintyKinds.
+  function toggleUncertaintyKind(name) {
+    if (!state.uncertaintyKinds || typeof state.uncertaintyKinds !== 'object') {
+      state.uncertaintyKinds = {};
+    }
+    const stored = state.uncertaintyKinds[name];
+    const cur = (stored === 'disc' || stored === 'num') ? stored : 'gen';
+    const cycle = { gen: 'disc', disc: 'num', num: 'gen' };
+    const next = cycle[cur];
+    if (next === 'gen') {
+      delete state.uncertaintyKinds[name];
+    } else {
+      state.uncertaintyKinds[name] = next;
+    }
+    renderImpactMatrix('uncertainty');
+    autoSave();
+  }
+  // Reconcile helpers for the new sidecar maps — parallel to
+  // reconcileDecisionKinds. Called from syncListFromTextarea on
+  // rename / delete so labels follow their item.
+  function reconcileTimings(mapHolder, mapKey, renames, deletes) {
+    if (!mapHolder || !mapHolder[mapKey] || typeof mapHolder[mapKey] !== 'object') return;
+    const m = mapHolder[mapKey];
+    for (const [from, to] of renames) {
+      if (from === to) continue;
+      if (m[from]) {
+        if (!m[to]) m[to] = m[from];
+        delete m[from];
+      }
+    }
+    for (const gone of deletes) {
+      if (m[gone]) delete m[gone];
+    }
+  }
+  function reconcileUncertaintyKinds(renames, deletes) {
+    if (!state.uncertaintyKinds) return;
+    for (const [from, to] of renames) {
+      if (from === to) continue;
+      if (state.uncertaintyKinds[from]) {
+        if (!state.uncertaintyKinds[to]) state.uncertaintyKinds[to] = state.uncertaintyKinds[from];
+        delete state.uncertaintyKinds[from];
+      }
+    }
+    for (const gone of deletes) {
+      if (state.uncertaintyKinds[gone]) delete state.uncertaintyKinds[gone];
+    }
   }
   function reconcileDecisionKinds(frame, renames, deletes) {
     if (!frame || !frame.decisionKinds || typeof frame.decisionKinds !== 'object') return;
@@ -3323,6 +4130,9 @@ date: 2026-08-11
     const frame = frameFor(kind);
     const metrics = orderedMetrics();
     const rows = frame[cfg.listKey];
+    // Attributes panel mirrors the list regardless of matrix state.
+    if (kind === 'decision')    renderDecisionAttrs();
+    if (kind === 'uncertainty') renderUncertaintyAttrs();
     if (metrics.length === 0 && rows.length === 0) {
       wrap.innerHTML = '<p class="fp-matrix-empty">' +
         'Add metrics (and drag them into pyramid tiers) above, and list ' +
@@ -3383,69 +4193,14 @@ date: 2026-08-11
       const nameTd = document.createElement('td');
       nameTd.className = 'fp-matrix-decision';
       appendTextWithSlashBreaks(nameTd, name);
-      // Uncertainty scope chip: if this uncertainty was generated while
-      // the user was drilled into a sub-decision, show a small badge with
-      // the leaf-parent name so users can see the row is context-tagged
-      // (rather than a root-level uncertainty applying to everything).
-      if (kind === 'uncertainty') {
-        const scopePath = (state.uncertaintyScopes && state.uncertaintyScopes[name]) || null;
-        if (Array.isArray(scopePath) && scopePath.length) {
-          const chip = document.createElement('span');
-          chip.className = 'fp-u-scope-chip';
-          const leaf = scopePath[scopePath.length - 1];
-          chip.textContent = 'for: ' + leaf;
-          chip.title = 'Generated while drilled into: ' + scopePath.join(' → ') +
-            '. This uncertainty is in the root list but was suggested for that sub-decision context.';
-          nameTd.appendChild(document.createTextNode(' '));
-          nameTd.appendChild(chip);
-        }
-      }
-      // Decision-kind chip: "(gen)", "(disc)", or "(num)" — decisions only.
-      // Default is gen. Click cycles gen -> disc -> num -> gen. Purely
-      // informational for now; later phases will use this to pick solver
-      // types and to distinguish still-drillable categories from
-      // discrete choices from numeric parameters.
+      // Uncertainty chips (kind, timing, and any "for: X" scope tag) now
+      // live in the Attributes list under the Uncertainties textarea, so
+      // the matrix cell stays clean (drag handle + name only).
+      // Right-click anywhere on a decision row still drills in — the
+      // (gen)/(disc)/(num), (stat)/(dyn) chips and ▸ drill button now
+      // live in the Attributes list under the textarea, so the matrix
+      // cell stays clean (drag handle + decision name only).
       if (kind === 'decision') {
-        const kindMap = frame.decisionKinds || {};
-        let stored = kindMap[name];
-        if (stored === 'spec') stored = 'disc';   // legacy alias
-        const dk = (stored === 'disc' || stored === 'num') ? stored : 'gen';
-        const kchip = document.createElement('button');
-        kchip.type = 'button';
-        kchip.className = 'fp-decision-kind-chip fp-decision-kind-' + dk;
-        kchip.textContent = '(' + dk + ')';
-        const titles = {
-          gen:  'General — a broad category of decision that can be refined into sub-decisions ("Choose supplier"). Click to switch to (disc).',
-          disc: 'Discrete — a specific choice from a discrete list ("Buy from ContractCo", "Prescribe metformin"). Click to switch to (num).',
-          num:  'Numeric — a discrete integer or continuous value ("Safety stock = 42", "Price in [0, 100]"). Click to switch to (gen).',
-        };
-        kchip.title = titles[dk];
-        kchip.addEventListener('click', (e) => {
-          e.stopPropagation();
-          toggleDecisionKind(frame, name);
-        });
-        nameTd.appendChild(document.createTextNode(' '));
-        nameTd.appendChild(kchip);
-      }
-      // Drill-in affordance — decisions only. Click (or right-click
-      // anywhere on the row) descends into this decision's own
-      // sub-decisions. The badge shows how many sub-decisions already
-      // exist so users can see which parent decisions have a sub-tree.
-      if (kind === 'decision') {
-        const count = subDecisionCount(frame, name);
-        const drill = document.createElement('button');
-        drill.type = 'button';
-        drill.className = 'fp-drill-btn' + (count > 0 ? ' fp-drill-btn-has' : '');
-        drill.textContent = count > 0 ? ('▸ ' + count) : '▸';
-        drill.title = count > 0
-          ? ('Drill into ' + count + ' sub-decision' + (count === 1 ? '' : 's'))
-          : 'Add sub-decisions for this decision';
-        drill.addEventListener('click', (e) => {
-          e.stopPropagation();
-          drillInto(name);
-        });
-        nameTd.appendChild(document.createTextNode(' '));
-        nameTd.appendChild(drill);
         tr.addEventListener('contextmenu', (e) => {
           e.preventDefault();
           drillInto(name);
@@ -3470,13 +4225,378 @@ date: 2026-08-11
     wrap.innerHTML = '';
     wrap.appendChild(table);
   }
+  // Per-decision attributes list — one row per line in the Decisions
+  // textarea, carrying the (gen)/(disc)/(num) kind chip, the (stat)/(dyn)
+  // timing chip, and the ▸ drill-in button. Blank / in-progress lines
+  // render as spacer rows so the attribute list stays aligned line-for-
+  // line with the textarea on the left.
+  function renderDecisionAttrs() {
+    const wrap = document.getElementById('fp-decision-attrs');
+    if (!wrap) return;
+    const frame = frameFor('decision');
+    const known = Array.isArray(frame.decisions) ? frame.decisions : [];
+    const knownMap = new Map();  // lower-cased name → canonical name in frame
+    for (const d of known) knownMap.set(d.trim().toLowerCase(), d);
+    const ta = document.getElementById('fp-decisions-input');
+    const raw = ta ? ta.value : known.join('\n');
+    const lines = raw.split('\n');
+    wrap.innerHTML = '';
+    if (known.length === 0 && raw.trim() === '') {
+      const empty = document.createElement('div');
+      empty.className = 'fp-decision-attrs-empty';
+      empty.textContent = 'Enter decisions on the left — attribute chips (gen/disc/num, stat/dyn) and the ▸ drill-in button will appear here on the same row.';
+      wrap.appendChild(empty);
+      return;
+    }
+    for (const line of lines) {
+      const trimmed = line.trim();
+      const canonical = trimmed ? knownMap.get(trimmed.toLowerCase()) : null;
+      if (!canonical) {
+        // Blank or in-progress line — render a spacer so alignment holds
+        const spacer = document.createElement('div');
+        spacer.className = 'fp-decision-attr-spacer';
+        wrap.appendChild(spacer);
+        continue;
+      }
+      const name = canonical;
+      const row = document.createElement('div');
+      row.className = 'fp-decision-attr-row';
+      row.dataset.name = name;
+
+      // Name is not repeated here — it appears on the same visual line
+      // in the textarea to the left. The row tooltip still carries it.
+      row.title = name;
+
+      // (gen) / (disc) / (num) kind chip
+      const kindMap = frame.decisionKinds || {};
+      let stored = kindMap[name];
+      if (stored === 'spec') stored = 'disc';   // legacy alias
+      const dk = (stored === 'disc' || stored === 'num') ? stored : 'gen';
+      const kchip = document.createElement('button');
+      kchip.type = 'button';
+      kchip.className = 'fp-decision-kind-chip fp-decision-kind-' + dk;
+      kchip.textContent = '(' + dk + ')';
+      const kTitles = {
+        gen:  'General — a broad category of decision that can be refined into sub-decisions ("Choose supplier"). Click to switch to (disc).',
+        disc: 'Discrete — a specific choice from a discrete list ("Buy from ContractCo", "Prescribe metformin"). Click to switch to (num).',
+        num:  'Numeric — a discrete integer or continuous value ("Safety stock = 42", "Price in [0, 100]"). Click to switch to (gen).',
+      };
+      kchip.title = kTitles[dk];
+      kchip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleDecisionKind(frame, name);
+      });
+      row.appendChild(kchip);
+
+      // (stat) / (dyn) timing chip
+      const timingMap = frame.decisionTimings || {};
+      const dt = timingMap[name] === 'stat' ? 'stat' : 'dyn';
+      const tchip = document.createElement('button');
+      tchip.type = 'button';
+      tchip.className = 'fp-timing-chip fp-timing-' + dt;
+      tchip.textContent = '(' + dt + ')';
+      tchip.title = dt === 'stat'
+        ? 'Static — fixed once at t=0 (design/capacity/one-time choice). Click to switch to (dyn).'
+        : 'Dynamic — can change per period starting at t=0. Click to switch to (stat).';
+      tchip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleTiming(frame, 'decisionTimings', name);
+        renderImpactMatrix('decision');
+      });
+      row.appendChild(tchip);
+
+      // Sub-decisions button — replaces the old bare ▸ triangle so the
+      // affordance is obvious. Shows the count when > 0.
+      const count = subDecisionCount(frame, name);
+      const drill = document.createElement('button');
+      drill.type = 'button';
+      drill.className = 'fp-subdec-btn' + (count > 0 ? ' fp-subdec-btn-has' : '');
+      drill.textContent = count > 0
+        ? (count + ' sub-decision' + (count === 1 ? '' : 's') + ' ›')
+        : '+ sub-decisions';
+      drill.title = count > 0
+        ? ('Drill into ' + count + ' sub-decision' + (count === 1 ? '' : 's'))
+        : 'Break this decision down into sub-decisions';
+      drill.addEventListener('click', (e) => {
+        e.stopPropagation();
+        drillInto(name);
+      });
+      row.appendChild(drill);
+
+      wrap.appendChild(row);
+    }
+  }
+
+  // Per-uncertainty attributes list — mirrors renderDecisionAttrs but
+  // for uncertainties. Kind chip + timing chip + optional "for: X"
+  // scope tag (when the uncertainty was generated under a drill-in).
+  // Uncertainties are flat at the root, so no drill button.
+  function renderUncertaintyAttrs() {
+    const wrap = document.getElementById('fp-uncertainty-attrs');
+    if (!wrap) return;
+    const known = Array.isArray(state.uncertainties) ? state.uncertainties : [];
+    const knownMap = new Map();
+    for (const u of known) knownMap.set(u.trim().toLowerCase(), u);
+    const ta = document.getElementById('fp-uncertainties-input');
+    const raw = ta ? ta.value : known.join('\n');
+    const lines = raw.split('\n');
+    wrap.innerHTML = '';
+    if (known.length === 0 && raw.trim() === '') {
+      const empty = document.createElement('div');
+      empty.className = 'fp-decision-attrs-empty';
+      empty.textContent = 'Enter uncertainties on the left — attribute chips (gen/disc/num, stat/dyn) will appear here on the same row.';
+      wrap.appendChild(empty);
+      return;
+    }
+    for (const line of lines) {
+      const trimmed = line.trim();
+      const canonical = trimmed ? knownMap.get(trimmed.toLowerCase()) : null;
+      if (!canonical) {
+        const spacer = document.createElement('div');
+        spacer.className = 'fp-decision-attr-spacer';
+        wrap.appendChild(spacer);
+        continue;
+      }
+      const name = canonical;
+      const row = document.createElement('div');
+      row.className = 'fp-decision-attr-row';
+      row.dataset.name = name;
+
+      // Name is not repeated here — it appears on the same visual line
+      // in the textarea to the left. The row tooltip still carries it.
+      row.title = name;
+
+      // (gen) / (disc) / (num) kind chip
+      const ukMap = state.uncertaintyKinds || {};
+      const uk = (ukMap[name] === 'disc' || ukMap[name] === 'num') ? ukMap[name] : 'gen';
+      const kchip = document.createElement('button');
+      kchip.type = 'button';
+      kchip.className = 'fp-decision-kind-chip fp-decision-kind-' + uk;
+      kchip.textContent = '(' + uk + ')';
+      const ukTitles = {
+        gen:  'General uncertainty — a broad category ("Weather", "Interest rates"). Click to switch to (disc).',
+        disc: 'Discrete uncertainty — a specific realization from a discrete set ("Recession scenario", "Fed rate = 5.25%"). Click to switch to (num).',
+        num:  'Numeric uncertainty — a random variable with a distribution ("Demand ~ Normal(100, 15)"). Click to switch to (gen).',
+      };
+      kchip.title = ukTitles[uk];
+      kchip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleUncertaintyKind(name);
+      });
+      row.appendChild(kchip);
+
+      // (stat) / (dyn) timing chip
+      const utMap = state.uncertaintyTimings || {};
+      const ut = utMap[name] === 'stat' ? 'stat' : 'dyn';
+      const tchip = document.createElement('button');
+      tchip.type = 'button';
+      tchip.className = 'fp-timing-chip fp-timing-' + ut;
+      tchip.textContent = '(' + ut + ')';
+      tchip.title = ut === 'stat'
+        ? 'Static — a fixed but uncertain parameter, drawn once at t=0 from a distribution (unknown model parameter, one-time draw). Click to switch to (dyn).'
+        : 'Dynamic — arrives / evolves per period (demand, weather, prices over time). Click to switch to (stat).';
+      tchip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleTiming(state, 'uncertaintyTimings', name);
+        renderImpactMatrix('uncertainty');
+      });
+      row.appendChild(tchip);
+
+      // "for: X" scope tag — shown only for uncertainties generated
+      // while drilled into a sub-decision.
+      const scopePath = (state.uncertaintyScopes && state.uncertaintyScopes[name]) || null;
+      if (Array.isArray(scopePath) && scopePath.length) {
+        const chip = document.createElement('span');
+        chip.className = 'fp-u-scope-chip';
+        const leaf = scopePath[scopePath.length - 1];
+        chip.textContent = 'for: ' + leaf;
+        chip.title = 'Generated while drilled into: ' + scopePath.join(' → ') +
+          '. This uncertainty is in the root list but was suggested for that sub-decision context.';
+        row.appendChild(chip);
+      }
+
+      wrap.appendChild(row);
+    }
+  }
+
   function renderAllMatrices() {
     renderImpactMatrix('decision');
     renderImpactMatrix('uncertainty');
+    renderModelingDecisions();
     // Align each textarea's top with the first data row of its matrix
     // — measure AFTER render so column widths / header wrapping are
     // fully laid out.
     requestAnimationFrame(alignMatrixTextareas);
+  }
+  // Populate the metric dropdown + list of already-defined equations.
+  // Called from renderPromptCards() (which is called on every load /
+  // reset) and after any edit to state.metrics.
+  function renderMetricEquationsCard() {
+    const sel = document.getElementById('fp-metric-eq-select');
+    const lbl = document.getElementById('fp-metric-eq-label');
+    const form = document.getElementById('fp-metric-eq-formula');
+    const list = document.getElementById('fp-metric-eq-list');
+    if (!sel || !lbl || !form || !list) return;
+    // Rebuild dropdown from current top-level metrics
+    const prev = sel.value;
+    sel.innerHTML = '<option value="">— pick a metric —</option>';
+    for (const m of (state.metrics || [])) {
+      const opt = document.createElement('option');
+      opt.value = m; opt.textContent = m;
+      sel.appendChild(opt);
+    }
+    // Restore prior selection if the metric still exists
+    if (prev && (state.metrics || []).indexOf(prev) >= 0) sel.value = prev;
+    // Populate label + formula from the selected metric
+    const cur = sel.value;
+    lbl.value  = cur ? (state.metricLabels[cur]    || '') : '';
+    form.value = cur ? (state.metricEquations[cur] || '') : '';
+    // Rebuild the list of already-defined equations
+    list.innerHTML = '';
+    for (const m of (state.metrics || [])) {
+      const eq = state.metricEquations[m];
+      if (!eq || !eq.trim()) continue;
+      const li = document.createElement('li');
+      const nameEl = document.createElement('span');
+      nameEl.className = 'fp-metric-eq-list-name';
+      nameEl.textContent = m;
+      li.appendChild(nameEl);
+      const labelEl = document.createElement('span');
+      labelEl.className = 'fp-metric-eq-list-label';
+      labelEl.textContent = state.metricLabels[m] ? '[' + state.metricLabels[m] + ']' : '';
+      li.appendChild(labelEl);
+      const formEl = document.createElement('span');
+      formEl.className = 'fp-metric-eq-list-formula';
+      formEl.textContent = eq;
+      li.appendChild(formEl);
+      const editBtn = document.createElement('button');
+      editBtn.type = 'button'; editBtn.title = 'Edit'; editBtn.textContent = '✎';
+      editBtn.addEventListener('click', () => {
+        sel.value = m;
+        renderMetricEquationsCard();
+        form.focus();
+      });
+      li.appendChild(editBtn);
+      const delBtn = document.createElement('button');
+      delBtn.type = 'button'; delBtn.title = 'Delete equation'; delBtn.textContent = '×';
+      delBtn.addEventListener('click', () => {
+        if (!confirm('Delete the equation for "' + m + '"? (Short label is kept.)')) return;
+        delete state.metricEquations[m];
+        autoSave();
+        renderMetricEquationsCard();
+        renderMetricEquationPreview();
+      });
+      li.appendChild(delBtn);
+      list.appendChild(li);
+    }
+    renderMetricEquationPreview();
+  }
+  function renderMetricEquationPreview() {
+    renderEqPreview('fp-metric-eq-formula', 'fp-metric-eq-preview');
+  }
+  // Generic preview helper — reads a formula textarea's value, wraps
+  // it in $$…$$ if not already delimited, dumps into the preview
+  // container, and re-runs MathJax on that container.
+  function renderEqPreview(formulaId, previewId) {
+    const form = document.getElementById(formulaId);
+    const preview = document.getElementById(previewId);
+    if (!form || !preview) return;
+    const raw = (form.value || '').trim();
+    if (!raw) {
+      preview.innerHTML = '<span class="fp-muted">Preview appears here once you type an equation.</span>';
+      return;
+    }
+    const wrapped = /^\$\$?|^\\\(|^\\\[/.test(raw) ? raw : '$$' + raw + '$$';
+    preview.innerHTML = wrapped;
+    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+      window.MathJax.typesetPromise([preview]).catch(() => { /* ignore render errors */ });
+    }
+  }
+  // Render the list of named LaTeX entries for a given array
+  // (constraints, transitionEquations, …). Uses the same .fp-metric-eq-list
+  // markup — name + LaTeX + edit / delete buttons.
+  function renderNamedEqList(listId, stateArrayName, nameInputId, formulaInputId, previewId) {
+    const list = document.getElementById(listId);
+    const arr = state[stateArrayName] || [];
+    if (!list) return;
+    list.innerHTML = '';
+    if (!arr.length) {
+      const li = document.createElement('li');
+      li.style.color = '#7a6a55'; li.style.fontStyle = 'italic';
+      li.textContent = 'None yet.';
+      list.appendChild(li);
+      return;
+    }
+    arr.forEach((entry, idx) => {
+      const li = document.createElement('li');
+      const nameEl = document.createElement('span');
+      nameEl.className = 'fp-metric-eq-list-name';
+      nameEl.textContent = entry.name || '(unnamed)';
+      li.appendChild(nameEl);
+      const formEl = document.createElement('span');
+      formEl.className = 'fp-metric-eq-list-formula';
+      formEl.textContent = entry.formula || '';
+      li.appendChild(formEl);
+      const editBtn = document.createElement('button');
+      editBtn.type = 'button'; editBtn.title = 'Edit'; editBtn.textContent = '✎';
+      editBtn.addEventListener('click', () => {
+        document.getElementById(nameInputId).value = entry.name || '';
+        document.getElementById(formulaInputId).value = entry.formula || '';
+        // Remove the entry from the list so the next Add re-inserts the
+        // edited version rather than duplicating.
+        arr.splice(idx, 1);
+        autoSave();
+        renderNamedEqList(listId, stateArrayName, nameInputId, formulaInputId, previewId);
+        renderEqPreview(formulaInputId, previewId);
+        document.getElementById(formulaInputId).focus();
+      });
+      li.appendChild(editBtn);
+      const delBtn = document.createElement('button');
+      delBtn.type = 'button'; delBtn.title = 'Delete'; delBtn.textContent = '×';
+      delBtn.addEventListener('click', () => {
+        if (!confirm('Delete "' + (entry.name || 'unnamed') + '"?')) return;
+        arr.splice(idx, 1);
+        autoSave();
+        renderNamedEqList(listId, stateArrayName, nameInputId, formulaInputId, previewId);
+      });
+      li.appendChild(delBtn);
+      list.appendChild(li);
+    });
+  }
+
+  // Populate the Modeling section's decision list — every (disc)-kind
+  // decision in the CURRENT frame gets a row with a ▶ Play button that
+  // opens the play modal (same modal the old row-level button used).
+  function renderModelingDecisions() {
+    const ul = document.getElementById('fp-modeling-decisions');
+    if (!ul) return;
+    const frame = currentFrame();
+    const kinds = frame.decisionKinds || {};
+    const discs = (frame.decisions || []).filter(name => kinds[name] === 'disc');
+    ul.innerHTML = '';
+    if (!discs.length) {
+      const li = document.createElement('li');
+      li.className = 'fp-modeling-decisions-empty';
+      li.textContent = 'No discrete decisions in this frame yet. Mark any decision as (disc) in the impact matrix above and it will appear here.';
+      ul.appendChild(li);
+      return;
+    }
+    for (const name of discs) {
+      const li = document.createElement('li');
+      li.className = 'fp-modeling-decision';
+      const nameEl = document.createElement('span');
+      nameEl.className = 'fp-modeling-decision-name';
+      nameEl.textContent = name;
+      li.appendChild(nameEl);
+      const play = document.createElement('button');
+      play.type = 'button';
+      play.className = 'fp-modeling-decision-play';
+      play.textContent = '▶ Play';
+      play.title = 'Human-in-the-loop simulator for this discrete choice';
+      play.addEventListener('click', () => openPlayModal(name));
+      li.appendChild(play);
+      ul.appendChild(li);
+    }
   }
   function alignMatrixTextareas() {
     // Historically pushed the textarea down so its top lined up with
@@ -3514,13 +4634,13 @@ date: 2026-08-11
   // ── Per-matrix First-draft (AI) + Reset ────────────────────
   // Note is session-only — not persisted across page reloads or saves.
   // It's a "you just clicked First draft" reminder, not a permanent tag.
-  // Chatbot backend host — production by default, beta when the page URL
-  // has ?backend=beta. Same DB is shared across both backends, so library
-  // URLs (?node=…) work on either. Only the /framing/*, /chat, and
-  // /api/framing-nodes/* endpoints get routed to the beta service.
+  // BETA FRONTEND — hardcoded to talk to the beta chatbot always,
+  // regardless of URL query params. Companion file to
+  // _pages/decision-framing-tool.md (production).
   const IS_BETA_BACKEND = (function () {
     try {
-      return new URLSearchParams(window.location.search).get('backend') === 'beta';
+      const q = new URLSearchParams(window.location.search);
+      return q.get('backend') === 'beta';
     } catch (_) { return false; }
   })();
   const CHATBOT_BASE = IS_BETA_BACKEND
@@ -3973,7 +5093,7 @@ date: 2026-08-11
     }
   }
   async function openIdeaBox(kind) {
-    if (kind !== 'decision' && kind !== 'uncertainty') return;
+    if (kind !== 'decision' && kind !== 'uncertainty' && kind !== 'metric') return;
     ideasCurrentKind = kind;
     const modal = $('#fp-ideas-modal');
     // Drill-in aware: when the user is inside a sub-decision, both kinds
@@ -4008,6 +5128,13 @@ date: 2026-08-11
         ', in ' + modeLabel + ' mode. Uncertainties live once at the root — ' +
         'checked items are appended to your <b>root</b> uncertainty list. ' +
         'Re-generate for a fresh set.';
+    } else if (kind === 'metric') {
+      $('#fp-ideas-modal-title').textContent = 'Idea box — metrics';
+      $('#fp-ideas-modal-lede').innerHTML =
+        'AI-proposed <b>metrics</b> from your <b>Problem scope</b> above. ' +
+        'Metrics are measurable outcomes (not decisions or policies). ' +
+        'Check the ones you like, then <b>Add checked</b> to append them to ' +
+        'your metrics list. Re-generate for a fresh set.';
     } else {
       $('#fp-ideas-modal-title').textContent = 'Idea box — ' +
         (kind === 'decision' ? 'decisions' : 'uncertainties') +
@@ -4041,8 +5168,10 @@ date: 2026-08-11
       '<div class="fp-ideas-empty">Generating ideas… (first request after idle can take ~30 s while the server wakes up)</div>';
     // Nudge the user if there are no metrics yet — decisions and uncertainties
     // are supposed to be evaluated against metrics, so the ideas will be
-    // sharper if metrics are on screen first. Non-blocking.
-    if (!Array.isArray(state.metrics) || state.metrics.length === 0) {
+    // sharper if metrics are on screen first. Non-blocking. Skip for
+    // kind='metric' — the whole point of that call is to fill metrics.
+    if (ideasCurrentKind !== 'metric' &&
+        (!Array.isArray(state.metrics) || state.metrics.length === 0)) {
       $('#fp-ideas-status').textContent =
         'Tip: no metrics on screen. Ideas are usually sharper if you add metrics (or use "First draft (AI)" on the Priority pyramid) first.';
       $('#fp-ideas-status').style.color = '#7a5a1c';
@@ -4075,6 +5204,17 @@ date: 2026-08-11
       if (ideasCurrentKind === 'uncertainty' && uncertaintyTypesFilter.size > 0) {
         const nums = Array.from(uncertaintyTypesFilter).sort((a, b) => a - b);
         form.append('uncertaintyTypes', JSON.stringify(nums));
+      }
+      // Time step + horizon — sent so the AI can classify stat/dyn per idea
+      // in the right temporal frame (weekly time step vs annual horizon
+      // yields different stat/dyn recommendations than daily/lifetime).
+      const ts = state.timeStep || {};
+      const hz = state.horizon  || {};
+      if (ts.value && ts.unit) {
+        form.append('timeStep', ts.value + ' ' + ts.unit);
+      }
+      if (hz.value && hz.unit) {
+        form.append('horizon', hz.value + ' ' + hz.unit);
       }
       if (scope) form.append('scope', scope);
       if (desc)  form.append('description', desc);
@@ -4140,15 +5280,17 @@ date: 2026-08-11
   // a plain string (legacy) or a {name, kind} object. Kind is only set
   // for decision ideas (gen/spec/num); uncertainties come back kindless.
   function normalizeIdea(raw) {
-    if (typeof raw === 'string') return { name: raw.trim(), kind: null };
+    if (typeof raw === 'string') return { name: raw.trim(), kind: null, timing: null };
     if (raw && typeof raw === 'object') {
       const name = String(raw.name || '').trim();
       let k = String(raw.kind || '').toLowerCase();
       if (k === 'spec') k = 'disc';   // legacy alias
       const kind = (k === 'gen' || k === 'disc' || k === 'num') ? k : null;
-      return { name, kind };
+      const t = String(raw.timing || '').toLowerCase();
+      const timing = (t === 'stat' || t === 'dyn') ? t : null;
+      return { name, kind, timing };
     }
-    return { name: '', kind: null };
+    return { name: '', kind: null, timing: null };
   }
   function renderIdeasList(ideas) {
     const list = $('#fp-ideas-list');
@@ -4168,20 +5310,29 @@ date: 2026-08-11
       cb.id = 'fp-idea-cb-' + i;
       cb.checked = true;
       cb.value = idea.name;
-      // Stash the kind on the checkbox so ideasApply() can pick it up
-      // without re-parsing.
-      if (idea.kind) cb.dataset.ideaKind = idea.kind;
+      // Stash the AI's classification on the checkbox so ideasApply()
+      // can pick it up without re-parsing. Both decisions AND
+      // uncertainties can carry these now.
+      if (idea.kind)   cb.dataset.ideaKind   = idea.kind;
+      if (idea.timing) cb.dataset.ideaTiming = idea.timing;
       const label = document.createElement('label');
       label.htmlFor = cb.id;
       label.textContent = idea.name;
       row.appendChild(cb);
       row.appendChild(label);
-      // Little chip next to decision-kind ideas so the user sees the
-      // AI's classification before checking. Matches the matrix chip.
+      // Read-only chips next to the row so the user sees the AI's
+      // classification before checking. Matches the matrix chips.
       if (idea.kind) {
         const chip = document.createElement('span');
         chip.className = 'fp-decision-kind-chip fp-decision-kind-' + idea.kind;
         chip.textContent = '(' + idea.kind + ')';
+        chip.style.cursor = 'default';
+        row.appendChild(chip);
+      }
+      if (idea.timing) {
+        const chip = document.createElement('span');
+        chip.className = 'fp-timing-chip fp-timing-' + idea.timing;
+        chip.textContent = '(' + idea.timing + ')';
         chip.style.cursor = 'default';
         row.appendChild(chip);
       }
@@ -4207,11 +5358,32 @@ date: 2026-08-11
       const v = String(cb.value || '').trim();
       if (!v) return;
       const k = cb.dataset.ideaKind || null;
-      picked.push({ name: v, kind: k });
+      const t = cb.dataset.ideaTiming || null;
+      picked.push({ name: v, kind: k, timing: t });
     });
     if (!picked.length) {
       $('#fp-ideas-status').textContent = 'Nothing checked — pick at least one, or Cancel.';
       $('#fp-ideas-status').style.color = '#7a1c1c';
+      return;
+    }
+    // Metrics: no matrix, no decisionKinds map — route straight into
+    // state.metrics via the standard textarea path so the pyramid picks
+    // them up the same way as if the user typed the lines themselves.
+    if (ideasCurrentKind === 'metric') {
+      const existing = Array.isArray(state.metrics) ? state.metrics.slice() : [];
+      const existingSet = new Set(existing.map(s => s.trim().toLowerCase()));
+      let added = 0;
+      for (const p of picked) {
+        if (!existingSet.has(p.name.toLowerCase())) {
+          existing.push(p.name);
+          existingSet.add(p.name.toLowerCase());
+          added++;
+        }
+      }
+      $('#fp-metrics-input').value = existing.join('\n');
+      syncMetricsFromTextarea();
+      $('#fp-ideas-modal').hidden = true;
+      flashStatus('Added ' + added + ' metric' + (added === 1 ? '' : 's') + '.');
       return;
     }
     const cfg = MATRIX[ideasCurrentKind];
@@ -4240,25 +5412,533 @@ date: 2026-08-11
     // the new lines themselves.
     $(cfg.textareaSel).value = existing.join('\n');
     syncListFromTextarea(ideasCurrentKind);
-    // Now apply the AI's gen/spec/num classification to the freshly-added
-    // decisions (uncertainties have no kind). Do this AFTER the sync so
-    // the frame's decisionKinds map is in a known state.
-    if (ideasCurrentKind === 'decision' && newlyAdded.length) {
-      if (!frame.decisionKinds || typeof frame.decisionKinds !== 'object') {
-        frame.decisionKinds = {};
-      }
-      for (const p of newlyAdded) {
-        if (p.kind === 'disc' || p.kind === 'num') {
-          frame.decisionKinds[p.name] = p.kind;
-        } else {
-          // 'gen' is the default — leave the map entry absent to keep it sparse.
-          delete frame.decisionKinds[p.name];
+    // Persist the AI's classification (kind + timing) on the freshly-added
+    // items. Do this AFTER the sync so the target maps are in known state.
+    if (newlyAdded.length) {
+      if (ideasCurrentKind === 'decision') {
+        if (!frame.decisionKinds || typeof frame.decisionKinds !== 'object') frame.decisionKinds = {};
+        if (!frame.decisionTimings || typeof frame.decisionTimings !== 'object') frame.decisionTimings = {};
+        for (const p of newlyAdded) {
+          if (p.kind === 'disc' || p.kind === 'num') frame.decisionKinds[p.name] = p.kind;
+          else delete frame.decisionKinds[p.name];    // 'gen' is default, keep sparse
+          if (p.timing === 'stat') frame.decisionTimings[p.name] = 'stat';
+          else delete frame.decisionTimings[p.name];  // 'dyn' is default
         }
+        renderImpactMatrix('decision');
+      } else {
+        // Uncertainty: kind + timing go on state.uncertaintyKinds /
+        // state.uncertaintyTimings (uncertainties are root-only).
+        if (!state.uncertaintyKinds || typeof state.uncertaintyKinds !== 'object') state.uncertaintyKinds = {};
+        if (!state.uncertaintyTimings || typeof state.uncertaintyTimings !== 'object') state.uncertaintyTimings = {};
+        for (const p of newlyAdded) {
+          if (p.kind === 'disc' || p.kind === 'num') state.uncertaintyKinds[p.name] = p.kind;
+          else delete state.uncertaintyKinds[p.name];
+          if (p.timing === 'stat') state.uncertaintyTimings[p.name] = 'stat';
+          else delete state.uncertaintyTimings[p.name];
+        }
+        renderImpactMatrix('uncertainty');
       }
-      renderImpactMatrix('decision');   // re-render to show the fresh chips
     }
     $('#fp-ideas-modal').hidden = true;
     flashStatus('Added ' + picked.length + ' idea' + (picked.length === 1 ? '' : 's') + '.');
+  }
+
+  // ── Play modal — discrete-choice simulator ─────────────────────
+  // First problem class: a (disc) decision whose realized performance
+  // W_{t+1,i} is uncertain; the human plays policy by clicking a bar
+  // in the chart. In our notation:
+  //   x ∈ 𝒳^{choices}, W_{t+1,i} per information class i (one per
+  //   metric here), scored by C_m(S_t, x_t, W_{t+1}).
+  // Config lives in the CURRENT frame's playConfigs[decisionName].
+  // Persistence rides with the frame — save/load/URL-share all carry
+  // it along.
+  let playCurrentDecision = null;   // decision name currently open in the modal
+
+  function playFrame() { return currentFrame(); }
+  function playEnsureConfig(name) {
+    const frame = playFrame();
+    if (!frame.playConfigs) frame.playConfigs = {};
+    if (!frame.playConfigs[name]) {
+      frame.playConfigs[name] = { alternatives: [], mode: 'repeated', spreads: {}, history: [] };
+    }
+    return frame.playConfigs[name];
+  }
+  function openPlayModal(decisionName) {
+    playCurrentDecision = decisionName;
+    playEnsureConfig(decisionName);
+    $('#fp-play-title').textContent = 'Play decision: ' + decisionName;
+    $('#fp-play-status').textContent = '';
+    playRender();
+    $('#fp-play-modal').hidden = false;
+  }
+  function closePlayModal() {
+    $('#fp-play-modal').hidden = true;
+    playCurrentDecision = null;
+  }
+  // Pull the metrics list from the top-level state — the metrics live
+  // on the root frame regardless of drill depth.
+  function playMetrics() {
+    return Array.isArray(state.metrics) ? state.metrics.filter(m => typeof m === 'string' && m.trim()) : [];
+  }
+  function playRender() {
+    if (!playCurrentDecision) return;
+    const cfg = playEnsureConfig(playCurrentDecision);
+    // Mode selector
+    $('#fp-play-mode').value = cfg.mode === 'one-shot' ? 'one-shot' : 'repeated';
+    playRenderAlts(cfg);
+    playRenderSpreads(cfg);
+    playRenderCharts(cfg);
+    playRenderHistory(cfg);
+    playRenderRoundBadge(cfg);
+  }
+  function playRenderAlts(cfg) {
+    const wrap = $('#fp-play-alts');
+    wrap.innerHTML = '';
+    if (!cfg.alternatives.length) {
+      const em = document.createElement('span');
+      em.className = 'fp-muted';
+      em.textContent = 'No alternatives yet — add some below.';
+      wrap.appendChild(em);
+      return;
+    }
+    cfg.alternatives.forEach((alt, idx) => {
+      const chip = document.createElement('span');
+      chip.className = 'fp-play-alt-chip';
+      chip.appendChild(document.createTextNode(alt));
+      const x = document.createElement('button');
+      x.type = 'button';
+      x.textContent = '×';
+      x.title = 'Remove ' + alt;
+      x.addEventListener('click', () => {
+        cfg.alternatives.splice(idx, 1);
+        // Prune spreads + history rows referring to this alt
+        for (const m of Object.keys(cfg.spreads || {})) {
+          if (cfg.spreads[m] && cfg.spreads[m][alt]) delete cfg.spreads[m][alt];
+        }
+        cfg.history = cfg.history.filter(h => h.alt !== alt);
+        autoSave();
+        playRender();
+      });
+      chip.appendChild(x);
+      wrap.appendChild(chip);
+    });
+  }
+  function playAddAlt() {
+    const input = $('#fp-play-alt-new');
+    const raw = (input.value || '').trim();
+    if (!raw) return;
+    const cfg = playEnsureConfig(playCurrentDecision);
+    if (cfg.alternatives.indexOf(raw) >= 0) {
+      $('#fp-play-status').textContent = 'Duplicate alternative: "' + raw + '"';
+      return;
+    }
+    cfg.alternatives.push(raw);
+    input.value = '';
+    $('#fp-play-status').textContent = '';
+    autoSave();
+    playRender();
+    input.focus();
+  }
+  function playRenderSpreads(cfg) {
+    const wrap = $('#fp-play-spreads-wrap');
+    wrap.innerHTML = '';
+    const metrics = playMetrics();
+    if (!cfg.alternatives.length || !metrics.length) {
+      const p = document.createElement('p');
+      p.className = 'fp-muted';
+      p.textContent = !cfg.alternatives.length
+        ? 'Add at least one alternative to begin filling in spreads.'
+        : 'Add at least one metric to the pyramid so the play can score outcomes.';
+      wrap.appendChild(p);
+      return;
+    }
+    for (const metric of metrics) {
+      const block = document.createElement('div');
+      block.className = 'fp-play-spread-block';
+      const h = document.createElement('div');
+      h.className = 'fp-play-spread-metric';
+      h.textContent = metric;
+      block.appendChild(h);
+      const table = document.createElement('table');
+      table.className = 'fp-play-spread-table';
+      const thead = document.createElement('thead');
+      thead.innerHTML = '<tr><th>Alternative</th><th>p10</th><th>p50</th><th>p90</th></tr>';
+      table.appendChild(thead);
+      const tbody = document.createElement('tbody');
+      cfg.alternatives.forEach(alt => {
+        const tr = document.createElement('tr');
+        const th = document.createElement('th');
+        th.textContent = alt;
+        th.title = alt;
+        tr.appendChild(th);
+        const stored = (cfg.spreads[metric] || {})[alt] || ['', '', ''];
+        for (let i = 0; i < 3; i++) {
+          const td = document.createElement('td');
+          const inp = document.createElement('input');
+          inp.type = 'number';
+          inp.step = 'any';
+          inp.value = stored[i] === '' || stored[i] == null ? '' : String(stored[i]);
+          inp.addEventListener('input', () => {
+            playSetSpread(metric, alt, i, inp.value);
+          });
+          inp.addEventListener('change', () => {
+            // On blur, validate monotone p10 <= p50 <= p90 and hint via :invalid
+            playValidateSpread(metric, alt, inp);
+            playRenderCharts(cfg);
+          });
+          td.appendChild(inp);
+          tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      block.appendChild(table);
+      wrap.appendChild(block);
+    }
+  }
+  function playSetSpread(metric, alt, idx, value) {
+    const cfg = playEnsureConfig(playCurrentDecision);
+    if (!cfg.spreads[metric]) cfg.spreads[metric] = {};
+    if (!cfg.spreads[metric][alt]) cfg.spreads[metric][alt] = ['', '', ''];
+    cfg.spreads[metric][alt][idx] = (value === '' || value == null) ? '' : Number(value);
+    autoSave();
+    // Skip full re-render on every keystroke — charts update on 'change'.
+  }
+  function playValidateSpread(metric, alt, inputEl) {
+    const cfg = playEnsureConfig(playCurrentDecision);
+    const row = (cfg.spreads[metric] || {})[alt];
+    if (!row) return;
+    const [p10, p50, p90] = row;
+    // Only mark invalid if we have all three AND they're out of order.
+    const allSet = [p10, p50, p90].every(v => v !== '' && Number.isFinite(Number(v)));
+    if (!allSet) { inputEl.setCustomValidity(''); return; }
+    if (!(Number(p10) <= Number(p50) && Number(p50) <= Number(p90))) {
+      inputEl.setCustomValidity('p10 ≤ p50 ≤ p90');
+    } else {
+      inputEl.setCustomValidity('');
+    }
+  }
+  // Piecewise-linear CDF through the three quantiles, with symmetric-width
+  // tails extended below p10 and above p90 (so samples are bounded but can
+  // exceed the given percentiles). Draws u ~ U[0,1] and inverts.
+  function sampleFromQuantiles(p10, p50, p90) {
+    const u = Math.random();
+    const lower = Math.max(p50 - p10, 1e-9);
+    const upper = Math.max(p90 - p50, 1e-9);
+    if (u < 0.1) return p10 - lower + (u / 0.1) * lower;
+    if (u < 0.5) return p10 + ((u - 0.1) / 0.4) * (p50 - p10);
+    if (u < 0.9) return p50 + ((u - 0.5) / 0.4) * (p90 - p50);
+    return p90 + ((u - 0.9) / 0.1) * upper;
+  }
+  function playSpreadComplete(cfg) {
+    // A metric is playable iff every alternative has a complete, monotone spread.
+    const metrics = playMetrics();
+    const usable = [];
+    for (const m of metrics) {
+      const row = cfg.spreads[m] || {};
+      let ok = cfg.alternatives.length > 0;
+      for (const alt of cfg.alternatives) {
+        const q = row[alt];
+        if (!q || q.length !== 3) { ok = false; break; }
+        const [a, b, c] = q.map(Number);
+        if (![a, b, c].every(Number.isFinite)) { ok = false; break; }
+        if (!(a <= b && b <= c)) { ok = false; break; }
+      }
+      if (ok) usable.push(m);
+    }
+    return usable;
+  }
+  function playRenderRoundBadge(cfg) {
+    const badge = $('#fp-play-round-badge');
+    if (cfg.mode === 'one-shot') {
+      badge.textContent = cfg.history.length ? 'one-shot: done' : 'one-shot';
+    } else {
+      const nextT = cfg.history.length + 1;
+      badge.textContent = 't = ' + nextT;
+    }
+  }
+  function playRenderCharts(cfg) {
+    const wrap = $('#fp-play-charts');
+    wrap.innerHTML = '';
+    const usable = playSpreadComplete(cfg);
+    const oneShotDone = (cfg.mode === 'one-shot' && cfg.history.length > 0);
+    if (!usable.length) {
+      $('#fp-play-instruction').textContent = 'Fill in p10 / p50 / p90 for every alternative in at least one metric to see the chart.';
+      return;
+    }
+    $('#fp-play-instruction').textContent = oneShotDone
+      ? 'One-shot done. Click Reset play to start over, or switch to Repeated mode.'
+      : 'Click a bar to pick that alternative and reveal a random draw.';
+    for (const metric of usable) {
+      const block = document.createElement('div');
+      block.className = 'fp-play-chart';
+      const title = document.createElement('div');
+      title.className = 'fp-play-chart-title';
+      title.textContent = metric;
+      block.appendChild(title);
+      block.appendChild(playBuildChartSvg(cfg, metric, oneShotDone));
+      wrap.appendChild(block);
+    }
+  }
+  function playBuildChartSvg(cfg, metric, disabled) {
+    const alts = cfg.alternatives;
+    const row = cfg.spreads[metric];
+    // Collect the extended [p10 - lower, p90 + upper] range for auto-scaling
+    let lo = Infinity, hi = -Infinity;
+    for (const alt of alts) {
+      const [p10, p50, p90] = row[alt].map(Number);
+      const lower = p50 - p10, upper = p90 - p50;
+      lo = Math.min(lo, p10 - lower);
+      hi = Math.max(hi, p90 + upper);
+    }
+    // Pad slightly; anchor baseline at zero if the range crosses it, else at lo.
+    const rangePad = Math.max((hi - lo) * 0.06, 1e-6);
+    let yMin = lo - rangePad;
+    let yMax = hi + rangePad;
+    if (yMin > 0 && yMin < (yMax - yMin) * 0.25) yMin = 0;  // baseline at 0 when close
+    const W = 560, H = 220;
+    const padL = 44, padR = 12, padT = 10, padB = 44;
+    const plotW = W - padL - padR;
+    const plotH = H - padT - padB;
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    function y(v) { return padT + plotH - ((v - yMin) / (yMax - yMin)) * plotH; }
+    // Y axis
+    const axisLine = document.createElementNS(svgNS, 'line');
+    axisLine.setAttribute('x1', padL); axisLine.setAttribute('x2', padL);
+    axisLine.setAttribute('y1', padT); axisLine.setAttribute('y2', padT + plotH);
+    axisLine.setAttribute('class', 'fp-play-axis');
+    svg.appendChild(axisLine);
+    // Y ticks: 5 evenly spaced values
+    for (let i = 0; i <= 4; i++) {
+      const v = yMin + (yMax - yMin) * (i / 4);
+      const yy = y(v);
+      const tick = document.createElementNS(svgNS, 'line');
+      tick.setAttribute('x1', padL - 4); tick.setAttribute('x2', padL);
+      tick.setAttribute('y1', yy); tick.setAttribute('y2', yy);
+      tick.setAttribute('class', 'fp-play-axis');
+      svg.appendChild(tick);
+      const lbl = document.createElementNS(svgNS, 'text');
+      lbl.setAttribute('x', padL - 6); lbl.setAttribute('y', yy + 3);
+      lbl.setAttribute('text-anchor', 'end');
+      lbl.setAttribute('class', 'fp-play-axis-label');
+      lbl.textContent = playFormatNum(v);
+      svg.appendChild(lbl);
+    }
+    // X axis (baseline)
+    const baselineV = Math.max(yMin, Math.min(0, yMax));  // if range crosses 0, put axis at 0, else at yMin
+    const baselineY = y(yMin);
+    const xAxisLine = document.createElementNS(svgNS, 'line');
+    xAxisLine.setAttribute('x1', padL); xAxisLine.setAttribute('x2', padL + plotW);
+    xAxisLine.setAttribute('y1', baselineY); xAxisLine.setAttribute('y2', baselineY);
+    xAxisLine.setAttribute('class', 'fp-play-axis');
+    svg.appendChild(xAxisLine);
+    // Bars — one per alternative
+    const nAlts = alts.length;
+    const slotW = plotW / nAlts;
+    const barW = Math.min(slotW * 0.55, 60);
+    alts.forEach((alt, idx) => {
+      const cx = padL + slotW * (idx + 0.5);
+      const [p10, p50, p90] = row[alt].map(Number);
+      const barTopY = y(p50);
+      const bar = document.createElementNS(svgNS, 'rect');
+      bar.setAttribute('x', cx - barW / 2);
+      bar.setAttribute('y', barTopY);
+      bar.setAttribute('width', barW);
+      bar.setAttribute('height', Math.max(0, baselineY - barTopY));
+      bar.setAttribute('class', 'fp-play-bar' + (disabled ? ' fp-play-bar-disabled' : ''));
+      bar.setAttribute('data-alt', alt);
+      if (!disabled) {
+        bar.addEventListener('click', () => playPick(alt));
+      }
+      const t = document.createElementNS(svgNS, 'title');
+      t.textContent = alt + '  •  p10 ' + playFormatNum(p10) + ' / p50 ' + playFormatNum(p50) + ' / p90 ' + playFormatNum(p90);
+      bar.appendChild(t);
+      svg.appendChild(bar);
+      // Whisker (p10 → p90) centered on cx
+      const wh = document.createElementNS(svgNS, 'line');
+      wh.setAttribute('x1', cx); wh.setAttribute('x2', cx);
+      wh.setAttribute('y1', y(p10)); wh.setAttribute('y2', y(p90));
+      wh.setAttribute('class', 'fp-play-whisker');
+      svg.appendChild(wh);
+      // Whisker caps
+      const capW = 8;
+      for (const q of [p10, p90]) {
+        const cap = document.createElementNS(svgNS, 'line');
+        cap.setAttribute('x1', cx - capW / 2); cap.setAttribute('x2', cx + capW / 2);
+        cap.setAttribute('y1', y(q)); cap.setAttribute('y2', y(q));
+        cap.setAttribute('class', 'fp-play-whisker');
+        svg.appendChild(cap);
+      }
+      // Median tick across the top of the bar
+      const med = document.createElementNS(svgNS, 'line');
+      med.setAttribute('x1', cx - barW / 2 - 2); med.setAttribute('x2', cx + barW / 2 + 2);
+      med.setAttribute('y1', barTopY); med.setAttribute('y2', barTopY);
+      med.setAttribute('class', 'fp-play-median');
+      svg.appendChild(med);
+      // Realized-draw marker(s) from history for this alt + metric
+      const draws = cfg.history.filter(h => h.alt === alt && Number.isFinite(h.samples[metric]));
+      for (const h of draws) {
+        const yy = y(h.samples[metric]);
+        const dot = document.createElementNS(svgNS, 'circle');
+        dot.setAttribute('cx', cx);
+        dot.setAttribute('cy', yy);
+        dot.setAttribute('r', 3.5);
+        dot.setAttribute('class', 'fp-play-realized');
+        const tt = document.createElementNS(svgNS, 'title');
+        tt.textContent = 't=' + h.t + ' realized: ' + playFormatNum(h.samples[metric]);
+        dot.appendChild(tt);
+        svg.appendChild(dot);
+      }
+      // Alt label
+      const lbl = document.createElementNS(svgNS, 'text');
+      lbl.setAttribute('x', cx);
+      lbl.setAttribute('y', H - 22);
+      lbl.setAttribute('class', 'fp-play-alt-label');
+      lbl.textContent = alt.length > 14 ? (alt.slice(0, 12) + '…') : alt;
+      const lblTitle = document.createElementNS(svgNS, 'title');
+      lblTitle.textContent = alt;
+      lbl.appendChild(lblTitle);
+      svg.appendChild(lbl);
+    });
+    return svg;
+  }
+  function playFormatNum(v) {
+    if (!Number.isFinite(v)) return '';
+    const av = Math.abs(v);
+    if (av >= 1000) return v.toFixed(0);
+    if (av >= 100)  return v.toFixed(1);
+    if (av >= 1)    return v.toFixed(2);
+    return v.toPrecision(3);
+  }
+  function playPick(alt) {
+    const cfg = playEnsureConfig(playCurrentDecision);
+    if (cfg.mode === 'one-shot' && cfg.history.length > 0) return;
+    const usable = playSpreadComplete(cfg);
+    const samples = {};
+    for (const m of usable) {
+      const [p10, p50, p90] = cfg.spreads[m][alt].map(Number);
+      samples[m] = sampleFromQuantiles(p10, p50, p90);
+    }
+    const nextT = cfg.history.length + 1;
+    cfg.history.push({ t: nextT, alt, samples });
+    autoSave();
+    playRender();
+    // Small callout
+    const pretty = usable.map(m => m + ': ' + playFormatNum(samples[m])).join('  •  ');
+    $('#fp-play-status').textContent = 't = ' + nextT + ' — picked "' + alt + '"' + (pretty ? '  →  ' + pretty : '');
+  }
+  function playReset() {
+    const cfg = playEnsureConfig(playCurrentDecision);
+    if (!cfg.history.length) return;
+    if (!confirm('Clear the pick history and restart at t = 1?')) return;
+    cfg.history = [];
+    autoSave();
+    playRender();
+    $('#fp-play-status').textContent = 'Play reset.';
+  }
+  function playRenderHistory(cfg) {
+    const wrap = $('#fp-play-history');
+    wrap.innerHTML = '';
+    if (!cfg.history.length) {
+      const p = document.createElement('p');
+      p.className = 'fp-muted';
+      p.textContent = 'No picks yet.';
+      wrap.appendChild(p);
+      return;
+    }
+    for (const h of cfg.history) {
+      const row = document.createElement('div');
+      row.className = 'fp-play-history-row';
+      const tSpan = document.createElement('span');
+      tSpan.className = 'fp-play-history-t';
+      tSpan.textContent = 't = ' + h.t;
+      row.appendChild(tSpan);
+      const altSpan = document.createElement('span');
+      altSpan.className = 'fp-play-history-alt';
+      altSpan.textContent = h.alt;
+      row.appendChild(altSpan);
+      const parts = Object.keys(h.samples).map(m => m + ': ' + playFormatNum(h.samples[m]));
+      if (parts.length) {
+        const sep = document.createTextNode('  →  ');
+        row.appendChild(sep);
+        const s = document.createElement('span');
+        s.className = 'fp-play-history-sample';
+        s.textContent = parts.join('  •  ');
+        row.appendChild(s);
+      }
+      wrap.appendChild(row);
+    }
+  }
+  function playClearSpreads() {
+    const cfg = playEnsureConfig(playCurrentDecision);
+    if (!Object.keys(cfg.spreads).length) return;
+    if (!confirm('Clear every p10 / p50 / p90 value for this decision?')) return;
+    cfg.spreads = {};
+    autoSave();
+    playRender();
+    $('#fp-play-status').textContent = 'Spreads cleared.';
+  }
+  async function playSuggestSpreads() {
+    const cfg = playEnsureConfig(playCurrentDecision);
+    const metrics = playMetrics();
+    if (!cfg.alternatives.length) {
+      $('#fp-play-status').textContent = 'Add alternatives first.';
+      return;
+    }
+    if (!metrics.length) {
+      $('#fp-play-status').textContent = 'Add metrics to the pyramid first.';
+      return;
+    }
+    const btn = $('#fp-play-suggest');
+    btn.disabled = true;
+    $('#fp-play-status').textContent = 'Asking the AI for plausible spreads…';
+    try {
+      const res = await fetch(CHATBOT_BASE + '/framing/play-spreads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          decision: playCurrentDecision,
+          alternatives: cfg.alternatives,
+          metrics,
+          scope: state.scope || '',
+          problemDescription: state.problemDescription || '',
+          problemNotes: state.problemNotes || '',
+        }),
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      const proposed = data && data.spreads;
+      if (!proposed || typeof proposed !== 'object') throw new Error('malformed response');
+      let filled = 0;
+      for (const m of Object.keys(proposed)) {
+        if (metrics.indexOf(m) < 0) continue;
+        const rowIn = proposed[m];
+        if (!rowIn || typeof rowIn !== 'object') continue;
+        if (!cfg.spreads[m]) cfg.spreads[m] = {};
+        for (const alt of Object.keys(rowIn)) {
+          if (cfg.alternatives.indexOf(alt) < 0) continue;
+          const q = rowIn[alt];
+          if (!Array.isArray(q) || q.length !== 3) continue;
+          const nums = q.map(Number);
+          if (!nums.every(Number.isFinite)) continue;
+          if (!(nums[0] <= nums[1] && nums[1] <= nums[2])) continue;
+          cfg.spreads[m][alt] = nums;
+          filled++;
+        }
+      }
+      autoSave();
+      playRender();
+      $('#fp-play-status').textContent = filled
+        ? ('Filled ' + filled + ' spread' + (filled === 1 ? '' : 's') + '.')
+        : 'AI returned no usable spreads — check monotone p10 ≤ p50 ≤ p90.';
+    } catch (err) {
+      $('#fp-play-status').textContent = 'Suggest failed: ' + (err && err.message ? err.message : err);
+    } finally {
+      btn.disabled = false;
+    }
   }
 
   function resetPyramid() {
@@ -4444,6 +6124,8 @@ date: 2026-08-11
       description: (typeof f.description === 'string') ? f.description : '',
       problemDescription: (typeof f.problemDescription === 'string') ? f.problemDescription : '',
       problemUrl:         (typeof f.problemUrl === 'string')         ? f.problemUrl         : '',
+      timeStep:           normalizeTimeSpec(f.timeStep),
+      horizon:            normalizeTimeSpec(f.horizon, true),
       problemNotes:       (typeof f.problemNotes === 'string')       ? f.problemNotes       : '',
       problemNotesSource: (typeof f.problemNotesSource === 'string') ? f.problemNotesSource : '',
       metrics,
@@ -4451,11 +6133,15 @@ date: 2026-08-11
       chipColors:  (f.chipColors && typeof f.chipColors === 'object') ? f.chipColors : {},
       decisions,
       matrix:      norm(f.matrix, decisions),
-      decisionKinds: normalizeDecisionKinds(f.decisionKinds),
+      decisionKinds:   normalizeDecisionKinds(f.decisionKinds),
+      decisionTimings: normalizeTimings(f.decisionTimings),
       subframes:   outSubframes,
+      playConfigs: normalizePlayConfigs(f.playConfigs),
       uncertainties,
       uMatrix:     norm(f.uMatrix, uncertainties),
-      uncertaintyScopes: normalizeUncertaintyScopes(f.uncertaintyScopes),
+      uncertaintyScopes:  normalizeUncertaintyScopes(f.uncertaintyScopes),
+      uncertaintyKinds:   normalizeDecisionKinds(f.uncertaintyKinds),
+      uncertaintyTimings: normalizeTimings(f.uncertaintyTimings),
     };
   }
   function applyFraming(framing, sourceLabel, scopeText, descText, urlText) {
@@ -4480,7 +6166,7 @@ date: 2026-08-11
     setDocTitle('AI draft — ' + draftLabel);
     renderPromptCards();
     $('#fp-bot-url').value             = state.problemUrl || '';
-    renderNotesChip();
+    renderNotesChip(); syncTimeSpecDom();
     $('#fp-metrics-input').value       = state.metrics.join('\n');
     $('#fp-decisions-input').value     = state.decisions.join('\n');
     $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -4574,7 +6260,7 @@ date: 2026-08-11
       if (!notes) throw new Error('Server returned no notes.');
       state.problemNotes = notes;
       state.problemNotesSource = String(data.sourceLabel || '').trim();
-      renderNotesChip();
+      renderNotesChip(); syncTimeSpecDom();
       autoSave();
       const chars = notes.length;
       const src = state.problemNotesSource ? '"' + state.problemNotesSource + '"' : 'your material';
@@ -4585,6 +6271,43 @@ date: 2026-08-11
     } finally {
       if (btn) { btn.disabled = false; btn.textContent = prev; }
     }
+  }
+  // Time-step / horizon: DOM population + derived-period display.
+  // Wall-clock unit → seconds for cross-unit conversion.
+  const UNIT_SECONDS = {
+    seconds: 1, minutes: 60, hours: 3600, days: 86400,
+    weeks: 604800, months: 2629746, quarters: 7889238, years: 31556952,
+  };
+  function updateHorizonDerived() {
+    const el = document.getElementById('fp-horizon-derived');
+    if (!el) return;
+    const ts = state.timeStep || { value: '', unit: '' };
+    const hz = state.horizon  || { value: '', unit: '' };
+    // Only compute when both fully specified and horizon isn't already
+    // expressed in periods.
+    const tsVal = Number(ts.value), hzVal = Number(hz.value);
+    if (!Number.isFinite(tsVal) || tsVal <= 0 || !ts.unit) { el.textContent = ''; return; }
+    if (!Number.isFinite(hzVal) || hzVal <= 0 || !hz.unit) { el.textContent = ''; return; }
+    if (hz.unit === 'periods') { el.textContent = ''; return; }
+    const tsSec = tsVal * (UNIT_SECONDS[ts.unit] || 0);
+    const hzSec = hzVal * (UNIT_SECONDS[hz.unit] || 0);
+    if (tsSec <= 0 || hzSec <= 0) { el.textContent = ''; return; }
+    const nPeriods = hzSec / tsSec;
+    // Show integer if it comes out whole, else 1 decimal.
+    const shown = Math.abs(nPeriods - Math.round(nPeriods)) < 1e-9
+      ? String(Math.round(nPeriods))
+      : nPeriods.toFixed(1);
+    el.textContent = '= ' + shown + ' periods';
+  }
+  function syncTimeSpecDom() {
+    const ts = state.timeStep || { value: '', unit: '' };
+    const hz = state.horizon  || { value: '', unit: '' };
+    const setIf = (id, v) => { const e = document.getElementById(id); if (e) e.value = (v || v === 0) ? v : ''; };
+    setIf('fp-time-step-value', ts.value);
+    setIf('fp-time-step-unit',  ts.unit);
+    setIf('fp-horizon-value',   hz.value);
+    setIf('fp-horizon-unit',    hz.unit);
+    updateHorizonDerived();
   }
   function renderNotesChip() {
     const wrap = $('#fp-notes-chip-wrap');
@@ -4605,7 +6328,7 @@ date: 2026-08-11
     if (!confirm('Forget the ingested notes? The URL / file / description in the boxes stay put — click "Read introductory materials" again to re-ingest.')) return;
     state.problemNotes = '';
     state.problemNotesSource = '';
-    renderNotesChip();
+    renderNotesChip(); syncTimeSpecDom();
     autoSave();
     setBotStatus('Ingested notes cleared.', '');
   }
@@ -4632,7 +6355,7 @@ date: 2026-08-11
     state.problemUrl = '';
     state.problemNotes = '';
     state.problemNotesSource = '';
-    renderNotesChip();
+    renderNotesChip(); syncTimeSpecDom();
     autoSave();
     setBotStatus('');
   }
@@ -5101,7 +6824,7 @@ date: 2026-08-11
       setDocTitle(resp.framing.title || 'Untitled framing');
       renderPromptCards();
       $('#fp-bot-url').value             = state.problemUrl || '';
-      renderNotesChip();
+      renderNotesChip(); syncTimeSpecDom();
       $('#fp-metrics-input').value       = state.metrics.join('\n');
       $('#fp-decisions-input').value     = state.decisions.join('\n');
       $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
@@ -5391,10 +7114,10 @@ date: 2026-08-11
       if (raw == null) return;
       const finalTitle = raw.trim() || 'New framing';
       state = {
-        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '',
+        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', metricLabels: {}, metricEquations: {}, constraints: [], transitionEquations: [], timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
         metrics: [], assignments: {}, chipColors: {},
-        decisions: [], matrix: {}, decisionKinds: {}, subframes: {},
-        uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
+        decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
+        uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
       };
       currentPath = [];
       renderPromptCards();
@@ -5960,10 +7683,10 @@ date: 2026-08-11
         loadedNode.currentFramingId = null;
         // Blank the workspace since the framing on-screen no longer exists.
         state = {
-          title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '',
+          title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', metricLabels: {}, metricEquations: {}, constraints: [], transitionEquations: [], timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
           metrics: [], assignments: {}, chipColors: {},
-          decisions: [], matrix: {}, decisionKinds: {}, subframes: {},
-          uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
+          decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
+          uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
         };
         currentPath = [];
         setDocTitle(null);
@@ -6047,16 +7770,25 @@ date: 2026-08-11
   }
 
   async function publishToLibrary() {
+    // Save as… always prompts for a name — this matches the convention
+    // in every desktop app (Word, Sheets, etc.) and prevents surprises
+    // where the tool auto-picks the first-decision text or the bot's
+    // compact case name. The pre-fill priority is the same as the
+    // silent derivation used to be — bot title, current save name,
+    // banner-derived name, then a date-stamped fallback so the box is
+    // never empty.
+    const suggested = (state.title && state.title.trim())
+      || (currentName && currentName.trim())
+      || deriveSuggestedName();
+    const raw = window.prompt('Save as (name for this framing):', suggested);
+    if (raw == null) return;                          // user cancelled
+    const framingTitle = raw.trim().slice(0, 200);
+    if (!framingTitle) return;                        // empty → no-op
+
     const btn = $('#fp-menu-publish');
     const prevText = btn ? btn.textContent : '';
     if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
     try {
-      // The framing title is best derived from whatever meaningful label
-      // we already have — bot title, current save name, banner-derived
-      // suggestion, or a date-stamped placeholder as last resort.
-      const framingTitle = (state.title && state.title.trim())
-        || (currentName && currentName.trim())
-        || deriveSuggestedName();
 
       // Do we already have a personal library on this browser? If so,
       // ADD this framing to it. If not, create the library first, then
@@ -6156,14 +7888,19 @@ date: 2026-08-11
         problemUrl:         state.problemUrl || '',
         problemNotes:       state.problemNotes || '',
         problemNotesSource: state.problemNotesSource || '',
+        timeStep:      state.timeStep || { value: '', unit: '' },
+        horizon:       state.horizon  || { value: '', unit: '' },
         metrics:       state.metrics || [],
         assignments:   state.assignments || {},
         decisions:     state.decisions || [],
         matrix:        state.matrix || {},
-        decisionKinds: state.decisionKinds || {},
+        decisionKinds:   state.decisionKinds   || {},
+        decisionTimings: state.decisionTimings || {},
         uncertainties: state.uncertainties || [],
         uMatrix:       state.uMatrix || {},
-        uncertaintyScopes: state.uncertaintyScopes || {},
+        uncertaintyScopes:  state.uncertaintyScopes  || {},
+        uncertaintyKinds:   state.uncertaintyKinds   || {},
+        uncertaintyTimings: state.uncertaintyTimings || {},
         subframes:     state.subframes || {},
       };
       if (loadedNode) {
@@ -6218,37 +7955,137 @@ date: 2026-08-11
     } catch (_) { /* ignore malformed URLs */ }
     renderPromptCards();
     $('#fp-bot-url').value             = state.problemUrl || '';
-    renderNotesChip();
+    renderNotesChip(); syncTimeSpecDom();
     $('#fp-metrics-input').value       = state.metrics.join('\n');
     $('#fp-decisions-input').value     = state.decisions.join('\n');
     $('#fp-uncertainties-input').value = state.uncertainties.join('\n');
     renderCurrentFileLabel();
     $$('.fp-drop-zone').forEach(wireDropZone);
-    // Guided-prompt textareas — Q1 (id=fp-scope-input, maps to
-    // state.promptAnswers.decisionMaker + state.scope) and Q2-Q5. Every
-    // keystroke rebuilds the derived context so downstream reads of
-    // state.scope / state.problemDescription / #fp-bot-desc.value get
-    // fresh values without waiting for the next render.
+    // Guided-prompt textareas — Q1 (id=fp-scope-input) maps to
+    // state.promptAnswers.decisionMaker + state.scope; Q2-Q5 map to
+    // state.promptAnswers and get concatenated (LABEL: prefixed) into
+    // state.problemDescription + the hidden #fp-bot-desc.
     for (const q of PROMPT_QUESTIONS) {
       const el = document.getElementById(q.inputId);
       if (!el) continue;
       el.addEventListener('input', () => {
         state.promptAnswers[q.key] = el.value;
         buildDerivedDesc();
+        updateContextCounter();
         autoSave();
       });
     }
-    // Wire up voice input on every 🎤 Speak button. Shared recognition
-    // instance — tapping any button auto-stops the active one first.
     initFpVoiceInputs();
-    // Populate all 5 guided-prompt textareas from state (either freshly
-    // loaded or previously edited).
+    // Contextual-background modal — open/close wiring.
+    const cxOpen  = document.getElementById('fp-context-open');
+    const cxDone  = document.getElementById('fp-context-done');
+    const cxClose = document.getElementById('fp-context-close');
+    const cxModal = document.getElementById('fp-context-modal');
+    if (cxOpen && cxModal) {
+      cxOpen.addEventListener('click', () => { cxModal.hidden = false; });
+      const closeIt = () => { cxModal.hidden = true; };
+      if (cxDone)  cxDone.addEventListener('click', closeIt);
+      if (cxClose) cxClose.addEventListener('click', closeIt);
+      cxModal.addEventListener('click', (e) => {
+        if (e.target === cxModal) closeIt();     // click the backdrop
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !cxModal.hidden) closeIt();
+      });
+    }
     renderPromptCards();
     // Same for the URL-to-a-case field.
     $('#fp-bot-url').addEventListener('input', () => {
       state.problemUrl = $('#fp-bot-url').value;
       autoSave();
     });
+    // Problem parameters textarea (Modeling section)
+    const pp = document.getElementById('fp-problem-parameters');
+    if (pp) {
+      pp.value = state.problemParameters || '';
+      pp.addEventListener('input', () => {
+        state.problemParameters = pp.value;
+        autoSave();
+      });
+    }
+    // Constraints + Transition function cards — same shape, reuse
+    // renderNamedEqList / renderEqPreview.
+    function wireNamedEqCard(nameId, formId, previewId, addBtnId, clearBtnId, listId, stateArrayName) {
+      const nm  = document.getElementById(nameId);
+      const fm  = document.getElementById(formId);
+      const add = document.getElementById(addBtnId);
+      const clr = document.getElementById(clearBtnId);
+      if (!nm || !fm || !add) return;
+      fm.addEventListener('input', () => renderEqPreview(formId, previewId));
+      add.addEventListener('click', () => {
+        const name = (nm.value || '').trim();
+        const formula = (fm.value || '').trim();
+        if (!name && !formula) return;
+        if (!state[stateArrayName]) state[stateArrayName] = [];
+        state[stateArrayName].push({ name, formula });
+        nm.value = ''; fm.value = '';
+        autoSave();
+        renderNamedEqList(listId, stateArrayName, nameId, formId, previewId);
+        renderEqPreview(formId, previewId);
+        nm.focus();
+      });
+      if (clr) clr.addEventListener('click', () => {
+        nm.value = ''; fm.value = '';
+        renderEqPreview(formId, previewId);
+      });
+      renderNamedEqList(listId, stateArrayName, nameId, formId, previewId);
+    }
+    wireNamedEqCard('fp-constraint-name', 'fp-constraint-formula', 'fp-constraint-preview',
+                    'fp-constraint-add',  'fp-constraint-clear',   'fp-constraint-list',
+                    'constraints');
+    wireNamedEqCard('fp-transition-name', 'fp-transition-formula', 'fp-transition-preview',
+                    'fp-transition-add',  'fp-transition-clear',   'fp-transition-list',
+                    'transitionEquations');
+
+    // Performance metric equations card (Modeling section)
+    const eqSel  = document.getElementById('fp-metric-eq-select');
+    const eqLbl  = document.getElementById('fp-metric-eq-label');
+    const eqForm = document.getElementById('fp-metric-eq-formula');
+    if (eqSel && eqLbl && eqForm) {
+      eqSel.addEventListener('change', () => {
+        // Switching metric — repaint label + formula fields, and preview.
+        renderMetricEquationsCard();
+      });
+      eqLbl.addEventListener('input', () => {
+        const m = eqSel.value;
+        if (!m) return;
+        const v = eqLbl.value.trim();
+        if (v) state.metricLabels[m] = v;
+        else delete state.metricLabels[m];
+        autoSave();
+      });
+      eqForm.addEventListener('input', () => {
+        const m = eqSel.value;
+        if (!m) return;
+        const v = eqForm.value;
+        if (v.trim()) state.metricEquations[m] = v;
+        else delete state.metricEquations[m];
+        autoSave();
+        renderMetricEquationPreview();
+      });
+      // On blur of formula, also refresh the list — a newly-added
+      // equation should show up in the summary immediately.
+      eqForm.addEventListener('blur', () => renderMetricEquationsCard());
+    }
+    // Time step + horizon inputs — 4 total controls. Any change writes
+    // state, autosaves, and re-runs the derived "= N periods" hint.
+    function pushTimeSpec(kind) {
+      const v = $('#fp-' + kind + '-value').value;
+      const u = $('#fp-' + kind + '-unit').value;
+      const key = kind === 'time-step' ? 'timeStep' : 'horizon';
+      state[key] = { value: v, unit: u };
+      autoSave();
+      updateHorizonDerived();
+    }
+    $('#fp-time-step-value').addEventListener('input', () => pushTimeSpec('time-step'));
+    $('#fp-time-step-unit').addEventListener('change', () => pushTimeSpec('time-step'));
+    $('#fp-horizon-value').addEventListener('input', () => pushTimeSpec('horizon'));
+    $('#fp-horizon-unit').addEventListener('change', () => pushTimeSpec('horizon'));
     $('#fp-metrics-input').addEventListener('input',       syncMetricsFromTextarea);
     $('#fp-decisions-input').addEventListener('input',     () => syncListFromTextarea('decision'));
     $('#fp-uncertainties-input').addEventListener('input', () => syncListFromTextarea('uncertainty'));
@@ -6269,10 +8106,10 @@ date: 2026-08-11
       closeFileMenu();
       if (!confirm('Start a new framing? Anything on screen is discarded (Save to your library first if you want to keep it).')) return;
       state = {
-        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '',
+        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', metricLabels: {}, metricEquations: {}, constraints: [], transitionEquations: [], timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
         metrics: [], assignments: {}, chipColors: {},
-        decisions: [], matrix: {}, decisionKinds: {}, subframes: {},
-        uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
+        decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
+        uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
       };
       currentPath = [];
       setCurrentName(null);
@@ -6433,10 +8270,10 @@ date: 2026-08-11
     $('#fp-reset').addEventListener('click', () => {
       if (!confirm('Delete every metric, decision, and uncertainty, clear the pyramid and both matrices, and unload the current framing? (Framings saved to your library are not affected.) Cannot be undone.')) return;
       state = {
-        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '',
+        title: '', scope: '', description: '', problemDescription: '', problemUrl: '', problemNotes: '', problemNotesSource: '', problemParameters: '', metricLabels: {}, metricEquations: {}, constraints: [], transitionEquations: [], timeStep: { value: '', unit: '' }, horizon: { value: '', unit: '' },
         metrics: [], assignments: {}, chipColors: {},
-        decisions: [], matrix: {}, decisionKinds: {}, subframes: {},
-        uncertainties: [], uMatrix: {}, uncertaintyScopes: {},
+        decisions: [], matrix: {}, decisionKinds: {}, decisionTimings: {}, subframes: {}, playConfigs: {},
+        uncertainties: [], uMatrix: {}, uncertaintyScopes: {}, uncertaintyKinds: {}, uncertaintyTimings: {},
       };
       currentPath = [];
       setCurrentName(null);
@@ -6507,7 +8344,7 @@ date: 2026-08-11
       const ideas = e.target.closest('.fp-ideas-btn');
       if (ideas) {
         const k = ideas.dataset.kind;
-        if (k === 'decision' || k === 'uncertainty') openIdeaBox(k);
+        if (k === 'decision' || k === 'uncertainty' || k === 'metric') openIdeaBox(k);
         return;
       }
       // (gen)/(spec) mode toggle next to Generate ideas — flips which
@@ -6576,6 +8413,30 @@ date: 2026-08-11
       $('#fp-ideas-regenerate').addEventListener('click', runIdeasFetch);
       $('#fp-ideas-add').addEventListener('click', ideasApply);
     })();
+    // Play modal wiring — discrete-choice human-in-the-loop simulator.
+    (function wirePlayModal() {
+      const modal = $('#fp-play-modal');
+      if (!modal) return;
+      $('#fp-play-close').addEventListener('click', closePlayModal);
+      $('#fp-play-done').addEventListener('click', closePlayModal);
+      modal.addEventListener('click', (e) => { if (e.target === modal) closePlayModal(); });
+      $('#fp-play-mode').addEventListener('change', (e) => {
+        const cfg = playEnsureConfig(playCurrentDecision);
+        cfg.mode = e.target.value === 'one-shot' ? 'one-shot' : 'repeated';
+        autoSave();
+        playRender();
+      });
+      $('#fp-play-alt-add').addEventListener('click', playAddAlt);
+      $('#fp-play-alt-new').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); playAddAlt(); }
+      });
+      $('#fp-play-suggest').addEventListener('click', playSuggestSpreads);
+      $('#fp-play-clear-spreads').addEventListener('click', playClearSpreads);
+      $('#fp-play-reset').addEventListener('click', playReset);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.hidden) closePlayModal();
+      });
+    })();
     // Inline rename for the current framing (banner button).
     const renameBtn = $('#fp-doc-rename-btn');
     if (renameBtn) renameBtn.addEventListener('click', renameCurrentFraming);
@@ -6598,7 +8459,7 @@ date: 2026-08-11
     const notesModal = $('#fp-notes-modal');
     if (notesModal) notesModal.addEventListener('click', (e) => { if (e.target === notesModal) hideNotesModal(); });
     // Show the notes chip on initial load if the loaded state has notes.
-    renderNotesChip();
+    renderNotesChip(); syncTimeSpecDom();
     // Ctrl/Cmd-Enter inside the description box submits.
     const botDesc = $('#fp-bot-desc');
     if (botDesc) botDesc.addEventListener('keydown', (e) => {
