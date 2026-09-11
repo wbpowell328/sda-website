@@ -1,0 +1,41 @@
+# Table of contents for the standalone book reader at /bridging-vol1/.
+# `url` blank means the chapter isn't published yet — the layout renders it
+# as unlinked placeholder text instead of a link, and it's skipped when
+# computing prev/next chapter navigation.
+book_title: "Bridging Decision Problems, Vol. I"
+book_subtitle: "Cadrage du problème"
+author: "Warren B. Powell"
+chapters:
+  - num: ""
+    title: "Couverture"
+    url: "/bridging-vol1/fr/"
+    no_expand: true
+  - num: ""
+    title: "À propos de ce livre"
+    url: "/bridging-vol1/fr/about/"
+    no_expand: true
+  - num: ""
+    title: "Table des matières"
+    url: "/bridging-vol1/fr/contents/"
+    is_toc: true
+  - num: "1"
+    title: "Les fondamentaux du cadrage"
+    url: "/bridging-vol1/fr/chapter-1/"
+  - num: "2"
+    title: "Applications"
+    url: "/bridging-vol1/fr/chapter-2/"
+  - num: "3"
+    title: "Indicateurs de performance"
+    url: "/bridging-vol1/fr/chapter-3/"
+  - num: "4"
+    title: "Décisions"
+    url: "/bridging-vol1/fr/chapter-4/"
+  - num: "5"
+    title: "Incertitudes"
+    url: "/bridging-vol1/fr/chapter-5/"
+  - num: "6"
+    title: "Études de cas de cadrage"
+    url: "/bridging-vol1/fr/chapter-6/"
+  - num: "7"
+    title: "Remarques finales"
+    url: "/bridging-vol1/fr/chapter-7/"

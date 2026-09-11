@@ -1,0 +1,41 @@
+# Table of contents for the standalone book reader at /bridging-vol1/.
+# `url` blank means the chapter isn't published yet — the layout renders it
+# as unlinked placeholder text instead of a link, and it's skipped when
+# computing prev/next chapter navigation.
+book_title: "Bridging Decision Problems, Vol. I"
+book_subtitle: "Framing the Problem"
+author: "Warren B. Powell"
+chapters:
+  - num: ""
+    title: "Front cover"
+    url: "/bridging-vol1/de/"
+    no_expand: true
+  - num: ""
+    title: "About this book"
+    url: "/bridging-vol1/de/about/"
+    no_expand: true
+  - num: ""
+    title: "Table of contents"
+    url: "/bridging-vol1/de/contents/"
+    is_toc: true
+  - num: "1"
+    title: "The Fundamentals of Framing"
+    url: "/bridging-vol1/de/chapter-1/"
+  - num: "2"
+    title: "Applications"
+    url: "/bridging-vol1/de/chapter-2/"
+  - num: "3"
+    title: "Performance metrics"
+    url: "/bridging-vol1/de/chapter-3/"
+  - num: "4"
+    title: "Decisions"
+    url: "/bridging-vol1/de/chapter-4/"
+  - num: "5"
+    title: "Uncertainties"
+    url: "/bridging-vol1/de/chapter-5/"
+  - num: "6"
+    title: "Framing case studies"
+    url: "/bridging-vol1/de/chapter-6/"
+  - num: "7"
+    title: "Closing notes"
+    url: "/bridging-vol1/de/chapter-7/"
