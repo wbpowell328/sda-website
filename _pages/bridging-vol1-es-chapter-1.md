@@ -4,6 +4,7 @@ title: "Capítulo 1: Los Fundamentos del Encuadre"
 permalink: /bridging-vol1/es/chapter-1/
 date: 2026-07-17
 book_data: bridging_vol1_toc_es
+book_home: /bridging-vol1/es/contents/
 lang: es
 translated_from: en
 translated_from_hash: e55b91c9188391dc

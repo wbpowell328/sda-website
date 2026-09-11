@@ -255,11 +255,17 @@ function rewriteFrontMatter(fm, lang, book) {
   const prefixRe = new RegExp('^' + escapeRe(cfg.urlPrefix));
   const langPrefix = cfg.urlPrefix + lang + '/';
   if (fm.permalink) fm.permalink = fm.permalink.replace(prefixRe, langPrefix);
-  if (fm.book_home) fm.book_home = fm.book_home.replace(prefixRe, langPrefix);
-  // Only rewrite book_data if the source page has one that matches this
-  // book's tocName. (Bridging Vol I currently omits book_data and lets
-  // book.html auto-default to bridging_vol1_toc; translated pages set
-  // it explicitly so the language switcher isn't ambiguous.)
+  if (fm.book_home) {
+    fm.book_home = fm.book_home.replace(prefixRe, langPrefix);
+  } else {
+    // Source omits book_home (Bridging Vol I lets the layout auto-default
+    // to the English contents). Translated pages need an explicit one so
+    // the "back to contents" link and topbar title stay in-language.
+    fm.book_home = langPrefix + 'contents/';
+  }
+  // Set book_data explicitly. Some source pages omit it and rely on the
+  // layout default; translated pages must name their per-language TOC
+  // outright or the layout falls back to the English one.
   fm.book_data = cfg.tocName + '_' + langSlug(lang);
   fm.lang = lang;
   fm.translated_from = 'en';
