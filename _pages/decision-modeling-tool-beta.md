@@ -407,461 +407,131 @@ sitemap: false
   <p id="fp-doc-description" class="fp-doc-description" hidden></p>
 </div>
 
-<h2 id="problem-scope" class="fp-section-h2">Problem scope<button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
-<p>A decision frame reflects the perspective of a decision maker. The AI uses whatever context you give it in every later step (generate ideas, suggest impact scores, first-draft framing).</p>
+<p>This tool builds on a framing you already saved on the <a href="/decision-framing-tool/">framing tool page</a>. Use <b>File &rarr; Open&hellip;</b> to load it, then work through the sections below to add the model.</p>
 
-<div class="fp-bot-card">
-  <!-- Guided prompt — hidden behind a "Contextual background" button so
-       the 5 questions don't dominate the page. Modal contents keep the
-       same IDs (fp-scope-input, fp-q-setting, …) so every existing
-       reader of state.scope / state.problemDescription / #fp-bot-desc
-       keeps working unchanged. -->
-  <div class="fp-context-launcher">
-    <button type="button" id="fp-context-open" class="fp-context-open-btn">
-      Contextual background <span class="fp-context-counter" id="fp-context-counter" hidden></span>
-    </button>
-    <p class="fp-muted fp-context-lede">
-      Begin by providing valuable contextual background by answering a series of questions <em>(optional)</em>.
-    </p>
-  </div>
-
-  <div id="fp-context-modal" class="fp-modal" hidden>
-    <div class="fp-modal-card fp-context-modal-card" role="dialog" aria-modal="true" aria-labelledby="fp-context-title">
-      <div class="fp-modal-header">
-        <h3 id="fp-context-title">Contextual background</h3>
-        <button type="button" class="fp-modal-close" id="fp-context-close" aria-label="Close">×</button>
-      </div>
-      <p class="fp-muted" style="margin: 0 0 12px 0;">Answer as many as you can — the AI uses your answers as context for every later step (generate ideas, suggest impact scores, first-draft framing). Each box supports voice input: tap <strong>🎤 Speak</strong> to dictate. Everything here is optional.</p>
-
-      <div class="fp-bot-row fp-qcard">
-        <label for="fp-scope-input" class="fp-bot-label fp-qcard-q">Who is making the decision?</label>
-        <textarea id="fp-scope-input" class="fp-scope-input" rows="2" spellcheck="true"
-          placeholder="Role, team, altitude in the org, planning cadence."></textarea>
-        <button type="button" class="fp-speak-btn" data-target="fp-scope-input" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
-        <p class="fp-voice-hint" data-hint-for="fp-scope-input" hidden></p>
-      </div>
-      <div class="fp-bot-row fp-qcard">
-        <label for="fp-q-setting" class="fp-bot-label fp-qcard-q">What is the problem setting? <span class="fp-muted">(business, manufacturing, medical, finance…)</span></label>
-        <textarea id="fp-q-setting" rows="2" spellcheck="true"
-          placeholder="Industry, environment, market, what's happening around this decision."></textarea>
-        <button type="button" class="fp-speak-btn" data-target="fp-q-setting" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
-        <p class="fp-voice-hint" data-hint-for="fp-q-setting" hidden></p>
-      </div>
-      <div class="fp-bot-row fp-qcard">
-        <label for="fp-q-history" class="fp-bot-label fp-qcard-q">Is there relevant history? <span class="fp-muted">(optional)</span></label>
-        <textarea id="fp-q-history" rows="2" spellcheck="true"
-          placeholder="Prior attempts, incidents, patterns, constraints inherited from the past."></textarea>
-        <button type="button" class="fp-speak-btn" data-target="fp-q-history" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
-        <p class="fp-voice-hint" data-hint-for="fp-q-history" hidden></p>
-      </div>
-      <div class="fp-bot-row fp-qcard">
-        <label for="fp-q-goals" class="fp-bot-label fp-qcard-q">What are you trying to achieve?</label>
-        <textarea id="fp-q-goals" rows="2" spellcheck="true"
-          placeholder="Overall objectives — describe success in your own words."></textarea>
-        <button type="button" class="fp-speak-btn" data-target="fp-q-goals" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
-        <p class="fp-voice-hint" data-hint-for="fp-q-goals" hidden></p>
-      </div>
-      <div class="fp-bot-row fp-qcard">
-        <label for="fp-q-other" class="fp-bot-label fp-qcard-q">Any other information that might be relevant? <span class="fp-muted">(optional — specific metrics, stakeholders, constraints)</span></label>
-        <textarea id="fp-q-other" rows="2" spellcheck="true"
-          placeholder="Specific metrics you care about, stakeholders, constraints, anything else on your mind."></textarea>
-        <button type="button" class="fp-speak-btn" data-target="fp-q-other" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
-        <p class="fp-voice-hint" data-hint-for="fp-q-other" hidden></p>
-      </div>
-
-      <div class="fp-modal-actions" style="justify-content: flex-end;">
-        <button type="button" id="fp-context-done" class="fp-modal-primary">Done</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Hidden derived textarea — kept in sync with the labelled blob of
-       Q2-Q5. Every existing reader of #fp-bot-desc.value now gets the
-       guided-prompt blob. -->
-  <textarea id="fp-bot-desc" hidden aria-hidden="true"></textarea>
-
-
+<h2 id="problem-characteristics" class="fp-section-h2">Problem characteristics<button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
+<p>Time cadence of the model and the problem-level parameters that describe it (costs, capacities, rates, distributions, …). More structured fields will land here as the modeling flow matures.</p>
+<div class="fp-bot-card fp-modeling-card">
   <div class="fp-bot-row-inline">
     <div class="fp-bot-inline">
-      <label for="fp-bot-url" class="fp-bot-label">…or a URL to a case / description</label>
-      <input type="url" id="fp-bot-url" placeholder="https://warrenpowell.org/assets/cases/Northstar_Living_Inventory_Case.docx" />
+      <label class="fp-bot-label">Time step <span class="fp-muted">(one period of the model)</span></label>
+      <div class="fp-time-input-row">
+        <input type="number" id="fp-time-step-value" min="0" step="any"
+               class="fp-time-input-num" placeholder="1" />
+        <select id="fp-time-step-unit" class="fp-time-input-unit">
+          <option value=""></option>
+          <option value="seconds">seconds</option>
+          <option value="minutes">minutes</option>
+          <option value="hours">hours</option>
+          <option value="days">days</option>
+          <option value="weeks">weeks</option>
+          <option value="months">months</option>
+          <option value="quarters">quarters</option>
+          <option value="years">years</option>
+        </select>
+      </div>
     </div>
     <div class="fp-bot-inline">
-      <label for="fp-bot-file" class="fp-bot-label">…or upload a file (PDF, DOCX, TXT, MD)</label>
-      <input type="file" id="fp-bot-file" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown" />
+      <label class="fp-bot-label">Horizon <span class="fp-muted">(planning horizon; "periods" counts time steps)</span></label>
+      <div class="fp-time-input-row">
+        <input type="number" id="fp-horizon-value" min="0" step="any"
+               class="fp-time-input-num" placeholder="1" />
+        <select id="fp-horizon-unit" class="fp-time-input-unit">
+          <option value=""></option>
+          <option value="seconds">seconds</option>
+          <option value="minutes">minutes</option>
+          <option value="hours">hours</option>
+          <option value="days">days</option>
+          <option value="weeks">weeks</option>
+          <option value="months">months</option>
+          <option value="quarters">quarters</option>
+          <option value="years">years</option>
+          <option value="periods">periods (of time step)</option>
+        </select>
+        <span id="fp-horizon-derived" class="fp-muted fp-time-derived"></span>
+      </div>
     </div>
   </div>
+  <label class="fp-bot-label" style="margin-top: 12px; display: block;">Problem parameters <span class="fp-muted">(costs, capacities, arrival distributions, whatever the model needs — freeform for now)</span></label>
+  <textarea id="fp-problem-parameters" rows="6" spellcheck="true"
+    placeholder="e.g.&#10;  Holding cost per unit: $0.50/day&#10;  Order lead time: 3–5 days (uniform)&#10;  Weekly demand: Normal(mean=250, sd=40)&#10;  Max capacity per store: 800 units"
+    style="width: 100%; box-sizing: border-box; padding: 8px 12px; font-family: inherit; font-size: 0.95rem; border: 1px solid #c9b891; border-radius: 4px; background: #fff; color: #333; resize: vertical;"></textarea>
+</div>
 
-  <div class="fp-bot-controls">
-    <label class="fp-bot-size">
-      <span>First-draft size:</span>
-      <select id="fp-bot-size">
-        <option value="small">Small — 4 metrics, 3 decisions, 3 uncertainties</option>
-        <option value="medium" selected>Medium — 6 metrics, 5 decisions, 5 uncertainties</option>
-        <option value="large">Large — 10 metrics, 8 decisions, 8 uncertainties</option>
-        <option value="max">Max — 20 metrics, 20 decisions, 20 uncertainties</option>
+<h2 id="performance-metrics-at-t" class="fp-section-h2">Performance metrics at <em>t</em><button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
+<p>For each performance metric, write the contribution at a <b>single point in time <em>t</em></b> (no sum over time — accumulation over the horizon comes later). Give each metric a short math label, then the LaTeX form of <em>C<sub>m</sub></em>(<em>S<sub>t</sub></em>, <em>x<sub>t</sub></em>) or <em>C<sub>m</sub></em>(<em>S<sub>t</sub></em>, <em>x<sub>t</sub></em>, <em>W<sub>t+1</sub></em>).</p>
+<div class="fp-bot-card fp-modeling-card">
+  <div class="fp-metric-eq-row">
+    <label>
+      <span class="fp-metric-eq-lbl">Metric</span>
+      <select id="fp-metric-eq-select">
+        <option value="">— pick a metric —</option>
       </select>
     </label>
-    <div class="fp-bot-actions">
-      <button type="button" id="fp-bot-ingest" title="Have the AI read your URL / file / description ONCE and remember them. Doesn't fill in the framing — you enter metrics, decisions, and uncertainties yourself, and later 'Generate ideas' / 'First draft (AI)' calls will use the remembered material as context.">Read introductory materials</button>
-      <button type="button" id="fp-bot-generate">Generate first draft (AI)</button>
-      <button type="button" id="fp-bot-clear" title="Clear the description, URL, and file inputs (keeps the decision-maker scope). Also clears any ingested notes.">Clear inputs</button>
-    </div>
+    <label>
+      <span class="fp-metric-eq-lbl">Short label <span class="fp-muted">(for math)</span></span>
+      <input type="text" id="fp-metric-eq-label" placeholder="e.g. C_{cost}" autocomplete="off" />
+    </label>
   </div>
-
-  <div id="fp-notes-chip-wrap" class="fp-notes-chip-wrap" hidden>
-    <span class="fp-notes-chip" id="fp-notes-chip"></span>
-    <button type="button" class="fp-notes-chip-clear" id="fp-notes-clear" title="Forget the ingested notes (the URL / file / description in the boxes above are kept — click 'Read introductory materials' again to re-ingest)">×</button>
-    <button type="button" class="fp-notes-chip-view" id="fp-notes-view" title="Show the distilled notes the AI is using">View notes</button>
+  <label class="fp-metric-eq-lbl">Equation at <em>t</em> <span class="fp-muted">(LaTeX; wrap with <code>$&hellip;$</code> to preview)</span></label>
+  <textarea id="fp-metric-eq-formula" rows="3" spellcheck="false"
+    placeholder="e.g.  c_{t}\, x_{t,d}"></textarea>
+  <div class="fp-metric-eq-preview" id="fp-metric-eq-preview">
+    <span class="fp-muted">Preview appears here once you type an equation.</span>
   </div>
-
-  <p class="fp-bot-caveat"><strong>The AI first draft replaces your current workspace.</strong> If you want to keep what's on screen, save it first with <em>File → Save as…</em>. <em>Read introductory materials</em> does NOT replace anything — it just gives the AI background it can use later.</p>
-
-  <div id="fp-bot-status" class="fp-bot-status" role="status" aria-live="polite"></div>
+  <ul id="fp-metric-eq-list" class="fp-metric-eq-list"></ul>
 </div>
 
-<!-- View-notes modal — reveals the distilled notes the AI is using as
-     background context. Read-only preview. -->
-<div id="fp-notes-modal" class="fp-modal" hidden>
-  <div class="fp-modal-card">
-    <div class="fp-modal-header">
-      <h3>Distilled problem-setting notes</h3>
-      <button type="button" class="fp-modal-close" id="fp-notes-modal-close" aria-label="Close">×</button>
-    </div>
-    <p class="fp-muted" style="margin: 0 0 6px 0;">These notes were produced by the AI from the URL / file / description you provided. They are sent as background context to every downstream AI call (metrics pyramid, generate ideas, impact matrix). Re-click <em>Read introductory materials</em> to refresh them.</p>
-    <div id="fp-notes-body" class="fp-notes-body"></div>
-    <div class="fp-modal-actions" style="justify-content: flex-end;">
-      <button type="button" id="fp-notes-modal-ok">Close</button>
-    </div>
+<h2 id="constraints-at-t" class="fp-section-h2">Constraints at <em>t</em><button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
+<p>Problem constraints as they apply at time <em>t</em> (capacity, non-negativity, budget, physical limits, &hellip;). Give each a short name plus its LaTeX form.</p>
+<div class="fp-bot-card fp-modeling-card">
+  <div class="fp-metric-eq-row">
+    <label>
+      <span class="fp-metric-eq-lbl">Name</span>
+      <input type="text" id="fp-constraint-name" placeholder="e.g. Capacity" autocomplete="off" />
+    </label>
   </div>
+  <label class="fp-metric-eq-lbl">Constraint at <em>t</em> <span class="fp-muted">(LaTeX)</span></label>
+  <textarea id="fp-constraint-formula" rows="2" spellcheck="false"
+    placeholder="e.g.  \sum_{d} x_{t,d} \le M"></textarea>
+  <div class="fp-metric-eq-preview" id="fp-constraint-preview">
+    <span class="fp-muted">Preview appears here once you type an equation.</span>
+  </div>
+  <div style="display:flex; gap:8px; margin-top:8px;">
+    <button type="button" id="fp-constraint-add" class="fp-modal-primary">+ Add constraint</button>
+    <button type="button" id="fp-constraint-clear" class="fp-modal-mini">Clear inputs</button>
+  </div>
+  <ul id="fp-constraint-list" class="fp-metric-eq-list"></ul>
 </div>
 
-<h2 id="metrics-pyramid-tool" class="fp-section-h2">Metrics pyramid tool<button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
-<p>Metrics quantify what you want to achieve. They come in three flavors: metrics to be maximized or minimized, along with targets you want to hit, and limits where you specify a minimum or maximum for a metric. The top metric should be in the first category.</p>
-<p>Type performance metrics on the left (one per line), then drag each chip into a tier — most important at the top, least important at the bottom. Drag between tiers to re-order, or back to <em>Unassigned</em> to remove.</p>
-
-<div class="fp-grid">
-  <div class="fp-panel fp-metrics-panel">
-    <div class="fp-list-header">
-      <h3>Metrics</h3>
-      <button type="button" class="fp-ideas-btn" data-kind="metric"
-        title="Use the AI to generate ideas for metrics from your scope/description/URL/file above. Pick which ones to add.">
-        Generate ideas
-      </button>
-      <input type="number" class="fp-ideas-count" data-kind="metric"
-             min="1" max="200" step="1" placeholder="count"
-             title="How many metric ideas to generate. Blank = auto (uses the First-draft size setting)." />
-    </div>
-    <p class="fp-muted">One per line. Chips appear below and can be dragged into the pyramid on the right.</p>
-    <textarea id="fp-metrics-input" spellcheck="true" placeholder="Revenue growth&#10;Customer satisfaction&#10;Employee retention&#10;On-time delivery&#10;Product quality"></textarea>
-    <div class="fp-chip-legend" aria-hidden="true">
-      <p class="fp-chip-legend-help">Click a chip to cycle its flavor:</p>
-      <div class="fp-chip-legend-grid">
-        <span class="fp-legend-swatch" data-color="max" title="Maximize — an objective you want more of (e.g. revenue, service)">Max</span>
-        <span class="fp-legend-swatch" data-color="min" title="Minimize — an objective you want less of (e.g. cost, delay)">Min</span>
-        <span class="fp-legend-swatch" data-color="target" title="Target — a specific value you want to hit">Target</span>
-        <span class="fp-legend-swatch" data-color="limit-floor" title="Floor — a minimum this metric must stay above (e.g. demand covered)">Floor</span>
-        <span class="fp-legend-swatch" data-color="limit-ceiling" title="Ceiling — a maximum this metric must stay below (e.g. lost demand)">Ceiling</span>
-      </div>
-    </div>
-    <div class="fp-unassigned-label">Unassigned <span class="fp-tier-hint">(drag into a tier)</span></div>
-    <div class="fp-drop-zone fp-unassigned" data-tier="0"></div>
+<h2 id="transition-function" class="fp-section-h2">Transition function<button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
+<p>One equation per state variable showing how it updates from time <em>t</em> to <em>t</em>+1 (e.g. inventory, cash, position). The left-hand side is usually the "primed" state at <em>t</em>+1.</p>
+<div class="fp-bot-card fp-modeling-card">
+  <div class="fp-metric-eq-row">
+    <label>
+      <span class="fp-metric-eq-lbl">State variable</span>
+      <input type="text" id="fp-transition-name" placeholder="e.g. R_{t+1}" autocomplete="off" />
+    </label>
   </div>
-
-  <div class="fp-panel fp-pyramid-panel">
-    <h3>Priority pyramid</h3>
-    <div class="fp-matrix-controls">
-      <button type="button" class="fp-matrix-draft" id="fp-pyramid-draft"
-        title="Use the AI to propose a metrics pyramid from your scope/description/URL/file in the Problem scope section above. Review carefully.">
-        First draft (AI)
-      </button>
-      <button type="button" class="fp-matrix-reset" id="fp-pyramid-reset"
-        title="Clear every metric and empty the pyramid. Decisions and uncertainties are not touched.">
-        Reset pyramid
-      </button>
-      <span class="fp-matrix-ai-note" id="fp-pyramid-ai-note" hidden>AI-generated — be sure to review carefully.</span>
-    </div>
-    <p class="fp-muted">Tier 1 = most important. Drop chips onto any tier; drag between tiers to re-order.</p>
-    <div class="fp-pyramid">
-      <div class="fp-tier fp-tier-1">
-        <div class="fp-tier-label">Tier 1 <span class="fp-tier-hint">(one metric)</span></div>
-        <div class="fp-drop-zone" data-tier="1"></div>
-      </div>
-      <div class="fp-tier fp-tier-2">
-        <div class="fp-tier-label">Tier 2</div>
-        <div class="fp-drop-zone" data-tier="2"></div>
-      </div>
-      <div class="fp-tier fp-tier-3">
-        <div class="fp-tier-label">Tier 3</div>
-        <div class="fp-drop-zone" data-tier="3"></div>
-      </div>
-      <div class="fp-tier fp-tier-4">
-        <div class="fp-tier-label">Tier 4</div>
-        <div class="fp-drop-zone" data-tier="4"></div>
-      </div>
-    </div>
+  <label class="fp-metric-eq-lbl">Update equation <span class="fp-muted">(LaTeX)</span></label>
+  <textarea id="fp-transition-formula" rows="2" spellcheck="false"
+    placeholder="e.g.  R_{t+1} = R_t + x_t - D_{t+1}"></textarea>
+  <div class="fp-metric-eq-preview" id="fp-transition-preview">
+    <span class="fp-muted">Preview appears here once you type an equation.</span>
   </div>
+  <div style="display:flex; gap:8px; margin-top:8px;">
+    <button type="button" id="fp-transition-add" class="fp-modal-primary">+ Add transition</button>
+    <button type="button" id="fp-transition-clear" class="fp-modal-mini">Clear inputs</button>
+  </div>
+  <ul id="fp-transition-list" class="fp-metric-eq-list"></ul>
 </div>
 
-<h2 id="decision-prioritization-tool" class="fp-section-h2">Decision prioritization tool<button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
-<p>Decisions, which go by <a href="/decisionsdecisions/#different-words">many names</a> (including "idea"), represent the ways to impact or influence your metrics. They also come in many flavors and styles <a href="/decisionsdecisions/#types-of-decision-settings">as we list here</a>. They may be obvious, but they often are not. This tool is designed to help you identify the most important ones.</p>
-<p>List the decisions you'd consider (one per line). The matrix below has one column per <em>tier-assigned</em> metric from the pyramid above, ordered top-to-bottom by tier (left-to-right within the same tier by the order the metrics appear in the metrics list). Click any cell to cycle through <b>H</b> (high impact) → <b>M</b> → <b>L</b> → <b>N</b> (none) → blank. When you're done scoring, drag any row up or down via the <span class="fp-grip-inline">☰</span> handle to prioritize decisions by their impact on the most important metrics.</p>
-<p>Decisions can be general descriptions ("Assigning machines to jobs", "Optimizing warehouses") or specific actions ("Assign machine X to job Y", "Put warehouse in city X"). Use higher levels for general descriptions and lower levels for specific actions. Each decision shows up in the <em>Attributes</em> column to the right of the textarea with its <b>(gen)/(disc)/(num)</b> and <b>(stat)/(dyn)</b> chips plus a <b>+ sub-decisions</b> button (which changes to <b>N sub-decisions ›</b> once you have some). Click that button to break a decision down into sub-decisions — you can nest to any depth; the metrics pyramid stays fixed.</p>
-
-<div id="fp-decision-breadcrumb" class="fp-decision-breadcrumb" hidden></div>
-<div id="fp-decision-subscope" class="fp-decision-subscope" hidden>
-  <label for="fp-decision-subscope-input">Scope for this sub-decision <span class="fp-muted">(optional — blank inherits from the parent)</span></label>
-  <textarea id="fp-decision-subscope-input" rows="2" spellcheck="true"
-    placeholder="e.g. Model engineering team, monthly release cycle."></textarea>
+<h2 id="discrete-choices" class="fp-section-h2">Discrete choices<button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
+<p>Decisions marked <strong>(disc)</strong> in your framing show up here. Tap &#9654; to simulate — the play modal opens with alternatives, spreads, and history.</p>
+<div class="fp-bot-card fp-modeling-card">
+  <ul id="fp-modeling-decisions" class="fp-modeling-decisions"></ul>
 </div>
 
-<div class="fp-grid fp-grid-narrow">
-  <div class="fp-panel fp-decisions-panel">
-    <div class="fp-list-header">
-      <h3>Decisions</h3>
-      <button type="button" class="fp-ideas-btn" data-kind="decision"
-        title="Use the AI to generate ideas for decisions from your scope/description/URL/file above. Pick which ones to add.">
-        Generate ideas
-      </button>
-      <span class="fp-ideas-mode" role="group" aria-label="Generation mode for decisions">
-        <button type="button" class="fp-ideas-mode-btn is-active" data-kind="decision" data-mode="gen"
-                title="General mode — propose broad, still-drillable categories of decisions.">(gen)</button>
-        <button type="button" class="fp-ideas-mode-btn" data-kind="decision" data-mode="spec"
-                title="Specific mode — enumerate concrete members (industry names, brand names, drug names, cities) or numeric parameters, not sub-processes. Skips the categorical layer.">(spec)</button>
-      </span>
-      <input type="number" class="fp-ideas-count" data-kind="decision"
-             min="1" max="200" step="1" placeholder="count"
-             title="How many ideas to generate. Blank = auto (uses the First-draft size setting: small=3, medium=5, large=8, max=20). Type a number 1–200 to override — handy for long (spec) lists like 50 potential suppliers." />
-      <button type="button" id="fp-decision-types-btn" class="fp-decision-types-btn"
-              title="Constrain the AI to generate decisions of specific types (from the 10-type taxonomy at decisionsdecisions/#types-of-decision-settings). Click for the picker.">Types…</button>
-    </div>
-    <div class="fp-decisions-body">
-      <textarea id="fp-decisions-input" spellcheck="true" wrap="off" placeholder="Set the price&#10;Choose a supplier&#10;Approve the design&#10;Schedule production"></textarea>
-      <div class="fp-decision-attrs-side">
-        <div id="fp-decision-attrs" class="fp-decision-attrs"
-             title="Attributes for each decision on the left: (gen)/(disc)/(num) kind · (stat)/(dyn) timing · ▸ drill into sub-decisions"></div>
-      </div>
-    </div>
-  </div>
-  <div class="fp-panel fp-matrix-panel">
-    <h3>Decision impact matrix</h3>
-    <div class="fp-matrix-controls">
-      <button type="button" class="fp-matrix-draft" data-kind="decision"
-        title="Use the AI to fill in H/M/L/N for every cell based on your current metrics and decisions. Review carefully.">
-        First draft (AI)
-      </button>
-      <button type="button" class="fp-matrix-reset" data-kind="decision"
-        title="Clear every H/M/L/N in this matrix. The decisions and metrics are not touched.">
-        Reset scores
-      </button>
-      <button type="button" id="fp-decision-up-level" class="fp-matrix-up"
-        title="Go back to the parent decision list" hidden>
-        ↑ Up one level
-      </button>
-      <span class="fp-matrix-ai-note" data-kind="decision" hidden>AI-generated — be sure to review carefully.</span>
-    </div>
-    <p class="fp-muted">Columns follow the pyramid order. Rows can be dragged by their <span class="fp-grip-inline">☰</span> handle.</p>
-    <div class="fp-matrix-wrapper">
-      <div id="fp-matrix"></div>
-    </div>
-  </div>
-</div>
-
-<h2 id="uncertainty-prioritization-tool" class="fp-section-h2">Uncertainty prioritization tool<button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
-<p>The uncertainties tool works similarly to the decisions tool, except that uncertainties are not nested — all uncertainties live at the top of the framing. Generate ideas is still context-aware: at the top level it suggests categorically distinct sources of uncertainty, and if you have drilled into a subdecision on the decisions side, it suggests uncertainties whose outcomes matter most for that subdecision. Each generated-while-drilled uncertainty is tagged with a green <span class="fp-u-scope-chip" style="margin:0">for: <em>subdecision</em></span> chip in the matrix row below, so you can tell at a glance which uncertainties apply to the whole framing (untagged) versus which were suggested for a specific sub-decision context (tagged). All uncertainties still score against the same metrics in the single matrix. (Click <a href="/modeling-uncertainty/#categories">here</a> for a discussion of different categories of uncertainty.)</p>
-
-<div class="fp-grid fp-grid-narrow">
-  <div class="fp-panel fp-uncertainties-panel">
-    <div class="fp-list-header">
-      <h3>Uncertainties</h3>
-      <button type="button" class="fp-ideas-btn" data-kind="uncertainty"
-        title="Use the AI to generate ideas for uncertainties from your scope/description/URL/file above. Pick which ones to add.">
-        Generate ideas
-      </button>
-      <span class="fp-ideas-mode" role="group" aria-label="Generation mode for uncertainties">
-        <button type="button" class="fp-ideas-mode-btn is-active" data-kind="uncertainty" data-mode="gen"
-                title="General mode — propose broad categories of uncertainty.">(gen)</button>
-        <button type="button" class="fp-ideas-mode-btn" data-kind="uncertainty" data-mode="spec"
-                title="Specific mode — propose concrete measurable uncertainty factors or realizations, not broad categories.">(spec)</button>
-      </span>
-      <input type="number" class="fp-ideas-count" data-kind="uncertainty"
-             min="1" max="200" step="1" placeholder="count"
-             title="How many ideas to generate. Blank = auto (uses the First-draft size setting). Type a number 1–200 to override — handy for long (spec) lists." />
-      <button type="button" id="fp-uncertainty-types-btn" class="fp-decision-types-btn"
-              title="Constrain the AI to generate uncertainties from specific categories (from the 12-category taxonomy at modeling-uncertainty/#categories). Click for the picker.">Types…</button>
-    </div>
-    <div class="fp-decisions-body">
-      <textarea id="fp-uncertainties-input" spellcheck="true" wrap="off" placeholder="Demand volatility&#10;Supplier reliability&#10;Currency fluctuation&#10;Regulatory change"></textarea>
-      <div class="fp-decision-attrs-side">
-        <div id="fp-uncertainty-attrs" class="fp-decision-attrs"
-             title="Attributes for each uncertainty on the left: (gen)/(disc)/(num) kind · (stat)/(dyn) timing · optional 'for:' tag when generated under a drill-in"></div>
-      </div>
-    </div>
-  </div>
-  <div class="fp-panel fp-matrix-panel">
-    <h3>Uncertainty impact matrix</h3>
-    <div class="fp-matrix-controls">
-      <button type="button" class="fp-matrix-draft" data-kind="uncertainty"
-        title="Use the AI to fill in H/M/L/N for every cell based on your current metrics and uncertainties. Review carefully.">
-        First draft (AI)
-      </button>
-      <button type="button" class="fp-matrix-reset" data-kind="uncertainty"
-        title="Clear every H/M/L/N in this matrix. The uncertainties and metrics are not touched.">
-        Reset scores
-      </button>
-      <span class="fp-matrix-ai-note" data-kind="uncertainty" hidden>AI-generated — be sure to review carefully.</span>
-    </div>
-    <p class="fp-muted">Columns follow the pyramid order. Rows can be dragged by their <span class="fp-grip-inline">☰</span> handle.</p>
-    <div class="fp-matrix-wrapper">
-      <div id="fp-umatrix"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════════════
-     MODELING — a separate section for what happens AFTER framing:
-     time step + horizon, problem parameters that accumulate as the
-     model is built, and the list of (disc) decisions with per-row
-     ▶ Play buttons opening the simulation modal. This is deliberately
-     below the framing sections above; the framing sections should
-     stay focused on framing.
-     ══════════════════════════════════════════════════════════════ -->
-<h2 id="modeling" class="fp-section-h2">Modeling<button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
-<p>Once the framing above is complete, modeling turns it into something that can be reasoned about quantitatively. Set the time cadence of the model, accumulate the parameters that describe the problem, and (for discrete decisions) simulate choices.</p>
-
-<div class="fp-modeling-grid">
-  <div class="fp-modeling-left">
-
-    <div class="fp-bot-card fp-modeling-card">
-      <h3 class="fp-modeling-h3">Time</h3>
-      <div class="fp-bot-row-inline">
-        <div class="fp-bot-inline">
-          <label class="fp-bot-label">Time step <span class="fp-muted">(one period of the model)</span></label>
-          <div class="fp-time-input-row">
-            <input type="number" id="fp-time-step-value" min="0" step="any"
-                   class="fp-time-input-num" placeholder="1" />
-            <select id="fp-time-step-unit" class="fp-time-input-unit">
-              <option value=""></option>
-              <option value="seconds">seconds</option>
-              <option value="minutes">minutes</option>
-              <option value="hours">hours</option>
-              <option value="days">days</option>
-              <option value="weeks">weeks</option>
-              <option value="months">months</option>
-              <option value="quarters">quarters</option>
-              <option value="years">years</option>
-            </select>
-          </div>
-        </div>
-        <div class="fp-bot-inline">
-          <label class="fp-bot-label">Horizon <span class="fp-muted">(planning horizon; "periods" counts time steps)</span></label>
-          <div class="fp-time-input-row">
-            <input type="number" id="fp-horizon-value" min="0" step="any"
-                   class="fp-time-input-num" placeholder="1" />
-            <select id="fp-horizon-unit" class="fp-time-input-unit">
-              <option value=""></option>
-              <option value="seconds">seconds</option>
-              <option value="minutes">minutes</option>
-              <option value="hours">hours</option>
-              <option value="days">days</option>
-              <option value="weeks">weeks</option>
-              <option value="months">months</option>
-              <option value="quarters">quarters</option>
-              <option value="years">years</option>
-              <option value="periods">periods (of time step)</option>
-            </select>
-            <span id="fp-horizon-derived" class="fp-muted fp-time-derived"></span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="fp-bot-card fp-modeling-card">
-      <h3 class="fp-modeling-h3">Performance metric equations</h3>
-      <p class="fp-muted" style="margin: 0 0 8px 0;">Give each metric a short math label, then write the equation using LaTeX. First flavor: a general LaTeX expression (more structured flavors — sum-over-time, target, limit — will come later).</p>
-      <div class="fp-metric-eq-row">
-        <label>
-          <span class="fp-metric-eq-lbl">Metric</span>
-          <select id="fp-metric-eq-select">
-            <option value="">— pick a metric —</option>
-          </select>
-        </label>
-        <label>
-          <span class="fp-metric-eq-lbl">Short label <span class="fp-muted">(for math)</span></span>
-          <input type="text" id="fp-metric-eq-label" placeholder="e.g. C_{cost}" autocomplete="off" />
-        </label>
-      </div>
-      <label class="fp-metric-eq-lbl">Equation <span class="fp-muted">(LaTeX; wrap with <code>$…$</code> to preview)</span></label>
-      <textarea id="fp-metric-eq-formula" rows="3" spellcheck="false"
-        placeholder="e.g.  \sum_{t} c_{t}\, x_{t,d}"></textarea>
-      <div class="fp-metric-eq-preview" id="fp-metric-eq-preview">
-        <span class="fp-muted">Preview appears here once you type an equation.</span>
-      </div>
-      <ul id="fp-metric-eq-list" class="fp-metric-eq-list"></ul>
-    </div>
-
-    <div class="fp-bot-card fp-modeling-card">
-      <h3 class="fp-modeling-h3">Constraints</h3>
-      <p class="fp-muted" style="margin: 0 0 8px 0;">List problem constraints (capacity, non-negativity, budget, physical limits…). Give each a short name plus its LaTeX form.</p>
-      <div class="fp-metric-eq-row">
-        <label>
-          <span class="fp-metric-eq-lbl">Name</span>
-          <input type="text" id="fp-constraint-name" placeholder="e.g. Capacity" autocomplete="off" />
-        </label>
-      </div>
-      <label class="fp-metric-eq-lbl">Equation <span class="fp-muted">(LaTeX)</span></label>
-      <textarea id="fp-constraint-formula" rows="2" spellcheck="false"
-        placeholder="e.g.  \sum_{d} x_{t,d} \le M"></textarea>
-      <div class="fp-metric-eq-preview" id="fp-constraint-preview">
-        <span class="fp-muted">Preview appears here once you type an equation.</span>
-      </div>
-      <div style="display:flex; gap:8px; margin-top:8px;">
-        <button type="button" id="fp-constraint-add" class="fp-modal-primary">+ Add constraint</button>
-        <button type="button" id="fp-constraint-clear" class="fp-modal-mini">Clear inputs</button>
-      </div>
-      <ul id="fp-constraint-list" class="fp-metric-eq-list"></ul>
-    </div>
-
-    <div class="fp-bot-card fp-modeling-card">
-      <h3 class="fp-modeling-h3">Transition function</h3>
-      <p class="fp-muted" style="margin: 0 0 8px 0;">How state variables evolve from t to t+1. One entry per state variable (e.g. inventory, cash, position). The left-hand side is usually a "prime"d state at t+1.</p>
-      <div class="fp-metric-eq-row">
-        <label>
-          <span class="fp-metric-eq-lbl">State variable</span>
-          <input type="text" id="fp-transition-name" placeholder="e.g. R_{t+1}" autocomplete="off" />
-        </label>
-      </div>
-      <label class="fp-metric-eq-lbl">Equation <span class="fp-muted">(LaTeX)</span></label>
-      <textarea id="fp-transition-formula" rows="2" spellcheck="false"
-        placeholder="e.g.  R_{t+1} = R_t + x_t - D_{t+1}"></textarea>
-      <div class="fp-metric-eq-preview" id="fp-transition-preview">
-        <span class="fp-muted">Preview appears here once you type an equation.</span>
-      </div>
-      <div style="display:flex; gap:8px; margin-top:8px;">
-        <button type="button" id="fp-transition-add" class="fp-modal-primary">+ Add transition</button>
-        <button type="button" id="fp-transition-clear" class="fp-modal-mini">Clear inputs</button>
-      </div>
-      <ul id="fp-transition-list" class="fp-metric-eq-list"></ul>
-    </div>
-
-    <div class="fp-bot-card fp-modeling-card">
-      <h3 class="fp-modeling-h3">Problem parameters</h3>
-      <p class="fp-muted" style="margin: 0 0 8px 0;">Accumulate the parameters that describe the problem — costs, capacities, rates, arrival distributions, whatever the model needs. One per line or freeform notes; formal structure will come as the modeling flow matures.</p>
-      <textarea id="fp-problem-parameters" rows="6" spellcheck="true"
-        placeholder="e.g.&#10;  Holding cost per unit: $0.50/day&#10;  Order lead time: 3–5 days (uniform)&#10;  Weekly demand: Normal(mean=250, sd=40)&#10;  Max capacity per store: 800 units"
-        style="width: 100%; box-sizing: border-box; padding: 8px 12px; font-family: inherit; font-size: 0.95rem; border: 1px solid #c9b891; border-radius: 4px; background: #fff; color: #333; resize: vertical;"></textarea>
-    </div>
-
-  </div><!-- /.fp-modeling-left -->
-
-  <div class="fp-modeling-right">
-    <div class="fp-bot-card fp-modeling-card">
-      <h3 class="fp-modeling-h3">Discrete choices</h3>
-      <p class="fp-muted" style="margin: 0 0 8px 0;">Decisions marked <strong>(disc)</strong> in the impact matrix show up here. Tap ▶ to simulate — the play modal opens with alternatives, spreads, and history.</p>
-      <ul id="fp-modeling-decisions" class="fp-modeling-decisions"></ul>
-    </div>
-  </div>
-</div>
 
 <!-- Floating "?" launcher — always visible at bottom-right when the
      chat panel is closed. One click opens the panel without scrolling
