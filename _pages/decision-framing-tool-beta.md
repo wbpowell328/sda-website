@@ -407,49 +407,73 @@ noindex: true
 </div>
 
 <h2 id="problem-scope" class="fp-section-h2">Problem scope<button type="button" class="fp-section-help" title="Ask Professor Powell a question about this section — the chat opens in a floating panel, no scrolling.">? Ask</button></h2>
-<p>A decision frame reflects the perspective of a decision maker. Answer as many of the guided questions below as you can — the AI uses your answers as context for every later step (generate ideas, suggest impact scores, first-draft framing). Each box supports voice input: tap <strong>🎤 Speak</strong> to dictate.</p>
+<p>A decision frame reflects the perspective of a decision maker. The AI uses whatever context you give it in every later step (generate ideas, suggest impact scores, first-draft framing).</p>
 
 <div class="fp-bot-card">
-  <!-- Guided prompt — 5 question cards. Q1 keeps id="fp-scope-input" so
-       every existing reader of state.scope still works; Q2-Q5 get
-       concatenated (LABEL: prefixed) into state.problemDescription and
-       mirrored into the hidden #fp-bot-desc textarea so all existing
-       AI-call sites keep reading them unchanged. -->
-  <div class="fp-bot-row fp-qcard">
-    <label for="fp-scope-input" class="fp-bot-label fp-qcard-q">Who is making the decision?</label>
-    <textarea id="fp-scope-input" class="fp-scope-input" rows="2" spellcheck="true"
-      placeholder="Role, team, altitude in the org, planning cadence."></textarea>
-    <button type="button" class="fp-speak-btn" data-target="fp-scope-input" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
-    <p class="fp-voice-hint" data-hint-for="fp-scope-input" hidden></p>
+  <!-- Guided prompt — hidden behind a "Contextual background" button so
+       the 5 questions don't dominate the page. Modal contents keep the
+       same IDs (fp-scope-input, fp-q-setting, …) so every existing
+       reader of state.scope / state.problemDescription / #fp-bot-desc
+       keeps working unchanged. -->
+  <div class="fp-context-launcher">
+    <button type="button" id="fp-context-open" class="fp-context-open-btn">
+      Contextual background <span class="fp-context-counter" id="fp-context-counter" hidden></span>
+    </button>
+    <p class="fp-muted fp-context-lede">
+      Begin by providing valuable contextual background by answering a series of questions <em>(optional)</em>.
+    </p>
   </div>
-  <div class="fp-bot-row fp-qcard">
-    <label for="fp-q-setting" class="fp-bot-label fp-qcard-q">What is the problem setting? <span class="fp-muted">(business, manufacturing, medical, finance…)</span></label>
-    <textarea id="fp-q-setting" rows="2" spellcheck="true"
-      placeholder="Industry, environment, market, what's happening around this decision."></textarea>
-    <button type="button" class="fp-speak-btn" data-target="fp-q-setting" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
-    <p class="fp-voice-hint" data-hint-for="fp-q-setting" hidden></p>
+
+  <div id="fp-context-modal" class="fp-modal" hidden>
+    <div class="fp-modal-card fp-context-modal-card" role="dialog" aria-modal="true" aria-labelledby="fp-context-title">
+      <div class="fp-modal-header">
+        <h3 id="fp-context-title">Contextual background</h3>
+        <button type="button" class="fp-modal-close" id="fp-context-close" aria-label="Close">×</button>
+      </div>
+      <p class="fp-muted" style="margin: 0 0 12px 0;">Answer as many as you can — the AI uses your answers as context for every later step (generate ideas, suggest impact scores, first-draft framing). Each box supports voice input: tap <strong>🎤 Speak</strong> to dictate. Everything here is optional.</p>
+
+      <div class="fp-bot-row fp-qcard">
+        <label for="fp-scope-input" class="fp-bot-label fp-qcard-q">Who is making the decision?</label>
+        <textarea id="fp-scope-input" class="fp-scope-input" rows="2" spellcheck="true"
+          placeholder="Role, team, altitude in the org, planning cadence."></textarea>
+        <button type="button" class="fp-speak-btn" data-target="fp-scope-input" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
+        <p class="fp-voice-hint" data-hint-for="fp-scope-input" hidden></p>
+      </div>
+      <div class="fp-bot-row fp-qcard">
+        <label for="fp-q-setting" class="fp-bot-label fp-qcard-q">What is the problem setting? <span class="fp-muted">(business, manufacturing, medical, finance…)</span></label>
+        <textarea id="fp-q-setting" rows="2" spellcheck="true"
+          placeholder="Industry, environment, market, what's happening around this decision."></textarea>
+        <button type="button" class="fp-speak-btn" data-target="fp-q-setting" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
+        <p class="fp-voice-hint" data-hint-for="fp-q-setting" hidden></p>
+      </div>
+      <div class="fp-bot-row fp-qcard">
+        <label for="fp-q-history" class="fp-bot-label fp-qcard-q">Is there relevant history? <span class="fp-muted">(optional)</span></label>
+        <textarea id="fp-q-history" rows="2" spellcheck="true"
+          placeholder="Prior attempts, incidents, patterns, constraints inherited from the past."></textarea>
+        <button type="button" class="fp-speak-btn" data-target="fp-q-history" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
+        <p class="fp-voice-hint" data-hint-for="fp-q-history" hidden></p>
+      </div>
+      <div class="fp-bot-row fp-qcard">
+        <label for="fp-q-goals" class="fp-bot-label fp-qcard-q">What are you trying to achieve?</label>
+        <textarea id="fp-q-goals" rows="2" spellcheck="true"
+          placeholder="Overall objectives — describe success in your own words."></textarea>
+        <button type="button" class="fp-speak-btn" data-target="fp-q-goals" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
+        <p class="fp-voice-hint" data-hint-for="fp-q-goals" hidden></p>
+      </div>
+      <div class="fp-bot-row fp-qcard">
+        <label for="fp-q-other" class="fp-bot-label fp-qcard-q">Any other information that might be relevant? <span class="fp-muted">(optional — specific metrics, stakeholders, constraints)</span></label>
+        <textarea id="fp-q-other" rows="2" spellcheck="true"
+          placeholder="Specific metrics you care about, stakeholders, constraints, anything else on your mind."></textarea>
+        <button type="button" class="fp-speak-btn" data-target="fp-q-other" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
+        <p class="fp-voice-hint" data-hint-for="fp-q-other" hidden></p>
+      </div>
+
+      <div class="fp-modal-actions" style="justify-content: flex-end;">
+        <button type="button" id="fp-context-done" class="fp-modal-primary">Done</button>
+      </div>
+    </div>
   </div>
-  <div class="fp-bot-row fp-qcard">
-    <label for="fp-q-history" class="fp-bot-label fp-qcard-q">Is there relevant history? <span class="fp-muted">(optional)</span></label>
-    <textarea id="fp-q-history" rows="2" spellcheck="true"
-      placeholder="Prior attempts, incidents, patterns, constraints inherited from the past."></textarea>
-    <button type="button" class="fp-speak-btn" data-target="fp-q-history" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
-    <p class="fp-voice-hint" data-hint-for="fp-q-history" hidden></p>
-  </div>
-  <div class="fp-bot-row fp-qcard">
-    <label for="fp-q-goals" class="fp-bot-label fp-qcard-q">What are you trying to achieve?</label>
-    <textarea id="fp-q-goals" rows="2" spellcheck="true"
-      placeholder="Overall objectives — describe success in your own words."></textarea>
-    <button type="button" class="fp-speak-btn" data-target="fp-q-goals" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
-    <p class="fp-voice-hint" data-hint-for="fp-q-goals" hidden></p>
-  </div>
-  <div class="fp-bot-row fp-qcard">
-    <label for="fp-q-other" class="fp-bot-label fp-qcard-q">Any other information that might be relevant? <span class="fp-muted">(optional — specific metrics, stakeholders, constraints)</span></label>
-    <textarea id="fp-q-other" rows="2" spellcheck="true"
-      placeholder="Specific metrics you care about, stakeholders, constraints, anything else on your mind."></textarea>
-    <button type="button" class="fp-speak-btn" data-target="fp-q-other" aria-label="Tap to speak"><span class="fp-mic-glyph">🎤</span>Speak</button>
-    <p class="fp-voice-hint" data-hint-for="fp-q-other" hidden></p>
-  </div>
+
   <!-- Hidden derived textarea — kept in sync with the labelled blob of
        Q2-Q5. Every existing reader of #fp-bot-desc.value now gets the
        guided-prompt blob. -->
@@ -1107,6 +1131,47 @@ noindex: true
     z-index: 1000;
   }
   .fp-modal[hidden] { display: none; }
+  /* "Contextual background" launcher — replaces the 5 question cards on
+     the page. Click to open the fp-context-modal. */
+  .fp-context-launcher {
+    display: flex; align-items: center; gap: 16px;
+    padding: 12px 14px;
+    background: #faf5e6;
+    border: 1px solid #d6c4a3;
+    border-radius: 6px;
+    margin: 0 0 12px 0;
+    flex-wrap: wrap;
+  }
+  .fp-context-open-btn {
+    padding: 10px 18px;
+    background: #8a3a1a;
+    color: #fff;
+    border: none; border-radius: 4px;
+    font-size: 1rem; font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .fp-context-open-btn:hover { background: #a04a24; }
+  .fp-context-counter {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 8px;
+    background: rgba(255,255,255,0.28);
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 500;
+  }
+  .fp-context-lede {
+    flex: 1 1 300px;
+    margin: 0;
+    color: #5a3e1f;
+    font-size: 0.95rem;
+  }
+  .fp-context-modal-card {
+    max-width: 720px;
+    max-height: 88vh;
+    overflow-y: auto;
+  }
   .fp-modal-card {
     background: #fff; border-radius: 6px;
     padding: 20px;
@@ -2861,6 +2926,23 @@ noindex: true
     const desc = document.getElementById('fp-bot-desc');
     if (desc) desc.value = state.problemDescription;
   }
+  // Updates the "N of 5 answered" chip on the Contextual background
+  // launcher so the user can see at a glance how much they've filled in
+  // without opening the modal.
+  function updateContextCounter() {
+    const el = document.getElementById('fp-context-counter');
+    if (!el) return;
+    let filled = 0;
+    for (const q of PROMPT_QUESTIONS) {
+      if ((state.promptAnswers[q.key] || '').trim()) filled++;
+    }
+    if (filled === 0) {
+      el.hidden = true;
+    } else {
+      el.hidden = false;
+      el.textContent = filled + ' of ' + PROMPT_QUESTIONS.length + ' answered';
+    }
+  }
   function renderPromptCards() {
     hydratePromptAnswers();
     for (const q of PROMPT_QUESTIONS) {
@@ -2868,6 +2950,7 @@ noindex: true
       if (el) el.value = state.promptAnswers[q.key] || '';
     }
     buildDerivedDesc();
+    updateContextCounter();
     // Also refresh Modeling-section inputs so they follow the same
     // load/reset paths as the prompt cards.
     const pp = document.getElementById('fp-problem-parameters');
@@ -8020,10 +8103,28 @@ noindex: true
       el.addEventListener('input', () => {
         state.promptAnswers[q.key] = el.value;
         buildDerivedDesc();
+        updateContextCounter();
         autoSave();
       });
     }
     initFpVoiceInputs();
+    // Contextual-background modal — open/close wiring.
+    const cxOpen  = document.getElementById('fp-context-open');
+    const cxDone  = document.getElementById('fp-context-done');
+    const cxClose = document.getElementById('fp-context-close');
+    const cxModal = document.getElementById('fp-context-modal');
+    if (cxOpen && cxModal) {
+      cxOpen.addEventListener('click', () => { cxModal.hidden = false; });
+      const closeIt = () => { cxModal.hidden = true; };
+      if (cxDone)  cxDone.addEventListener('click', closeIt);
+      if (cxClose) cxClose.addEventListener('click', closeIt);
+      cxModal.addEventListener('click', (e) => {
+        if (e.target === cxModal) closeIt();     // click the backdrop
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !cxModal.hidden) closeIt();
+      });
+    }
     renderPromptCards();
     // Same for the URL-to-a-case field.
     $('#fp-bot-url').addEventListener('input', () => {
