@@ -7994,7 +7994,7 @@ date: 2026-08-11
     }
     renderPromptCards();
     // Same for the URL-to-a-case field.
-    $('#fp-bot-url').addEventListener('input', () => {
+    ($('#fp-bot-url') || { addEventListener: () => {} }).addEventListener('input', () => {
       state.problemUrl = $('#fp-bot-url').value;
       autoSave();
     });
@@ -8081,13 +8081,13 @@ date: 2026-08-11
       autoSave();
       updateHorizonDerived();
     }
-    $('#fp-time-step-value').addEventListener('input', () => pushTimeSpec('time-step'));
-    $('#fp-time-step-unit').addEventListener('change', () => pushTimeSpec('time-step'));
-    $('#fp-horizon-value').addEventListener('input', () => pushTimeSpec('horizon'));
-    $('#fp-horizon-unit').addEventListener('change', () => pushTimeSpec('horizon'));
-    $('#fp-metrics-input').addEventListener('input',       syncMetricsFromTextarea);
-    $('#fp-decisions-input').addEventListener('input',     () => syncListFromTextarea('decision'));
-    $('#fp-uncertainties-input').addEventListener('input', () => syncListFromTextarea('uncertainty'));
+    ($('#fp-time-step-value') || { addEventListener: () => {} }).addEventListener('input', () => pushTimeSpec('time-step'));
+    ($('#fp-time-step-unit') || { addEventListener: () => {} }).addEventListener('change', () => pushTimeSpec('time-step'));
+    ($('#fp-horizon-value') || { addEventListener: () => {} }).addEventListener('input', () => pushTimeSpec('horizon'));
+    ($('#fp-horizon-unit') || { addEventListener: () => {} }).addEventListener('change', () => pushTimeSpec('horizon'));
+    ($('#fp-metrics-input') || { addEventListener: () => {} }).addEventListener('input',       syncMetricsFromTextarea);
+    ($('#fp-decisions-input') || { addEventListener: () => {} }).addEventListener('input',     () => syncListFromTextarea('decision'));
+    ($('#fp-uncertainties-input') || { addEventListener: () => {} }).addEventListener('input', () => syncListFromTextarea('uncertainty'));
     const upLevelBtn = $('#fp-decision-up-level');
     if (upLevelBtn) upLevelBtn.addEventListener('click', goUpOneLevel);
     // Per-level scope — only meaningful when drilled into a sub-decision;
