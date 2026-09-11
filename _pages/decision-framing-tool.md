@@ -8404,13 +8404,14 @@ date: 2026-08-11
       const modal = $('#fp-ideas-modal');
       if (!modal) return;
       const dismiss = () => { modal.hidden = true; };
-      $('#fp-ideas-modal-close').addEventListener('click', dismiss);
-      $('#fp-ideas-cancel').addEventListener('click', dismiss);
+      const on = (sel, ev, fn) => { const el = $(sel); if (el) el.addEventListener(ev, fn); };
+      on('#fp-ideas-modal-close',  'click', dismiss);
+      on('#fp-ideas-cancel',       'click', dismiss);
       modal.addEventListener('click', (e) => { if (e.target === modal) dismiss(); });
-      $('#fp-ideas-select-all').addEventListener('click', () => ideasSelectAll(true));
-      $('#fp-ideas-select-none').addEventListener('click', () => ideasSelectAll(false));
-      $('#fp-ideas-regenerate').addEventListener('click', runIdeasFetch);
-      $('#fp-ideas-add').addEventListener('click', ideasApply);
+      on('#fp-ideas-select-all',   'click', () => ideasSelectAll(true));
+      on('#fp-ideas-select-none',  'click', () => ideasSelectAll(false));
+      on('#fp-ideas-regenerate',   'click', runIdeasFetch);
+      on('#fp-ideas-add',          'click', ideasApply);
     })();
     // Play modal wiring — discrete-choice human-in-the-loop simulator.
     (function wirePlayModal() {
