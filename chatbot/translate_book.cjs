@@ -50,14 +50,20 @@ const LANG_NAMES = {
 
 // Per-book config. `urlPrefix` MUST start and end with `/`. `tocName` is
 // the base name (without the language suffix) of the _data/*.yml TOC.
+// `assetPaths` are additional directory prefixes whose links get
+// language-localized when translating this book (e.g. Bridging Vol I's
+// external .docx case studies live under /assets/cases/ and each language
+// has its own subfolder — the translated Chapter 6 must point at them).
 const BOOKS = {
   sdam: {
-    urlPrefix: '/sdam/',
-    tocName:   'sdam_toc',
+    urlPrefix:  '/sdam/',
+    tocName:    'sdam_toc',
+    assetPaths: [],
   },
   'bridging-vol1': {
-    urlPrefix: '/bridging-vol1/',
-    tocName:   'bridging_vol1_toc',
+    urlPrefix:  '/bridging-vol1/',
+    tocName:    'bridging_vol1_toc',
+    assetPaths: ['/assets/cases/'],
   },
 };
 
@@ -287,7 +293,15 @@ function localizeBookLinks(text, lang, book) {
   // for regex readability and escape the middle.
   const inner = escapeRe(cfg.urlPrefix.replace(/^\/|\/$/g, ''));
   const re = new RegExp('(?<![A-Za-z0-9_])/' + inner + '/(?!(?:' + knownLangs + ')/)', 'g');
-  return text.replace(re, cfg.urlPrefix + lang + '/');
+  let out = text.replace(re, cfg.urlPrefix + lang + '/');
+  // Same rule for asset paths (case-study .docx files, etc.) — each
+  // language has its own subfolder alongside the English originals.
+  for (const asset of (cfg.assetPaths || [])) {
+    const innerA = escapeRe(asset.replace(/^\/|\/$/g, ''));
+    const reA = new RegExp('(?<![A-Za-z0-9_])/' + innerA + '/(?!(?:' + knownLangs + ')/)', 'g');
+    out = out.replace(reA, asset + lang + '/');
+  }
+  return out;
 }
 
 async function translateFile(sourcePath, lang, outputPath, book) {
