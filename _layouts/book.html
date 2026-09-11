@@ -185,32 +185,41 @@
   })();
 </script>
 
-<!-- Language switcher — hops to /sdam/<lang>/chapter-N/ (or /sdam/chapter-N/
-     for English). Records the choice in localStorage so subsequent chapters
-     open in the same language, and fires a GA4 `language_switch` event with
-     from/to so we can see how often users deliberately re-language. -->
+<!-- Language switcher — hops to /<book>/<lang>/chapter-N/ (or
+     /<book>/chapter-N/ for English). Records the choice in localStorage so
+     subsequent chapters open in the same language, and fires a GA4
+     `language_switch` event with from/to so we can see how often users
+     deliberately re-language. Works for both /sdam/ and /bridging-vol1/. -->
 <script>
   (function () {
     var sel = document.querySelector('.book-langswitch');
     if (!sel) return;
     var current = sel.getAttribute('data-current-lang') || 'en';
-    // Split "/sdam/<lang>/chapter-N/" (or "/sdam/chapter-N/", "/sdam/") into
-    // { lang, slug } so we can rebuild the URL with a different language.
+    // Every book prefix the switcher knows about. Add entries here after
+    // a full translation batch lands for a new book.
+    var BOOK_PREFIXES = ['sdam', 'bridging-vol1'];
+    // Split "/<book>/<lang>/chapter-N/" (or "/<book>/chapter-N/", "/<book>/")
+    // into { book, lang, slug } so we can rebuild the URL with a different
+    // language while keeping the same book.
     function bookSlugFromUrl(url) {
-      var m = url.match(/^\/sdam\/(?:([a-z]{2}(?:-[A-Z]{2})?)\/)?(.*)$/);
-      if (!m) return null;
-      return { lang: m[1] || 'en', slug: m[2] || '' };
+      for (var i = 0; i < BOOK_PREFIXES.length; i++) {
+        var b = BOOK_PREFIXES[i];
+        var re = new RegExp('^/' + b + '/(?:([a-z]{2}(?:-[A-Z]{2})?)/)?(.*)$');
+        var m = url.match(re);
+        if (m) return { book: b, lang: m[1] || 'en', slug: m[2] || '' };
+      }
+      return null;
     }
     sel.addEventListener('change', function () {
       var to = sel.value;
       if (to === current) return;
       var parts = bookSlugFromUrl(window.location.pathname);
       if (!parts) return;
-      var target = '/sdam/' + (to === 'en' ? '' : to + '/') + parts.slug;
-      try { localStorage.setItem('sdam-lang', to); } catch (_) { /* ignore */ }
+      var target = '/' + parts.book + '/' + (to === 'en' ? '' : to + '/') + parts.slug;
+      try { localStorage.setItem(parts.book + '-lang', to); } catch (_) { /* ignore */ }
       if (window.gtag) {
         window.gtag('event', 'language_switch', {
-          book: 'sdam',
+          book: parts.book,
           from: current,
           to: to,
           slug: parts.slug || 'home',

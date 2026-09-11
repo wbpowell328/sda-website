@@ -1,10 +1,11 @@
 #!/usr/bin/env node
-// Translate a Jekyll TOC data file (e.g. _data/sdam_toc.yml) into another
-// language. Preserves structure and every `url:` value; rewrites urls from
-// /sdam/… to /sdam/<lang>/… ; translates titles + book_subtitle. Does NOT
-// touch author or book_title (book keeps its published English title).
+// Translate a Jekyll TOC data file (e.g. _data/sdam_toc.yml or
+// _data/bridging_vol1_toc.yml) into another language. Preserves structure
+// and every `url:` value; rewrites urls from /<book>/… to /<book>/<lang>/…;
+// translates titles + book_subtitle. Does NOT touch author or book_title
+// (book keeps its published English title).
 //
-// Usage: node translate_toc.cjs <source.yml> <lang> <output.yml>
+// Usage: node translate_toc.cjs <source.yml> <lang> <output.yml> [--book=<slug>]
 
 const fs = require('fs');
 const path = require('path');
@@ -18,6 +19,12 @@ const LANG_NAMES = {
   es: 'Spanish', fr: 'French', de: 'German',
   'pt-BR': 'Brazilian Portuguese', zh: 'Simplified Chinese', ja: 'Japanese',
 };
+
+const BOOKS = {
+  sdam:            { urlPrefix: '/sdam/' },
+  'bridging-vol1': { urlPrefix: '/bridging-vol1/' },
+};
+function escapeRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
 async function translateStrings(strings, lang) {
   const langName = LANG_NAMES[lang];
@@ -47,11 +54,24 @@ async function translateStrings(strings, lang) {
 }
 
 async function main() {
-  const [, , src, lang, outPath] = process.argv;
+  const argv = process.argv.slice(2);
+  let book = 'sdam';
+  const positional = [];
+  for (const a of argv) {
+    const m = a.match(/^--book=(.+)$/);
+    if (m) { book = m[1]; continue; }
+    positional.push(a);
+  }
+  const [src, lang, outPath] = positional;
   if (!src || !lang || !outPath) {
-    console.error('usage: node translate_toc.cjs <source.yml> <lang> <output.yml>');
+    console.error('usage: node translate_toc.cjs <source.yml> <lang> <output.yml> [--book=<slug>]');
     process.exit(1);
   }
+  if (!BOOKS[book]) {
+    console.error('Unknown book: ' + book + '. Known: ' + Object.keys(BOOKS).join(', '));
+    process.exit(1);
+  }
+  const bookCfg = BOOKS[book];
   const raw = fs.readFileSync(src, 'utf8');
   const lines = raw.split(/\r?\n/);
 
@@ -78,9 +98,12 @@ async function main() {
       lines[slot.lineIdx] = (slot.indent || '') + 'title: ' + JSON.stringify(tr);
     }
   }
+  const urlRe = new RegExp(
+    '^(\\s*url:\\s*)"(' + escapeRe(bookCfg.urlPrefix) + ')([^"]*)"\\s*$'
+  );
   for (let i = 0; i < lines.length; i++) {
-    const m = lines[i].match(/^(\s*url:\s*)"(\/sdam\/)([^"]*)"\s*$/);
-    if (m) lines[i] = m[1] + '"/sdam/' + lang + '/' + m[3] + '"';
+    const m = lines[i].match(urlRe);
+    if (m) lines[i] = m[1] + '"' + bookCfg.urlPrefix + lang + '/' + m[3] + '"';
   }
 
   fs.mkdirSync(path.dirname(outPath), { recursive: true });

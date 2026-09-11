@@ -1,20 +1,24 @@
 #!/usr/bin/env node
-// Full-batch SDAM translator. For each language in LANGS:
+// Full-batch book translator. Runs across every configured language for
+// the chosen book. For each language:
 //   1. Ensure chatbot/i18n-glossary/<lang>.json exists (bootstrap from the
 //      English keys in es.json if not — the value column is machine-translated
-//      by Claude into the target language). This keeps technical terminology
-//      consistent within a language across chapters.
-//   2. Translate _data/sdam_toc.yml → _data/sdam_toc_<slug>.yml (unless
+//      by Claude into the target language). Glossaries are SHARED across
+//      books because they carry field-wide terminology, not book-specific
+//      titles.
+//   2. Translate _data/<tocName>.yml → _data/<tocName>_<slug>.yml (unless
 //      already present).
-//   3. For each page in PAGES:
+//   3. For each page in the book's PAGES list:
 //        - Skip if the output file already exists (idempotent). Pass --force
 //          to overwrite.
-//        - Otherwise: run translate_book.cjs's translateFile() and write to
-//          _pages/sdam-<lang>-<slug>.md.
+//        - Otherwise: run translate_book.cjs and write to
+//          _pages/<pageStem>-<lang>-<rest>.md.
 //
 // Usage:
-//   node translate_batch.cjs [--force] [--stale] [--only=<lang>[,<lang>...]]
-//     e.g. node translate_batch.cjs --only=fr,de
+//   node translate_batch.cjs [--book=<slug>] [--force] [--stale] [--only=<lang>[,<lang>...]]
+//     e.g. node translate_batch.cjs                                # SDAM (default)
+//          node translate_batch.cjs --book=bridging-vol1           # Bridging Vol I
+//          node translate_batch.cjs --book=bridging-vol1 --only=es # Spanish pilot
 //          node translate_batch.cjs --force
 //          node translate_batch.cjs --stale       # re-translate only pages
 //                                                 # whose English source
@@ -51,14 +55,36 @@ const LANG_NAMES = {
   ja:      'Japanese',
 };
 const LANGS = Object.keys(LANG_NAMES);
-const PAGES = [
-  'sdam.md', 'sdam-about.md', 'sdam-contents.md', 'sdam-preface.md',
-  'sdam-chapter-1.md', 'sdam-chapter-2.md', 'sdam-chapter-3.md',
-  'sdam-chapter-4.md', 'sdam-chapter-5.md', 'sdam-chapter-6.md',
-  'sdam-chapter-7.md', 'sdam-chapter-8.md', 'sdam-chapter-9.md',
-  'sdam-chapter-10.md', 'sdam-chapter-11.md', 'sdam-chapter-12.md',
-  'sdam-chapter-13.md', 'sdam-chapter-14.md', 'sdam-references.md',
-];
+
+// Per-book config. `pageStem` is the shared prefix of every source page
+// AND the target page (e.g. sdam.md, sdam-chapter-1.md → sdam-<lang>.md,
+// sdam-<lang>-chapter-1.md). `tocName` is the base name of the _data/*.yml
+// TOC (without language suffix). `pages` is the ordered source list.
+const BOOKS = {
+  sdam: {
+    pageStem: 'sdam',
+    tocName:  'sdam_toc',
+    pages: [
+      'sdam.md', 'sdam-about.md', 'sdam-contents.md', 'sdam-preface.md',
+      'sdam-chapter-1.md', 'sdam-chapter-2.md', 'sdam-chapter-3.md',
+      'sdam-chapter-4.md', 'sdam-chapter-5.md', 'sdam-chapter-6.md',
+      'sdam-chapter-7.md', 'sdam-chapter-8.md', 'sdam-chapter-9.md',
+      'sdam-chapter-10.md', 'sdam-chapter-11.md', 'sdam-chapter-12.md',
+      'sdam-chapter-13.md', 'sdam-chapter-14.md', 'sdam-references.md',
+    ],
+  },
+  'bridging-vol1': {
+    pageStem: 'bridging-vol1',
+    tocName:  'bridging_vol1_toc',
+    pages: [
+      'bridging-vol1.md', 'bridging-vol1-about.md', 'bridging-vol1-contents.md',
+      'bridging-vol1-chapter-1.md', 'bridging-vol1-chapter-2.md',
+      'bridging-vol1-chapter-3.md', 'bridging-vol1-chapter-4.md',
+      'bridging-vol1-chapter-5.md', 'bridging-vol1-chapter-6.md',
+      'bridging-vol1-chapter-7.md',
+    ],
+  },
+};
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const PAGES_DIR = path.join(REPO_ROOT, '_pages');
@@ -107,26 +133,27 @@ async function ensureGlossary(lang) {
 }
 
 // ── TOC bootstrap ───────────────────────────────────────────────
-function ensureToc(lang) {
-  const outPath = path.join(DATA_DIR, 'sdam_toc_' + langSlug(lang) + '.yml');
+function ensureToc(lang, bookCfg, bookSlug) {
+  const outPath = path.join(DATA_DIR, bookCfg.tocName + '_' + langSlug(lang) + '.yml');
   if (fs.existsSync(outPath)) return { skipped: true };
-  console.error('[' + lang + '] translating TOC...');
-  const srcPath = path.join(DATA_DIR, 'sdam_toc.yml');
-  const r = spawnSync('node', [path.join(__dirname, 'translate_toc.cjs'), srcPath, lang, outPath], {
-    stdio: 'inherit',
-    env: process.env,
-  });
+  console.error('[' + lang + '] translating TOC (' + bookCfg.tocName + ')...');
+  const srcPath = path.join(DATA_DIR, bookCfg.tocName + '.yml');
+  const r = spawnSync('node', [
+    path.join(__dirname, 'translate_toc.cjs'),
+    srcPath, lang, outPath, '--book=' + bookSlug,
+  ], { stdio: 'inherit', env: process.env });
   if (r.status !== 0) throw new Error('TOC translation failed for ' + lang);
   return { skipped: false };
 }
 
 // ── Page translation ────────────────────────────────────────────
-function pageOutPath(lang, srcName) {
-  // sdam.md → sdam-es.md   (the front cover)
-  // sdam-chapter-1.md → sdam-es-chapter-1.md
-  if (srcName === 'sdam.md') return path.join(PAGES_DIR, 'sdam-' + lang + '.md');
-  const rest = srcName.replace(/^sdam-/, '');
-  return path.join(PAGES_DIR, 'sdam-' + lang + '-' + rest);
+function pageOutPath(lang, srcName, bookCfg) {
+  // <stem>.md            → <stem>-<lang>.md   (the front cover)
+  // <stem>-chapter-1.md  → <stem>-<lang>-chapter-1.md
+  const stem = bookCfg.pageStem;
+  if (srcName === stem + '.md') return path.join(PAGES_DIR, stem + '-' + lang + '.md');
+  const rest = srcName.replace(new RegExp('^' + stem.replace(/[-]/g, '\\-') + '-'), '');
+  return path.join(PAGES_DIR, stem + '-' + lang + '-' + rest);
 }
 // Read a translated page's stored `translated_from_hash` front-matter
 // value. Returns null if the file is missing or the field isn't present.
@@ -167,9 +194,9 @@ function isStale(srcPath, outPath) {
 //   --stale : re-translate ONLY files whose stored source hash differs
 //             from the current English source; skip missing files AND
 //             files with matching hashes.
-function translatePage(srcName, lang, opts) {
+function translatePage(srcName, lang, opts, bookCfg, bookSlug) {
   const src = path.join(PAGES_DIR, srcName);
-  const out = pageOutPath(lang, srcName);
+  const out = pageOutPath(lang, srcName, bookCfg);
   const exists = fs.existsSync(out);
   if (opts.stale) {
     if (!exists) {
@@ -188,10 +215,10 @@ function translatePage(srcName, lang, opts) {
     }
     console.error('[' + lang + '] TRANSLATE: ' + srcName + ' → ' + path.basename(out));
   }
-  const r = spawnSync('node', [path.join(__dirname, 'translate_book.cjs'), src, lang, out], {
-    stdio: 'inherit',
-    env: process.env,
-  });
+  const r = spawnSync('node', [
+    path.join(__dirname, 'translate_book.cjs'),
+    src, lang, out, '--book=' + bookSlug,
+  ], { stdio: 'inherit', env: process.env });
   return r.status === 0 ? 'ok' : 'failed';
 }
 
@@ -212,13 +239,23 @@ async function main() {
   }
   const opts = { force, stale };
   let langs = LANGS;
+  let bookSlug = 'sdam';
   for (const a of argv) {
-    const m = a.match(/^--only=(.+)$/);
-    if (m) langs = m[1].split(',').filter(l => LANGS.indexOf(l) >= 0);
+    const mo = a.match(/^--only=(.+)$/);
+    if (mo) langs = mo[1].split(',').filter(l => LANGS.indexOf(l) >= 0);
+    const mb = a.match(/^--book=(.+)$/);
+    if (mb) bookSlug = mb[1];
+  }
+  const bookCfg = BOOKS[bookSlug];
+  if (!bookCfg) {
+    console.error('Unknown book: ' + bookSlug + '. Known: ' + Object.keys(BOOKS).join(', '));
+    process.exit(2);
   }
 
   fs.mkdirSync(GLOSS_DIR, { recursive: true });
   const summary = { ok: 0, skipped: 0, failed: 0, failures: [] };
+
+  console.error('BOOK: ' + bookSlug + '  (' + bookCfg.pages.length + ' pages × ' + langs.length + ' language(s))');
 
   for (const lang of langs) {
     console.error('════════════════════════════════════════════════════════');
@@ -228,15 +265,15 @@ async function main() {
       // Setup is per-language and only runs when there's no glossary/TOC yet.
       // --stale doesn't affect these — glossaries/TOCs are cheap and stable.
       await ensureGlossary(lang);
-      ensureToc(lang);
+      ensureToc(lang, bookCfg, bookSlug);
     } catch (err) {
       console.error('[' + lang + '] setup failed: ' + err.message);
       summary.failed++;
       summary.failures.push(lang + ':setup');
       continue;
     }
-    for (const page of PAGES) {
-      const status = translatePage(page, lang, opts);
+    for (const page of bookCfg.pages) {
+      const status = translatePage(page, lang, opts, bookCfg, bookSlug);
       summary[status]++;
       if (status === 'failed') summary.failures.push(lang + ':' + page);
     }

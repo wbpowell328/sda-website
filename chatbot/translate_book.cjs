@@ -1,19 +1,23 @@
 #!/usr/bin/env node
-// Translate a Jekyll book page (e.g. an SDAM chapter) into another language.
-// Math blocks ($...$ and $$...$$) are extracted and re-inserted verbatim so
-// LaTeX is never touched. HTML tags and Markdown structure are preserved by
-// instructing Claude to keep them literal.
+// Translate a Jekyll book page (e.g. an SDAM or Bridging Vol I chapter)
+// into another language. Math blocks ($...$ and $$...$$) are extracted
+// and re-inserted verbatim so LaTeX is never touched. HTML tags and
+// Markdown structure are preserved by instructing Claude to keep them
+// literal.
 //
-// Usage: node translate_book.js <source.md> <lang> <output.md>
-//   e.g.  node translate_book.js ../_pages/sdam-chapter-1.md es ../_pages/sdam-es/sdam-chapter-1.md
+// Usage: node translate_book.cjs <source.md> <lang> <output.md> [--book=<slug>]
+//   e.g. node translate_book.cjs ../_pages/sdam-chapter-1.md es ../_pages/sdam-es-chapter-1.md
+//        node translate_book.cjs ../_pages/bridging-vol1-chapter-1.md es \
+//             ../_pages/bridging-vol1-es-chapter-1.md --book=bridging-vol1
 //
 // lang codes: es fr de pt-BR zh ja  (add more in LANG_NAMES).
+// book slug:  sdam (default) | bridging-vol1  (add more in BOOKS).
 //
 // Front matter is rewritten:
-//   permalink   /sdam/…       → /sdam/<lang>/…
-//   book_home   /sdam/…       → /sdam/<lang>/…
-//   book_data   sdam_toc      → sdam_toc_<lang_slug>
-//   title                     → translated
+//   permalink   /<book>/…              → /<book>/<lang>/…
+//   book_home   /<book>/…              → /<book>/<lang>/…
+//   book_data   <book>_toc             → <book>_toc_<lang_slug>
+//   title                              → translated
 //   + adds lang, translated_from, translated_from_hash
 //
 // Notes
@@ -42,6 +46,19 @@ const LANG_NAMES = {
   'pt-BR': 'Brazilian Portuguese',
   zh:      'Simplified Chinese (zh-Hans)',
   ja:      'Japanese',
+};
+
+// Per-book config. `urlPrefix` MUST start and end with `/`. `tocName` is
+// the base name (without the language suffix) of the _data/*.yml TOC.
+const BOOKS = {
+  sdam: {
+    urlPrefix: '/sdam/',
+    tocName:   'sdam_toc',
+  },
+  'bridging-vol1': {
+    urlPrefix: '/bridging-vol1/',
+    tocName:   'bridging_vol1_toc',
+  },
 };
 
 // ── Front matter ────────────────────────────────────────────────
@@ -230,37 +247,46 @@ async function translateChunk(chunk, lang, glossary) {
 
 // ── Front-matter rewriter ───────────────────────────────────────
 function langSlug(lang) { return lang.replace(/-/g, '_').toLowerCase(); }
-function rewriteFrontMatter(fm, lang) {
-  // /sdam/chapter-1/ → /sdam/es/chapter-1/
-  if (fm.permalink) {
-    fm.permalink = fm.permalink.replace(/^\/sdam\//, '/sdam/' + lang + '/');
-  }
-  if (fm.book_home) {
-    fm.book_home = fm.book_home.replace(/^\/sdam\//, '/sdam/' + lang + '/');
-  }
-  if (fm.book_data) {
-    fm.book_data = 'sdam_toc_' + langSlug(lang);
-  }
+function escapeRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+function rewriteFrontMatter(fm, lang, book) {
+  const cfg = BOOKS[book];
+  if (!cfg) throw new Error('Unknown book: ' + book);
+  // /<book>/chapter-1/ → /<book>/<lang>/chapter-1/
+  const prefixRe = new RegExp('^' + escapeRe(cfg.urlPrefix));
+  const langPrefix = cfg.urlPrefix + lang + '/';
+  if (fm.permalink) fm.permalink = fm.permalink.replace(prefixRe, langPrefix);
+  if (fm.book_home) fm.book_home = fm.book_home.replace(prefixRe, langPrefix);
+  // Only rewrite book_data if the source page has one that matches this
+  // book's tocName. (Bridging Vol I currently omits book_data and lets
+  // book.html auto-default to bridging_vol1_toc; translated pages set
+  // it explicitly so the language switcher isn't ambiguous.)
+  fm.book_data = cfg.tocName + '_' + langSlug(lang);
   fm.lang = lang;
   fm.translated_from = 'en';
 }
 
 // ── Driver ──────────────────────────────────────────────────────
-// Localize internal `/sdam/…` links in a translated body to `/sdam/<lang>/…`.
+// Localize internal `/<book>/…` links in a translated body to
+// `/<book>/<lang>/…`.
 // - Negative lookbehind excludes URL-interior occurrences (asset paths like
-//   `/assets/images/sdam/foo.png` have a letter directly before `/sdam/`).
+//   `/assets/images/<book>/foo.png` have a letter directly before the slash).
 // - Negative lookahead skips URLs already carrying a known language prefix
 //   (idempotent — safe to run twice).
 // So only URL-start occurrences (preceded by whitespace, `"`, `'`, `(`,
 // `=`, or start-of-string) get rewritten.
-function localizeSdamLinks(text, lang) {
+function localizeBookLinks(text, lang, book) {
+  const cfg = BOOKS[book];
   const knownLangs = Object.keys(LANG_NAMES).join('|');
-  const re = new RegExp('(?<![A-Za-z0-9_])/sdam/(?!(?:' + knownLangs + ')/)', 'g');
-  return text.replace(re, '/sdam/' + lang + '/');
+  // urlPrefix is like '/sdam/' or '/bridging-vol1/'. Strip the leading /
+  // for regex readability and escape the middle.
+  const inner = escapeRe(cfg.urlPrefix.replace(/^\/|\/$/g, ''));
+  const re = new RegExp('(?<![A-Za-z0-9_])/' + inner + '/(?!(?:' + knownLangs + ')/)', 'g');
+  return text.replace(re, cfg.urlPrefix + lang + '/');
 }
 
-async function translateFile(sourcePath, lang, outputPath) {
+async function translateFile(sourcePath, lang, outputPath, book) {
   if (!LANG_NAMES[lang]) throw new Error('Unknown lang: ' + lang + '. Known: ' + Object.keys(LANG_NAMES).join(', '));
+  if (!BOOKS[book]) throw new Error('Unknown book: ' + book + '. Known: ' + Object.keys(BOOKS).join(', '));
   const raw = fs.readFileSync(sourcePath, 'utf8');
   const { fm, order, body } = parseFrontMatter(raw);
   const glossary = loadGlossary(lang);
@@ -319,8 +345,8 @@ async function translateFile(sourcePath, lang, outputPath) {
   }
   const trBodyProse = translatedChunks.join('\n\n');
   let trBody = restoreProtected(trBodyProse, blocks);
-  // Rewrite internal SDAM links to keep the reader in their chosen language.
-  trBody = localizeSdamLinks(trBody, lang);
+  // Rewrite internal book links to keep the reader in their chosen language.
+  trBody = localizeBookLinks(trBody, lang, book);
   // Re-attach the {% raw %} / {% endraw %} boundary wrapper we stripped
   // before extraction, so Jekyll sees the same "raw" contract as the
   // original.
@@ -328,7 +354,7 @@ async function translateFile(sourcePath, lang, outputPath) {
 
   // 3) Rewrite front matter for the translated page.
   fm.title = trTitle;
-  rewriteFrontMatter(fm, lang);
+  rewriteFrontMatter(fm, lang, book);
   fm.translated_from_hash = bodyHash;
 
   // 4) Round-trip sanity BEFORE write: every placeholder present in the
@@ -353,13 +379,22 @@ async function translateFile(sourcePath, lang, outputPath) {
 }
 
 // ── CLI ─────────────────────────────────────────────────────────
-const [, , src, lang, out] = process.argv;
+const argv = process.argv.slice(2);
+let book = 'sdam';
+const positional = [];
+for (const a of argv) {
+  const m = a.match(/^--book=(.+)$/);
+  if (m) { book = m[1]; continue; }
+  positional.push(a);
+}
+const [src, lang, out] = positional;
 if (!src || !lang || !out) {
-  console.error('usage: node translate_book.js <source.md> <lang> <output.md>');
+  console.error('usage: node translate_book.cjs <source.md> <lang> <output.md> [--book=<slug>]');
   console.error('  langs: ' + Object.keys(LANG_NAMES).join(' '));
+  console.error('  books: ' + Object.keys(BOOKS).join(' ') + ' (default: sdam)');
   process.exit(1);
 }
-translateFile(src, lang, out).catch(err => {
+translateFile(src, lang, out, book).catch(err => {
   console.error('ERROR: ' + (err && err.stack || err));
   process.exit(1);
 });
