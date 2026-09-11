@@ -23,14 +23,13 @@ date: 2026-08-11
 
 <p>If you have any questions, just <button type="button" class="fp-section-help" title="Open the Ask Professor Powell chat panel">? Ask</button></p>
 
-<p>The framing process is divided into four components, each with its own AI-assists. Once framing is complete, the <a href="#modeling"><strong>Modeling</strong></a> section at the bottom moves into building and running the model.</p>
+<p>The framing process is divided into four components, each with its own AI-assists.</p>
 
 <ol>
   <li><a href="#problem-scope"><strong>Problem scope</strong></a></li>
   <li><a href="#metrics-pyramid-tool"><strong>Metrics pyramid tool</strong></a></li>
   <li><a href="#decision-prioritization-tool"><strong>Decision prioritization tool</strong></a></li>
   <li><a href="#uncertainty-prioritization-tool"><strong>Uncertainty prioritization tool</strong></a></li>
-  <li><a href="#modeling"><strong>Modeling</strong></a> <span class="fp-muted">(after framing)</span></li>
 </ol>
 
 <div class="fp-toolbar">

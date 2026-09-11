@@ -4,6 +4,7 @@ title: "The decision modeling tool (BETA)"
 permalink: /decision-modeling-tool-beta/
 date: 2026-09-11
 noindex: true
+sitemap: false
 ---
 
 {% raw %}
